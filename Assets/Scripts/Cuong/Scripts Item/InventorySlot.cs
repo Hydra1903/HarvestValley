@@ -1,9 +1,10 @@
-using TMPro;
+﻿using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-public class InventorySlot : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDropHandler
+public class InventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IDropHandler
+
 {
     public Image icon;
     public TextMeshProUGUI countText;
@@ -16,7 +17,6 @@ public class InventorySlot : MonoBehaviour, IBeginDragHandler, IEndDragHandler, 
         icon.sprite = item.itemData.icon;
         icon.enabled = true;
         countText.text = item.quantity.ToString();
-
         slotIndex = index;
         inventoryUI = ui;
     }
@@ -25,6 +25,10 @@ public class InventorySlot : MonoBehaviour, IBeginDragHandler, IEndDragHandler, 
     {
         icon.enabled = false;
         countText.text = "";
+    }
+
+    public void OnDrag(PointerEventData eventData)
+    {
     }
 
     public void OnBeginDrag(PointerEventData eventData)
@@ -42,6 +46,7 @@ public class InventorySlot : MonoBehaviour, IBeginDragHandler, IEndDragHandler, 
     {
         int from = inventoryUI.dragSourceIndex;
         int to = slotIndex;
+        Debug.Log(inventoryUI.dragSourceIndex +"    "+ slotIndex);
         inventoryUI.inventory.SwapItems(from, to);
         inventoryUI.UpdateUI();
     }

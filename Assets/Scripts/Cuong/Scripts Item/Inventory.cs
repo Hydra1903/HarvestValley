@@ -5,6 +5,13 @@ public class Inventory : MonoBehaviour
 {
     public int maxSlots = 32;
     public List<InventoryItem> items = new List<InventoryItem>();
+    /*
+    void Awake()
+    {
+        for (int i = 0; i < maxSlots; i++)
+            items.Add(null);
+    }
+    */
     public bool AddItem(ItemData data, int amount)
     {
         foreach (var item in items)
@@ -27,7 +34,6 @@ public class Inventory : MonoBehaviour
 
         return amount <= 0;
     }
-
     public void SwapItems(int indexA, int indexB)
     {
         var temp = items[indexA];
