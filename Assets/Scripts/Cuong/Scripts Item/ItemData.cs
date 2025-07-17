@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public enum ItemType { Seed, Plant, Tool}
+public enum ItemType { Seed, Plant, Tool, AnimalProduct }
 
 [CreateAssetMenu(fileName = "NewItem", menuName = "Inventory/Item")]
 public class ItemData : ScriptableObject

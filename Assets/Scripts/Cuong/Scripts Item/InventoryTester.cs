@@ -9,7 +9,7 @@ public class InventoryTester : MonoBehaviour
     {
         inventory.AddItem(item1, 5);
         inventory.AddItem(item2, 10);
-        FindObjectOfType<InventoryUI>().UpdateUI();
+        //FindObjectOfType<InventoryUI>().UpdateUI();
     }
 }
 

@@ -16,7 +16,14 @@ public class InventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     {
         icon.sprite = item.itemData.icon;
         icon.enabled = true;
-        countText.text = item.quantity.ToString();
+        if (item.itemData.itemType != ItemType.Tool)
+        {
+            countText.text = item.quantity.ToString();          
+        }
+        else
+        {
+            countText.text = "";
+        }
         slotIndex = index;
         inventoryUI = ui;
     }
