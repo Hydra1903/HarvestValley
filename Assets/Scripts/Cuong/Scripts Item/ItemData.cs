@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public enum ItemType { Seed, Plant, Tool, AnimalProduct }
 
@@ -10,3 +10,4 @@ public class ItemData : ScriptableObject
     public int maxStack = 99;
     public ItemType itemType;
 }
+// Dữ liệu gốc của item

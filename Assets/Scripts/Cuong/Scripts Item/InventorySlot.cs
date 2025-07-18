@@ -1,60 +1,7 @@
-﻿using TMPro;
-using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.EventSystems;
-
-public class InventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IDropHandler
-
+﻿[System.Serializable]
+public class InventorySlot
 {
-    public Image icon;
-    public TextMeshProUGUI countText;
-
-    private int slotIndex;
-    private InventoryUI inventoryUI;
-
-    public void Set(InventoryItem item, int index, InventoryUI ui)
-    {
-        icon.sprite = item.itemData.icon;
-        icon.enabled = true;
-        if (item.itemData.itemType != ItemType.Tool)
-        {
-            countText.text = item.quantity.ToString();          
-        }
-        else
-        {
-            countText.text = "";
-        }
-        slotIndex = index;
-        inventoryUI = ui;
-    }
-
-    public void Clear()
-    {
-        icon.enabled = false;
-        countText.text = "";
-    }
-
-    public void OnDrag(PointerEventData eventData)
-    {
-    }
-
-    public void OnBeginDrag(PointerEventData eventData)
-    {
-        inventoryUI.dragItem.SetIcon(icon.sprite);
-        inventoryUI.dragSourceIndex = slotIndex;
-    }
-
-    public void OnEndDrag(PointerEventData eventData)
-    {
-        inventoryUI.dragItem.Hide();
-    }
-
-    public void OnDrop(PointerEventData eventData)
-    {
-        int from = inventoryUI.dragSourceIndex;
-        int to = slotIndex;
-        Debug.Log(inventoryUI.dragSourceIndex +"    "+ slotIndex);
-        inventoryUI.inventory.SwapItems(from, to);
-        inventoryUI.UpdateUI();
-    }
+    public InventoryItem item;
+    public bool IsEmpty => item == null;
 }
+// Thể hiện 1 ô dữ liệu trong mảng chiều của Inventory bao gồm 1 dữ liệu về item và 1 điều kiện kiểm tra item có rỗng không (tức là ô đó đang không có vật phẩm)

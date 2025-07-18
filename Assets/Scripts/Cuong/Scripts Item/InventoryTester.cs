@@ -3,13 +3,21 @@ using UnityEngine;
 public class InventoryTester : MonoBehaviour
 {
     public Inventory inventory;
+    public InventoryUI inventoryUI;
     public ItemData item1, item2;
 
     void Start()
     {
-        inventory.AddItem(item1, 5);
-        inventory.AddItem(item2, 10);
-        //FindObjectOfType<InventoryUI>().UpdateUI();
+        if (inventory.AddItem(item1, 10) && inventory.AddItem(item2, 15))
+        {
+            Debug.Log("Them vat pham thanh cong");
+            inventoryUI.UpdateAllSlots();
+        }
+        else
+        {
+            Debug.Log("Tui do bi day");
+        }
+      
     }
 }
 

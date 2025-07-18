@@ -1,43 +1,58 @@
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Inventory : MonoBehaviour
 {
-    public int maxSlots = 32;
-    public List<InventoryItem> items = new List<InventoryItem>();
-    /*
+    public int rows = 4;
+    public int columns = 8;
+
+    public InventorySlot[,] slots;
     void Awake()
     {
-        for (int i = 0; i < maxSlots; i++)
-            items.Add(null);
+        slots = new InventorySlot[rows, columns];
+
+        for (int r = 0; r < rows; r++)
+        {
+            for (int c = 0; c < columns; c++)
+            {
+                slots[r, c] = new InventorySlot();
+            }
+        }
     }
-    */
     public bool AddItem(ItemData data, int amount)
     {
-        foreach (var item in items)
+        for (int r = 0; r < rows; r++)
         {
-            if (item.itemData == data && item.quantity < data.maxStack)
+            for (int c = 0; c < columns; c++)
             {
-                int add = Mathf.Min(amount, data.maxStack - item.quantity);
-                item.quantity += add;
-                amount -= add;
-                if (amount <= 0) return true;
+                var slot = slots[r, c];
+                if (!slot.IsEmpty && slot.item.itemData == data && !slot.item.IsFull)
+                {
+                    int canAdd = Mathf.Min(amount, data.maxStack - slot.item.quantity);
+                    slot.item.quantity += canAdd;
+                    amount -= canAdd;
+                    if (amount <= 0) return true;
+                }
             }
         }
 
-        while (amount > 0 && items.Count < maxSlots)
+        for (int r = 0; r < rows; r++)
         {
-            int add = Mathf.Min(amount, data.maxStack);
-            items.Add(new InventoryItem(data, add));
-            amount -= add;
+            for (int c = 0; c < columns; c++)
+            {
+                var slot = slots[r, c];
+                if (slot.IsEmpty)
+                {
+                    int add = Mathf.Min(amount, data.maxStack);
+                    slot.item = new InventoryItem(data, add);
+                    amount -= add;
+                    if (amount <= 0) return true;
+                }
+            }
         }
 
-        return amount <= 0;
-    }
-    public void SwapItems(int indexA, int indexB)
-    {
-        var temp = items[indexA];
-        items[indexA] = items[indexB];
-        items[indexB] = temp;
+        return false;
     }
 }
+// Nơi lưu trữ tất cả thông tin về vật phẩm có trong túi đồ, sử dụng mảng 2 chiều để lưu trữ, mỗi vị trí trong mảng là 1 ô đồ
+// Ban đầu vào sẽ khởi tạo cái mảng 2 chiều rỗng
+// Hàm thêm item vào mảng 2 chiều tức là thêm item vào túi đồ người chơi, nếu hàm trả về true thì thêm item thành công, nếu hàm trả về false thì bị đầy hoặc lí do khác
