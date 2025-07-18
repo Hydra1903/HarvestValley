@@ -5,9 +5,7 @@ using TMPro;
 public class InventoryUI : MonoBehaviour
 {
     public Inventory inventory;
-    //public GameObject slotPrefab;
-    public Transform slotParent;
-    public Transform slotsParent; // Để gán "SlotsParent" chứa 32 ô
+    public Transform slotsParent; 
 
     public Image dragIcon;
     public TextMeshProUGUI dragQuantityText;
@@ -44,7 +42,7 @@ public class InventoryUI : MonoBehaviour
     
     public void UpdateAllSlots()
     {
-        foreach (var slotUI in slotParent.GetComponentsInChildren<InventorySlotUI>())
+        foreach (var slotUI in slotsParent.GetComponentsInChildren<InventorySlotUI>())
         {
             slotUI.UpdateSlotUI();
         }
@@ -62,7 +60,6 @@ public class InventoryUI : MonoBehaviour
     public void UpdateDragPosition(Vector2 pos)
     {
         dragIcon.transform.position = pos;
-        dragQuantityText.transform.position = pos;
     }
 
     public void EndDrag()

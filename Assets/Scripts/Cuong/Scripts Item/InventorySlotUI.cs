@@ -3,7 +3,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using TMPro;
 
-public class InventorySlotUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IDropHandler
+public class InventorySlotUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IDropHandler, IPointerClickHandler
 {
     public Image iconImage;
     public TextMeshProUGUI quantityText;
@@ -22,7 +22,6 @@ public class InventorySlotUI : MonoBehaviour, IBeginDragHandler, IDragHandler, I
         }
         else
         {
-            Debug.Log("Cap nhat hinh anh");
             iconImage.enabled = true;
             iconImage.sprite = slot.item.itemData.icon;
             quantityText.text = slot.item.quantity > 0 ? slot.item.quantity.ToString() : "";
@@ -61,7 +60,7 @@ public class InventorySlotUI : MonoBehaviour, IBeginDragHandler, IDragHandler, I
             {
                 targetSlot.item = dragging;
                 inventoryUI.draggedItem = null;
-            }
+            } // THẢ VÀO CHỖ TRỐNG
             else if (targetSlot.item.itemData == dragging.itemData && !targetSlot.item.IsFull)
             {
                 int canAdd = Mathf.Min(dragging.quantity, dragging.itemData.maxStack - targetSlot.item.quantity);
@@ -70,14 +69,13 @@ public class InventorySlotUI : MonoBehaviour, IBeginDragHandler, IDragHandler, I
 
                 if (dragging.quantity <= 0)
                     inventoryUI.draggedItem = null;
-            }
+            } // THẢ VÀO CHỖ CÓ CÙNG KIỂU ITEM
             else
             {
                 inventoryUI.draggedItem = targetSlot.item;
                 targetSlot.item = dragging;
-            }
+            } // THẢ VÀO CHỖ KHÁC KIỂU ITEM ĐỂ ĐỔI CHỖ VỚI NHAU
 
-            UpdateSlotUI();
             inventoryUI.UpdateAllSlots();
         }
     }
@@ -87,9 +85,23 @@ public class InventorySlotUI : MonoBehaviour, IBeginDragHandler, IDragHandler, I
         this.column = col;
         this.inventory = inventory;
         this.inventoryUI = inventoryUI;
+        UpdateSlotUI();
+    }
 
-
-        UpdateSlotUI(); // Hàm này cập nhật lại icon/amount, nếu có
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        if (eventData.button == PointerEventData.InputButton.Right)
+        {
+            ShowSplitMenu();
+        }
+    }
+    void ShowSplitMenu()
+    {
+        var slot = inventory.slots[row, column];
+        if (slot.item != null)
+        {
+            SplitMenuUI.Instance.Show(this);
+        }
     }
 }
 

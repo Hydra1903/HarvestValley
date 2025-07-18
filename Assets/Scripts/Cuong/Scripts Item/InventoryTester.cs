@@ -10,14 +10,12 @@ public class InventoryTester : MonoBehaviour
     {
         if (inventory.AddItem(item1, 10) && inventory.AddItem(item2, 15))
         {
-            Debug.Log("Them vat pham thanh cong");
             inventoryUI.UpdateAllSlots();
         }
         else
         {
             Debug.Log("Tui do bi day");
-        }
-      
+        }       
     }
 }
 

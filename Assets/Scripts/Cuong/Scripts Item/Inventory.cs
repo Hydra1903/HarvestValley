@@ -19,7 +19,7 @@ public class Inventory : MonoBehaviour
         }
     }
     public bool AddItem(ItemData data, int amount)
-    {
+    {       
         for (int r = 0; r < rows; r++)
         {
             for (int c = 0; c < columns; c++)
@@ -35,6 +35,25 @@ public class Inventory : MonoBehaviour
             }
         }
 
+        for (int r = 0; r < rows; r++)
+        {
+            for (int c = 0; c < columns; c++)
+            {
+                var slot = slots[r, c];
+                if (slot.IsEmpty)
+                {
+                    int add = Mathf.Min(amount, data.maxStack);
+                    slot.item = new InventoryItem(data, add);
+                    amount -= add;
+                    if (amount <= 0) return true;
+                }
+            }
+        }
+
+        return false;
+    }
+    public bool AddItem2(ItemData data, int amount)
+    {
         for (int r = 0; r < rows; r++)
         {
             for (int c = 0; c < columns; c++)

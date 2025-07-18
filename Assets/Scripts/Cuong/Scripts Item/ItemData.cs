@@ -10,4 +10,3 @@ public class ItemData : ScriptableObject
     public int maxStack = 99;
     public ItemType itemType;
 }
-// Dữ liệu gốc của item
