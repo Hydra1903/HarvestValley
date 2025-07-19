@@ -10,7 +10,7 @@ public class InventoryUI : MonoBehaviour
     public Image dragIcon;
     public TextMeshProUGUI dragQuantityText;
 
-    public InventoryItem draggedItem = null;
+    public DragItem dragItem;
     private InventorySlotUI draggingFromSlot;
 
   
@@ -50,11 +50,12 @@ public class InventoryUI : MonoBehaviour
 
     public void StartDrag(InventoryItem item, InventorySlotUI fromSlot)
     {
-        draggedItem = new InventoryItem(item.itemData, item.quantity);
+        dragItem.draggedItem = new InventoryItem(item.itemData, item.quantity);
         draggingFromSlot = fromSlot;
         dragIcon.sprite = item.itemData.icon;
         dragQuantityText.text = item.quantity > 0 ? item.quantity.ToString() : "";
         dragIcon.gameObject.SetActive(true);
+        Debug.Log(dragItem.draggedItem.quantity);
     }
 
     public void UpdateDragPosition(Vector2 pos)
@@ -64,12 +65,12 @@ public class InventoryUI : MonoBehaviour
 
     public void EndDrag()
     {
-        if (draggedItem != null)
+        if (dragItem.draggedItem != null)
         {
-            draggingFromSlot.inventory.slots[draggingFromSlot.row, draggingFromSlot.column].item = draggedItem;
+            draggingFromSlot.inventory.slots[draggingFromSlot.row, draggingFromSlot.column].item = dragItem.draggedItem;
         }
 
-        draggedItem = null;
+        dragItem.draggedItem = null;
         dragIcon.gameObject.SetActive(false);
         UpdateAllSlots();
     }

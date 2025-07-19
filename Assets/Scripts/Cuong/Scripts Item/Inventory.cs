@@ -33,7 +33,7 @@ public class Inventory : MonoBehaviour
                     if (amount <= 0) return true;
                 }
             }
-        }
+        }// THÊM VÀO CÙNG DATA
 
         for (int r = 0; r < rows; r++)
         {
@@ -48,7 +48,7 @@ public class Inventory : MonoBehaviour
                     if (amount <= 0) return true;
                 }
             }
-        }
+        }// TẠO Ô MỚI THÊM VÀO
 
         return false;
     }
@@ -67,7 +67,7 @@ public class Inventory : MonoBehaviour
                     if (amount <= 0) return true;
                 }
             }
-        }
+        }// TẠO Ô MỚI THÊM VÀO
 
         return false;
     }

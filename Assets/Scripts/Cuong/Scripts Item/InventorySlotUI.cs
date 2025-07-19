@@ -51,15 +51,15 @@ public class InventorySlotUI : MonoBehaviour, IBeginDragHandler, IDragHandler, I
 
     public void OnDrop(PointerEventData eventData)
     {
-        if (inventoryUI.draggedItem != null)
+        if (inventoryUI.dragItem != null)
         {
             var targetSlot = inventory.slots[row, column];
-            var dragging = inventoryUI.draggedItem;
+            var dragging = inventoryUI.dragItem.draggedItem;
 
             if (targetSlot.IsEmpty)
             {
                 targetSlot.item = dragging;
-                inventoryUI.draggedItem = null;
+                inventoryUI.dragItem = null;
             } // THẢ VÀO CHỖ TRỐNG
             else if (targetSlot.item.itemData == dragging.itemData && !targetSlot.item.IsFull)
             {
@@ -68,15 +68,19 @@ public class InventorySlotUI : MonoBehaviour, IBeginDragHandler, IDragHandler, I
                 dragging.quantity -= canAdd;
 
                 if (dragging.quantity <= 0)
-                    inventoryUI.draggedItem = null;
+                    inventoryUI.dragItem = null;
             } // THẢ VÀO CHỖ CÓ CÙNG KIỂU ITEM
             else
             {
-                inventoryUI.draggedItem = targetSlot.item;
+                inventoryUI.dragItem.draggedItem = targetSlot.item;
                 targetSlot.item = dragging;
             } // THẢ VÀO CHỖ KHÁC KIỂU ITEM ĐỂ ĐỔI CHỖ VỚI NHAU
 
             inventoryUI.UpdateAllSlots();
+        }
+        else
+        {
+            Debug.Log("draggedItemNull");
         }
     }
     public void SetSlot(int row, int col, Inventory inventory, InventoryUI inventoryUI)

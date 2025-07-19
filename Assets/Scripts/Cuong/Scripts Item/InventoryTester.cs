@@ -3,19 +3,32 @@ using UnityEngine;
 public class InventoryTester : MonoBehaviour
 {
     public Inventory inventory;
-    public InventoryUI inventoryUI;
+    public Barn barn;
+    public InventoryUI inventoryUI1;
+    public InventoryUI inventoryUI2;
+    public BarnUI barnUI;
     public ItemData item1, item2;
 
     void Start()
     {
-        if (inventory.AddItem(item1, 10) && inventory.AddItem(item2, 15))
+        if (inventory.AddItem(item1, 10) && inventory.AddItem(item2, 99) && inventory.AddItem(item2, 80))
         {
-            inventoryUI.UpdateAllSlots();
+            inventoryUI1.UpdateAllSlots();
+            inventoryUI2.UpdateAllSlots();
         }
         else
         {
             Debug.Log("Tui do bi day");
-        }       
+        }
+
+        if (barn.AddItem(item1, 10) && barn.AddItem(item2, 99) && barn.AddItem(item2, 80))
+        {
+            barnUI.UpdateAllSlots();
+        }
+        else
+        {
+            Debug.Log("Tui do bi day");
+        }
     }
 }
 
