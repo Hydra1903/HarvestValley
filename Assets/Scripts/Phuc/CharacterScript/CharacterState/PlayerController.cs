@@ -27,14 +27,17 @@ public class PlayerController : MonoBehaviour
     public Transform orientation;
     public Camera Camera;
     public Transform cameraTransform;
+    private float xRotation = 0f; 
+    public float mouseSensitivity = 100f;
+
 
     // KHỞI TẠO TRẠNG THÁI
     public MovementBaseState currentState;
     public Idle IdleState = new Idle();
     public Running RunState = new Running();
     public Walk WalkState = new Walk();
-
     public Fall FallState = new Fall();
+    public AimStateManager aimManager;
     //public ChangeCamera ChangeCameraState= new ChangeCamera();
     //private Transform cameraTarget;
     //private Transform characterBody;
@@ -60,30 +63,77 @@ public class PlayerController : MonoBehaviour
         Move(1f);
         Rotate();
         currentState.UpdateState(this);
+
+        if (aimManager != null && aimManager.currentMode == CameraMode.FirstPerson)
+        {
+            FirstPersonLook();
+        }
     }
     public void Move(float Speed)
     {
-        Vector3 forward = cameraTransform.forward;
-        Vector3 right = cameraTransform.right;
-        forward.y = 0;
-        right.y = 0;
+        //Vector3 forward = cameraTransform.forward;
+        //Vector3 right = cameraTransform.right;
+
+        //forward.y = 0f;
+        //right.y = 0f;
+
+        //forward.Normalize();
+        //right.Normalize();
+
+        //dir = (forward * vInput + right * hzInput).normalized * moveSpeed * Speed;
+        //controller.Move(dir * Time.deltaTime);
+        Vector3 forward, right;
+
+        if (aimManager != null && aimManager.currentMode == CameraMode.FirstPerson)
+        {
+            forward = cameraTransform.forward;
+            right = cameraTransform.right;
+            forward.y = 0f;
+            right.y = 0f;
+            forward.Normalize();
+            right.Normalize();
+        }
+        else
+        {
+            forward = cameraTransform.forward;
+            right = cameraTransform.right;
+            forward.y = 0f;
+            right.y = 0f;
+            forward.Normalize();
+            right.Normalize();
+        }
+
+        // Đặt hướng di chuyển
         dir = (forward * vInput + right * hzInput).normalized * moveSpeed * Speed;
+
+        // Sau khi có dir, mới gọi Move()
         controller.Move(dir * Time.deltaTime);
     }
     void Rotate()
     {
+        if (aimManager != null && aimManager.currentMode == CameraMode.FirstPerson)
+            return; // Góc nhìn thứ nhất đã xử lý bằng chuột rồi
+
         if (dir.magnitude > 0.1f)
         {
             Quaternion targetRotation = Quaternion.LookRotation(dir);
             transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
         }
-
     }
-    //private void OnDrawGizmos()
-    //{
-    //    Gizmos.color = Color.red;
-    //    //Gizmos.DrawWireSphere(spherePos, controller.radius - 0.05f);
-    //}
+  
+    void FirstPersonLook()
+    {
+        float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
+        float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
+
+        transform.Rotate(Vector3.up * mouseX);
+
+        xRotation -= mouseY;
+        xRotation = Mathf.Clamp(xRotation, -85f, 85f);
+
+        cameraTransform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
+    }
+
     public bool isGrounded()
     {
         spherePos = new Vector3(transform.position.x, transform.position.y - groundYOffSet, transform.position.z);
