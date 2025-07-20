@@ -3,6 +3,8 @@ using UnityEngine.UI;
 
 public class LiveStockSeller : MonoBehaviour
 {
+
+
     public GameObject buyCanvas;
     public GameObject confirmPanel;
     public GameObject selectPenPanel;
@@ -112,6 +114,7 @@ public class LiveStockSeller : MonoBehaviour
             {
                 Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = true;
+
             }
             else
             {

@@ -3,34 +3,41 @@ using UnityEngine;
 public class FirstCameraTesting : MonoBehaviour
 {
     [Header("References")]
-    public Transform cameraTransform; // Gán camera (FPS camera)
-    private CharacterController controller;
+    public Transform cameraTransform;
+    public CharacterController controller;
 
     [Header("Movement Settings")]
-    public float moveSpeed = 5f;
+    public float walkSpeed = 3.7f;
+    public float sprintSpeed = 9f;
     public float gravity = -9.81f;
     private Vector3 velocity;
 
+    [Header("Mouse Look Settings")]
+    public float mouseSensitivity = 2f;
+    private float xRotation = 0f;
+
     void Awake()
     {
-        controller = GetComponent<CharacterController>();
+        if (controller == null)
+            controller = GetComponent<CharacterController>();
+
         if (cameraTransform == null && Camera.main != null)
             cameraTransform = Camera.main.transform;
+
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 
     void Update()
     {
+        HandleMouseLook();
         HandleMovement();
-        HandleRotation();
     }
 
     void HandleMovement()
     {
-        // L?y input
         float horizontal = Input.GetAxis("Horizontal");
         float vertical = Input.GetAxis("Vertical");
-
-        // Di chuy?n theo hý?ng camera (b? tr?c Y ð? không ði lên tr?i)
         Vector3 forward = cameraTransform.forward;
         Vector3 right = cameraTransform.right;
         forward.y = 0f;
@@ -39,10 +46,9 @@ public class FirstCameraTesting : MonoBehaviour
         right.Normalize();
 
         Vector3 moveDir = (forward * vertical + right * horizontal).normalized;
+        float currentSpeed = Input.GetKey(KeyCode.LeftShift) ? sprintSpeed : walkSpeed;
 
-        controller.Move(moveDir * moveSpeed * Time.deltaTime);
-
-        // Áp d?ng gravity
+        controller.Move(moveDir * currentSpeed * Time.deltaTime);
         if (controller.isGrounded && velocity.y < 0)
             velocity.y = -2f;
 
@@ -50,12 +56,13 @@ public class FirstCameraTesting : MonoBehaviour
         controller.Move(velocity * Time.deltaTime);
     }
 
-    void HandleRotation()
+    void HandleMouseLook()
     {
-        // Xoay nhân v?t theo hý?ng camera (tr?c Y)
-        Vector3 lookDir = cameraTransform.forward;
-        lookDir.y = 0f;
-        if (lookDir != Vector3.zero)
-            transform.rotation = Quaternion.LookRotation(lookDir);
+        float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity;
+        float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity;
+        transform.Rotate(Vector3.up * mouseX);
+        xRotation -= mouseY;
+        xRotation = Mathf.Clamp(xRotation, -85f, 85f);
+        cameraTransform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
     }
 }
