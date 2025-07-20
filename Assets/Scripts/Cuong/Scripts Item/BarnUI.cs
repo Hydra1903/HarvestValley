@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
@@ -6,14 +6,11 @@ public class BarnUI : MonoBehaviour
 {
     public Barn barn;
     public Transform slotsParent;
-
     public Image dragIcon;
     public TextMeshProUGUI dragQuantityText;
+    public DragItem dragItem;
 
-    public DragItem draggedItem;
     private BarnSlotUI draggingFromSlot;
-
-
 
     private void Start()
     {
@@ -21,7 +18,7 @@ public class BarnUI : MonoBehaviour
 
         if (slotsParent.childCount != totalSlots)
         {
-            Debug.Log("Slot khong dung so luong");
+            Debug.LogError("Số lượng slot trong UI không khớp với cấu trúc inventory.");
             return;
         }
 
@@ -30,14 +27,39 @@ public class BarnUI : MonoBehaviour
             for (int col = 0; col < barn.columns; col++)
             {
                 int index = row * barn.columns + col;
-                Transform slot = slotsParent.GetChild(index);
-                BarnSlotUI slotUI = slot.GetComponentInChildren<BarnSlotUI>();
-                if (slotUI != null)
-                {
-                    slotUI.SetSlot(row, col, barn, this);
-                }
+                BarnSlotUI slotUI = slotsParent.GetChild(index).GetComponentInChildren<BarnSlotUI>();
+                slotUI?.SetSlot(row, col, barn, this);
             }
         }
+
+        dragIcon.gameObject.SetActive(false);
+    }
+
+    public void StartDrag(InventoryItem item, BarnSlotUI fromSlot)
+    {
+        dragItem.draggedItem = new InventoryItem(item.itemData, item.quantity);
+        draggingFromSlot = fromSlot;
+
+        dragIcon.sprite = item.itemData.icon;
+        dragQuantityText.text = item.quantity > 0 ? item.quantity.ToString() : "";
+        dragIcon.gameObject.SetActive(true);
+    }
+
+    public void UpdateDragPosition(Vector2 position)
+    {
+        dragIcon.transform.position = position;
+    }
+
+    public void EndDrag()
+    {
+        if (dragItem.draggedItem != null && draggingFromSlot != null)
+        {
+            barn.slots[draggingFromSlot.row, draggingFromSlot.column].item = dragItem.draggedItem;
+        }
+
+        dragItem.draggedItem = null;
+        dragIcon.gameObject.SetActive(false);
+        UpdateAllSlots();
     }
 
     public void UpdateAllSlots()
@@ -46,32 +68,5 @@ public class BarnUI : MonoBehaviour
         {
             slotUI.UpdateSlotUI();
         }
-    }
-
-    public void StartDrag(InventoryItem item, BarnSlotUI fromSlot)
-    {
-        draggedItem.draggedItem = new InventoryItem(item.itemData, item.quantity);
-        draggingFromSlot = fromSlot;
-        dragIcon.sprite = item.itemData.icon;
-        dragQuantityText.text = item.quantity > 0 ? item.quantity.ToString() : "";
-        dragIcon.gameObject.SetActive(true);
-
-    }
-
-    public void UpdateDragPosition(Vector2 pos)
-    {
-        dragIcon.transform.position = pos;
-    }
-
-    public void EndDrag()
-    {
-        if (draggedItem != null)
-        {
-            draggingFromSlot.barn.slots[draggingFromSlot.row, draggingFromSlot.column].item = draggedItem.draggedItem;
-        }
-
-        draggedItem = null;
-        dragIcon.gameObject.SetActive(false);
-        UpdateAllSlots();
     }
 }

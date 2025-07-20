@@ -1,9 +1,10 @@
 ﻿using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.EventSystems;
+using System.Collections;
 
-public class InventorySlotUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IDropHandler, IPointerClickHandler
+public class InventorySlotUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IDropHandler, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
 {
     public Image iconImage;
     public TextMeshProUGUI quantityText;
@@ -12,9 +13,22 @@ public class InventorySlotUI : MonoBehaviour, IBeginDragHandler, IDragHandler, I
     public Inventory inventory;
     public InventoryUI inventoryUI;
 
+    public InventoryItem item;
+    private Coroutine tooltipCoroutine;
+
+    public void SetSlot(int r, int c, Inventory inv, InventoryUI ui)
+    {
+        row = r;
+        column = c;
+        inventory = inv;
+        inventoryUI = ui;
+        UpdateSlotUI();
+    }
+
     public void UpdateSlotUI()
     {
         var slot = inventory.slots[row, column];
+
         if (slot.IsEmpty)
         {
             iconImage.enabled = false;
@@ -51,61 +65,77 @@ public class InventorySlotUI : MonoBehaviour, IBeginDragHandler, IDragHandler, I
 
     public void OnDrop(PointerEventData eventData)
     {
-        if (inventoryUI.dragItem != null)
+        var draggingItem = inventoryUI.dragItem?.draggedItem;
+        if (draggingItem == null) return;
+
+        var targetSlot = inventory.slots[row, column];
+
+        if (targetSlot.IsEmpty)
         {
-            var targetSlot = inventory.slots[row, column];
-            var dragging = inventoryUI.dragItem.draggedItem;
+            targetSlot.item = draggingItem;
+            inventoryUI.dragItem.draggedItem = null;
+        }
+        else if (targetSlot.item.itemData == draggingItem.itemData && !targetSlot.item.IsFull)
+        {
+            int canAdd = Mathf.Min(draggingItem.quantity, draggingItem.itemData.maxStack - targetSlot.item.quantity);
+            targetSlot.item.quantity += canAdd;
+            draggingItem.quantity -= canAdd;
 
-            if (targetSlot.IsEmpty)
-            {
-                targetSlot.item = dragging;
-                inventoryUI.dragItem = null;
-            } // THẢ VÀO CHỖ TRỐNG
-            else if (targetSlot.item.itemData == dragging.itemData && !targetSlot.item.IsFull)
-            {
-                int canAdd = Mathf.Min(dragging.quantity, dragging.itemData.maxStack - targetSlot.item.quantity);
-                targetSlot.item.quantity += canAdd;
-                dragging.quantity -= canAdd;
-
-                if (dragging.quantity <= 0)
-                    inventoryUI.dragItem = null;
-            } // THẢ VÀO CHỖ CÓ CÙNG KIỂU ITEM
-            else
-            {
-                inventoryUI.dragItem.draggedItem = targetSlot.item;
-                targetSlot.item = dragging;
-            } // THẢ VÀO CHỖ KHÁC KIỂU ITEM ĐỂ ĐỔI CHỖ VỚI NHAU
-
-            inventoryUI.UpdateAllSlots();
+            if (draggingItem.quantity <= 0)
+                inventoryUI.dragItem.draggedItem = null;
         }
         else
         {
-            Debug.Log("draggedItemNull");
+            var temp = targetSlot.item;
+            targetSlot.item = draggingItem;
+            inventoryUI.dragItem.draggedItem = temp;
         }
-    }
-    public void SetSlot(int row, int col, Inventory inventory, InventoryUI inventoryUI)
-    {
-        this.row = row;
-        this.column = col;
-        this.inventory = inventory;
-        this.inventoryUI = inventoryUI;
-        UpdateSlotUI();
+
+        inventoryUI.UpdateAllSlots();
     }
 
     public void OnPointerClick(PointerEventData eventData)
     {
         if (eventData.button == PointerEventData.InputButton.Right)
         {
-            ShowSplitMenu();
+            var slot = inventory.slots[row, column];
+            if (slot.item != null)
+            {
+                SplitMenuUI.Instance?.Show(this);
+            }
         }
     }
-    void ShowSplitMenu()
+
+    public void OnPointerEnter(PointerEventData eventData)
     {
-        var slot = inventory.slots[row, column];
-        if (slot.item != null)
+        Debug.Log("aaaa");
+        if (inventory.slots[row, column].item != null)
         {
-            SplitMenuUI.Instance.Show(this);
+            TooltipUI.Instance.Show(inventory.slots[row, column].item.itemData.name, inventory.slots[row, column].item.itemData.season, inventory.slots[row, column].item.itemData.description, inventory.slots[row, column].item.itemData.itemType.ToString(), inventory.slots[row, column].item.itemData.icon);
         }
+
+        if (item != null && item.itemData != null)
+        {
+            tooltipCoroutine = StartCoroutine(ShowTooltipAfterDelay());
+        }
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        Debug.Log("dddd");
+        if (tooltipCoroutine != null)
+        {
+            StopCoroutine(tooltipCoroutine);
+            Debug.Log("roi");
+        }
+        TooltipUI.Instance.Hide();
+    }
+
+    private IEnumerator ShowTooltipAfterDelay()
+    {
+        Debug.Log("bbbb");
+        yield return new WaitForSeconds(1f); 
+        
+        Debug.Log("cccc");
     }
 }
-

@@ -1,19 +1,16 @@
 ﻿using UnityEngine;
-using UnityEngine.UI;
 using TMPro;
+using UnityEngine.UI;
 
 public class InventoryUI : MonoBehaviour
 {
     public Inventory inventory;
-    public Transform slotsParent; 
-
+    public Transform slotsParent;
     public Image dragIcon;
     public TextMeshProUGUI dragQuantityText;
-
     public DragItem dragItem;
-    private InventorySlotUI draggingFromSlot;
 
-  
+    private InventorySlotUI draggingFromSlot;
 
     private void Start()
     {
@@ -21,7 +18,7 @@ public class InventoryUI : MonoBehaviour
 
         if (slotsParent.childCount != totalSlots)
         {
-            Debug.Log("Slot khong dung so luong");
+            Debug.LogError("Số lượng slot trong UI không khớp với cấu trúc inventory.");
             return;
         }
 
@@ -30,48 +27,46 @@ public class InventoryUI : MonoBehaviour
             for (int col = 0; col < inventory.columns; col++)
             {
                 int index = row * inventory.columns + col;
-                Transform slot = slotsParent.GetChild(index);
-                InventorySlotUI slotUI = slot.GetComponentInChildren<InventorySlotUI>();
-                if (slotUI != null)
-                {
-                    slotUI.SetSlot(row, col, inventory, this);
-                }
+                InventorySlotUI slotUI = slotsParent.GetChild(index).GetComponentInChildren<InventorySlotUI>();
+                slotUI?.SetSlot(row, col, inventory, this);
             }
         }
-    }
-    
-    public void UpdateAllSlots()
-    {
-        foreach (var slotUI in slotsParent.GetComponentsInChildren<InventorySlotUI>())
-        {
-            slotUI.UpdateSlotUI();
-        }
+
+        dragIcon.gameObject.SetActive(false);
     }
 
     public void StartDrag(InventoryItem item, InventorySlotUI fromSlot)
     {
         dragItem.draggedItem = new InventoryItem(item.itemData, item.quantity);
         draggingFromSlot = fromSlot;
+
         dragIcon.sprite = item.itemData.icon;
         dragQuantityText.text = item.quantity > 0 ? item.quantity.ToString() : "";
         dragIcon.gameObject.SetActive(true);
-        Debug.Log(dragItem.draggedItem.quantity);
     }
 
-    public void UpdateDragPosition(Vector2 pos)
+    public void UpdateDragPosition(Vector2 position)
     {
-        dragIcon.transform.position = pos;
+        dragIcon.transform.position = position;
     }
 
     public void EndDrag()
     {
-        if (dragItem.draggedItem != null)
+        if (dragItem.draggedItem != null && draggingFromSlot != null)
         {
-            draggingFromSlot.inventory.slots[draggingFromSlot.row, draggingFromSlot.column].item = dragItem.draggedItem;
+            inventory.slots[draggingFromSlot.row, draggingFromSlot.column].item = dragItem.draggedItem;
         }
 
         dragItem.draggedItem = null;
         dragIcon.gameObject.SetActive(false);
         UpdateAllSlots();
+    }
+
+    public void UpdateAllSlots()
+    {
+        foreach (var slotUI in slotsParent.GetComponentsInChildren<InventorySlotUI>())
+        {
+            slotUI.UpdateSlotUI();
+        }
     }
 }

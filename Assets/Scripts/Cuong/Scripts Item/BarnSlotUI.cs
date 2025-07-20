@@ -12,9 +12,19 @@ public class BarnSlotUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
     public Barn barn;
     public BarnUI barnUI;
 
+    public void SetSlot(int r, int c, Barn bn, BarnUI ui)
+    {
+        row = r;
+        column = c;
+        barn = bn;
+        barnUI = ui;
+        UpdateSlotUI();
+    }
+
     public void UpdateSlotUI()
     {
         var slot = barn.slots[row, column];
+
         if (slot.IsEmpty)
         {
             iconImage.enabled = false;
@@ -51,61 +61,44 @@ public class BarnSlotUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
 
     public void OnDrop(PointerEventData eventData)
     {
-        if (barnUI.draggedItem != null)
+        var draggingItem = barnUI.dragItem?.draggedItem;
+        if (draggingItem == null) return;
+
+        var targetSlot = barn.slots[row, column];
+
+        if (targetSlot.IsEmpty)
         {
-            var targetSlot = barn.slots[row, column];
-            var dragging = barnUI.draggedItem.draggedItem;
+            targetSlot.item = draggingItem;
+            barnUI.dragItem.draggedItem = null;
+        }
+        else if (targetSlot.item.itemData == draggingItem.itemData && !targetSlot.item.IsFull)
+        {
+            int canAdd = Mathf.Min(draggingItem.quantity, draggingItem.itemData.maxStack - targetSlot.item.quantity);
+            targetSlot.item.quantity += canAdd;
+            draggingItem.quantity -= canAdd;
 
-            if (targetSlot.IsEmpty)
-            {
-                targetSlot.item = dragging;
-                barnUI.draggedItem = null;
-            } // THẢ VÀO CHỖ TRỐNG
-            else if (targetSlot.item.itemData == dragging.itemData && !targetSlot.item.IsFull)
-            {
-                int canAdd = Mathf.Min(dragging.quantity, dragging.itemData.maxStack - targetSlot.item.quantity);
-                targetSlot.item.quantity += canAdd;
-                dragging.quantity -= canAdd;
-
-                if (dragging.quantity <= 0)
-                    barnUI.draggedItem = null;
-            } // THẢ VÀO CHỖ CÓ CÙNG KIỂU ITEM
-            else
-            {
-                barnUI.draggedItem.draggedItem = targetSlot.item;
-                targetSlot.item = dragging;
-            } // THẢ VÀO CHỖ KHÁC KIỂU ITEM ĐỂ ĐỔI CHỖ VỚI NHAU
-
-            barnUI.UpdateAllSlots();
+            if (draggingItem.quantity <= 0)
+                barnUI.dragItem.draggedItem = null;
         }
         else
         {
-            Debug.Log("draggedItemNull");
+            var temp = targetSlot.item;
+            targetSlot.item = draggingItem;
+            barnUI.dragItem.draggedItem = temp;
         }
-    }
-    public void SetSlot(int row, int col, Barn barn, BarnUI barnUI)
-    {
-        this.row = row;
-        this.column = col;
-        this.barn = barn;
-        this.barnUI = barnUI;
-        UpdateSlotUI();
-    }
 
+        barnUI.UpdateAllSlots();
+    }
     /*
     public void OnPointerClick(PointerEventData eventData)
     {
         if (eventData.button == PointerEventData.InputButton.Right)
         {
-            ShowSplitMenu();
-        }
-    }
-    void ShowSplitMenu()
-    {
-        var slot = barn.slots[row, column];
-        if (slot.item != null)
-        {
-            SplitMenuUI.Instance.Show(this);
+            var slot = inventory.slots[row, column];
+            if (slot.item != null)
+            {
+                SplitMenuUI.Instance?.Show(this);
+            }
         }
     }
     */
