@@ -2,7 +2,6 @@
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.EventSystems;
-using System.Collections;
 
 public class InventorySlotUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IDropHandler, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
 {
@@ -14,7 +13,6 @@ public class InventorySlotUI : MonoBehaviour, IBeginDragHandler, IDragHandler, I
     public InventoryUI inventoryUI;
 
     public InventoryItem item;
-    private Coroutine tooltipCoroutine;
 
     public void SetSlot(int r, int c, Inventory inv, InventoryUI ui)
     {
@@ -101,41 +99,30 @@ public class InventorySlotUI : MonoBehaviour, IBeginDragHandler, IDragHandler, I
             var slot = inventory.slots[row, column];
             if (slot.item != null)
             {
-                SplitMenuUI.Instance?.Show(this);
+                SplitMenuUI.Instance?.Show(this, GetComponent<RectTransform>());
             }
         }
     }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        Debug.Log("aaaa");
-        if (inventory.slots[row, column].item != null)
+        var slot = inventory.slots[row, column];
+        if (!slot.IsEmpty)
         {
-            TooltipUI.Instance.Show(inventory.slots[row, column].item.itemData.name, inventory.slots[row, column].item.itemData.season, inventory.slots[row, column].item.itemData.description, inventory.slots[row, column].item.itemData.itemType.ToString(), inventory.slots[row, column].item.itemData.icon);
-        }
-
-        if (item != null && item.itemData != null)
-        {
-            tooltipCoroutine = StartCoroutine(ShowTooltipAfterDelay());
+            TooltipUI.Instance.Show(
+                slot.item.itemData.name,
+                slot.item.itemData.season,
+                slot.item.itemData.description,
+                slot.item.itemData.itemType.ToString(),
+                slot.item.itemData.icon,
+                slot.item.itemData.itemType
+            );
         }
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        Debug.Log("dddd");
-        if (tooltipCoroutine != null)
-        {
-            StopCoroutine(tooltipCoroutine);
-            Debug.Log("roi");
-        }
-        TooltipUI.Instance.Hide();
+        TooltipUI.Instance?.Hide();
     }
 
-    private IEnumerator ShowTooltipAfterDelay()
-    {
-        Debug.Log("bbbb");
-        yield return new WaitForSeconds(1f); 
-        
-        Debug.Log("cccc");
-    }
 }

@@ -7,10 +7,10 @@ public class InventoryTester : MonoBehaviour
     public InventoryUI inventoryUI1;
     public InventoryUI inventoryUI2;
     public BarnUI barnUI;
-    public ItemData item1, item2, item3;
+    public ItemData item1, item2, item3, item4;
     public void OnClickSpawnItem()
     {
-        if (inventory.AddItem(item1, 10) && inventory.AddItem(item2, 99) && inventory.AddItem(item2, 80) && inventory.AddItem(item3, 0))
+        if (inventory.AddItem(item1, 10) && inventory.AddItem(item2, 99) && inventory.AddItem(item2, 80) && inventory.AddItem(item3, 0) && inventory.AddItem(item4, 34))
         {
             inventoryUI1.UpdateAllSlots();
             inventoryUI2.UpdateAllSlots();

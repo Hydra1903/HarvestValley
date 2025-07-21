@@ -7,6 +7,8 @@ public class SplitMenuUI : MonoBehaviour
     public GameObject panel;
     public Button splitButton;
     InventorySlotUI currentSlot;
+    public Vector3 deviation;
+    public GameObject backgroundBlocker;
 
     private void Awake()
     {
@@ -15,16 +17,17 @@ public class SplitMenuUI : MonoBehaviour
         splitButton.onClick.AddListener(SplitItem);
     }
 
-    public void Show(InventorySlotUI slot)
+    public void Show(InventorySlotUI slot, RectTransform item)
     {
         currentSlot = slot;
         panel.SetActive(true);
-        panel.GetComponent<RectTransform>().position = Input.mousePosition + new Vector3(200,-100,0);
-        Debug.Log(Input.mousePosition);
+        backgroundBlocker.SetActive(true);
+        panel.GetComponent<RectTransform>().position = item.position + deviation;
     }
 
     void SplitItem()
     {
+        backgroundBlocker.SetActive(false);
         var slotData = currentSlot.inventory.slots[currentSlot.row, currentSlot.column];
         if (slotData.item != null && slotData.item.quantity > 1)
         {

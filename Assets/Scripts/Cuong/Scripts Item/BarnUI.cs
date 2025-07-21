@@ -18,7 +18,6 @@ public class BarnUI : MonoBehaviour
 
         if (slotsParent.childCount != totalSlots)
         {
-            Debug.LogError("Số lượng slot trong UI không khớp với cấu trúc inventory.");
             return;
         }
 
