@@ -1,26 +1,46 @@
 using System.Collections.Generic;
 using TMPro;
+using Unity.Cinemachine;
 using UnityEngine;
 
 public class AnimalPen : MonoBehaviour
 {
+    public CinemachineInputAxisController playerAxisController;
+    public FirstCameraTesting firstCameraTesting;
+
+    [Header("SpawnPoint and Random WP")]
     public Transform spawnPointType1;
     public Transform spawnPointType2;
     public Transform[] wanderPoints;
     public int maxAnimals;
 
     private List<GameObject> spawnedAnimals = new List<GameObject>();
-
+    private HashSet<string> allowedTag = new HashSet<string>();
     [Header("UI")]
     public TMP_Text animalCountText;
+    public GameObject inventoryPanels;
     public GameObject penInfoPanel;
-    public TMP_Text penInfoText;    
+    public TMP_Text penInfoText;
 
     private void Start()
     {
         UpdateAnimalCountUI();
         if (penInfoPanel != null)
+        {
             penInfoPanel.SetActive(false);
+            inventoryPanels.SetActive(false);
+
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+            if (playerAxisController != null)
+            {
+                playerAxisController.enabled = true;
+            }
+            if (firstCameraTesting != null)
+            {
+                firstCameraTesting.allowMouseLook = true;
+            }        
+        }
     }
 
     public Transform GetRandomSpawnPoint()
@@ -29,10 +49,22 @@ public class AnimalPen : MonoBehaviour
     }
     public bool CanSpawnMore() => spawnedAnimals.Count < maxAnimals;
 
-    public void RegisterAnimal(GameObject animal)
+    public bool RegisterAnimal(GameObject animal)
     {
+        string tag = animal.tag;
+        if (allowedTag.Count == 0)
+        {
+            allowedTag.Add(tag);
+        }
+        else if (!allowedTag.Contains(tag))
+        {
+            Debug.LogWarning($"Tag '{tag}' no allowed to spawn into this pen!");
+            return false;
+        }
+
         spawnedAnimals.Add(animal);
         UpdateAnimalCountUI();
+        return true;
     }
     public void RemoveAnimal(GameObject animal)
     {
@@ -52,13 +84,45 @@ public class AnimalPen : MonoBehaviour
         if (penInfoText != null)
             penInfoText.text = "" + countText;
     }
+    public bool IsAllowedTag(string tag)
+    {
+        return allowedTag.Contains(tag);
+    }
+    public bool HasAssignedType()
+    {
+        return allowedTag.Count > 0;
+    }
     public void ShowPenInfo(bool show)
     {
         if (penInfoPanel != null)
         {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+            if (playerAxisController != null)
+            {
+                playerAxisController.enabled = false;
+            }
+            if (firstCameraTesting != null)
+            {
+                firstCameraTesting.allowMouseLook = false;
+            }
             penInfoPanel.SetActive(show);
+            inventoryPanels.SetActive(show);
             if (show)
-                UpdateAnimalCountUI(); 
+            {
+                UpdateAnimalCountUI();
+            }
+            else
+            {
+                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
+
+                if (playerAxisController != null)
+                    playerAxisController.enabled = true;
+
+                if (firstCameraTesting != null)
+                    firstCameraTesting.allowMouseLook = true;
+            }
         }
     }
 }

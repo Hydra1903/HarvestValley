@@ -1,9 +1,11 @@
+using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class LiveStockSeller : MonoBehaviour
 {
-
+    public CinemachineInputAxisController playerAxisController;
+    public FirstCameraTesting firstCameraTesting;
 
     public GameObject buyCanvas;
     public GameObject confirmPanel;
@@ -81,8 +83,15 @@ public class LiveStockSeller : MonoBehaviour
         {
             ai.wanderPoints = pen.wanderPoints;
         }
-
-        pen.RegisterAnimal(obj); //Sign New Animal in Pen
+        string animalTag = obj.tag;
+        if (!pen.IsAllowedTag(animalTag) && pen.HasAssignedType())
+        {
+            Debug.LogWarning($"Pen does not accept animals with tag '{animalTag}'");
+            Destroy(obj);
+            selectPenPanel.SetActive(false);
+            return;
+        }
+        pen.RegisterAnimal(obj);
 
         selectPenPanel.SetActive(false);
         buyCanvas.SetActive(false);
@@ -98,6 +107,13 @@ public class LiveStockSeller : MonoBehaviour
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+
+        if (playerAxisController != null)
+        {
+            playerAxisController.enabled = true;
+        }
+
+        firstCameraTesting.allowMouseLook = true;
     }
     void OnCancelPurchase()
     {
@@ -115,6 +131,11 @@ public class LiveStockSeller : MonoBehaviour
                 Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = true;
 
+                if (playerAxisController != null)
+                {
+                    playerAxisController.enabled = false;
+                }
+                firstCameraTesting.allowMouseLook = false;
             }
             else
             {
@@ -139,8 +160,14 @@ public class LiveStockSeller : MonoBehaviour
             buyCanvas.gameObject.SetActive(false);
             confirmPanel.SetActive(false);
             selectedType = AnimalType.None;
+
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
+            if (playerAxisController != null)
+            {
+                playerAxisController.enabled = true;
+            }
+            firstCameraTesting.allowMouseLook = true;
         }
     }
 }

@@ -15,22 +15,28 @@ public class FirstCameraTesting : MonoBehaviour
     [Header("Mouse Look Settings")]
     public float mouseSensitivity = 2f;
     private float xRotation = 0f;
+    public bool allowMouseLook = true;
 
     void Awake()
     {
         if (controller == null)
+        {
             controller = GetComponent<CharacterController>();
-
-        if (cameraTransform == null && Camera.main != null)
-            cameraTransform = Camera.main.transform;
-
+        }
+        if (cameraTransform == null && Camera.main != null) 
+        { 
+            cameraTransform = Camera.main.transform; 
+        }
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
 
     void Update()
     {
-        HandleMouseLook();
+        if (allowMouseLook)
+        {
+            HandleMouseLook();
+        }
         HandleMovement();
     }
 

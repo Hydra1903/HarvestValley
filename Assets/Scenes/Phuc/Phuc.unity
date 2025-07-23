@@ -306,6 +306,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: FirstPersonCamera
       objectReference: {fileID: 0}
+    - target: {fileID: 2801473630238289584, guid: dd6f653a7efe3804f95319d12dc6c8f3, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4172486121871692415, guid: dd6f653a7efe3804f95319d12dc6c8f3, type: 3}
       propertyPath: m_CameraType
       value: 0
@@ -363,6 +367,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 30eef452002721046bc062e3cbef8f0e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerAxisController: {fileID: 912550746}
+  firstCameraTesting: {fileID: 1464079816}
   buyCanvas: {fileID: 602317716}
   confirmPanel: {fileID: 1189018881}
   selectPenPanel: {fileID: 785478401}
@@ -660,19 +666,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 953901605131356224, guid: f7179dadaea7f2546a2da2829f681961, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.9924299
+      value: 0.99238056
       objectReference: {fileID: 0}
     - target: {fileID: 953901605131356224, guid: f7179dadaea7f2546a2da2829f681961, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.081902884
+      value: 0.08189881
       objectReference: {fileID: 0}
     - target: {fileID: 953901605131356224, guid: f7179dadaea7f2546a2da2829f681961, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.09120416
+      value: -0.0917396
       objectReference: {fileID: 0}
     - target: {fileID: 953901605131356224, guid: f7179dadaea7f2546a2da2829f681961, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.0075268634
+      value: 0.0075710514
       objectReference: {fileID: 0}
     - target: {fileID: 953901605131356224, guid: f7179dadaea7f2546a2da2829f681961, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -700,7 +706,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5551643062697715587, guid: f7179dadaea7f2546a2da2829f681961, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8895026484125918269, guid: f7179dadaea7f2546a2da2829f681961, type: 3}
       propertyPath: m_Enabled
@@ -1082,6 +1088,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2a57ffe3e0fb0c346922db5af97f8957, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerAxisController: {fileID: 912550746}
+  firstCameraTesting: {fileID: 1464079816}
   spawnPointType1: {fileID: 867949528}
   spawnPointType2: {fileID: 153887671}
   wanderPoints:
@@ -1092,6 +1100,7 @@ MonoBehaviour:
   - {fileID: 387840156}
   maxAnimals: 4
   animalCountText: {fileID: 550222939}
+  inventoryPanels: {fileID: 2130782655}
   penInfoPanel: {fileID: 1712090811}
   penInfoText: {fileID: 1853210188}
 --- !u!65 &867949527
@@ -1172,6 +1181,17 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 5551643062697715587, guid: f7179dadaea7f2546a2da2829f681961, type: 3}
   m_PrefabInstance: {fileID: 421431638}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &912550746 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8895026484125918269, guid: f7179dadaea7f2546a2da2829f681961, type: 3}
+  m_PrefabInstance: {fileID: 421431638}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 912550744}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 89875cdc57c54474a8a74efd9b2a3b5d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &920188110
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1182,27 +1202,27 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 962891235670749092, guid: 435a41237fed0bd43b2e65541818b748, type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 962891235670749092, guid: 435a41237fed0bd43b2e65541818b748, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 962891235670749092, guid: 435a41237fed0bd43b2e65541818b748, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 0.5254238
       objectReference: {fileID: 0}
     - target: {fileID: 3181777023736530050, guid: 435a41237fed0bd43b2e65541818b748, type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3181777023736530050, guid: 435a41237fed0bd43b2e65541818b748, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3181777023736530050, guid: 435a41237fed0bd43b2e65541818b748, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 0
+      value: -15.771999
       objectReference: {fileID: 0}
     - target: {fileID: 3858501505710781066, guid: 435a41237fed0bd43b2e65541818b748, type: 3}
       propertyPath: m_Pivot.x
@@ -1304,9 +1324,25 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 5386516830298113664, guid: 435a41237fed0bd43b2e65541818b748, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5557194825651878066, guid: 435a41237fed0bd43b2e65541818b748, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5770409431357700907, guid: 435a41237fed0bd43b2e65541818b748, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6879981005792353545, guid: 435a41237fed0bd43b2e65541818b748, type: 3}
       propertyPath: m_Name
       value: CANVAS UI
+      objectReference: {fileID: 0}
+    - target: {fileID: 7667896734728062610, guid: 435a41237fed0bd43b2e65541818b748, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8539092395841402682, guid: 435a41237fed0bd43b2e65541818b748, type: 3}
       propertyPath: m_IsActive
@@ -1456,6 +1492,7 @@ MonoBehaviour:
   sprintSpeed: 8
   gravity: -9.81
   mouseSensitivity: 2
+  allowMouseLook: 1
 --- !u!1 &1501555126
 GameObject:
   m_ObjectHideFlags: 0
@@ -1799,11 +1836,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2a57ffe3e0fb0c346922db5af97f8957, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerAxisController: {fileID: 912550746}
+  firstCameraTesting: {fileID: 1464079816}
   spawnPointType1: {fileID: 1693430004}
   spawnPointType2: {fileID: 5568211}
-  wanderPoints: []
+  wanderPoints:
+  - {fileID: 5568211}
+  - {fileID: 1422070794}
+  - {fileID: 1938198222}
+  - {fileID: 1987727120}
+  - {fileID: 445620768}
   maxAnimals: 4
   animalCountText: {fileID: 550222939}
+  inventoryPanels: {fileID: 2130782655}
   penInfoPanel: {fileID: 1712090811}
   penInfoText: {fileID: 1853210188}
 --- !u!65 &1693430003
@@ -2240,6 +2285,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &2130782655 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5386516830298113664, guid: 435a41237fed0bd43b2e65541818b748, type: 3}
+  m_PrefabInstance: {fileID: 920188110}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &2134374188 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 7065987527368618923, guid: 435a41237fed0bd43b2e65541818b748, type: 3}
