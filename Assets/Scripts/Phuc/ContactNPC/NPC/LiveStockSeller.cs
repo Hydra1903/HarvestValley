@@ -65,9 +65,9 @@ public class LiveStockSeller : MonoBehaviour
         if (!pen.CanSpawnMore())
         {
             Debug.LogWarning("Pen Full Cant Spawn");
+            selectPenPanel.SetActive(false);
             return;
         }
-
         GameObject prefab = AnimalFactory.GetPrefab(selectedType);
         if (prefab == null)
         {
