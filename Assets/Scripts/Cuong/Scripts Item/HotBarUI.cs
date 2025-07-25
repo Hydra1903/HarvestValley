@@ -10,7 +10,6 @@ public class HotBarUI : MonoBehaviour
     {
         if (slotsParent.childCount != 8)
         {
-            Debug.Log("Dung");
             return;
         }
 
