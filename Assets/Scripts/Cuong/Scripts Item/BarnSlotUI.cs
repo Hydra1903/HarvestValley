@@ -61,6 +61,7 @@ public class BarnSlotUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
 
     public void OnDrop(PointerEventData eventData)
     {
+        int Rq = barn.limitCapacity - barnUI.capacity;
         var draggingItem = barnUI.dragItem?.draggedItem;
         if (draggingItem == null) return;
 
@@ -68,8 +69,18 @@ public class BarnSlotUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
 
         if (targetSlot.IsEmpty)
         {
-            targetSlot.item = draggingItem;
-            barnUI.dragItem.draggedItem = null;
+
+            if (Rq > 99)
+            {
+                targetSlot.item = draggingItem;
+                barnUI.dragItem.draggedItem = null;
+            }
+            else
+            {
+                targetSlot.item = draggingItem;
+                targetSlot.item.quantity = Rq;
+                barnUI.dragItem.draggedItem.quantity -= Rq;
+            }
         }
         else if (targetSlot.item.itemData == draggingItem.itemData && !targetSlot.item.IsFull)
         {
@@ -88,6 +99,7 @@ public class BarnSlotUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
         }
 
         barnUI.UpdateAllSlots();
+        Debug.Log(Rq);
     }
     /*
     public void OnPointerClick(PointerEventData eventData)

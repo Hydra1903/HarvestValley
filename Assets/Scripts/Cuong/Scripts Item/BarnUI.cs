@@ -12,6 +12,9 @@ public class BarnUI : MonoBehaviour
 
     private BarnSlotUI draggingFromSlot;
 
+    public int capacity;
+    public TextMeshProUGUI capacityText;
+
     private void Start()
     {
         int totalSlots = barn.rows * barn.columns;
@@ -30,7 +33,7 @@ public class BarnUI : MonoBehaviour
                 slotUI?.SetSlot(row, col, barn, this);
             }
         }
-
+        CountAllItems();
         dragIcon.gameObject.SetActive(false);
     }
 
@@ -62,10 +65,26 @@ public class BarnUI : MonoBehaviour
     }
 
     public void UpdateAllSlots()
-    {
+    {      
         foreach (var slotUI in slotsParent.GetComponentsInChildren<BarnSlotUI>())
         {
             slotUI.UpdateSlotUI();
         }
+        CountAllItems();
+    }
+    public void CountAllItems()
+    {
+        capacity = 0;
+        for (int r = 0; r < barn.rows; r++)
+        {
+            for (int c = 0; c < barn.columns; c++)
+            {
+                if (barn.slots[r, c].item != null)
+                {
+                    capacity += barn.slots[r, c].item.quantity;
+                }
+            }
+        }
+        capacityText.text = capacity.ToString() + "/" + barn.limitCapacity.ToString();
     }
 }

@@ -5,9 +5,8 @@ public class Barn : MonoBehaviour
 {
     public int rows = 5;
     public int columns = 7;
-    public TextMeshProUGUI TextCapacity;
-    public int Capacity;
     public InventorySlot[,] slots;
+    public int limitCapacity = 500;
     void Awake()
     {
         slots = new InventorySlot[rows, columns];
@@ -22,6 +21,7 @@ public class Barn : MonoBehaviour
     }
     public bool AddItem(ItemData data, int amount)
     {
+        Debug.Log("them");
         for (int r = 0; r < rows; r++)
         {
             for (int c = 0; c < columns; c++)
@@ -56,6 +56,7 @@ public class Barn : MonoBehaviour
     }
     public bool AddItem2(ItemData data, int amount)
     {
+        Debug.Log("them");
         for (int r = 0; r < rows; r++)
         {
             for (int c = 0; c < columns; c++)
