@@ -13,6 +13,7 @@ public class FarmGrid : MonoBehaviour
 
     public GameObject ghostPrefab;
     private GameObject ghostInstance;
+    public GameObject waterPrefab; // Thảm nước 
 
     void Start()
     {
@@ -37,24 +38,35 @@ public class FarmGrid : MonoBehaviour
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            WetTile(waterPrefab);
+        }
+        
+
         if (Physics.Raycast(ray, out RaycastHit hit))
         {
             Vector3 worldPos = hit.point;
             Vector2Int gridPos = WorldToGrid(worldPos);
 
-            if (IsInGrid(gridPos.x, gridPos.y))
+            // Tìm vị trí gốc của luống 5x5 (căn về phía trên/trái)
+            int startX = gridPos.x - (gridPos.x % 5);
+            int startY = gridPos.y - (gridPos.y % 5);
+
+            if (CanPlacePlot(startX, startY))
             {
-                Vector3 ghostPos = origin + new Vector3(gridPos.x * cellSize, 0.28f, gridPos.y * cellSize);
+                Vector3 ghostPos = origin + new Vector3(startX * cellSize, 0.28f, startY * cellSize);
                 ghostInstance.transform.position = ghostPos;
                 ghostInstance.SetActive(true);
+
                 if (Input.GetMouseButtonDown(0))
                 {
-                    DigTile(gridPos.x, gridPos.y);
+                    PlacePlot(startX, startY);
                 }
             }
             else
             {
-                ghostInstance.SetActive(false);   
+                ghostInstance.SetActive(false);
             }
         }
         else
@@ -74,14 +86,20 @@ public class FarmGrid : MonoBehaviour
     public void DigTile(int x, int y)
     {
         if (x < 0 || x >= gridWidth || y < 0 || y >= gridHeight) return;
-        if (tiles[x, y].isDug) return;
+        if (tiles[x, y].state != SoilState.Normal) return;
 
-        tiles[x, y].isDug = true;
+        tiles[x, y].state = SoilState.Dug;
 
         // Hiển thị luống đất đã đào
         float dugYOffset = 0.28f; // cao hơn mặt đất một chút
         Vector3 pos = origin + new Vector3(x * cellSize, dugYOffset, y * cellSize);
         tileObjects[x, y] = Instantiate(dugSoilPrefab, pos, Quaternion.identity);
+    }
+
+    // Hàm làm ướt đất (ví dụ gọi khi tưới nước)
+    public void WetTile(GameObject waterMatPrefab)
+    {
+        waterPrefab.SetActive(true);
     }
 
     void OnDrawGizmos()
@@ -106,6 +124,36 @@ public class FarmGrid : MonoBehaviour
     bool IsInGrid(int x, int y)
     {
         return x >= 0 && x < gridWidth && y >= 0 && y < gridHeight;
+    }
+
+    bool CanPlacePlot(int startX, int startY)
+    {
+        for (int x = 0; x < 5; x++)
+        {
+            for (int y = 0; y < 5; y++)
+            {
+                int checkX = startX + x;
+                int checkY = startY + y;
+                if (!IsInGrid(checkX, checkY) || tiles[checkX, checkY].state == SoilState.Dug)
+                    return false;
+            }
+        }
+        return true;
+    }
+
+    void PlacePlot(int startX, int startY)
+    {
+        for (int x = 0; x < 5; x++)
+        {
+            for (int y = 0; y < 5; y++)
+            {
+                tiles[startX + x, startY + y].state = SoilState.Dug;
+            }
+        }
+        // Hiển thị luống đất đã đào (1 prefab lớn)
+        float dugYOffset = 0.28f;
+        Vector3 pos = origin + new Vector3(startX * cellSize, dugYOffset, startY * cellSize);
+        tileObjects[startX, startY] = Instantiate(dugSoilPrefab, pos, Quaternion.identity);
     }
 
 }
