@@ -6,14 +6,21 @@ public class FarmGrid : MonoBehaviour
     public int gridHeight = 20; // 4*5
     public float cellSize = 1f;
     public Vector3 origin = Vector3.zero;
-    public GameObject dugSoilPrefab; // Prefab luống đất đã đào
+
+    public GameObject dugSoilPrefab; // Luống
+    public GameObject holePrefab; //Hố
+    public GameObject waterPrefab; // Thảm nước 
 
     private Tile[,] tiles;
     private GameObject[,] tileObjects;
 
-    public GameObject ghostPrefab;
-    private GameObject ghostInstance;
-    public GameObject waterPrefab; // Thảm nước 
+    public GameObject ghostPlotPrefab;
+    private GameObject ghostPlotInstance;
+    public GameObject ghostHolePrefab;
+    private GameObject ghostHoleInstance;
+
+
+    public ToolType currentTool = ToolType.Hoe;
 
     void Start()
     {
@@ -29,8 +36,10 @@ public class FarmGrid : MonoBehaviour
             }
         }
 
-        ghostInstance = Instantiate(ghostPrefab, Vector3.zero, Quaternion.identity);
-        ghostInstance.SetActive(false);
+        ghostPlotInstance = Instantiate(ghostPlotPrefab, Vector3.zero, Quaternion.identity);
+        ghostPlotInstance.SetActive(false);
+        ghostHoleInstance = Instantiate(ghostHolePrefab, Vector3.zero, Quaternion.identity);
+        ghostHoleInstance.SetActive(false);
 
     }
 
@@ -43,37 +52,41 @@ public class FarmGrid : MonoBehaviour
             WetTile(waterPrefab);
         }
         
+        if (Input.GetKeyDown(KeyCode.Alpha1)) currentTool = ToolType.Hoe;
+        if (Input.GetKeyDown(KeyCode.Alpha2)) currentTool = ToolType.Shovel;
+
+        // Ẩn cả hai ghost trước
+        ghostPlotInstance.SetActive(false);
+        ghostHoleInstance.SetActive(false);
 
         if (Physics.Raycast(ray, out RaycastHit hit))
         {
             Vector3 worldPos = hit.point;
             Vector2Int gridPos = WorldToGrid(worldPos);
 
-            // Tìm vị trí gốc của luống 5x5 (căn về phía trên/trái)
-            int startX = gridPos.x - (gridPos.x % 5);
-            int startY = gridPos.y - (gridPos.y % 5);
+            int size = (currentTool == ToolType.Hoe) ? 5 : 3;
+            GameObject prefab = (currentTool == ToolType.Hoe) ? dugSoilPrefab : holePrefab;
+            GameObject ghost = (currentTool == ToolType.Hoe) ? ghostPlotInstance : ghostHoleInstance;
 
-            if (CanPlacePlot(startX, startY))
+            int startX = gridPos.x - (gridPos.x % size);
+            int startY = gridPos.y - (gridPos.y % size);
+
+            if (CanPlaceSoil(startX, startY, size))
             {
-                Vector3 ghostPos = origin + new Vector3(startX * cellSize, 0.28f, startY * cellSize);
-                ghostInstance.transform.position = ghostPos;
-                ghostInstance.SetActive(true);
+                Vector3 ghostPos = origin + new Vector3(
+                    (startX + (size - 1) / 2f) * cellSize,
+                    0.28f,
+                    (startY + (size - 1) / 2f) * cellSize
+                );
+                ghost.transform.position = ghostPos;
+                ghost.SetActive(true);
 
                 if (Input.GetMouseButtonDown(0))
                 {
-                    PlacePlot(startX, startY);
+                    PlaceArea(startX, startY, size, prefab);
                 }
             }
-            else
-            {
-                ghostInstance.SetActive(false);
-            }
         }
-        else
-        {
-            ghostInstance.SetActive(false);
-        }
-
     }
 
     public Vector2Int WorldToGrid(Vector3 worldPos)
@@ -126,21 +139,6 @@ public class FarmGrid : MonoBehaviour
         return x >= 0 && x < gridWidth && y >= 0 && y < gridHeight;
     }
 
-    bool CanPlacePlot(int startX, int startY)
-    {
-        for (int x = 0; x < 5; x++)
-        {
-            for (int y = 0; y < 5; y++)
-            {
-                int checkX = startX + x;
-                int checkY = startY + y;
-                if (!IsInGrid(checkX, checkY) || tiles[checkX, checkY].state == SoilState.Dug)
-                    return false;
-            }
-        }
-        return true;
-    }
-
     void PlacePlot(int startX, int startY)
     {
         for (int x = 0; x < 5; x++)
@@ -156,4 +154,38 @@ public class FarmGrid : MonoBehaviour
         tileObjects[startX, startY] = Instantiate(dugSoilPrefab, pos, Quaternion.identity);
     }
 
+    // Hàm kiểm tra vùng hợp lệ
+    bool CanPlaceSoil(int startX, int startY, int size)
+    {
+        for (int x = 0; x < size; x++)
+        {
+            for (int y = 0; y < size; y++)
+            {
+                int checkX = startX + x;
+                int checkY = startY + y;
+                if (!IsInGrid(checkX, checkY) || tiles[checkX, checkY].state == SoilState.Dug)
+                    return false;
+            }
+        }
+        return true;
+    }
+
+    // Hàm đặt đất đặc biệt
+    void PlaceArea(int startX, int startY, int size, GameObject prefab)
+    {
+        for (int x = 0; x < size; x++)
+        {
+            for (int y = 0; y < size; y++)
+            {
+                tiles[startX + x, startY + y].state = SoilState.Dug;
+            }
+        }
+        float dugYOffset = 0.28f;
+        Vector3 pos = origin + new Vector3(
+            (startX + (size - 1) / 2f) * cellSize, // pivot giữa
+            dugYOffset,
+            (startY + (size - 1) / 2f) * cellSize
+        );
+        Instantiate(prefab, pos, Quaternion.identity);
+    }
 }
