@@ -1,12 +1,15 @@
-using UnityEngine;
+﻿using UnityEngine;
 
-public enum ItemType { Seed, Crop, Tool}
+public enum ItemType { Seed, Plant, Tool, AnimalProduct }
 
 [CreateAssetMenu(fileName = "NewItem", menuName = "Inventory/Item")]
 public class ItemData : ScriptableObject
 {
+    public string id;
     public string itemName;
     public Sprite icon;
-    public int maxStack = 99;
+    public int maxStack;
     public ItemType itemType;
+    public string description;
+    public string season;
 }
