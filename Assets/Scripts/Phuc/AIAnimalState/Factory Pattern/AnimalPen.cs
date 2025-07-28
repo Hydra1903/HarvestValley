@@ -43,10 +43,16 @@ public class AnimalPen : MonoBehaviour
         }
     }
 
-    public Transform GetRandomSpawnPoint()
-    {
-        return Random.value < 0.5f ? spawnPointType1 : spawnPointType2;
-    }
+    public Vector3 GetRandomSpawnPosition()
+{
+    Transform basePoint = Random.value < 0.5f ? spawnPointType1 : spawnPointType2;
+    
+    // T?o offset ng?u nhiên trong bán kính 1 ðõn v?
+    Vector2 randomOffset = Random.insideUnitCircle * 1.5f;
+    Vector3 spawnPos = basePoint.position + new Vector3(randomOffset.x, 0f, randomOffset.y);
+
+    return spawnPos;
+}
     public bool CanSpawnMore() => spawnedAnimals.Count < maxAnimals;
 
     public bool RegisterAnimal(GameObject animal)

@@ -75,8 +75,8 @@ public class LiveStockSeller : MonoBehaviour
             return;
         }
 
-        Transform spawnPoint = pen.GetRandomSpawnPoint();
-        GameObject obj = Instantiate(prefab, spawnPoint.position, Quaternion.identity);
+        Vector3 spawnPoint = pen.GetRandomSpawnPosition();
+        GameObject obj = Instantiate(prefab, pen.GetRandomSpawnPosition(), Quaternion.identity);
 
         SimpleAI ai = obj.GetComponent<SimpleAI>();
         if (ai != null)
@@ -96,6 +96,13 @@ public class LiveStockSeller : MonoBehaviour
         selectPenPanel.SetActive(false);
         buyCanvas.SetActive(false);
         selectedType = AnimalType.None;
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+        if (playerAxisController != null)
+        {
+            playerAxisController.enabled = true;
+        }
+        firstCameraTesting.allowMouseLook = true;
     }
 
     void ResetUI()

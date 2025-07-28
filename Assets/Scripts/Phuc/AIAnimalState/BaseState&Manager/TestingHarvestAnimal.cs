@@ -37,10 +37,10 @@ public class TestingHarvestAnimal : MonoBehaviour
         switch (resourceType)
         {
             case ResourceType.Wool:
-                Debug.Log("Thu ho?ch lông c?u!");
+                Debug.Log("Collecting Sheep Wool");
                 break;
             case ResourceType.Milk:
-                Debug.Log("Thu ho?ch s?a dê!");
+                Debug.Log("Collecting Goat Milk");
                 break;
         }
 
