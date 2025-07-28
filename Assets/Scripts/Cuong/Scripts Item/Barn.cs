@@ -6,7 +6,7 @@ public class Barn : MonoBehaviour
     public int rows = 5;
     public int columns = 7;
     public InventorySlot[,] slots;
-    public int limitCapacity = 500;
+    public int limitCapacity = 1000;
     void Awake()
     {
         slots = new InventorySlot[rows, columns];

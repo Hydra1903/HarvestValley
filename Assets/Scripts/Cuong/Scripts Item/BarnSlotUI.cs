@@ -67,30 +67,56 @@ public class BarnSlotUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
 
         var targetSlot = barn.slots[row, column];
 
-        if (targetSlot.IsEmpty && draggingItem.quantity <= Rq)
+        if (targetSlot.IsEmpty)
         {
             targetSlot.item = draggingItem;
-            barnUI.dragItem.draggedItem = null;
+
+            barnUI.UpdateAllSlots();
+            Rq = barn.limitCapacity - barnUI.capacity;
+            if (Rq < 0)
+            {
+                targetSlot.item = null;
+            }
+            else
+            {
+                barnUI.dragItem.draggedItem = null;
+            }
         }
-        else if (targetSlot.item.itemData == draggingItem.itemData && !targetSlot.item.IsFull && draggingItem.quantity <= Rq)
+        else if (targetSlot.item.itemData == draggingItem.itemData && !targetSlot.item.IsFull)
         {
             int canAdd = Mathf.Min(draggingItem.quantity, draggingItem.itemData.maxStack - targetSlot.item.quantity);
             targetSlot.item.quantity += canAdd;
             draggingItem.quantity -= canAdd;
 
+            barnUI.UpdateAllSlots();
+            Rq = barn.limitCapacity - barnUI.capacity;
+            if (Rq < 0)
+            {
+                targetSlot.item.quantity -= canAdd;
+                barnUI.dragItem.draggedItem.quantity += canAdd;
+            }
+
             if (draggingItem.quantity <= 0)
                 barnUI.dragItem.draggedItem = null;
         }
-        else if (draggingItem.quantity <= Rq)
+        else 
         {
             var temp = targetSlot.item;
             targetSlot.item = draggingItem;
             barnUI.dragItem.draggedItem = temp;
-        }
 
+            barnUI.UpdateAllSlots();
+            Rq = barn.limitCapacity - barnUI.capacity;
+            if (Rq < 0)
+            {
+                barnUI.dragItem.draggedItem = targetSlot.item;
+                targetSlot.item = temp;
+            }
+        }
         barnUI.UpdateAllSlots();
         Debug.Log(Rq);
     }
+
     /*
     public void OnPointerClick(PointerEventData eventData)
     {
