@@ -151,6 +151,7 @@ public class FarmGrid : MonoBehaviour
             {
                 int checkX = startX + x;
                 int checkY = startY + y;
+                // Nếu bất kỳ ô nào đã có luống hoặc hole (state == Dug) thì không cho đặt
                 if (!IsInGrid(checkX, checkY) || tiles[checkX, checkY].state == SoilState.Dug)
                     return false;
             }
