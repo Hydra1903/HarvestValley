@@ -10,11 +10,12 @@ public class ReceiveItemUI : MonoBehaviour
     public TextMeshProUGUI dragQuantityText;
     public DragItem dragItem;
 
-    private FarmSatllSlotUI draggingFromSlot;
+    private FarmStallSlotUI draggingFromSlot;
 
     public int capacity;
     public Text capacityText;
 
+    public FarmStall farmStall;
     private void Start()
     {
         if (slotsParent.childCount != 2)
@@ -23,12 +24,12 @@ public class ReceiveItemUI : MonoBehaviour
         }
         for (int i = 0; i < 2; i++)
         {
-            FarmSatllSlotUI slotUI = slotsParent.GetChild(i).GetComponentInChildren<FarmSatllSlotUI>();
+            FarmStallSlotUI slotUI = slotsParent.GetChild(i).GetComponentInChildren<FarmStallSlotUI>();
             slotUI?.SetSlot(i, receiveItem, this);
         }
     }
 
-    public void StartDrag(InventoryItem item, FarmSatllSlotUI fromSlot)
+    public void StartDrag(InventoryItem item, FarmStallSlotUI fromSlot)
     {
         dragItem.draggedItem = new InventoryItem(item.itemData, item.quantity);
         draggingFromSlot = fromSlot;
@@ -57,7 +58,7 @@ public class ReceiveItemUI : MonoBehaviour
 
     public void UpdateAllSlots()
     {
-        foreach (var slotUI in slotsParent.GetComponentsInChildren<FarmSatllSlotUI>())
+        foreach (var slotUI in slotsParent.GetComponentsInChildren<FarmStallSlotUI>())
         {
             slotUI.UpdateSlotUI();
         }
@@ -74,5 +75,9 @@ public class ReceiveItemUI : MonoBehaviour
             }
         }
         capacityText.text = capacity.ToString() + "/198";
+        Debug.Log(farmStall.quantity[receiveItem.locationDataItem]);
+        farmStall.quantity[receiveItem.locationDataItem] = capacity;
+        Debug.Log(farmStall.quantity[receiveItem.locationDataItem]);
+        farmStall.TotalAmount();
     }
 }

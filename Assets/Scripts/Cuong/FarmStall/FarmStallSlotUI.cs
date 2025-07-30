@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using TMPro;
 using UnityEngine.EventSystems;
 
-public class FarmSatllSlotUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IDropHandler
+public class FarmStallSlotUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IDropHandler
 {
     public Image iconImage;
     public TextMeshProUGUI quantityText;
@@ -47,6 +47,10 @@ public class FarmSatllSlotUI : MonoBehaviour, IBeginDragHandler, IDragHandler, I
             receiveItemUI.StartDrag(slot.item, this);
             slot.item = null;
             UpdateSlotUI();
+        }
+        else
+        {
+            Debug.Log("Rong");
         }
     }
 

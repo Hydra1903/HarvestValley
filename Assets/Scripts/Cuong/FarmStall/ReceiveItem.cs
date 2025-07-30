@@ -3,6 +3,7 @@ using UnityEngine;
 public class ReceiveItem : MonoBehaviour
 {
     public InventorySlot[] slots;
+    public int locationDataItem;
     void Awake()
     {
         slots = new InventorySlot[2];
