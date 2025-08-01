@@ -75,9 +75,7 @@ public class ReceiveItemUI : MonoBehaviour
             }
         }
         capacityText.text = capacity.ToString() + "/198";
-        Debug.Log(farmStall.quantity[receiveItem.locationDataItem]);
         farmStall.quantity[receiveItem.locationDataItem] = capacity;
-        Debug.Log(farmStall.quantity[receiveItem.locationDataItem]);
         farmStall.TotalAmount();
     }
 }

@@ -10,4 +10,9 @@ public class ReceiveItem : MonoBehaviour
         slots[0] = new InventorySlot();
         slots[1] = new InventorySlot();
     }
+    public void DestroyDataItem()
+    {
+        slots[0] = new InventorySlot();
+        slots[1] = new InventorySlot();
+    }
 }

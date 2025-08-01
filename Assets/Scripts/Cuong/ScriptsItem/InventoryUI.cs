@@ -12,6 +12,8 @@ public class InventoryUI : MonoBehaviour
 
     private InventorySlotUI draggingFromSlot;
 
+    public TextMeshProUGUI gold;
+
     private void Start()
     {
         int totalSlots = inventory.rows * inventory.columns;
