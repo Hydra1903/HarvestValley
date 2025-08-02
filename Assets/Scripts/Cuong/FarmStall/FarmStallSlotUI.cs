@@ -48,10 +48,6 @@ public class FarmStallSlotUI : MonoBehaviour, IBeginDragHandler, IDragHandler, I
             slot.item = null;
             UpdateSlotUI();
         }
-        else
-        {
-            Debug.Log("Rong");
-        }
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -99,6 +95,4 @@ public class FarmStallSlotUI : MonoBehaviour, IBeginDragHandler, IDragHandler, I
 
         receiveItemUI.UpdateAllSlots();
     }
-
-
 }
