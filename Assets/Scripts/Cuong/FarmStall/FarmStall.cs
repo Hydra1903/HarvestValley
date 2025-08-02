@@ -4,7 +4,7 @@ using Unity.VisualScripting.Antlr3.Runtime.Misc;
 
 public class FarmStall : MonoBehaviour
 {
-    public int[] sellPrice;
+    public int[] sellPriceSpring;
     public int[] quantity;
 
     public int totalAmount;
@@ -13,14 +13,14 @@ public class FarmStall : MonoBehaviour
 
     void Awake()
     {
-        quantity = new int[sellPrice.Length];
+        quantity = new int[sellPriceSpring.Length];
     }
     public void TotalAmount()
     {
         totalAmount = 0;
-        for (int i = 0; i < sellPrice.Length; i++)
+        for (int i = 0; i < sellPriceSpring.Length; i++)
         {
-            totalAmount += sellPrice[i] * quantity[i];
+            totalAmount += sellPriceSpring[i] * quantity[i];
         }
         farmStallUI.UpdateUI();
     }

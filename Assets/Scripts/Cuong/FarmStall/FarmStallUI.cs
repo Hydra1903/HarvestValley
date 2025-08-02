@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using System.Globalization;
 
 public enum FarmStallState
 {
@@ -18,9 +19,14 @@ public class FarmStallUI : MonoBehaviour
     public GameObject prevent;
     public FarmStallState currentState = FarmStallState.NotForSale;
 
+    public TextMeshProUGUI[] priceTexts;
     public ReceiveItem[] receiveItems;
     public ReceiveItemUI[] receiveItemsUI;
 
+    public void Start()
+    {
+        UpdatePrice();
+    }
     public void Sell()
     {
         currentState = FarmStallState.Selling;
@@ -37,7 +43,7 @@ public class FarmStallUI : MonoBehaviour
     }
     public void UpdateUI()
     {
-        totalAmountText.text = farmStall.totalAmount.ToString();
+        totalAmountText.text = farmStall.totalAmount.ToString("N0", new CultureInfo("de-DE"));
 
         if (farmStall.totalAmount > 0 && currentState == FarmStallState.NotForSale)
         {
@@ -74,6 +80,17 @@ public class FarmStallUI : MonoBehaviour
             {
                 receiveItems[i].DestroyDataItem();
                 receiveItemsUI[i].UpdateAllSlots();
+            }
+        }
+    }
+
+    public void UpdatePrice()
+    {
+        for (int i = 0; i < priceTexts.Length; i++)
+        {
+            if (priceTexts[i] != null)
+            {
+                priceTexts[i].text = farmStall.sellPriceSpring[i].ToString();
             }
         }
     }

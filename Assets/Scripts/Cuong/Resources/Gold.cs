@@ -1,4 +1,6 @@
+using System.Globalization;
 using UnityEngine;
+using static UnityEngine.Rendering.DebugUI;
 
 public class Gold : MonoBehaviour
 {
@@ -35,6 +37,6 @@ public class Gold : MonoBehaviour
 
     private void UpdateGoldUI()
     {
-        inventoryUI.gold.text = gold.ToString();
+        inventoryUI.gold.text = gold.ToString("N0", new CultureInfo("de-DE"));
     }
 }
