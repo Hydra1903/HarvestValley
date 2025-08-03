@@ -27,6 +27,9 @@ public class MerchantReceiveItemUI : MonoBehaviour
             MerchantSlotUI slotUI = slotsParent.GetChild(i).GetComponentInChildren<MerchantSlotUI>();
             slotUI?.SetSlot(i, receiveItem, this);
         }
+
+
+        capacityText.text = capacity.ToString() + "/" + merchant.salesLimit[receiveItem.locationDataItem].ToString();
     }
 
     public void StartDrag(InventoryItem item, MerchantSlotUI fromSlot)
@@ -74,7 +77,7 @@ public class MerchantReceiveItemUI : MonoBehaviour
                 capacity += receiveItem.slots[i].item.quantity;
             }
         }
-        capacityText.text = capacity.ToString() + "/198";
+        capacityText.text = capacity.ToString() + "/" + merchant.salesLimit[receiveItem.locationDataItem].ToString();
         merchant.quantity[receiveItem.locationDataItem] = capacity;
         merchant.TotalAmount();
     }

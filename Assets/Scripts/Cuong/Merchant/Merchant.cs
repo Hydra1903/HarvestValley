@@ -3,7 +3,7 @@ using UnityEngine;
 public class Merchant : MonoBehaviour
 {
     public int[] quantity;
-
+    public int[] salesLimit;
     public int totalAmount;
 
     public MerchantUI merchantUI;
@@ -19,6 +19,6 @@ public class Merchant : MonoBehaviour
         {
             totalAmount += farmStall.sellPriceSpring[i] * quantity[i];
         }
-        //merchantUI.UpdateUI();
+        merchantUI.UpdateUI();
     }
 }

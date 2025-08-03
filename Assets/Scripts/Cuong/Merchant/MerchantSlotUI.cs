@@ -14,6 +14,7 @@ public class MerchantSlotUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
     public InventoryItem item;
 
     public ItemData itemData;
+    public Merchant merchant;
     public void SetSlot(int lcn, ReceiveItem rcv, MerchantReceiveItemUI ui)
     {
         location = lcn;
@@ -70,6 +71,12 @@ public class MerchantSlotUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
             Notification.Instance.ShowNotification("Vật phẩm không hợp lệ!");
             return;
         }
+        else if (draggingItem.quantity > merchant.salesLimit[receiveItem.locationDataItem] - merchantReceiveItemUI.capacity)
+        {
+            Notification.Instance.ShowNotification("Quá giới hạn cho phép bán!");
+            return;
+        }
+
         var targetSlot = receiveItem.slots[location];
 
         if (targetSlot.IsEmpty)
