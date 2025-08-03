@@ -134,6 +134,76 @@ public class FarmGrid : MonoBehaviour
             Vector3 to = origin + new Vector3(gridWidth * cellSize, gizmoYOffset, y * cellSize);
             Gizmos.DrawLine(from, to);
         }
+
+        // Vẽ outline cho các vùng luống 5x5 và hố 3x3
+        if (tiles != null)
+        {
+            // Đánh dấu các vùng đã vẽ để không vẽ trùng
+            bool[,] visited = new bool[gridWidth, gridHeight];
+            for (int x = 0; x < gridWidth; x++)
+            {
+                for (int y = 0; y < gridHeight; y++)
+                {
+                    if (!visited[x, y] && tiles[x, y].state == SoilState.Dug)
+                    {
+                        // Kiểm tra vùng 5x5
+                        bool isPlot = true;
+                        if (x + 4 < gridWidth && y + 4 < gridHeight)
+                        {
+                            for (int dx = 0; dx < 5; dx++)
+                            for (int dy = 0; dy < 5; dy++)
+                                if (tiles[x + dx, y + dy].state != SoilState.Dug)
+                                    isPlot = false;
+                        }
+                        else isPlot = false;
+
+                        // Kiểm tra vùng 3x3 nếu không phải plot
+                        bool isHole = false;
+                        if (!isPlot && x + 2 < gridWidth && y + 2 < gridHeight)
+                        {
+                            isHole = true;
+                            for (int dx = 0; dx < 3; dx++)
+                            for (int dy = 0; dy < 3; dy++)
+                                if (tiles[x + dx, y + dy].state != SoilState.Dug)
+                                    isHole = false;
+                        }
+
+                        if (isPlot)
+                        {
+                            Gizmos.color = Color.green;
+                            Vector3 p1 = origin + new Vector3(x * cellSize, gizmoYOffset + 0.01f, y * cellSize);
+                            Vector3 p2 = origin + new Vector3((x + 5) * cellSize, gizmoYOffset + 0.01f, y * cellSize);
+                            Vector3 p3 = origin + new Vector3((x + 5) * cellSize, gizmoYOffset + 0.01f, (y + 5) * cellSize);
+                            Vector3 p4 = origin + new Vector3(x * cellSize, gizmoYOffset + 0.01f, (y + 5) * cellSize);
+                            Gizmos.DrawLine(p1, p2);
+                            Gizmos.DrawLine(p2, p3);
+                            Gizmos.DrawLine(p3, p4);
+                            Gizmos.DrawLine(p4, p1);
+                            // Đánh dấu đã vẽ vùng này
+                            for (int dx = 0; dx < 5; dx++)
+                            for (int dy = 0; dy < 5; dy++)
+                                visited[x + dx, y + dy] = true;
+                        }
+                        else if (isHole)
+                        {
+                            Gizmos.color = Color.blue;
+                            Vector3 p1 = origin + new Vector3(x * cellSize, gizmoYOffset + 0.02f, y * cellSize);
+                            Vector3 p2 = origin + new Vector3((x + 3) * cellSize, gizmoYOffset + 0.02f, y * cellSize);
+                            Vector3 p3 = origin + new Vector3((x + 3) * cellSize, gizmoYOffset + 0.02f, (y + 3) * cellSize);
+                            Vector3 p4 = origin + new Vector3(x * cellSize, gizmoYOffset + 0.02f, (y + 3) * cellSize);
+                            Gizmos.DrawLine(p1, p2);
+                            Gizmos.DrawLine(p2, p3);
+                            Gizmos.DrawLine(p3, p4);
+                            Gizmos.DrawLine(p4, p1);
+                            // Đánh dấu đã vẽ vùng này
+                            for (int dx = 0; dx < 3; dx++)
+                            for (int dy = 0; dy < 3; dy++)
+                                visited[x + dx, y + dy] = true;
+                        }
+                    }
+                }
+            }
+        }
     }
 
 
