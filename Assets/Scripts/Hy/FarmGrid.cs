@@ -45,10 +45,19 @@ public class FarmGrid : MonoBehaviour
 
     void Update()
     {
+        HandleToolSwitching();
+        HandleMouseInput();
+    }
+
+    void HandleToolSwitching()
+    {
         // Chuyển công cụ
         if (Input.GetKeyDown(KeyCode.Alpha1)) currentTool = ToolType.Hoe;
         if (Input.GetKeyDown(KeyCode.Alpha2)) currentTool = ToolType.Shovel;
+    }
 
+    void HandleMouseInput()
+    {
         // Ẩn cả hai ghost trước
         ghostPlotInstance.SetActive(false);
         ghostHoleInstance.SetActive(false);
@@ -59,37 +68,82 @@ public class FarmGrid : MonoBehaviour
             Vector3 worldPos = hit.point;
             Vector2Int gridPos = WorldToGrid(worldPos);
 
-            int size = (currentTool == ToolType.Hoe) ? 5 : 3;
-            GameObject prefab = (currentTool == ToolType.Hoe) ? dugSoilPrefab : holePrefab;
-            GameObject ghost = (currentTool == ToolType.Hoe) ? ghostPlotInstance : ghostHoleInstance;
+            // Lấy thông tin tool hiện tại
+            ToolInfo toolInfo = GetCurrentToolInfo();
+            
+            // Tìm vùng đặt
+            Vector2Int startPos = CalculateStartPosition(gridPos, toolInfo.size);
 
-            // Tìm góc trên-trái của vùng
-            int startX = gridPos.x - (size / 2);
-            int startY = gridPos.y - (size / 2);
-
-            // Đảm bảo vùng không vượt ra ngoài lưới
-            if (startX < 0) startX = 0;
-            if (startY < 0) startY = 0;
-            if (startX + size > gridWidth) startX = gridWidth - size;
-            if (startY + size > gridHeight) startY = gridHeight - size;
-
-            if (CanPlaceSoil(startX, startY, size))
+            if (CanPlaceSoil(startPos.x, startPos.y, toolInfo.size))
             {
-                // Nếu pivot ở giữa
-                Vector3 ghostPos = origin + new Vector3(
-                    (startX + (size - 1) / 2f) * cellSize,
-                    0.28f,
-                    (startY + (size - 1) / 2f) * cellSize
-                );
-                ghost.transform.position = ghostPos;
-                ghost.SetActive(true);
+                ShowGhostPreview(startPos, toolInfo);
 
                 if (Input.GetMouseButtonDown(0))
                 {
-                    PlaceArea(startX, startY, size, prefab);
+                    PlaceArea(startPos.x, startPos.y, toolInfo.size, toolInfo.prefab);
                 }
             }
         }
+    }
+
+    struct ToolInfo
+    {
+        public int size;
+        public GameObject prefab;
+        public GameObject ghost;
+        public float offsetX;
+        public float offsetZ;
+    }
+
+    ToolInfo GetCurrentToolInfo()
+    {
+        ToolInfo info = new ToolInfo();
+        
+        if (currentTool == ToolType.Hoe)
+        {
+            info.size = 5;
+            info.prefab = dugSoilPrefab;
+            info.ghost = ghostPlotInstance;
+            info.offsetX = 0f;
+            info.offsetZ = 5f;
+        }
+        else // Shovel
+        {
+            info.size = 3;
+            info.prefab = holePrefab;
+            info.ghost = ghostHoleInstance;
+            info.offsetX = 1f;
+            info.offsetZ = 3f;
+        }
+        
+        return info;
+    }
+
+    Vector2Int CalculateStartPosition(Vector2Int gridPos, int size)
+    {
+        // Tìm góc trên-trái của vùng
+        int startX = gridPos.x - (size / 2);
+        int startY = gridPos.y - (size / 2);
+
+        // Đảm bảo vùng không vượt ra ngoài lưới
+        if (startX < 0) startX = 0;
+        if (startY < 0) startY = 0;
+        if (startX + size > gridWidth) startX = gridWidth - size;
+        if (startY + size > gridHeight) startY = gridHeight - size;
+
+        return new Vector2Int(startX, startY);
+    }
+
+    void ShowGhostPreview(Vector2Int startPos, ToolInfo toolInfo)
+    {
+        Vector3 ghostPos = origin + new Vector3(
+            (startPos.x + toolInfo.offsetX) * cellSize,
+            0.28f,
+            (startPos.y + toolInfo.offsetZ) * cellSize
+        );
+        
+        toolInfo.ghost.transform.position = ghostPos;
+        toolInfo.ghost.SetActive(true);
     }
 
     public Vector2Int WorldToGrid(Vector3 worldPos)
@@ -108,7 +162,7 @@ public class FarmGrid : MonoBehaviour
 
         // Hiển thị luống đất đã đào
         float dugYOffset = 0.28f; // cao hơn mặt đất một chút
-        Vector3 pos = origin + new Vector3(x * cellSize, dugYOffset, y * cellSize);
+        Vector3 pos = origin + new Vector3((x + 0.5f) * cellSize, dugYOffset, (y + 0.5f) * cellSize);
         tileObjects[x, y] = Instantiate(dugSoilPrefab, pos, Quaternion.identity);
     }
 
@@ -240,10 +294,14 @@ public class FarmGrid : MonoBehaviour
             }
         }
         float dugYOffset = 0.28f;
+        // Điều chỉnh offset riêng cho X và Z
+        float offsetX = (size == 5) ? 0f : 1f; // 5x5 luống hoặc 3x3 hố
+        float offsetZ = (size == 5) ? 5f : 3f;
+        
         Vector3 pos = origin + new Vector3(
-            (startX + (size - 1) / 2f) * cellSize,
+            (startX + offsetX) * cellSize,
             dugYOffset,
-            (startY + (size - 1) / 2f) * cellSize
+            (startY + offsetZ) * cellSize
         );
         Instantiate(prefab, pos, Quaternion.identity);
     }
