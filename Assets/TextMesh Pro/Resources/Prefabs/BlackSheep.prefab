@@ -247,8 +247,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 22f3c5ccf61c5c74eb29780ec6e174cd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  resourceType: 1
-  debuglog: {fileID: 0}
+  blackWoolItem: {fileID: 11400000, guid: 0a911d23d7c8e194e8aa51dbf029b255, type: 2}
+  whiteWoolItem: {fileID: 11400000, guid: 3b4ad735a14805a4488ca02dce1d6455, type: 2}
+  creamWoolItem: {fileID: 11400000, guid: 31ca392e1eb4358459d34718daefd804, type: 2}
+  goatMilkItem: {fileID: 11400000, guid: daa27c99c0aed2242af1c6825203d38d, type: 2}
+  harvestCooldown: 10
+  animalType: 0
 --- !u!65 &2751843547584534802
 BoxCollider:
   m_ObjectHideFlags: 0

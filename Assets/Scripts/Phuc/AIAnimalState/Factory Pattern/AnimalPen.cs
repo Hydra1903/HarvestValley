@@ -46,8 +46,7 @@ public class AnimalPen : MonoBehaviour
     public Vector3 GetRandomSpawnPosition()
 {
     Transform basePoint = Random.value < 0.5f ? spawnPointType1 : spawnPointType2;
-    
-    // T?o offset ng?u nhiên trong bán kính 1 ðõn v?
+  
     Vector2 randomOffset = Random.insideUnitCircle * 1.5f;
     Vector3 spawnPos = basePoint.position + new Vector3(randomOffset.x, 0f, randomOffset.y);
 
@@ -129,6 +128,22 @@ public class AnimalPen : MonoBehaviour
                 if (firstCameraTesting != null)
                     firstCameraTesting.allowMouseLook = true;
             }
+        }
+    }
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            penInfoPanel.SetActive(false);
+            inventoryPanels.SetActive(false);
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+
+            if (playerAxisController != null)
+                playerAxisController.enabled = true;
+
+            if (firstCameraTesting != null)
+                firstCameraTesting.allowMouseLook = true;
         }
     }
 }
