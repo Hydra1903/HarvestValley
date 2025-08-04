@@ -16,6 +16,8 @@ public class MerchantReceiveItemUI : MonoBehaviour
     public Text capacityText;
 
     public Merchant merchant;
+
+    public bool isLimitReached;
     private void Start()
     {
         if (slotsParent.childCount != 2)
@@ -77,7 +79,7 @@ public class MerchantReceiveItemUI : MonoBehaviour
                 capacity += receiveItem.slots[i].item.quantity;
             }
         }
-        capacityText.text = capacity.ToString() + "/" + merchant.salesLimit[receiveItem.locationDataItem].ToString();
+        capacityText.text = (merchant.quantityItemsSold[receiveItem.locationDataItem] + capacity).ToString() + "/" + merchant.salesLimit[receiveItem.locationDataItem].ToString();
         merchant.quantity[receiveItem.locationDataItem] = capacity;
         merchant.TotalAmount();
     }

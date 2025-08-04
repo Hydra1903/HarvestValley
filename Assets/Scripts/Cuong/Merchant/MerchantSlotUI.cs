@@ -65,13 +65,13 @@ public class MerchantSlotUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
     {
         var draggingItem = merchantReceiveItemUI.dragItem?.draggedItem;
         if (draggingItem == null) return;
-
+        
         if (draggingItem.itemData != itemData)
         {
             Notification.Instance.ShowNotification("Vật phẩm không hợp lệ!");
             return;
         }
-        else if (draggingItem.quantity > merchant.salesLimit[receiveItem.locationDataItem] - merchantReceiveItemUI.capacity)
+        else if (draggingItem.quantity > (merchant.salesLimit[receiveItem.locationDataItem] - merchantReceiveItemUI.capacity - merchant.quantityItemsSold[receiveItem.locationDataItem]))
         {
             Notification.Instance.ShowNotification("Quá giới hạn cho phép bán!");
             return;

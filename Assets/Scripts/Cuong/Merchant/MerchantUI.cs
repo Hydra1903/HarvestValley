@@ -18,11 +18,22 @@ public class MerchantUI : MonoBehaviour
     public ReceiveItem[] receiveItems;
     public MerchantReceiveItemUI[] merchantReceiveItemsUI;
 
+    public GameObject[] prevent;
+    public TextMeshProUGUI[] priceTexts;
+    public TextMeshProUGUI[] priceFarmStallTexts;
+    public void Start()
+    {
+        UpdatePrice();
+        UpdatePriceFarmStall();
+    }
     public void Sell()
     {
         currentState = MerchantState.NotForSale;
         Notification.Instance.ShowNotification("Đã bán với thương nhân!");
+        Gold.Instance.AddGold(merchant.totalAmount);
+        merchant.AddQuantityItemsSold();
         UpdateReceiveDataItem();
+        UpdatePrevent();
         UpdateUI();
     }
     public void UpdateUI()
@@ -47,6 +58,7 @@ public class MerchantUI : MonoBehaviour
                 buttonSell.interactable = true;
                 break;              
         }
+
     }
 
     public void UpdateReceiveDataItem()
@@ -57,6 +69,40 @@ public class MerchantUI : MonoBehaviour
             {
                 receiveItems[i].DestroyDataItem();
                 merchantReceiveItemsUI[i].UpdateAllSlots();
+            }
+        }
+    }
+    public void UpdatePrevent()
+    {
+        for (int i = 0; i < merchant.salesLimit.Length; i++)
+        {
+            if (merchant.salesLimit[i] == merchant.quantityItemsSold[i])
+            {
+                prevent[i].SetActive(true);
+            }
+            else
+            {
+                prevent[i].SetActive(false);
+            }
+        }
+    }
+    public void UpdatePrice()
+    {
+        for (int i = 0; i < priceTexts.Length; i++)
+        {
+            if (priceTexts[i] != null)
+            {
+                priceTexts[i].text = (merchant.bonusSellPrice[i] + merchant.farmStall.sellPriceSpring[i]).ToString();
+            }
+        }
+    }
+    public void UpdatePriceFarmStall()
+    {
+        for (int i = 0; i < priceFarmStallTexts.Length; i++)
+        {
+            if (priceFarmStallTexts[i] != null)
+            {
+                priceFarmStallTexts[i].text = merchant.farmStall.sellPriceSpring[i].ToString();
             }
         }
     }
