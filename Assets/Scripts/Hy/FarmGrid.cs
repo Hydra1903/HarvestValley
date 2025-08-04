@@ -112,8 +112,8 @@ public class FarmGrid : MonoBehaviour
             info.size = 3;
             info.prefab = holePrefab;
             info.ghost = ghostHoleInstance;
-            info.offsetX = 1f;
-            info.offsetZ = 3f;
+            info.offsetX = 0.8f;
+            info.offsetZ = 2.7f;
         }
         
         return info;
@@ -295,8 +295,8 @@ public class FarmGrid : MonoBehaviour
         }
         float dugYOffset = 0.28f;
         // Điều chỉnh offset riêng cho X và Z
-        float offsetX = (size == 5) ? 0f : 1f; // 5x5 luống hoặc 3x3 hố
-        float offsetZ = (size == 5) ? 5f : 3f;
+        float offsetX = (size == 5) ? 5f : 0.8f; // 5x5 luống hoặc 3x3 hố
+        float offsetZ = (size == 5) ? -0.5f : 2.7f;
         
         Vector3 pos = origin + new Vector3(
             (startX + offsetX) * cellSize,
