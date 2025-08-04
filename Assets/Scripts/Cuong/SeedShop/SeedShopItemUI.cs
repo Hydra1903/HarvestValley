@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Globalization;
+using UnityEngine;
 using UnityEngine.UI;
 
 public class SeedShopItemUI : MonoBehaviour
@@ -30,7 +31,7 @@ public class SeedShopItemUI : MonoBehaviour
     private void UpdateUI()
     {
         amountText.text = shop.amount[itemIndex].ToString();
-        priceText.text = totalPrice.ToString();
+        priceText.text = totalPrice.ToString("N0", new CultureInfo("de-DE"));
     }
 
     public void BuyThisItem()

@@ -122,7 +122,7 @@ public class InventorySlotUI : MonoBehaviour, IBeginDragHandler, IDragHandler, I
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        TooltipUI.Instance?.Hide();
+        TooltipUI.Instance.Hide();
     }
 
 }
