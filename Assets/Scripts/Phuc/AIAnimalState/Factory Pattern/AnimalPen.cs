@@ -16,6 +16,7 @@ public class AnimalPen : MonoBehaviour
 
     private List<GameObject> spawnedAnimals = new List<GameObject>();
     private HashSet<string> allowedTag = new HashSet<string>();
+    public Barn barnReference; 
     [Header("UI")]
     public TMP_Text animalCountText;
     public GameObject inventoryPanels;
@@ -50,7 +51,7 @@ public class AnimalPen : MonoBehaviour
     Vector2 randomOffset = Random.insideUnitCircle * 1.5f;
     Vector3 spawnPos = basePoint.position + new Vector3(randomOffset.x, 0f, randomOffset.y);
 
-    return spawnPos;
+    return spawnPos;    
 }
     public bool CanSpawnMore() => spawnedAnimals.Count < maxAnimals;
 

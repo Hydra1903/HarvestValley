@@ -146,10 +146,13 @@ PrefabInstance:
       addedObject: {fileID: 3340412672492523975}
     - targetCorrespondingSourceObject: {fileID: 6885452974112614176, guid: 1f8729ffe5e3ebb45b5c6b50bc6a2cec, type: 3}
       insertIndex: -1
+      addedObject: {fileID: 3580445079405021992}
+    - targetCorrespondingSourceObject: {fileID: 6885452974112614176, guid: 1f8729ffe5e3ebb45b5c6b50bc6a2cec, type: 3}
+      insertIndex: -1
       addedObject: {fileID: -3477391089157585976}
     - targetCorrespondingSourceObject: {fileID: 6885452974112614176, guid: 1f8729ffe5e3ebb45b5c6b50bc6a2cec, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 3580445079405021992}
+      addedObject: {fileID: -8447916212808813811}
   m_SourcePrefab: {fileID: 100100000, guid: 1f8729ffe5e3ebb45b5c6b50bc6a2cec, type: 3}
 --- !u!4 &1377019949085143394 stripped
 Transform:
@@ -230,24 +233,6 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
---- !u!114 &-3477391089157585976
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1377019949085143400}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 22f3c5ccf61c5c74eb29780ec6e174cd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  blackWoolItem: {fileID: 11400000, guid: 0a911d23d7c8e194e8aa51dbf029b255, type: 2}
-  whiteWoolItem: {fileID: 11400000, guid: 3b4ad735a14805a4488ca02dce1d6455, type: 2}
-  creamWoolItem: {fileID: 11400000, guid: 31ca392e1eb4358459d34718daefd804, type: 2}
-  goatMilkItem: {fileID: 11400000, guid: daa27c99c0aed2242af1c6825203d38d, type: 2}
-  harvestCooldown: 10
-  animalType: 3
 --- !u!65 &3580445079405021992
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -267,8 +252,41 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.7982217, y: 0, z: 1.46626}
-  m_Center: {x: -0.0033821464, y: 1.2423239, z: 0.23312998}
+  m_Size: {x: 0.2817309, y: 0, z: 1.46626}
+  m_Center: {x: 0.0036052465, y: 1.2423239, z: 0.23312998}
+--- !u!114 &-3477391089157585976
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1377019949085143400}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 22f3c5ccf61c5c74eb29780ec6e174cd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  blackWoolItem: {fileID: 11400000, guid: 0a911d23d7c8e194e8aa51dbf029b255, type: 2}
+  whiteWoolItem: {fileID: 11400000, guid: 3b4ad735a14805a4488ca02dce1d6455, type: 2}
+  creamWoolItem: {fileID: 11400000, guid: 31ca392e1eb4358459d34718daefd804, type: 2}
+  goatMilkItem: {fileID: 11400000, guid: daa27c99c0aed2242af1c6825203d38d, type: 2}
+  interactDistance: 3
+  animalType: 3
+--- !u!114 &-8447916212808813811
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1377019949085143400}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87b258c48a3433e449b4716054f22f43, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  animalType: 1
+  barn: {fileID: 0}
+  feedInterval: 5
 --- !u!95 &1377019949085143405 stripped
 Animator:
   m_CorrespondingSourceObject: {fileID: 6885452974112614181, guid: 1f8729ffe5e3ebb45b5c6b50bc6a2cec, type: 3}

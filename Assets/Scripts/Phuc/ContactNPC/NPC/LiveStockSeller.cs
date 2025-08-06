@@ -83,6 +83,12 @@ public class LiveStockSeller : MonoBehaviour
         {
             ai.wanderPoints = pen.wanderPoints;
         }
+        AnimalFedding feeding = obj.GetComponent<AnimalFedding>();      //muc auto gan script Animal wanderpoint va Barn UI
+        if (feeding != null)
+        {
+            feeding.barn = pen.barnReference;
+        }
+
         string animalTag = obj.tag;
         if (!pen.IsAllowedTag(animalTag) && pen.HasAssignedType())
         {

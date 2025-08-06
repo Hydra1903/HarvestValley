@@ -2,63 +2,90 @@ using UnityEngine;
 
 public class TestingHarvestAnimal : MonoBehaviour
 {
+    [Header("Thông tin v?t ph?m")]
     public ItemData blackWoolItem;
     public ItemData whiteWoolItem;
     public ItemData creamWoolItem;
     public ItemData goatMilkItem;
 
-    public float harvestCooldown = 10f;
-    private bool canHarvest = true;
+    [Header("Cài ð?t")]
+    public float interactDistance = 3f;
+
 
     public enum AnimalType { Sheep_Black, Sheep_White, Sheep_Cream, Goat }
     public AnimalType animalType;
 
-    private void OnTriggerStay(Collider other)
+    private AnimalFedding feeding;
+    private Inventory playerInventory;
+
+    private void Start()
     {
-        if (other.CompareTag("Player") && canHarvest)
+        feeding = GetComponent<AnimalFedding>();
+
+        // N?u chýa có Barn trong AnimalFeeding th? t? ð?ng t?m
+        if (feeding != null && feeding.barn == null)
         {
-            if (Input.GetKeyDown(KeyCode.E))
+            Barn foundBarn = FindAnyObjectByType<Barn>();
+            if (foundBarn != null)
             {
-                Inventory playerInventory = Inventory.Instance;
-                InventoryUI inventoryUI = Object.FindAnyObjectByType<InventoryUI>();
-                if (inventoryUI == null)
-                    Debug.LogWarning("Cant found InventoryUI.");
-
-                ItemData itemToGive = null;
-                switch (animalType)
-                {
-                    case AnimalType.Sheep_Black:
-                        itemToGive = blackWoolItem;
-                        break;
-                    case AnimalType.Sheep_White:
-                        itemToGive = whiteWoolItem;
-                        break;
-                    case AnimalType.Sheep_Cream:
-                        itemToGive = creamWoolItem;
-                        break;
-                    case AnimalType.Goat:
-                        itemToGive = goatMilkItem;
-                        break;
-                }
-
-                if (itemToGive != null && playerInventory.AddItem(itemToGive, 1))
-                {
-                    Debug.Log($"Added {itemToGive.itemName} To Inventory");
-                    inventoryUI?.UpdateAllSlots();
-
-                    canHarvest = false;
-                    Invoke(nameof(ResetHarvest), harvestCooldown);
-                }
-                else
-                {
-                    Debug.Log("Cant add anymore");
-                }
+                feeding.barn = foundBarn;
+                Debug.Log($"[Auto] Assign Barn cho {gameObject.name} t? trong scene.");
+            }
+            else
+            {
+                Debug.LogWarning($"Cant Found Barn for Assign {gameObject.name}!");
             }
         }
     }
 
-    void ResetHarvest()
+    private void Update()
     {
-        canHarvest = true;
+        Inventory playerInventory = Inventory.Instance;
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        if (player == null) return;
+
+        float distance = Vector3.Distance(player.transform.position, transform.position);
+        if (distance <= interactDistance && Input.GetKeyDown(KeyCode.E))
+        {
+            if (feeding != null && feeding.CanHarvest())
+            {
+                if (playerInventory == null)
+                {
+                    Debug.LogError("Cant found Inventory");
+                    return;
+                }
+
+                ItemData itemToGive = GetItemDataByType();
+                if (itemToGive != null && playerInventory.AddItem(itemToGive, 1))
+                {
+                    Debug.Log($"Succes harvest {itemToGive.itemName} from{animalType}");
+                    feeding.ResetHarvest();
+
+                    // C?p nh?t giao di?n UI
+                    InventoryUI ui = FindAnyObjectByType<InventoryUI>();
+                    ui?.UpdateAllSlots();
+                }
+                else
+                {
+                    Debug.LogWarning("No longer adding that type of item.");
+                }
+            }
+            else
+            {
+                Debug.Log("This Animal still not eaten or cant harvest");
+            }
+        }
+    }
+
+    private ItemData GetItemDataByType()
+    {
+        switch (animalType)
+        {
+            case AnimalType.Sheep_Black: return blackWoolItem;
+            case AnimalType.Sheep_White: return whiteWoolItem;
+            case AnimalType.Sheep_Cream: return creamWoolItem;
+            case AnimalType.Goat: return goatMilkItem;
+        }
+        return null;
     }
 }
