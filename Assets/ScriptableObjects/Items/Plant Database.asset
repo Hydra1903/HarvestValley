@@ -12,5 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 173b5b8c536e4e04bba43aa81ba3567b, type: 3}
   m_Name: Plant Database
   m_EditorClassIdentifier: 
-  allPlants: []
-  defaultPlant: {fileID: 0}
+  allPlants:
+  - {fileID: 11400000, guid: f4e497457e113464d95ad3d19d3a27f3, type: 2}
+  defaultPlant: {fileID: 11400000, guid: f4e497457e113464d95ad3d19d3a27f3, type: 2}
