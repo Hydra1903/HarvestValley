@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 71849a011fc748e4788f3888d3873774, type: 3}
+  m_Name: Carrots
+  m_EditorClassIdentifier: 
+  plantName: Carrot
+  plantType: 0
+  size: 1
+  prefab: {fileID: 0}
+  icon: {fileID: 0}
+  growthTime: 10
+  maxHarvest: 1
+  needsWater: 1
+  needsFertilizer: 0
+  seedCost: 10
+  harvestValue: 25
+  description: "M\xF4 t\u1EA3 v\u1EC1 lo\u1EA1i c\xE2y n\xE0y..."

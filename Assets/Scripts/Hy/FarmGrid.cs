@@ -9,7 +9,15 @@ public class FarmGrid : MonoBehaviour
 
     public GameObject dugSoilPrefab; // Luống
     public GameObject holePrefab; //Hố
-    public GameObject waterPrefab; // Thảm nước 
+    public GameObject waterPrefab; // Thảm nước
+    
+    // Plant system
+    public PlantType currentPlantType = PlantType.Carrot;
+    public PlantDatabase plantDatabase;
+    
+    // Optimized ghost system  
+    public Material ghostMaterial;
+    private SimpleGhostManager simpleGhostManager; 
 
     private Tile[,] tiles;
     private GameObject[,] tileObjects;
@@ -18,6 +26,8 @@ public class FarmGrid : MonoBehaviour
     private GameObject ghostPlotInstance;
     public GameObject ghostHolePrefab;
     private GameObject ghostHoleInstance;
+    
+    // Removed multiple ghost instances - now using PlantGhostManager
 
 
     public ToolType currentTool = ToolType.Hoe;
@@ -32,7 +42,6 @@ public class FarmGrid : MonoBehaviour
             for (int y = 0; y < gridHeight; y++)
             {
                 tiles[x, y] = new Tile();
-                // Có thể khởi tạo prefab ô đất thường ở đây nếu muốn
             }
         }
 
@@ -40,6 +49,11 @@ public class FarmGrid : MonoBehaviour
         ghostPlotInstance.SetActive(false);
         ghostHoleInstance = Instantiate(ghostHolePrefab, Vector3.zero, Quaternion.identity);
         ghostHoleInstance.SetActive(false);
+        
+        // Initialize simple ghost manager
+        GameObject ghostManagerObj = new GameObject("SimpleGhostManager");
+        simpleGhostManager = ghostManagerObj.AddComponent<SimpleGhostManager>();
+        simpleGhostManager.Initialize(ghostMaterial);
 
     }
 
@@ -54,13 +68,26 @@ public class FarmGrid : MonoBehaviour
         // Chuyển công cụ
         if (Input.GetKeyDown(KeyCode.Alpha1)) currentTool = ToolType.Hoe;
         if (Input.GetKeyDown(KeyCode.Alpha2)) currentTool = ToolType.Shovel;
+        if (Input.GetKeyDown(KeyCode.Alpha3)) currentTool = ToolType.Seed;
+        
+        // Chuyển loại cây khi đang dùng seed
+        if (currentTool == ToolType.Seed)
+        {
+            if (Input.GetKeyDown(KeyCode.Q)) currentPlantType = PlantType.Carrot;  // 1x1
+            if (Input.GetKeyDown(KeyCode.W)) currentPlantType = PlantType.Tomato;  // 2x2
+            if (Input.GetKeyDown(KeyCode.E)) currentPlantType = PlantType.Apple;   // 3x3
+        }
     }
 
     void HandleMouseInput()
     {
-        // Ẩn cả hai ghost trước
+        // Ẩn tất cả ghost trước
         ghostPlotInstance.SetActive(false);
         ghostHoleInstance.SetActive(false);
+        if (simpleGhostManager != null)
+        {
+            simpleGhostManager.HideGhost();
+        }
 
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         if (Physics.Raycast(ray, out RaycastHit hit))
@@ -68,19 +95,24 @@ public class FarmGrid : MonoBehaviour
             Vector3 worldPos = hit.point;
             Vector2Int gridPos = WorldToGrid(worldPos);
 
-            // Lấy thông tin tool hiện tại
-            ToolInfo toolInfo = GetCurrentToolInfo();
-            
-            // Tìm vùng đặt
-            Vector2Int startPos = CalculateStartPosition(gridPos, toolInfo.size);
-
-            if (CanPlaceSoil(startPos.x, startPos.y, toolInfo.size))
+            if (currentTool == ToolType.Seed)
             {
-                ShowGhostPreview(startPos, toolInfo);
+                HandlePlantingInput(gridPos);
+            }
+            else
+            {
+                // Logic đào luống cũ
+                ToolInfo toolInfo = GetCurrentToolInfo();
+                Vector2Int startPos = CalculateStartPosition(gridPos, toolInfo.size);
 
-                if (Input.GetMouseButtonDown(0))
+                if (CanPlaceSoil(startPos.x, startPos.y, toolInfo.size))
                 {
-                    PlaceArea(startPos.x, startPos.y, toolInfo.size, toolInfo.prefab);
+                    ShowGhostPreview(startPos, toolInfo);
+
+                    if (Input.GetMouseButtonDown(0))
+                    {
+                        PlaceArea(startPos.x, startPos.y, toolInfo.size, toolInfo.prefab);
+                    }
                 }
             }
         }
@@ -304,5 +336,126 @@ public class FarmGrid : MonoBehaviour
             (startY + offsetZ) * cellSize
         );
         Instantiate(prefab, pos, Quaternion.identity);
+    }
+    
+    // ===== PLANT SYSTEM =====
+    
+    void HandlePlantingInput(Vector2Int gridPos)
+    {
+        if (plantDatabase == null) return;
+        
+        PlantData plantData = plantDatabase.GetPlantData(currentPlantType);
+        if (plantData == null) return;
+        
+        int size = plantData.GetSizeInt();
+        Vector2Int startPos = CalculateStartPosition(gridPos, size);
+        
+        if (CanPlantAt(startPos, size, plantData))
+        {
+            ShowPlantGhostPreview(startPos, plantData);
+            
+            if (Input.GetMouseButtonDown(0))
+            {
+                PlantSeed(startPos, plantData);
+            }
+        }
+    }
+    
+    bool CanPlantAt(Vector2Int startPos, int size, PlantData plantData)
+    {
+        for (int x = 0; x < size; x++)
+        {
+            for (int y = 0; y < size; y++)
+            {
+                int checkX = startPos.x + x;
+                int checkY = startPos.y + y;
+                
+                if (!IsInGrid(checkX, checkY))
+                    return false;
+                    
+                Tile tile = tiles[checkX, checkY];
+                
+                // Kiểm tra tile có thể trồng cây không
+                if (tile.state != SoilState.Dug || tile.plantInstance != null)
+                    return false;
+                    
+                // Sử dụng logic từ PlantData để kiểm tra
+                bool isHole = IsHoleArea(new Vector2Int(checkX, checkY), 1);
+                if (!plantData.CanPlantOn(tile.state, isHole))
+                    return false;
+            }
+        }
+        return true;
+    }
+    
+    bool IsHoleArea(Vector2Int pos, int size)
+    {
+        // Kiểm tra xem vùng này có phải là hố không
+        // Logic này cần được cải thiện dựa trên cách bạn đánh dấu hố
+        // Tạm thời return false để test
+        return false;
+    }
+    
+    void ShowPlantGhostPreview(Vector2Int startPos, PlantData plantData)
+    {
+        if (simpleGhostManager == null || plantData == null) return;
+        
+        // Tính toán offset dựa trên kích thước
+        float offsetX = plantData.GetSizeInt() * 0.5f;
+        float offsetZ = plantData.GetSizeInt() * 0.5f;
+        
+        Vector3 ghostPos = origin + new Vector3(
+            (startPos.x + offsetX) * cellSize,
+            0.45f,
+            (startPos.y + offsetZ) * cellSize
+        );
+        
+        // Sử dụng SimpleGhostManager để hiển thị ghost
+        simpleGhostManager.ShowGhost(plantData, ghostPos);
+    }
+    
+    void PlantSeed(Vector2Int startPos, PlantData plantData)
+    {
+        if (plantData == null || plantData.prefab == null)
+        {
+            Debug.LogWarning($"Không tìm thấy prefab cho {plantData?.plantName}");
+            return;
+        }
+        
+        int size = plantData.GetSizeInt();
+        
+        // Tạo plant instance
+        PlantInstance newPlantInstance = new PlantInstance(plantData);
+        
+        // Cập nhật tiles
+        for (int x = 0; x < size; x++)
+        {
+            for (int y = 0; y < size; y++)
+            {
+                int tileX = startPos.x + x;
+                int tileY = startPos.y + y;
+                tiles[tileX, tileY].state = SoilState.Planted;
+                tiles[tileX, tileY].plantInstance = newPlantInstance;
+            }
+        }
+        
+        // Tạo GameObject trong scene
+        float offsetX = size * 0.5f;
+        float offsetZ = size * 0.5f;
+        
+        Vector3 plantPos = origin + new Vector3(
+            (startPos.x + offsetX) * cellSize,
+            0.45f,
+            (startPos.y + offsetZ) * cellSize
+        );
+        
+        GameObject plantObject = Instantiate(plantData.prefab, plantPos, Quaternion.identity);
+        
+        // Lưu reference vào tile trung tâm
+        int centerX = startPos.x + size / 1;
+        int centerY = startPos.y + size / 1;
+        tiles[centerX, centerY].plantObject = plantObject;
+        
+        Debug.Log($"Đã trồng {plantData.plantName} ({plantData.plantType}) tại ({startPos.x}, {startPos.y})");
     }
 }

@@ -4,5 +4,6 @@ public enum SoilState
 {
     Normal,
     Dug,
-    Wet
+    Wet,
+    Planted
 }
