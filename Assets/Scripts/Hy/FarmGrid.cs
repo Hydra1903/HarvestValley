@@ -27,9 +27,6 @@ public class FarmGrid : MonoBehaviour
     public GameObject ghostHolePrefab;
     private GameObject ghostHoleInstance;
     
-    // Removed multiple ghost instances - now using PlantGhostManager
-
-
     public ToolType currentTool = ToolType.Hoe;
 
     void Start()
@@ -101,7 +98,7 @@ public class FarmGrid : MonoBehaviour
             }
             else
             {
-                // Logic đào luống cũ
+                // Logic đào luống 
                 ToolInfo toolInfo = GetCurrentToolInfo();
                 Vector2Int startPos = CalculateStartPosition(gridPos, toolInfo.size);
 
@@ -243,7 +240,7 @@ public class FarmGrid : MonoBehaviour
                         }
                         else isPlot = false;
 
-                        // Kiểm tra vùng 3x3 nếu không phải plot
+                        // Kiểm tra vùng 3x3 
                         bool isHole = false;
                         if (!isPlot && x + 2 < gridWidth && y + 2 < gridHeight)
                         {

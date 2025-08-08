@@ -1,8 +1,7 @@
 using UnityEngine;
 
-/// <summary>
-/// ScriptableObject chứa dữ liệu cây trồng - có thể tạo asset và điều chỉnh trong Inspector
-/// </summary>
+
+/// ScriptableObject chứa dữ liệu cây trồng 
 [CreateAssetMenu(fileName = "New Plant Data", menuName = "Farm System/Plant Data")]
 public class PlantData : ScriptableObject
 {
@@ -31,9 +30,8 @@ public class PlantData : ScriptableObject
     [TextArea(3, 5)]
     public string description = "Mô tả về loại cây này...";
     
-    /// <summary>
+
     /// Kiểm tra xem cây có thể trồng trên loại đất này không
-    /// </summary>
     public bool CanPlantOn(SoilState soilState, bool isHole)
     {
         if (soilState != SoilState.Dug) return false;
@@ -45,18 +43,13 @@ public class PlantData : ScriptableObject
             return !isHole;
     }
     
-    /// <summary>
-    /// Lấy kích thước dưới dạng int
-    /// </summary>
     public int GetSizeInt()
     {
         return (int)size;
     }
 }
 
-/// <summary>
 /// Instance của cây đã trồng - chứa trạng thái runtime
-/// </summary>
 [System.Serializable]
 public class PlantInstance
 {
