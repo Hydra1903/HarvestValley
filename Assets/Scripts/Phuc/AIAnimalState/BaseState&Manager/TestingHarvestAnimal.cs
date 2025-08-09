@@ -40,7 +40,7 @@ public class TestingHarvestAnimal : MonoBehaviour
 
     private void Update()
     {
-        Inventory playerInventory = Inventory.Instance;
+        //Inventory playerInventory = Inventory.Instance;
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         if (player == null) return;
 
