@@ -260,9 +260,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   panel: {fileID: 920188125}
-  splitButton: {fileID: 920188124}
   deviation: {x: 50, y: 0, z: 0}
   backgroundBlocker: {fileID: 920188112}
+  inputfieldQuantity: {fileID: 0}
+  splitQuantity: 0
 --- !u!114 &327084817
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -305,6 +306,7 @@ MonoBehaviour:
   dragIcon: {fileID: 920188122}
   dragQuantityText: {fileID: 920188121}
   dragItem: {fileID: 920188120}
+  gold: {fileID: 0}
 --- !u!114 &327084819
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -322,6 +324,7 @@ MonoBehaviour:
   dragIcon: {fileID: 920188122}
   dragQuantityText: {fileID: 920188121}
   dragItem: {fileID: 920188120}
+  gold: {fileID: 0}
 --- !u!4 &327084820
 Transform:
   m_ObjectHideFlags: 0
@@ -913,17 +916,6 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 35182077645068265, guid: 2255da025cff4a34c9689a8ba47ce036, type: 3}
   m_PrefabInstance: {fileID: 1599778700}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &733319151 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2183930109443996579, guid: 2255da025cff4a34c9689a8ba47ce036, type: 3}
-  m_PrefabInstance: {fileID: 1599778700}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7bfc0ee8760dc304092a1b6d32e3dbde, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &767569777 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7332320983329425447, guid: 435a41237fed0bd43b2e65541818b748, type: 3}
@@ -1342,6 +1334,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2595607621718035716, guid: 435a41237fed0bd43b2e65541818b748, type: 3}
       propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2698261820207881384, guid: 435a41237fed0bd43b2e65541818b748, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2698261820207881384, guid: 435a41237fed0bd43b2e65541818b748, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2698261820207881384, guid: 435a41237fed0bd43b2e65541818b748, type: 3}
+      propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2813193675861693410, guid: 435a41237fed0bd43b2e65541818b748, type: 3}
@@ -2204,6 +2208,14 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6366842524009762588, guid: 435a41237fed0bd43b2e65541818b748, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6366842524009762588, guid: 435a41237fed0bd43b2e65541818b748, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6411739499341107874, guid: 435a41237fed0bd43b2e65541818b748, type: 3}
       propertyPath: m_IsActive
       value: 0
@@ -2900,17 +2912,6 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 6457540084793047895, guid: 435a41237fed0bd43b2e65541818b748, type: 3}
   m_PrefabInstance: {fileID: 920188110}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &920188124 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2778239055139093678, guid: 435a41237fed0bd43b2e65541818b748, type: 3}
-  m_PrefabInstance: {fileID: 920188110}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &920188125 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6494041586459261393, guid: 435a41237fed0bd43b2e65541818b748, type: 3}
@@ -3613,10 +3614,6 @@ MonoBehaviour:
   dragIcon: {fileID: 920188122}
   dragQuantityText: {fileID: 920188121}
   dragItem: {fileID: 920188120}
-  draggingFromSlot: {fileID: 733319151}
-  item:
-    itemData: {fileID: 0}
-    quantity: 0
   capacity: 0
   capacityText: {fileID: 221306500}
 --- !u!114 &1712090814
