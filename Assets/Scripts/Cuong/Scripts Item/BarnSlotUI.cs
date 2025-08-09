@@ -10,14 +10,14 @@ public class BarnSlotUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
 
     public int row, column;
     public Barn barn;
-    public BarnUI barnUI;
+    //public BarnUI barnUI;
 
-    public void SetSlot(int r, int c, Barn bn, BarnUI ui)
+    public void SetSlot(int r, int c, Barn bn)
     {
         row = r;
         column = c;
         barn = bn;
-        barnUI = ui;
+       // barnUI = ui;
         UpdateSlotUI();
     }
 
@@ -43,7 +43,7 @@ public class BarnSlotUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
         var slot = barn.slots[row, column];
         if (!slot.IsEmpty)
         {
-            barnUI.StartDrag(slot.item, this);
+            //8barnUI.StartDrag(slot.item, this);
             slot.item = null;
             UpdateSlotUI();
         }
@@ -51,21 +51,21 @@ public class BarnSlotUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
 
     public void OnDrag(PointerEventData eventData)
     {
-        barnUI.UpdateDragPosition(eventData.position);
+        //barnUI.UpdateDragPosition(eventData.position);
     }
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        barnUI.EndDrag();
+        //barnUI.EndDrag();
     }
 
     public void OnDrop(PointerEventData eventData)
     {
-        int Rq = barn.limitCapacity - barnUI.capacity;
-        var draggingItem = barnUI.dragItem?.draggedItem;
-        if (draggingItem == null) return;
+        //int Rq = barn.limitCapacity - barnUI.capacity;
+        // var draggingItem = barnUI.dragItem?.draggedItem;
+        // if (draggingItem == null) return;
 
-        var targetSlot = barn.slots[row, column];
+        /*var targetSlot = barn.slots[row, column];
 
         if (targetSlot.IsEmpty)
         {
@@ -73,7 +73,7 @@ public class BarnSlotUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
             if (Rq > 99)
             {
                 targetSlot.item = draggingItem;
-                barnUI.dragItem.draggedItem = null;
+                //barnUI.dragItem.draggedItem = null;
             }
             else
             {
@@ -114,6 +114,7 @@ public class BarnSlotUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
         }
     }
     */
+    }
 }
 
 

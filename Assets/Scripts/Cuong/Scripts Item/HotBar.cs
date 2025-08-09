@@ -3,7 +3,7 @@ using UnityEngine;
 public class HotBar : MonoBehaviour
 {
     public InventorySlot[] slots;
-    public Inventory inventory;
+   // public Inventory inventory;
     void Awake()
     {
         slots = new InventorySlot[8];
@@ -19,7 +19,7 @@ public class HotBar : MonoBehaviour
     {
         for (int i = 0; i < 8; i++)
         {
-            slots[i] = inventory.slots[3,i];
+           // slots[i] = inventory.slots[3,i];
             Debug.Log("Cap nhat");
         }
 
