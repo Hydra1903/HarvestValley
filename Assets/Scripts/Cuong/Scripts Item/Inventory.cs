@@ -5,15 +5,9 @@ public class Inventory : MonoBehaviour
     public int rows = 4;
     public int columns = 8;
 
-   // public static Inventory Instance;
     public InventorySlot[,] slots;
     void Awake()
     {
-        //if (Instance == null)
-        //    Instance = this;
-        //else
-        //    Destroy(gameObject);
-
         slots = new InventorySlot[rows, columns];
         for (int r = 0; r < rows; r++)
         {
