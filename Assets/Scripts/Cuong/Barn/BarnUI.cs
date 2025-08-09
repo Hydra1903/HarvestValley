@@ -11,7 +11,6 @@ public class BarnUI : MonoBehaviour
     public DragItem dragItem;
 
     private BarnSlotUI draggingFromSlot;
-
     public int capacity;
     public TextMeshProUGUI capacityText;
 
