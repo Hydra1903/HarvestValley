@@ -67,7 +67,10 @@ public class InventoryUI : MonoBehaviour
     {
         foreach (var slotUI in slotsParent.GetComponentsInChildren<InventorySlotUI>())
         {
-            slotUI.UpdateSlotUI();
+            if (slotUI != null)
+            {
+                slotUI.UpdateSlotUI();
+            }
         }
     }
 }

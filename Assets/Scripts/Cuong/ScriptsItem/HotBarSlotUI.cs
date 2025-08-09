@@ -15,7 +15,6 @@ public class HotBarSlotUI : MonoBehaviour
         location = lcn;
         hotbar = hb;
         hotbarUI = ui;
-        UpdateSlotUI();
     }
 
     public void UpdateSlotUI()
