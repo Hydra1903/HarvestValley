@@ -9,6 +9,7 @@ public class Inventory : MonoBehaviour
     void Awake()
     {
         slots = new InventorySlot[rows, columns];
+
         for (int r = 0; r < rows; r++)
         {
             for (int c = 0; c < columns; c++)
