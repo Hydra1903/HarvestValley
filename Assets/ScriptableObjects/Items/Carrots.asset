@@ -17,6 +17,11 @@ MonoBehaviour:
   size: 1
   prefab: {fileID: 1712200964176758, guid: 9d08f25eb20e41343b0563e3ee1cf5f4, type: 3}
   icon: {fileID: 0}
+  growthPrefabs:
+  - {fileID: 1712200964176758, guid: 9d08f25eb20e41343b0563e3ee1cf5f4, type: 3}
+  - {fileID: 1290591311347902, guid: 930471c54b119634eb67ed945ae5409c, type: 3}
+  - {fileID: 1879033853735152, guid: 9b38237972a54f14dbca44485a1d713f, type: 3}
+  daysPerStage: 0100000001000000
   growthTime: 10
   maxHarvest: 1
   needsWater: 1

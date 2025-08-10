@@ -15,7 +15,7 @@ public class FarmGrid : MonoBehaviour
     public PlantType currentPlantType = PlantType.Carrot;
     public PlantDatabase plantDatabase;
     
-    // Optimized ghost system  
+    //Ghost cho đất 
     public Material ghostMaterial;
     private SimpleGhostManager simpleGhostManager; 
 
@@ -58,6 +58,11 @@ public class FarmGrid : MonoBehaviour
     {
         HandleToolSwitching();
         HandleMouseInput();
+
+        if (Input.GetKeyDown(KeyCode.N)) 
+        {
+            AdvanceDay();
+        }
     }
 
     void HandleToolSwitching()
@@ -320,6 +325,7 @@ public class FarmGrid : MonoBehaviour
             for (int y = 0; y < size; y++)
             {
                 tiles[startX + x, startY + y].state = SoilState.Dug;
+                tiles[startX + x, startY + y].soilType = (size == 5) ? SoilType.Plot : SoilType.Hole;
             }
         }
         float dugYOffset = 0.28f;
@@ -384,15 +390,27 @@ public class FarmGrid : MonoBehaviour
         }
         return true;
     }
-    
+
     bool IsHoleArea(Vector2Int pos, int size)
     {
-        // Kiểm tra xem vùng này có phải là hố không
-        // Logic này cần được cải thiện dựa trên cách bạn đánh dấu hố
-        // Tạm thời return false để test
-        return false;
+        for (int x = 0; x < size; x++)
+        {
+            for (int y = 0; y < size; y++)
+            {
+                int checkX = pos.x + x;
+                int checkY = pos.y + y;
+
+                if (!IsInGrid(checkX, checkY))
+                    return false;
+
+                if (tiles[checkX, checkY].soilType != SoilType.Hole)
+                    return false;
+            }
+        }
+        return true;
     }
-    
+
+
     void ShowPlantGhostPreview(Vector2Int startPos, PlantData plantData)
     {
         if (simpleGhostManager == null || plantData == null) return;
@@ -447,12 +465,55 @@ public class FarmGrid : MonoBehaviour
         );
         
         GameObject plantObject = Instantiate(plantData.prefab, plantPos, Quaternion.identity);
-        
+
         // Lưu reference vào tile trung tâm
         int centerX = startPos.x + size / 1;
         int centerY = startPos.y + size / 1;
         tiles[centerX, centerY].plantObject = plantObject;
-        
+
+        newPlantInstance.currentStage = 0;
+        newPlantInstance.daysInCurrentStage = 0;
+
+        GameObject stagePrefab = plantData.growthPrefabs[0];
+        if (stagePrefab != null)
+        {
+            tiles[centerX, centerY].plantObject = Instantiate(stagePrefab, plantPos, Quaternion.identity);
+        }
         Debug.Log($"Đã trồng {plantData.plantName} ({plantData.plantType}) tại ({startPos.x}, {startPos.y})");
+    }
+
+    //hàm cập nhật giai đoạn phát triển
+    public void AdvanceDay()
+    {
+        for (int x = 0; x < gridWidth; x++)
+        {
+            for (int y = 0; y < gridHeight; y++)
+            {
+                PlantInstance plant = tiles[x, y].plantInstance;
+                if (plant != null)
+                {
+                    // Mỗi ngày tăng 1 đơn vị phát triển
+                    plant.AdvanceDay();
+
+                    // Cập nhật GameObject hiển thị
+                    if (tiles[x, y].plantObject != null)
+                    {
+                        Destroy(tiles[x, y].plantObject);
+                    }
+
+                    GameObject stagePrefab = plant.plantData.growthPrefabs[plant.currentStage];
+                    if (stagePrefab != null)
+                    {
+                        Vector3 pos = tiles[x, y].plantObject != null ?
+                                      tiles[x, y].plantObject.transform.position :
+                                      origin + new Vector3(x + 0.5f, 0.45f, y + 0.5f);
+
+                        tiles[x, y].plantObject = Instantiate(stagePrefab, pos, Quaternion.identity);
+                    }
+                }
+            }
+        }
+
+        Debug.Log("Qua ngày: Tất cả cây đã được cập nhật.");
     }
 }

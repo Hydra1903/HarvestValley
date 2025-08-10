@@ -1,6 +1,5 @@
 using UnityEngine;
 
-
 /// ScriptableObject chứa dữ liệu cây trồng 
 [CreateAssetMenu(fileName = "New Plant Data", menuName = "Farm System/Plant Data")]
 public class PlantData : ScriptableObject
@@ -13,11 +12,15 @@ public class PlantData : ScriptableObject
     [Header("Visual")]
     public GameObject prefab;
     public Sprite icon;
-    
+
+    [Header("Growth Stages")]
+    public GameObject[] growthPrefabs; // Prefab cho từng giai đoạn
+    public int[] daysPerStage;         // Số ngày ở mỗi giai đoạn
+
     [Header("Growth Settings")]
     public float growthTime = 10f; // thời gian phát triển (giây)
     public int maxHarvest = 1; // số lần thu hoạch tối đa
-    
+
     [Header("Requirements")]
     public bool needsWater = true;
     public bool needsFertilizer = false;
@@ -58,7 +61,9 @@ public class PlantInstance
     public int harvestCount = 0;
     public bool needsWater = false;
     public bool needsFertilizer = false;
-    
+    public int currentStage = 0;
+    public int daysInCurrentStage = 0;
+
     public PlantInstance(PlantData data)
     {
         plantData = data;
@@ -98,6 +103,19 @@ public class PlantInstance
         if (CanHarvest())
         {
             harvestCount++;
+        }
+    }
+
+    public void AdvanceDay()
+    {
+        if (currentStage >= plantData.growthPrefabs.Length - 1) return; // Đã trưởng thành
+
+        daysInCurrentStage++;
+
+        if (daysInCurrentStage >= plantData.daysPerStage[currentStage])
+        {
+            currentStage++;
+            daysInCurrentStage = 0;
         }
     }
 }
