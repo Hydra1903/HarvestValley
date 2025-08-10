@@ -13,6 +13,7 @@ public class LiveStockSeller : MonoBehaviour
 
     private bool playerInRange = false;
     private AnimalType selectedType = AnimalType.None;
+    private AnimalPen selectedPen = null;
 
     [Header("UI Button Access")]
     public Button WhiteSheepButton;
@@ -35,103 +36,112 @@ public class LiveStockSeller : MonoBehaviour
         confirmPanel.SetActive(false);
         selectPenPanel.SetActive(false);
 
-        yesButton.onClick.AddListener(() => ShowSelectPen());
-        noButton.onClick.AddListener(OnCancelPurchase);
+        // Nút Yes xác nh?n mua
+        yesButton.onClick.AddListener(() => ConfirmPurchase());
+        // Nút No quay l?i b?ng mua
+        noButton.onClick.AddListener(() => BackToBuyMenu());
 
-        pen1Button.onClick.AddListener(() => SpawnAnimalInPen(pen1));
-        pen2Button.onClick.AddListener(() => SpawnAnimalInPen(pen2));
+        // Nút ch?n chu?ng ? sau khi ch?n th? m? b?ng confirm
+        pen1Button.onClick.AddListener(() => SelectPen(pen1));
+        pen2Button.onClick.AddListener(() => SelectPen(pen2));
 
-        WhiteGoatButton.onClick.AddListener(() => ShowConfirm(AnimalType.WhiteGoat));
-        BlackGoatButton.onClick.AddListener(() => ShowConfirm(AnimalType.BlackGoat));
-        WhiteSheepButton.onClick.AddListener(() => ShowConfirm(AnimalType.WhiteSheep));
-        CreamSheepButton.onClick.AddListener(() => ShowConfirm(AnimalType.CreamSheep));
-        BlackSheepButton.onClick.AddListener(() => ShowConfirm(AnimalType.BlackSheep));
+        // Nút ch?n lo?i ð?ng v?t ? m? b?ng ch?n chu?ng
+        WhiteGoatButton.onClick.AddListener(() => ShowSelectPen(AnimalType.WhiteGoat));
+        BlackGoatButton.onClick.AddListener(() => ShowSelectPen(AnimalType.BlackGoat));
+        WhiteSheepButton.onClick.AddListener(() => ShowSelectPen(AnimalType.WhiteSheep));
+        CreamSheepButton.onClick.AddListener(() => ShowSelectPen(AnimalType.CreamSheep));
+        BlackSheepButton.onClick.AddListener(() => ShowSelectPen(AnimalType.BlackSheep));
     }
 
-    void ShowConfirm(AnimalType type)
+    void ShowSelectPen(AnimalType type)
     {
         selectedType = type;
-        confirmPanel.SetActive(true);
-    }
-
-    void ShowSelectPen()
-    {
-        confirmPanel.SetActive(false);
         selectPenPanel.SetActive(true);
     }
 
-    void SpawnAnimalInPen(AnimalPen pen)
+    void SelectPen(AnimalPen pen)
     {
-        if (!pen.CanSpawnMore())
+        selectedPen = pen;
+        selectPenPanel.SetActive(false);
+        confirmPanel.SetActive(true);
+    }
+
+    void ConfirmPurchase()
+    {
+        if (selectedPen == null || selectedType == AnimalType.None)
         {
-            Debug.LogWarning("Pen Full Cant Spawn");
-            selectPenPanel.SetActive(false);
-            return;
-        }
-        GameObject prefab = AnimalFactory.GetPrefab(selectedType);
-        if (prefab == null)
-        {
-            Debug.LogError("Cant Find!");
+            Debug.LogError("Pen or Animal havent been choosen");
             return;
         }
 
-        Vector3 spawnPoint = pen.GetRandomSpawnPosition();
-        GameObject obj = Instantiate(prefab, pen.GetRandomSpawnPosition(), Quaternion.identity);
+        if (!selectedPen.CanSpawnMore())
+        {
+            Debug.LogWarning("Pen now full cant spawn.");
+            confirmPanel.SetActive(false);
+            return;
+        }
+
+        GameObject prefab = AnimalFactory.GetPrefab(selectedType);
+        if (prefab == null)
+        {
+            Debug.LogError("cant found Prefab");
+            return;
+        }
+
+        GameObject obj = Instantiate(prefab, selectedPen.GetRandomSpawnPosition(), Quaternion.identity);
 
         SimpleAI ai = obj.GetComponent<SimpleAI>();
         if (ai != null)
         {
-            ai.wanderPoints = pen.wanderPoints;
+            ai.wanderPoints = selectedPen.wanderPoints;
         }
-        AnimalFedding feeding = obj.GetComponent<AnimalFedding>();      //muc auto gan script Animal wanderpoint va Barn UI
+
+        AnimalFedding feeding = obj.GetComponent<AnimalFedding>();
         if (feeding != null)
         {
-            feeding.barn = pen.barnReference;
+            feeding.barn = selectedPen.barnReference;
         }
 
-        string animalTag = obj.tag;
-        if (!pen.IsAllowedTag(animalTag) && pen.HasAssignedType())
+        if (!selectedPen.IsAllowedTag(obj.tag) && selectedPen.HasAssignedType())
         {
-            Debug.LogWarning($"Pen does not accept animals with tag '{animalTag}'");
+            Debug.LogWarning($"Pen not accepted the animal tag '{obj.tag}'");
             Destroy(obj);
-            selectPenPanel.SetActive(false);
+            confirmPanel.SetActive(false);
             return;
         }
-        pen.RegisterAnimal(obj);
 
-        selectPenPanel.SetActive(false);
+        selectedPen.RegisterAnimal(obj);
+
+        confirmPanel.SetActive(false);
+        selectedType = AnimalType.None;
+        selectedPen = null;
+
+        CloseAllUI();
+    }
+
+    void BackToBuyMenu()
+    {
+        confirmPanel.SetActive(false);
+        buyCanvas.SetActive(true);
+        selectedPen = null;
+        selectedType = AnimalType.None;
+    }
+
+    void CloseAllUI()
+    {
         buyCanvas.SetActive(false);
-        selectedType = AnimalType.None;
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
-        if (playerAxisController != null)
-        {
-            playerAxisController.enabled = true;
-        }
-        firstCameraTesting.allowMouseLook = true;
-    }
-
-    void ResetUI()
-    {
-        buyCanvas.gameObject.SetActive(false);
-        confirmPanel.SetActive(false);
         selectPenPanel.SetActive(false);
-        selectedType = AnimalType.None;
+        confirmPanel.SetActive(false);
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
         if (playerAxisController != null)
-        {
             playerAxisController.enabled = true;
-        }
 
         firstCameraTesting.allowMouseLook = true;
     }
-    void OnCancelPurchase()
-    {
-        confirmPanel.SetActive(false);
-    }
+
     void Update()
     {
         if (playerInRange && Input.GetKeyDown(KeyCode.E))
@@ -143,16 +153,14 @@ public class LiveStockSeller : MonoBehaviour
             {
                 Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = true;
-
                 if (playerAxisController != null)
-                {
                     playerAxisController.enabled = false;
-                }
+
                 firstCameraTesting.allowMouseLook = false;
             }
             else
             {
-                ResetUI();
+                CloseAllUI();
             }
         }
     }
@@ -160,9 +168,7 @@ public class LiveStockSeller : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
-        {
             playerInRange = true;
-        }
     }
 
     private void OnTriggerExit(Collider other)
@@ -170,17 +176,9 @@ public class LiveStockSeller : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             playerInRange = false;
-            buyCanvas.gameObject.SetActive(false);
-            confirmPanel.SetActive(false);
+            CloseAllUI();
             selectedType = AnimalType.None;
-
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
-            if (playerAxisController != null)
-            {
-                playerAxisController.enabled = true;
-            }
-            firstCameraTesting.allowMouseLook = true;
+            selectedPen = null;
         }
     }
 }
