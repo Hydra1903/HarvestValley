@@ -36,16 +36,12 @@ public class LiveStockSeller : MonoBehaviour
         confirmPanel.SetActive(false);
         selectPenPanel.SetActive(false);
 
-        // Nút Yes xác nh?n mua
         yesButton.onClick.AddListener(() => ConfirmPurchase());
-        // Nút No quay l?i b?ng mua
         noButton.onClick.AddListener(() => BackToBuyMenu());
 
-        // Nút ch?n chu?ng ? sau khi ch?n th? m? b?ng confirm
         pen1Button.onClick.AddListener(() => SelectPen(pen1));
         pen2Button.onClick.AddListener(() => SelectPen(pen2));
 
-        // Nút ch?n lo?i ð?ng v?t ? m? b?ng ch?n chu?ng
         WhiteGoatButton.onClick.AddListener(() => ShowSelectPen(AnimalType.WhiteGoat));
         BlackGoatButton.onClick.AddListener(() => ShowSelectPen(AnimalType.BlackGoat));
         WhiteSheepButton.onClick.AddListener(() => ShowSelectPen(AnimalType.WhiteSheep));
@@ -101,7 +97,11 @@ public class LiveStockSeller : MonoBehaviour
         {
             feeding.barn = selectedPen.barnReference;
         }
-
+        AnimalInfo info = obj.GetComponent<AnimalInfo>();
+        if (info != null)
+        {
+            info.infoPanel = selectedPen.animalInfoPanelPrefab;
+        }
         if (!selectedPen.IsAllowedTag(obj.tag) && selectedPen.HasAssignedType())
         {
             Debug.LogWarning($"Pen not accepted the animal tag '{obj.tag}'");
@@ -111,6 +111,7 @@ public class LiveStockSeller : MonoBehaviour
         }
 
         selectedPen.RegisterAnimal(obj);
+        Debug.Log($"Added {obj.name} to {selectedPen.name}");
 
         confirmPanel.SetActive(false);
         selectedType = AnimalType.None;

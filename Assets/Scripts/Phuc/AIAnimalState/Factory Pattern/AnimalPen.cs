@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using TMPro;
 using Unity.Cinemachine;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class AnimalPen : MonoBehaviour
 {
@@ -17,11 +18,18 @@ public class AnimalPen : MonoBehaviour
     private List<GameObject> spawnedAnimals = new List<GameObject>();
     private HashSet<string> allowedTag = new HashSet<string>();
     public Barn barnReference; 
+
+
     [Header("UI")]
     public TMP_Text animalCountText;
+    public GameObject animalInfoPanelPrefab;
     public GameObject inventoryPanels;
     public GameObject penInfoPanel;
     public TMP_Text penInfoText;
+
+    [Header("Animal List UI")]
+    public Transform animalListParent;       
+    public GameObject animalUIItemPrefab;    
 
     private void Start()
     {
@@ -70,6 +78,7 @@ public class AnimalPen : MonoBehaviour
 
         spawnedAnimals.Add(animal);
         UpdateAnimalCountUI();
+        UpdateAnimalListUI();
         return true;
     }
     public void RemoveAnimal(GameObject animal)
@@ -78,6 +87,7 @@ public class AnimalPen : MonoBehaviour
         {
             spawnedAnimals.Remove(animal);
             UpdateAnimalCountUI();
+            UpdateAnimalListUI();
         }
     }
     public void UpdateAnimalCountUI()
@@ -130,6 +140,50 @@ public class AnimalPen : MonoBehaviour
                     firstCameraTesting.allowMouseLook = true;
             }
         }
+    }
+    private void UpdateAnimalListUI()
+    {
+        if (animalListParent == null || animalUIItemPrefab == null) return;
+
+        foreach (Transform child in animalListParent)
+        {
+            Destroy(child.gameObject);
+        }
+
+        foreach (GameObject animal in spawnedAnimals)
+        {
+            GameObject uiItem = Instantiate(animalUIItemPrefab);
+            uiItem.transform.SetParent(animalListParent, false);
+            uiItem.SetActive(true);
+
+            Image iconImage = uiItem.GetComponentInChildren<Image>(true);
+            SpriteRenderer sr = animal.GetComponentInChildren<SpriteRenderer>();
+            if (iconImage != null && sr != null)
+            {
+                iconImage.sprite = sr.sprite;
+                iconImage.enabled = true;
+            }
+            Button sellBtn = uiItem.GetComponentInChildren<Button>();
+            if (sellBtn != null)
+            {
+                sellBtn.onClick.AddListener(() =>
+                {
+                    SellAnimal(animal);
+                });
+            }
+        }
+    }
+
+    public void SellAnimal(GameObject animal)
+    {
+        if (!spawnedAnimals.Contains(animal)) return;
+
+        spawnedAnimals.Remove(animal);
+        Destroy(animal);
+
+        Debug.Log("Selled" + animal.name);
+
+        UpdateAnimalCountUI();
     }
     private void OnTriggerExit(Collider other)
     {
