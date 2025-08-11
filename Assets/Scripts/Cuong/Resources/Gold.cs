@@ -1,14 +1,11 @@
 using System.Globalization;
 using UnityEngine;
-using static UnityEngine.Rendering.DebugUI;
 
 public class Gold : MonoBehaviour
 {
     public static Gold Instance;
-
     public int gold = 0;
 
-    public InventoryUI inventoryUI;
 
     void Awake()
     {
@@ -20,8 +17,7 @@ public class Gold : MonoBehaviour
 
     public void AddGold(int amount)
     {
-        gold += amount;
-        UpdateGoldUI(); 
+        gold += amount; 
     }
 
     public bool SpendGold(int amount)
@@ -29,14 +25,8 @@ public class Gold : MonoBehaviour
         if (gold >= amount)
         {
             gold -= amount;
-            UpdateGoldUI();
             return true;
         }
         return false;
-    }
-
-    private void UpdateGoldUI()
-    {
-        inventoryUI.gold.text = gold.ToString("N0", new CultureInfo("de-DE"));
     }
 }

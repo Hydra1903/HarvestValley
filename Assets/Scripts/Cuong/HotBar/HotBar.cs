@@ -21,14 +21,14 @@ public class HotBar : MonoBehaviour
     }
     public void UseAndRemoveItem(int location, int quantity)
     {
-        if (inventory.slots[3, location].item.quantity > 0)
+        if (inventory.slots[3, location].item != null && inventory.slots[3, location].item.quantity > 0)
         {
             inventory.slots[3, location].item.quantity -= quantity;
             if (inventory.slots[3, location].item.quantity <= 0)
             {
                 inventory.slots[3, location].item = null;
+                slots[location].item = null;
             }
         }
-        Debug.Log("Da su dung");
     }
 }

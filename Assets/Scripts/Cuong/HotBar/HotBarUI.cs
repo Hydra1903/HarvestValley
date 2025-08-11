@@ -1,7 +1,6 @@
 using System;
 using TMPro;
 using UnityEngine;
-using static UnityEngine.Rendering.DebugUI;
 
 public class HotBarUI : MonoBehaviour
 {
@@ -27,7 +26,6 @@ public class HotBarUI : MonoBehaviour
         {
             HotBarSlotUI slotUI = slotsParent.GetChild(i).GetComponentInChildren<HotBarSlotUI>();
             slotUI?.SetSlot(i, hotbar, this);
-            Debug.Log("Gán" + i);
         }
     }
     public void UpdateAllSlots()

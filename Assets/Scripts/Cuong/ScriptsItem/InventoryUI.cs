@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using System.Globalization;
 
 public class InventoryUI : MonoBehaviour
 {
@@ -72,5 +73,9 @@ public class InventoryUI : MonoBehaviour
                 slotUI.UpdateSlotUI();
             }
         }
+    }
+    public void UpdateGoldUI()
+    {
+        gold.text = Gold.Instance.gold.ToString("N0", new CultureInfo("de-DE"));
     }
 }
