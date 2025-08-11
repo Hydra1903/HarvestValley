@@ -44,10 +44,8 @@ public class SimpleGhostManager : MonoBehaviour
             currentGhostInstance.SetActive(false);
         }
     }
-    
-    /// <summary>
+
     /// Tạo ghost từ prefab gốc và áp dụng material nhạt màu
-    /// </summary>
     void CreateGhostFromPrefab(PlantData plantData)
     {
         // Xóa ghost cũ nếu có
@@ -67,13 +65,10 @@ public class SimpleGhostManager : MonoBehaviour
         // Áp dụng material ghost
         ApplyGhostMaterial();
         
-        // Ẩn ghost ban đầu
         currentGhostInstance.SetActive(false);
     }
     
-    /// <summary>
     /// Vô hiệu hóa các component không cần thiết cho ghost
-    /// </summary>
     void DisableUnnecessaryComponents()
     {
         if (currentGhostInstance == null) return;

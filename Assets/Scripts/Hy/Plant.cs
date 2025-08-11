@@ -108,11 +108,21 @@ public class PlantInstance
 
     public void AdvanceDay()
     {
-        if (currentStage >= plantData.growthPrefabs.Length - 1) return; // Đã trưởng thành
+        // Nếu không có growthPrefabs thì không làm gì
+        if (plantData == null || plantData.growthPrefabs == null || plantData.growthPrefabs.Length == 0)
+            return;
+
+        // Nếu đã ở stage cuối thì không tăng nữa
+        if (currentStage >= plantData.growthPrefabs.Length - 1) return;
+
+        // Lấy số ngày cần cho stage hiện tại (fallback = 1)
+        int requiredDays = 1;
+        if (plantData.daysPerStage != null && plantData.daysPerStage.Length > currentStage)
+            requiredDays = Mathf.Max(1, plantData.daysPerStage[currentStage]);
 
         daysInCurrentStage++;
 
-        if (daysInCurrentStage >= plantData.daysPerStage[currentStage])
+        if (daysInCurrentStage >= requiredDays)
         {
             currentStage++;
             daysInCurrentStage = 0;
