@@ -19,16 +19,6 @@ public class InventoryTester : MonoBehaviour
         {
             Notification.Instance.ShowNotification("Túi đồ của bạn đã đầy!");
         }
-        /*
-        if (barn.AddItem(item1, 10) && barn.AddItem(item2, 23) && barn.AddItem(item2, 80))
-        {
-            barnUI.UpdateAllSlots();
-        }
-        else
-        {
-            Debug.Log("Tui do bi day");
-        }
-        */
     }
 }
 

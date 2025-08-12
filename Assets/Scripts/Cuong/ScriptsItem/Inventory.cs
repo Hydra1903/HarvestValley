@@ -33,7 +33,7 @@ public class Inventory : MonoBehaviour
                     if (amount <= 0) return true;
                 }
             }
-        }// THÊM VÀO CÙNG DATA
+        }// THÊM VÀO CÙNG KIỂU ITEM
 
         for (int r = 0; r < rows; r++)
         {
@@ -78,7 +78,7 @@ public class Inventory : MonoBehaviour
         {
             for (int c = 0; c < columns; c++)
             {
-                Debug.Log(slots[r,c].item);
+                Debug.Log(slots[r,c]);
             }
         }
     }

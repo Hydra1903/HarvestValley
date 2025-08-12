@@ -2,6 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using System.Globalization;
 
 
 public class MainUIScreen : MonoBehaviour
@@ -25,6 +26,14 @@ public class MainUIScreen : MonoBehaviour
     [Header("--- Time UI ---")]
     public TextMeshProUGUI textTime;
     public TextMeshProUGUI textDay;
+
+    [Header("--- Season UI ---")]
+    public GameObject spring;
+    public GameObject summer;
+    public GameObject fall;
+    public GameObject winter;
+    public GameObject currentPanelSeason;
+
     void Start()
     {
         UpdateXpUI();
@@ -33,7 +42,7 @@ public class MainUIScreen : MonoBehaviour
     }
     void Update()
     {
-        UpdateTime();
+
     }
 
     #region ----- LEVEL XP UI -----
@@ -42,7 +51,7 @@ public class MainUIScreen : MonoBehaviour
         if (levelManager.currentLevel < levelManager.levelMax)
         {
             xpBar.value = (float)Xp.Instance.xp / levelManager.xpThresholds[levelManager.currentLevel - 1];
-            textCurrentXp.text = Xp.Instance.xp.ToString() + "/" + levelManager.xpThresholds[levelManager.currentLevel - 1] + " XP";
+            textCurrentXp.text = Xp.Instance.xp.ToString("N0", new CultureInfo("de-DE")) + "/" + levelManager.xpThresholds[levelManager.currentLevel - 1].ToString("N0", new CultureInfo("de-DE")) + " XP";
         }
         else
         {
@@ -89,4 +98,35 @@ public class MainUIScreen : MonoBehaviour
         textDay.text = "Ngày " + GameTime.Instance.day.ToString();
     }
     #endregion
+
+    #region ----- SEASON UI -----
+    public void UpdateSeason()
+    {
+        if (Season.Instance.currentSeason == SeasonState.Spring)
+        {
+            spring.SetActive(true);
+            currentPanelSeason.SetActive(false);
+            currentPanelSeason = spring;
+        }
+        else if (Season.Instance.currentSeason == SeasonState.Summer)
+        {
+            summer.SetActive(true);
+            currentPanelSeason.SetActive(false);
+            currentPanelSeason = summer;
+        }
+        else if (Season.Instance.currentSeason == SeasonState.Fall)
+        {
+            fall.SetActive(true);
+            currentPanelSeason.SetActive(false);
+            currentPanelSeason = fall;
+        }
+        else if (Season.Instance.currentSeason == SeasonState.Winter)
+        {
+            winter.SetActive(true);
+            currentPanelSeason.SetActive(false);
+            currentPanelSeason = winter;
+        }
+    }
+    #endregion
 }
+
