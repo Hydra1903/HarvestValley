@@ -6,7 +6,7 @@ public class Xp : MonoBehaviour
     public int xp = 0;
 
     public LevelManager levelManager;
-
+    public MainUIScreen mainUIScreen;
     void Awake()
     {
         if (Instance == null)
@@ -20,6 +20,7 @@ public class Xp : MonoBehaviour
         {
             xp += amount;
             levelManager.CheckLevelUp();
+            mainUIScreen.UpdateXpUI();
         }
     }
 }

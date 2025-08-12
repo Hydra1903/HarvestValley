@@ -1,23 +1,42 @@
-﻿using UnityEngine;
+﻿using TMPro;
+using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
 using System.Collections;
 
-public class LevelUI : MonoBehaviour
+
+public class MainUIScreen : MonoBehaviour
 {
+    [Header ("--- Level UI ---")]
     public GameObject[] panelLevelUp;
     public GameObject backgroundLevelUp;
     public TextMeshProUGUI textNumberLevelUp;
     public Slider xpBar;
     public TextMeshProUGUI textCurrentXp;
     public TextMeshProUGUI textCurrentLevel;
-
     public LevelManager levelManager;
-    public int xpPlus;
+
+    [Header("--- Mana UI ---")]
+    public Slider mpBar;
+    public TextMeshProUGUI textCurrentMp;
+
+    [Header("--- Gold UI ---")]
+    public TextMeshProUGUI textGold;
+
+    [Header("--- Time UI ---")]
+    public TextMeshProUGUI textTime;
+    public TextMeshProUGUI textDay;
     void Start()
     {
         UpdateXpUI();
+        UpdateMpUI();
+        UpdateGold();
     }
+    void Update()
+    {
+        UpdateTime();
+    }
+
+    #region ----- LEVEL XP UI -----
     public void UpdateXpUI()
     {
         if (levelManager.currentLevel < levelManager.levelMax)
@@ -32,14 +51,9 @@ public class LevelUI : MonoBehaviour
         }
         textCurrentLevel.text = levelManager.currentLevel.ToString();
     }
-    public void PlusXp()
-    {
-        Xp.Instance.AddXp(xpPlus);
-        UpdateXpUI();
-    }
     public void ShowPanelLevelUp()
     {
-        textNumberLevelUp.text = levelManager.currentLevel.ToString();   
+        textNumberLevelUp.text = levelManager.currentLevel.ToString();
         backgroundLevelUp.SetActive(true);
         panelLevelUp[levelManager.currentLevel - 2].SetActive(true);
         StartCoroutine(Hide(panelLevelUp[levelManager.currentLevel - 2]));
@@ -51,4 +65,28 @@ public class LevelUI : MonoBehaviour
         backgroundLevelUp.SetActive(false);
         currentPanelLevelUp.SetActive(false);
     }
+    #endregion
+
+    #region ----- MANA MP UI -----
+    public void UpdateMpUI()
+    {
+        mpBar.value = (float)Mp.Instance.mp / Mp.Instance.maxMana;
+        textCurrentMp.text = Mp.Instance.mp.ToString() + "/" + Mp.Instance.maxMana.ToString();
+    }
+    #endregion
+
+    #region ----- GOLD UI -----
+    public void UpdateGold()
+    {
+        textGold.text = Gold.Instance.gold.ToString();
+    }
+    #endregion
+
+    #region ----- TIME UI -----
+    public void UpdateTime()
+    {
+        textTime.text = $"{GameTime.Instance.hour}:{GameTime.Instance.minute:00}";
+        textDay.text = "Ngày " + GameTime.Instance.day.ToString();
+    }
+    #endregion
 }
