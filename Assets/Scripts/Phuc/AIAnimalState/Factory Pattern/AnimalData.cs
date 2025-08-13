@@ -5,8 +5,9 @@ public enum Static {None, Good, Bad }
 public class AnimalData : ScriptableObject
 {
     public string animalName;
-    public Static staticType;
+    //public Static staticType;
     public ItemData item;
+    public Sprite icon;
     public AnimalTypeed animalType;
-    public bool readyToHarvest;
+    //public bool readyToHarvest;
 }
