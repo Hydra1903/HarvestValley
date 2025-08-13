@@ -78,7 +78,7 @@ public class Inventory : MonoBehaviour
         {
             for (int c = 0; c < columns; c++)
             {
-                Debug.Log(slots[r,c]);
+                Debug.Log(slots[r,c].item);
             }
         }
     }

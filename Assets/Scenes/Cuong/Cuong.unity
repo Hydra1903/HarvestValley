@@ -469,7 +469,7 @@ PrefabInstance:
       objectReference: {fileID: 1254275912}
     - target: {fileID: 1705080200034453001, guid: 435a41237fed0bd43b2e65541818b748, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1734527321928350389, guid: 435a41237fed0bd43b2e65541818b748, type: 3}
       propertyPath: inventory
@@ -833,7 +833,7 @@ PrefabInstance:
       objectReference: {fileID: 1254275912}
     - target: {fileID: 5386516830298113664, guid: 435a41237fed0bd43b2e65541818b748, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5392853658544349146, guid: 435a41237fed0bd43b2e65541818b748, type: 3}
       propertyPath: m_SizeDelta.x
@@ -945,7 +945,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6411739499341107874, guid: 435a41237fed0bd43b2e65541818b748, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6451816939059673611, guid: 435a41237fed0bd43b2e65541818b748, type: 3}
       propertyPath: inventory
@@ -1837,6 +1837,7 @@ MonoBehaviour:
   hour: 6
   minute: 0
   timeSpeed: 60
+  currentTimeOfDay: 0
   mainUIScreen: {fileID: 2042300250}
 --- !u!1 &1874120919
 GameObject:

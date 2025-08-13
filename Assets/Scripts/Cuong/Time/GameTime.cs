@@ -1,6 +1,10 @@
 using TMPro;
 using UnityEngine;
-
+public enum TimeOfDay
+{
+    Day,
+    Night
+}
 public class GameTime : MonoBehaviour
 {
     public static GameTime Instance;
@@ -13,6 +17,7 @@ public class GameTime : MonoBehaviour
     public float timeSpeed = 60f; 
     private float timer;
 
+    public TimeOfDay currentTimeOfDay;
     public MainUIScreen mainUIScreen;
     void Awake()
     {
@@ -32,9 +37,13 @@ public class GameTime : MonoBehaviour
         {
             minute = 0; hour++;
         }
+        if (hour >= 19)
+        {
+            currentTimeOfDay = TimeOfDay.Night;
+        }
         if (hour >= 24)
         {
-            hour = 0; day++;           
+            NextDay();
         }
         if (day > 30)
         {
@@ -49,17 +58,13 @@ public class GameTime : MonoBehaviour
     }
     public void NextDay()
     {
+        currentTimeOfDay = TimeOfDay.Day;
         hour = 6; minute = 0; day++;
-    }
-    public void EndDay()
-    {
-        NextDay();
     }
     public void PauseGame()
     {
         Time.timeScale = 0f;
     }
-
     public void UnpauseGame()
     {
         Time.timeScale = 1f;
