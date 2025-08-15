@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f608061c19041824390513baa56b252f, type: 3}
+  m_Name: Pear
+  m_EditorClassIdentifier: 
+  id: 
+  itemName: Pear
+  icon: {fileID: 21300000, guid: 7a5cd4c7d88c44e4e82777fbbf49578a, type: 3}
+  maxStack: 99
+  itemType: 1
+  description: "< N\xF4ng s\u1EA3n t\u1EEB c\xE2y tr\u1ED3ng > "
+  season: "<color=#E09628>H\u1EA1</color> <color=#F33A38>Thu</color>"
