@@ -7,7 +7,7 @@ using System.Globalization;
 
 public class MainUIScreen : MonoBehaviour
 {
-    [Header ("--- Level UI ---")]
+    [Header("--- Level UI ---")]
     public GameObject[] panelLevelUp;
     public GameObject backgroundLevelUp;
     public TextMeshProUGUI textNumberLevelUp;
@@ -34,6 +34,13 @@ public class MainUIScreen : MonoBehaviour
     public GameObject winter;
     public GameObject currentPanelSeason;
 
+    [Header("--- Calendar UI ---")]
+    public Image[] background;
+    public Image[] iconWeather;
+    public Sprite clearIcon;
+    public Sprite rainyIcon;
+    public Sprite stormyIcon;
+    public Sprite snowyIcon;
     void Start()
     {
         UpdateXpUI();
@@ -104,27 +111,56 @@ public class MainUIScreen : MonoBehaviour
     {
         if (Season.Instance.currentSeason == SeasonState.Spring)
         {
-            spring.SetActive(true);
             currentPanelSeason.SetActive(false);
+            spring.SetActive(true);
             currentPanelSeason = spring;
         }
         else if (Season.Instance.currentSeason == SeasonState.Summer)
         {
-            summer.SetActive(true);
             currentPanelSeason.SetActive(false);
+            summer.SetActive(true);
             currentPanelSeason = summer;
         }
         else if (Season.Instance.currentSeason == SeasonState.Fall)
         {
-            fall.SetActive(true);
             currentPanelSeason.SetActive(false);
+            fall.SetActive(true);
             currentPanelSeason = fall;
         }
         else if (Season.Instance.currentSeason == SeasonState.Winter)
         {
-            winter.SetActive(true);
             currentPanelSeason.SetActive(false);
+            winter.SetActive(true);
             currentPanelSeason = winter;
+        }
+    }
+    #endregion
+
+    #region ----- CALENDAR UI -----
+    public void UpdateCalendar()
+    {
+        for (int i = 0; i < 30; i++)
+        {
+            Color color;
+            switch (Weather.Instance.listWeatherOfMonth[i].weather)
+            {
+                case WeatherState.Clear:
+                    iconWeather[i].sprite = clearIcon;
+                    if (ColorUtility.TryParseHtmlString("#579C48", out color)) background[i].color = color;
+                    break;
+                case WeatherState.Rainy:
+                    iconWeather[i].sprite = rainyIcon;
+                    if (ColorUtility.TryParseHtmlString("#7BB0BC", out color)) background[i].color = color;
+                    break;
+                case WeatherState.Stormy:
+                    iconWeather[i].sprite = stormyIcon;
+                    if (ColorUtility.TryParseHtmlString("#909090", out color)) background[i].color = color;
+                    break;
+                case WeatherState.Snowy:
+                    iconWeather[i].sprite = snowyIcon;
+                    if (ColorUtility.TryParseHtmlString("#7BB0BC", out color)) background[i].color = color;
+                    break;
+            }
         }
     }
     #endregion

@@ -36,6 +36,7 @@ public class GameTime : MonoBehaviour
         if (minute >= 60)
         {
             minute = 0; hour++;
+            Weather.Instance.SetCurrentWeather();
         }
         if (hour >= 19)
         {
