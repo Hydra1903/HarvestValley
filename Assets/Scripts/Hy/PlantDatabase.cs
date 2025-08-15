@@ -79,7 +79,7 @@ public class PlantDatabase : ScriptableObject
                 Debug.LogWarning($"Plant {plant.plantName} ({plant.plantType}) missing prefab!");
             }
             
-            Debug.Log($"- {plant.plantName} ({plant.plantType}) - Size: {plant.size} - Growth: {plant.growthTime}s");
+            Debug.Log($"- {plant.plantName} ({plant.plantType}) - Size: {plant.size}");
         }
         
         // Kiểm tra duplicate PlantType

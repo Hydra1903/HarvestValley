@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public class FarmGrid : MonoBehaviour
 {
@@ -34,6 +35,10 @@ public class FarmGrid : MonoBehaviour
     
     public ToolType currentTool = ToolType.Hoe;
 
+    private List<AreaSave> _areaSaves = new();
+    private List<PlantSave> _plantSaves = new();
+
+
     void Start()
     {
         tiles = new Tile[gridWidth, gridHeight];
@@ -51,22 +56,10 @@ public class FarmGrid : MonoBehaviour
         ghostPlotInstance.SetActive(false);
         ghostHoleInstance = Instantiate(ghostHolePrefab, Vector3.zero, Quaternion.identity);
         ghostHoleInstance.SetActive(false);
-        
-        // Initialize simple ghost manager
+     
         GameObject ghostManagerObj = new GameObject("SimpleGhostManager");
         simpleGhostManager = ghostManagerObj.AddComponent<SimpleGhostManager>();
         simpleGhostManager.Initialize(ghostMaterial);
-
-    }
-
-    void OnEnable()
-    {
-        SaveLoadManager.RegisterGrid(this);
-    }
-
-    void OnDisable()
-    {
-        SaveLoadManager.UnregisterGrid(this);
     }
 
     void Update()
@@ -82,12 +75,10 @@ public class FarmGrid : MonoBehaviour
 
     void HandleToolSwitching()
     {
-        // Chuyển công cụ
         if (Input.GetKeyDown(KeyCode.Alpha1)) currentTool = ToolType.Hoe;
         if (Input.GetKeyDown(KeyCode.Alpha2)) currentTool = ToolType.Shovel;
         if (Input.GetKeyDown(KeyCode.Alpha3)) currentTool = ToolType.Seed;
         
-        // Chuyển loại cây khi đang dùng seed
         if (currentTool == ToolType.Seed)
         {
             if (Input.GetKeyDown(KeyCode.Q)) currentPlantType = PlantType.Carrot;  // 1x1
@@ -132,6 +123,18 @@ public class FarmGrid : MonoBehaviour
                 }
             }
         }
+
+        if (!IsWorldPointInsideThisGrid(hit.point))
+            return; // grid này bỏ qua click
+    }
+
+    //kiểm tra click
+    bool IsWorldPointInsideThisGrid(Vector3 worldPos)
+    {
+        Vector3 local = worldPos - origin; // dùng origin của từng grid
+        return local.x >= 0 && local.z >= 0 &&
+               local.x < gridWidth * cellSize &&
+               local.z < gridHeight * cellSize;
     }
 
     struct ToolInfo
@@ -169,7 +172,6 @@ public class FarmGrid : MonoBehaviour
 
     Vector2Int CalculateStartPosition(Vector2Int gridPos, int size)
     {
-        // Tìm góc trên-trái của vùng
         int startX = gridPos.x - (size / 2);
         int startY = gridPos.y - (size / 2);
 
@@ -208,13 +210,12 @@ public class FarmGrid : MonoBehaviour
 
         tiles[x, y].state = SoilState.Dug;
 
-        // Hiển thị luống đất đã đào
-        float dugYOffset = 0.28f; // cao hơn mặt đất một chút
+        float dugYOffset = 0.28f; 
         Vector3 pos = origin + new Vector3((x + 0.5f) * cellSize, dugYOffset, (y + 0.5f) * cellSize);
         tileObjects[x, y] = Instantiate(dugSoilPrefab, pos, Quaternion.identity);
     }
 
-    // Hàm làm ướt đất (ví dụ gọi khi tưới nước)
+    // Hàm làm ướt đất 
     public void WetTile(GameObject waterMatPrefab)
     {
         waterPrefab.SetActive(true);
@@ -222,7 +223,7 @@ public class FarmGrid : MonoBehaviour
 
     void OnDrawGizmos()
     {
-        float gizmoYOffset = 0.7f; // cao hơn mặt đất một chút
+        float gizmoYOffset = 0.3f; 
         Gizmos.color = Color.red;
         for (int x = 0; x <= gridWidth; x++)
         {
@@ -331,9 +332,10 @@ public class FarmGrid : MonoBehaviour
         return true;
     }
 
-    // Hàm đặt đất tổng quát
+    // Hàm đặt đất
     void PlaceArea(int startX, int startY, int size, GameObject prefab)
     {
+        // 1) Đánh dấu tiles
         for (int x = 0; x < size; x++)
         {
             for (int y = 0; y < size; y++)
@@ -342,11 +344,20 @@ public class FarmGrid : MonoBehaviour
                 tiles[startX + x, startY + y].soilType = (size == 5) ? SoilType.Plot : SoilType.Hole;
             }
         }
-        float dugYOffset = 0.28f;
-        // Điều chỉnh offset riêng cho X và Z
+
+        // 2) Ghi record save vùng
+        _areaSaves.Add(new AreaSave
+        {
+            startX = startX,
+            startY = startY,
+            size = size,
+            soilType = (size == 5) ? SoilType.Plot : SoilType.Hole
+        });
+
+        // 3) Đặt prefab ở tâm vùng (ổn định với mọi cellSize/origin)
+        float dugYOffset = 0.24f;
         float offsetX = (size == 5) ? 5f : 0.8f; // 5x5 luống hoặc 3x3 hố
-        float offsetZ = (size == 5) ? -0.5f : 2.7f;
-        
+        float offsetZ = (size == 5) ? -0.3f : 2.7f;
         Vector3 pos = origin + new Vector3(
             (startX + offsetX) * cellSize,
             dugYOffset,
@@ -354,9 +365,9 @@ public class FarmGrid : MonoBehaviour
         );
         Instantiate(prefab, pos, Quaternion.identity);
     }
-    
+
     // ===== PLANT SYSTEM =====
-    
+
     void HandlePlantingInput(Vector2Int gridPos)
     {
         if (plantDatabase == null) return;
@@ -439,7 +450,7 @@ public class FarmGrid : MonoBehaviour
             (startPos.y + offsetZ) * cellSize
         );
         
-        // Sử dụng SimpleGhostManager để hiển thị ghost
+        //hiển thị ghost
         simpleGhostManager.ShowGhost(plantData, ghostPos);
     }
 
@@ -483,7 +494,6 @@ public class FarmGrid : MonoBehaviour
             (startPos.y + (size * 0.5f)) * cellSize
         );
 
-        // Chọn prefab stage 0 nếu có, fallback về plantData.prefab
         GameObject stagePrefab = null;
         if (plantData.growthPrefabs != null && plantData.growthPrefabs.Length > 0)
             stagePrefab = plantData.growthPrefabs[0];
@@ -492,7 +502,6 @@ public class FarmGrid : MonoBehaviour
 
         if (stagePrefab != null && IsInGrid(centerX, centerY))
         {
-            // Xóa nếu đã có object trước đó ở center (an toàn)
             if (tiles[centerX, centerY].plantObject != null)
                 Destroy(tiles[centerX, centerY].plantObject);
 
@@ -500,6 +509,17 @@ public class FarmGrid : MonoBehaviour
         }
 
         Debug.Log($"Đã trồng {plantData.plantName} ({plantData.plantType}) tại ({startPos.x}, {startPos.y}) size {size}");
+
+        // LƯU RECORD 
+        _plantSaves.Add(new PlantSave
+        {
+            type = plantData.plantType,
+            size = size,
+            stage = 0,
+            daysInStage = 0,
+            centerX = centerX,
+            centerY = centerY
+        });
     }
 
     //hàm cập nhật giai đoạn phát triển
@@ -510,7 +530,6 @@ public class FarmGrid : MonoBehaviour
             for (int y = 0; y < gridHeight; y++)
             {
                 Tile tile = tiles[x, y];
-                // Chỉ cập nhật khi ô này là ô chứa plantObject (ô trung tâm)
                 if (tile.plantInstance != null && tile.plantObject != null)
                 {
                     PlantInstance plant = tile.plantInstance;
@@ -519,7 +538,6 @@ public class FarmGrid : MonoBehaviour
 
                     plant.AdvanceDay();
 
-                    // Nếu stage thay đổi thì update GameObject
                     if (plant.currentStage != prevStage)
                     {
                         Vector3 pos = tile.plantObject.transform.position;
@@ -547,133 +565,130 @@ public class FarmGrid : MonoBehaviour
         Debug.Log("Qua ngày: Tất cả cây trung tâm đã được cập nhật.");
     }
 
-    // ---------- Save/Load helpers (uses classes inside SaveLoadManager) ----------
-    public SaveLoadManager.FarmGridSaveData ToSaveData()
+    void SyncPlantSavesFromWorld()
     {
-        var fsd = new SaveLoadManager.FarmGridSaveData();
-        fsd.gridId = gridId;
-        fsd.originX = origin.x;
-        fsd.originZ = origin.z;
-        fsd.width = gridWidth;
-        fsd.height = gridHeight;
-        fsd.cellSize = cellSize;
-
-        fsd.tiles = new SaveLoadManager.TileSaveData[gridWidth * gridHeight];
+        // Đồng bộ stage/daysInStage từ runtime về _plantSaves
         for (int x = 0; x < gridWidth; x++)
             for (int y = 0; y < gridHeight; y++)
             {
-                int idx = y * gridWidth + x;
-                fsd.tiles[idx] = new SaveLoadManager.TileSaveData
+                var tile = tiles[x, y];
+                if (tile.plantInstance != null && tile.plantObject != null)
                 {
-                    state = tiles[x, y].state,
-                    soilType = tiles[x, y].soilType
-                };
-            }
-
-        // Lưu cây dựa trên ô center (tile.plantObject != null)
-        for (int x = 0; x < gridWidth; x++)
-            for (int y = 0; y < gridHeight; y++)
-            {
-                var t = tiles[x, y];
-                if (t.plantInstance != null && t.plantObject != null)
-                {
-                    int size = t.plantInstance.plantData.GetSizeInt();
-                    int startX = x - (size / 2);
-                    int startY = y - (size / 2);
-
-                    var ps = new SaveLoadManager.PlantSaveData
+                    var inst = tile.plantInstance;
+                    var rec = _plantSaves.Find(p => p.centerX == x && p.centerY == y);
+                    if (rec != null)
                     {
-                        startX = startX,
-                        startY = startY,
-                        size = size,
-                        plantType = t.plantInstance.plantData.plantType,
-                        currentStage = t.plantInstance.currentStage,
-                        daysInCurrentStage = t.plantInstance.daysInCurrentStage,
-                        harvestCount = t.plantInstance.harvestCount
-                    };
-
-                    fsd.plants.Add(ps);
-                }
-            }
-
-        return fsd;
-    }
-
-    public void LoadFromSaveData(SaveLoadManager.FarmGridSaveData fsd)
-    {
-        if (fsd.width != gridWidth || fsd.height != gridHeight || Mathf.Abs(fsd.cellSize - cellSize) > 0.001f)
-        {
-            Debug.LogWarning($"Saved grid ({fsd.gridId}) size differs from current FarmGrid. Saved: {fsd.width}x{fsd.height}@{fsd.cellSize} - Current: {gridWidth}x{gridHeight}@{cellSize}");
-        }
-
-        // Clear existing plantInstances & objects
-        for (int x = 0; x < gridWidth; x++)
-            for (int y = 0; y < gridHeight; y++)
-            {
-                tiles[x, y].plantInstance = null;
-                if (tiles[x, y].plantObject != null)
-                {
-                    Destroy(tiles[x, y].plantObject);
-                    tiles[x, y].plantObject = null;
-                }
-            }
-
-        // Load tiles
-        for (int x = 0; x < gridWidth; x++)
-            for (int y = 0; y < gridHeight; y++)
-            {
-                int idx = y * gridWidth + x;
-                if (idx < fsd.tiles.Length)
-                {
-                    tiles[x, y].state = fsd.tiles[idx].state;
-                    tiles[x, y].soilType = fsd.tiles[idx].soilType;
-                }
-                else
-                {
-                    tiles[x, y].state = SoilState.Normal;
-                    tiles[x, y].soilType = SoilType.None;
-                }
-            }
-
-        // Restore plants
-        foreach (var ps in fsd.plants)
-        {
-            PlantData data = plantDatabase != null ? plantDatabase.GetPlantData(ps.plantType) : null;
-            if (data == null)
-            {
-                Debug.LogWarning($"Missing PlantData for {ps.plantType} when loading grid {gridId}");
-                continue;
-            }
-
-            PlantInstance inst = new PlantInstance(data);
-            inst.currentStage = ps.currentStage;
-            inst.daysInCurrentStage = ps.daysInCurrentStage;
-            inst.harvestCount = ps.harvestCount;
-
-            // assign instance to all tiles in region
-            for (int dx = 0; dx < ps.size; dx++)
-                for (int dy = 0; dy < ps.size; dy++)
-                {
-                    int tx = ps.startX + dx;
-                    int ty = ps.startY + dy;
-                    if (IsInGrid(tx, ty))
-                    {
-                        tiles[tx, ty].plantInstance = inst;
-                        tiles[tx, ty].state = SoilState.Planted;
+                        rec.stage = inst.currentStage;
+                        rec.daysInStage = inst.daysInCurrentStage;
+                        rec.size = inst.plantData.GetSizeInt();
+                        rec.type = inst.plantData.plantType;
                     }
                 }
+            }
+    }
 
-            // instantiate center prefab
-            int centerX = ps.startX + (ps.size / 2);
-            int centerY = ps.startY + (ps.size / 2);
-            if (IsInGrid(centerX, centerY))
-            {
-                Vector3 pos = origin + new Vector3((ps.startX + ps.size * 0.5f) * cellSize, 0.45f, (ps.startY + ps.size * 0.5f) * cellSize);
-                GameObject prefab = (data.growthPrefabs != null && data.growthPrefabs.Length > inst.currentStage) ? data.growthPrefabs[inst.currentStage] : data.prefab;
-                if (prefab != null)
+    public FarmGridSave BuildSave()
+    {
+        // Đảm bảo stage mới nhất được ghi vào _plantSaves
+        SyncPlantSavesFromWorld();
+
+        return new FarmGridSave
+        {
+            gridId = gridId,
+            width = gridWidth,
+            height = gridHeight,
+            cellSize = cellSize,
+            origin = origin,
+            areas = new List<AreaSave>(_areaSaves),
+            plants = new List<PlantSave>(_plantSaves)
+        };
+    }
+
+    public void LoadFromSave(FarmGridSave data)
+    {
+        //Apply dữ liệu
+        gridWidth = data.width;
+        gridHeight = data.height;
+        cellSize = data.cellSize;
+        origin = data.origin;
+
+        //Reset lưới
+        tiles = new Tile[gridWidth, gridHeight];
+        for (int x = 0; x < gridWidth; x++)
+            for (int y = 0; y < gridHeight; y++)
+                tiles[x, y] = new Tile();
+
+        //Dựng lại đất 
+        foreach (var a in data.areas)
+        {
+            for (int dx = 0; dx < a.size; dx++)
+                for (int dy = 0; dy < a.size; dy++)
                 {
-                    tiles[centerX, centerY].plantObject = Instantiate(prefab, pos, Quaternion.identity);
+                    tiles[a.startX + dx, a.startY + dy].state = SoilState.Dug;
+                    tiles[a.startX + dx, a.startY + dy].soilType = a.soilType;
                 }
+
+            GameObject prefab = (a.size == 5) ? dugSoilPrefab : holePrefab;
+
+            float yOffset = 0.28f;
+            float offsetX = (a.size == 5) ? 5.1f : 0.8f; // 5x5 luống hoặc 3x3 hố
+            float offsetZ = (a.size == 5) ? -0.5f : 2.7f;
+            Vector3 pos = origin + new Vector3(
+                (a.startX + offsetX) * cellSize,
+                yOffset,
+                (a.startY + offsetZ) * cellSize
+            );
+            if (prefab != null) Instantiate(prefab, pos, Quaternion.identity);
+        }
+        _areaSaves = new List<AreaSave>(data.areas);
+
+        //Dựng lại cây
+        _plantSaves = new List<PlantSave>(data.plants);
+        foreach (var p in _plantSaves)
+        {
+            var plantData = plantDatabase != null ? plantDatabase.GetPlantData(p.type) : null;
+            if (plantData == null) continue;
+
+            int size = p.size;
+            int startX = p.centerX - (size / 2);
+            int startY = p.centerY - (size / 2);
+
+            // Gắn PlantInstance cho cả vùng
+            var inst = new PlantInstance(plantData)
+            {
+                currentStage = p.stage,
+                daysInCurrentStage = p.daysInStage
+            };
+
+            for (int dx = 0; dx < size; dx++)
+                for (int dy = 0; dy < size; dy++)
+                {
+                    int tx = startX + dx;
+                    int ty = startY + dy;
+                    if (tx < 0 || ty < 0 || tx >= gridWidth || ty >= gridHeight) continue;
+                    tiles[tx, ty].state = SoilState.Planted;
+                    tiles[tx, ty].plantInstance = inst;
+                }
+
+            // Instantiate prefab đúng stage tại tâm
+            GameObject stagePrefab = null;
+            if (plantData.growthPrefabs != null && plantData.growthPrefabs.Length > p.stage)
+                stagePrefab = plantData.growthPrefabs[p.stage];
+            else
+                stagePrefab = plantData.prefab;
+
+            if (stagePrefab != null && IsInGrid(p.centerX, p.centerY))
+            {
+                Vector3 pos = origin + new Vector3(
+                    (startX + size * 0.5f) * cellSize,
+                    0.45f,
+                    (startY + size * 0.5f) * cellSize
+                );
+
+                if (tiles[p.centerX, p.centerY].plantObject != null)
+                    Destroy(tiles[p.centerX, p.centerY].plantObject);
+
+                tiles[p.centerX, p.centerY].plantObject = Instantiate(stagePrefab, pos, Quaternion.identity);
             }
         }
     }

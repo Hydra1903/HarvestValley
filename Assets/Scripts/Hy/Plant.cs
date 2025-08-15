@@ -18,16 +18,13 @@ public class PlantData : ScriptableObject
     public int[] daysPerStage;         // Số ngày ở mỗi giai đoạn
 
     [Header("Growth Settings")]
-    public float growthTime = 10f; // thời gian phát triển (giây)
     public int maxHarvest = 1; // số lần thu hoạch tối đa
+    public int harvestValue = 25; //sản lượng
 
     [Header("Requirements")]
-    public bool needsWater = true;
-    public bool needsFertilizer = false;
-    
-    [Header("Economic")]
-    public int seedCost = 10;
-    public int harvestValue = 25;
+    public bool needsWater = true; //nước
+    public bool needsFertilizer = false; //phân bón
+
     
     [Header("Description")]
     [TextArea(3, 5)]
@@ -69,41 +66,6 @@ public class PlantInstance
         plantData = data;
         needsWater = data.needsWater;
         needsFertilizer = data.needsFertilizer;
-    }
-    
-    public void UpdateGrowth(float deltaTime)
-    {
-        if (!IsFullyGrown())
-        {
-            currentGrowth += deltaTime;
-            if (currentGrowth >= plantData.growthTime)
-            {
-                currentGrowth = plantData.growthTime;
-            }
-        }
-    }
-    
-    public float GetGrowthProgress()
-    {
-        return currentGrowth / plantData.growthTime;
-    }
-    
-    public bool IsFullyGrown()
-    {
-        return currentGrowth >= plantData.growthTime;
-    }
-    
-    public bool CanHarvest()
-    {
-        return IsFullyGrown() && harvestCount < plantData.maxHarvest;
-    }
-    
-    public void Harvest()
-    {
-        if (CanHarvest())
-        {
-            harvestCount++;
-        }
     }
 
     public void AdvanceDay()

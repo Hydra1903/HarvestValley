@@ -1,22 +1,20 @@
 using UnityEngine;
+using static UnityEngine.Rendering.STP;
 
-/// <summary>
 /// Quản lý ghost preview đơn giản cho cây trồng
-/// </summary>
 public class SimpleGhostManager : MonoBehaviour
 {
     private GameObject currentGhostInstance;
     private PlantType currentPlantType;
-    private Material ghostMaterial;
-    
+    private Material ghostMaterial; 
+
     public void Initialize(Material ghostMat)
     {
         ghostMaterial = ghostMat;
     }
-    
-    /// <summary>
+
+
     /// Hiển thị ghost preview cho loại cây tại vị trí chỉ định
-    /// </summary>
     public void ShowGhost(PlantData plantData, Vector3 position)
     {
         if (plantData == null || plantData.prefab == null) return;
@@ -34,9 +32,7 @@ public class SimpleGhostManager : MonoBehaviour
         }
     }
     
-    /// <summary>
     /// Ẩn ghost preview
-    /// </summary>
     public void HideGhost()
     {
         if (currentGhostInstance != null)
@@ -97,10 +93,8 @@ public class SimpleGhostManager : MonoBehaviour
             }
         }
     }
-    
-    /// <summary>
+
     /// Áp dụng material ghost cho tất cả renderer
-    /// </summary>
     void ApplyGhostMaterial()
     {
         if (currentGhostInstance == null || ghostMaterial == null) return;
@@ -117,10 +111,8 @@ public class SimpleGhostManager : MonoBehaviour
             renderer.materials = materials;
         }
     }
-    
-    /// <summary>
+
     /// Cleanup khi destroy
-    /// </summary>
     void OnDestroy()
     {
         if (currentGhostInstance != null)
