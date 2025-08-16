@@ -21,6 +21,9 @@ public class FarmGrid : MonoBehaviour
     public PlantType currentPlantType = PlantType.Carrot;
     public PlantDatabase plantDatabase;
 
+    [Header("Input Filter")]
+    [SerializeField] private LayerMask gridMask; 
+
     [Header("Ghost system")]
     public Material ghostMaterial;
     private SimpleGhostManager simpleGhostManager; 
@@ -56,8 +59,8 @@ public class FarmGrid : MonoBehaviour
         ghostPlotInstance.SetActive(false);
         ghostHoleInstance = Instantiate(ghostHolePrefab, Vector3.zero, Quaternion.identity);
         ghostHoleInstance.SetActive(false);
-     
-        GameObject ghostManagerObj = new GameObject("SimpleGhostManager");
+
+        var ghostManagerObj = new GameObject($"SimpleGhostManager_{gridId}");
         simpleGhostManager = ghostManagerObj.AddComponent<SimpleGhostManager>();
         simpleGhostManager.Initialize(ghostMaterial);
     }
@@ -89,43 +92,57 @@ public class FarmGrid : MonoBehaviour
 
     void HandleMouseInput()
     {
-        ghostPlotInstance.SetActive(false);
-        ghostHoleInstance.SetActive(false);
-        if (simpleGhostManager != null)
+        // 1) Raycast chỉ vào layer FarmGround
+        var cam = Camera.main;
+        if (!cam) { HideGhosts(); return; }
+
+        Ray ray = cam.ScreenPointToRay(Input.mousePosition);
+        if (!Physics.Raycast(ray, out RaycastHit hit, 1000f, gridMask))
         {
-            simpleGhostManager.HideGhost();
+            HideGhosts();
+            return;
         }
 
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out RaycastHit hit))
+        // 2) Chỉ xử lý nếu hit thuộc FarmGrid này
+        var hitGrid = hit.collider.GetComponentInParent<FarmGrid>();
+        if (hitGrid != this)
         {
-            Vector3 worldPos = hit.point;
-            Vector2Int gridPos = WorldToGrid(worldPos);
+            HideGhosts();
+            return;
+        }
 
-            if (currentTool == ToolType.Seed)
+        //check thêm biên theo origin/size để chắc chắn
+        if (!IsWorldPointInsideThisGrid(hit.point))
+        {
+            HideGhosts();
+            return;
+        }
+
+        // 3) Từ đây là đang hover đúng grid này → hiện ghost + cho click
+        Vector3 worldPos = hit.point;
+        Vector2Int gridPos = WorldToGrid(worldPos);
+
+        if (currentTool == ToolType.Seed)
+        {
+            HandlePlantingInput(gridPos); // logic cũ
+        }
+        else
+        {
+            // Đào luống/hố — logic cũ
+            ToolInfo toolInfo = GetCurrentToolInfo();
+            Vector2Int startPos = CalculateStartPosition(gridPos, toolInfo.size);
+
+            if (CanPlaceSoil(startPos.x, startPos.y, toolInfo.size))
             {
-                HandlePlantingInput(gridPos);
+                ShowGhostPreview(startPos, toolInfo);
+                if (Input.GetMouseButtonDown(0))
+                    PlaceArea(startPos.x, startPos.y, toolInfo.size, toolInfo.prefab);
             }
             else
             {
-                // Logic đào luống 
-                ToolInfo toolInfo = GetCurrentToolInfo();
-                Vector2Int startPos = CalculateStartPosition(gridPos, toolInfo.size);
-
-                if (CanPlaceSoil(startPos.x, startPos.y, toolInfo.size))
-                {
-                    ShowGhostPreview(startPos, toolInfo);
-
-                    if (Input.GetMouseButtonDown(0))
-                    {
-                        PlaceArea(startPos.x, startPos.y, toolInfo.size, toolInfo.prefab);
-                    }
-                }
+                HideGhosts();
             }
         }
-
-        if (!IsWorldPointInsideThisGrid(hit.point))
-            return; // grid này bỏ qua click
     }
 
     //kiểm tra click
@@ -135,6 +152,14 @@ public class FarmGrid : MonoBehaviour
         return local.x >= 0 && local.z >= 0 &&
                local.x < gridWidth * cellSize &&
                local.z < gridHeight * cellSize;
+    }
+
+    //ẩn các ghost của đất và cây
+    void HideGhosts()
+    {
+        if (ghostPlotInstance) ghostPlotInstance.SetActive(false);
+        if (ghostHoleInstance) ghostHoleInstance.SetActive(false);
+        if (simpleGhostManager != null) simpleGhostManager.HideGhost();
     }
 
     struct ToolInfo
