@@ -1,4 +1,4 @@
-using Unity.Cinemachine;
+﻿using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -97,10 +97,17 @@ public class LiveStockSeller : MonoBehaviour
         {
             feeding.barn = selectedPen.barnReference;
         }
-        AnimalInfo info = obj.GetComponent<AnimalInfo>();
+        var info = obj.GetComponent<AnimalInfo>();
         if (info != null)
         {
-            info.infoPanel = selectedPen.animalInfoPanelPrefab;
+            if (InfoPanelManager.Instance != null && InfoPanelManager.Instance.sharedInfoPanel != null)
+            {
+                info.InjectPanel(InfoPanelManager.Instance.sharedInfoPanel);
+            }
+            else
+            {
+                Debug.LogWarning("Cant found");
+            }
         }
         if (!selectedPen.IsAllowedTag(obj.tag) && selectedPen.HasAssignedType())
         {

@@ -1,46 +1,40 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class AnimalInfo : MonoBehaviour
 {
-    public GameObject infoPanel;
-    public string animalName;
-    public string status;
-    public string product;
-    public bool canHarvest;
+    public AnimalData animalData;
 
-    private bool isPlayerNear = false;
-    private bool isInfoVisible = false;
+    public InfoPanelUI infoPanel;
+    private bool isPlayerNearby = false;
 
-    private void Start()
+    public void InjectPanel(InfoPanelUI panel)
     {
-        if (infoPanel != null)
-            infoPanel.SetActive(false);
+        infoPanel = panel;
+        if (infoPanel != null) infoPanel.gameObject.SetActive(false);
     }
 
-    private void Update()
+    void Update()
     {
-        if (isPlayerNear && Input.GetMouseButtonDown(0))
+        if (isPlayerNearby && Input.GetMouseButtonDown(0)) 
         {
-            isInfoVisible = !isInfoVisible;
-            if (infoPanel != null)
-                infoPanel.SetActive(isInfoVisible);
+            if (infoPanel == null) return;
+
+            if (infoPanel.IsShowingOwner(this)) infoPanel.Hide();
+            else infoPanel.Show(animalData, this);
         }
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player"))
-            isPlayerNear = true;
+        if (other.CompareTag("Player")) isPlayerNearby = true;
     }
 
     private void OnTriggerExit(Collider other)
     {
         if (other.CompareTag("Player"))
         {
-            isPlayerNear = false;
-            isInfoVisible = false;
-            if (infoPanel != null)
-                infoPanel.SetActive(false);
+            isPlayerNearby = false;
+            infoPanel?.Hide();
         }
     }
 }

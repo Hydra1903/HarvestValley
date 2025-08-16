@@ -23,6 +23,7 @@ public class AnimalPen : MonoBehaviour
     [Header("UI")]
     public TMP_Text animalCountText;
     public GameObject animalInfoPanelPrefab;
+    public InfoPanelUI sharedInfoPanel;
     public GameObject inventoryPanels;
     public GameObject penInfoPanel;
     public TMP_Text penInfoText;

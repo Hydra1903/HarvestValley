@@ -2,13 +2,13 @@ using UnityEngine;
 
 public class TestingHarvestAnimal : MonoBehaviour
 {
-    [Header("Thông tin v?t ph?m")]
+    [Header("Info")]
     public ItemData blackWoolItem;
     public ItemData whiteWoolItem;
     public ItemData creamWoolItem;
     public ItemData goatMilkItem;
 
-    [Header("Cài ð?t")]
+    [Header("Setting")]
     public float interactDistance = 3f;
 
 
@@ -21,15 +21,13 @@ public class TestingHarvestAnimal : MonoBehaviour
     private void Start()
     {
         feeding = GetComponent<AnimalFedding>();
-
-        // N?u chýa có Barn trong AnimalFeeding th? t? ð?ng t?m
         if (feeding != null && feeding.barn == null)
         {
             Barn foundBarn = FindAnyObjectByType<Barn>();
             if (foundBarn != null)
             {
                 feeding.barn = foundBarn;
-                Debug.Log($"[Auto] Assign Barn cho {gameObject.name} t? trong scene.");
+                Debug.Log($"[Auto] Assign Barn cho {gameObject.name}  trong scene.");
             }
             else
             {
@@ -61,7 +59,6 @@ public class TestingHarvestAnimal : MonoBehaviour
                     Debug.Log($"Succes harvest {itemToGive.itemName} from{animalType}");
                     feeding.ResetHarvest();
 
-                    // C?p nh?t giao di?n UI
                     InventoryUI ui = FindAnyObjectByType<InventoryUI>();
                     ui?.UpdateAllSlots();
                 }
