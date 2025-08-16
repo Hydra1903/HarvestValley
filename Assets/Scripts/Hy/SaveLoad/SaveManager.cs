@@ -42,5 +42,6 @@ public static class SaveManager
 
         Debug.Log($"[SaveManager] Loaded <- {path}");
         return true;
+
     }
 }
