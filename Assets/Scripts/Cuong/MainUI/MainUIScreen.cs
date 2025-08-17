@@ -26,6 +26,9 @@ public class MainUIScreen : MonoBehaviour
     [Header("--- Time UI ---")]
     public TextMeshProUGUI textTime;
     public TextMeshProUGUI textDay;
+    public Image iconTimeOfDay;
+    public Sprite iconDay;
+    public Sprite iconNight;
 
     [Header("--- Season UI ---")]
     public GameObject spring;
@@ -41,6 +44,17 @@ public class MainUIScreen : MonoBehaviour
     public Sprite rainyIcon;
     public Sprite stormyIcon;
     public Sprite snowyIcon;
+
+    [Header("--- Weather UI ---")]
+    public GameObject clear;
+    public GameObject rainy;
+    public GameObject stormy;
+    public GameObject snowy;
+    public GameObject currentPanelWeather;
+
+    public Image iconWeatherTimeline;
+    public TextMeshProUGUI textTimeline1;
+    public TextMeshProUGUI textTimeline2;
     void Start()
     {
         UpdateXpUI();
@@ -104,6 +118,17 @@ public class MainUIScreen : MonoBehaviour
         textTime.text = $"{GameTime.Instance.hour}:{GameTime.Instance.minute:00}";
         textDay.text = "Ngày " + GameTime.Instance.day.ToString();
     }
+    public void UpdateIconTimeOfDay()
+    {
+        if (GameTime.Instance.currentTimeOfDay == TimeOfDay.Day)
+        {
+            iconTimeOfDay.sprite = iconDay;
+        }
+        else
+        {
+            iconTimeOfDay.sprite = iconNight;
+        }
+    }
     #endregion
 
     #region ----- SEASON UI -----
@@ -164,5 +189,86 @@ public class MainUIScreen : MonoBehaviour
         }
     }
     #endregion
+
+    #region ----- WEATHER UI -----
+    public void UpdateWeather()
+    {
+        if (Weather.Instance.currentWeather == WeatherState.Clear)
+        {
+            currentPanelWeather.SetActive(false);
+            clear.SetActive(true);
+            currentPanelWeather = clear;
+        }
+        else if (Weather.Instance.currentWeather == WeatherState.Rainy)
+        {
+            currentPanelWeather.SetActive(false);
+            rainy.SetActive(true);
+            currentPanelWeather = rainy;
+        }
+        else if (Weather.Instance.currentWeather == WeatherState.Stormy)
+        {
+            currentPanelWeather.SetActive(false);
+            stormy.SetActive(true);
+            currentPanelWeather = stormy;
+        }
+        else if (Weather.Instance.currentWeather == WeatherState.Snowy)
+        {
+            currentPanelWeather.SetActive(false);
+            snowy.SetActive(true);
+            currentPanelWeather = snowy;
+        }
+    }
+
+    public void UpdateWeatherTimeline()
+    {
+        WeatherSchedule weatherScheduleOfDay = Weather.Instance.listWeatherOfMonth[GameTime.Instance.day - 1];
+
+        if (weatherScheduleOfDay.weather == WeatherState.Clear)
+        {
+            textTimeline1.text = "6h - 24h";
+            textTimeline2.text = "Không";
+        }
+        else if (weatherScheduleOfDay.weather == WeatherState.Rainy)
+        {
+            int start = weatherScheduleOfDay.randomWeatherStartTime;
+            int end = weatherScheduleOfDay.randomWeatherEndTime;
+            iconWeatherTimeline.sprite = rainyIcon;
+            SetTextTimeline(start, end);
+        }
+        else if (weatherScheduleOfDay.weather == WeatherState.Stormy)
+        {
+            int start = weatherScheduleOfDay.randomWeatherStartTime;
+            int end = weatherScheduleOfDay.randomWeatherEndTime;
+            iconWeatherTimeline.sprite = stormyIcon;
+            SetTextTimeline(start, end);
+        }
+        else if (weatherScheduleOfDay.weather == WeatherState.Snowy)
+        {
+            int start = weatherScheduleOfDay.randomWeatherStartTime;
+            int end = weatherScheduleOfDay.randomWeatherEndTime;
+            iconWeatherTimeline.sprite = snowyIcon;
+            SetTextTimeline(start,end);
+        }
+    }
+    public void SetTextTimeline(int start, int end)
+    {
+        if (start != 6 && end != 24)
+        {
+            textTimeline1.text = $"6h - {start}h\n{end}h - 24h";
+            textTimeline2.text = $"{start}h - {end}h";
+        }
+        else if (start == 6)
+        {
+            textTimeline1.text = $"{end}h - 24h";
+            textTimeline2.text = $"{start}h - {end}h";
+        }
+        else if (end == 24)
+        {
+            textTimeline1.text = $"6h - {start}h";
+            textTimeline2.text = $"{start}h - {end}h";
+        }
+    }
+    #endregion
+
 }
 
