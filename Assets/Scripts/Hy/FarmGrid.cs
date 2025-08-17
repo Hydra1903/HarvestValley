@@ -40,7 +40,7 @@ public class FarmGrid : MonoBehaviour
 
     private List<AreaSave> _areaSaves = new();
     private List<PlantSave> _plantSaves = new();
-
+    private List<GameObject> _areaObjects = new();
 
     void Start()
     {
@@ -126,23 +126,48 @@ public class FarmGrid : MonoBehaviour
         {
             HandlePlantingInput(gridPos); // logic cũ
         }
-        else
+
+        if (currentTool == ToolType.Hoe || currentTool == ToolType.Shovel)
         {
-            // Đào luống/hố — logic cũ
             ToolInfo toolInfo = GetCurrentToolInfo();
             Vector2Int startPos = CalculateStartPosition(gridPos, toolInfo.size);
 
+            // Luôn xử lý ghost theo hover (không cần bấm chuột)
             if (CanPlaceSoil(startPos.x, startPos.y, toolInfo.size))
             {
-                ShowGhostPreview(startPos, toolInfo);
-                if (Input.GetMouseButtonDown(0))
-                    PlaceArea(startPos.x, startPos.y, toolInfo.size, toolInfo.prefab);
+                ShowGhostPreview(startPos, toolInfo); // <-- gọi khi HOVER
             }
             else
             {
+                // Không đặt được → ẩn ghost (hoặc bạn có thể hiện ghost đỏ nếu muốn)
                 HideGhosts();
             }
+
+            // Click trái: toggle hủy nếu đang click vào một vùng cùng loại, ngược lại là đặt mới
+            if (Input.GetMouseButtonDown(0))
+            {
+                var expectedType = (toolInfo.size == 5) ? SoilType.Plot : SoilType.Hole;
+
+                // Nếu click trúng vùng cùng loại → hủy
+                if (TryFindAreaContaining(gridPos.x, gridPos.y, out int idx))
+                {
+                    var a = _areaSaves[idx];
+                    if (a.soilType == expectedType)
+                    {
+                        FlattenAreaAt(gridPos);
+                        return;
+                    }
+                }
+
+                // Không trúng vùng cùng loại → thử đặt mới
+                if (CanPlaceSoil(startPos.x, startPos.y, toolInfo.size))
+                {
+                    PlaceArea(startPos.x, startPos.y, toolInfo.size, toolInfo.prefab);
+                }
+            }
+            return;
         }
+
     }
 
     //kiểm tra click
@@ -340,6 +365,19 @@ public class FarmGrid : MonoBehaviour
         return x >= 0 && x < gridWidth && y >= 0 && y < gridHeight;
     }
 
+    //Hàm kiểm tra click ở vùng đã đào chưa
+    bool TryFindAreaContaining(int x, int y, out int index)
+    {
+        for (int i = 0; i < _areaSaves.Count; i++)
+        {
+            var a = _areaSaves[i];
+            if (x >= a.startX && x < a.startX + a.size &&
+                y >= a.startY && y < a.startY + a.size)
+            { index = i; return true; }
+        }
+        index = -1; return false;
+    }
+
     // Hàm kiểm tra vùng hợp lệ
     bool CanPlaceSoil(int startX, int startY, int size)
     {
@@ -380,16 +418,67 @@ public class FarmGrid : MonoBehaviour
         });
 
         // 3) Đặt prefab ở tâm vùng (ổn định với mọi cellSize/origin)
-        float dugYOffset = 0.24f;
+        float dugYOffset = 0.235f;
         float offsetX = (size == 5) ? 5f : 0.8f; // 5x5 luống hoặc 3x3 hố
-        float offsetZ = (size == 5) ? -0.3f : 2.7f;
+        float offsetZ = (size == 5) ? -0.2f : 2.7f;
         Vector3 pos = origin + new Vector3(
             (startX + offsetX) * cellSize,
             dugYOffset,
             (startY + offsetZ) * cellSize
         );
-        Instantiate(prefab, pos, Quaternion.identity);
+        var go = Instantiate(prefab, pos, Quaternion.identity);
+        _areaObjects.Add(go);
     }
+
+    void FlattenAreaAt(Vector2Int gridPos)
+    {
+        int x = gridPos.x, y = gridPos.y;
+        if (x < 0 || y < 0 || x >= gridWidth || y >= gridHeight) return;
+
+        if (!TryFindAreaContaining(x, y, out int idx))
+        {
+            Debug.Log("Không có luống/hố để hủy tại đây."); return;
+        }
+
+        var a = _areaSaves[idx];
+
+        // 1) Chặn nếu có cây trong vùng
+        for (int dx = 0; dx < a.size; dx++)
+            for (int dy = 0; dy < a.size; dy++)
+            {
+                var t = tiles[a.startX + dx, a.startY + dy];
+                if (t.plantInstance != null)
+                {
+                    Debug.LogWarning("Không thể hủy vì vùng đang có cây!");
+                    return;
+                }
+            }
+
+        // 2) Reset về đất thường
+        for (int dx = 0; dx < a.size; dx++)
+            for (int dy = 0; dy < a.size; dy++)
+            {
+                var t = tiles[a.startX + dx, a.startY + dy];
+
+                // Nếu bạn có overlay per-tile (nước/cỏ/đá) -> tắt ở đây (nếu dùng):
+                // if (tileObjects[a.startX+dx, a.startY+dy]) tileObjects[a.startX+dx, a.startY+dy].SetActive(false);
+
+                t.state = SoilState.Normal;
+                t.soilType = SoilType.None;
+            }
+
+        // 3) Hủy prefab vùng
+        if (idx >= 0 && idx < _areaObjects.Count && _areaObjects[idx] != null)
+            Destroy(_areaObjects[idx]);
+
+        // 4) Xóa record
+        _areaSaves.RemoveAt(idx);
+        if (idx >= 0 && idx < _areaObjects.Count)
+            _areaObjects.RemoveAt(idx);
+
+        Debug.Log($"Đã hủy {(a.size == 5 ? "luống 5x5" : "hố 3x3")} tại ({a.startX},{a.startY}).");
+    }
+
 
     // ===== PLANT SYSTEM =====
 
@@ -644,6 +733,7 @@ public class FarmGrid : MonoBehaviour
                 tiles[x, y] = new Tile();
 
         //Dựng lại đất 
+        _areaObjects = new List<GameObject>(data.areas.Count);
         foreach (var a in data.areas)
         {
             for (int dx = 0; dx < a.size; dx++)
@@ -656,14 +746,16 @@ public class FarmGrid : MonoBehaviour
             GameObject prefab = (a.size == 5) ? dugSoilPrefab : holePrefab;
 
             float yOffset = 0.28f;
-            float offsetX = (a.size == 5) ? 5.1f : 0.8f; // 5x5 luống hoặc 3x3 hố
-            float offsetZ = (a.size == 5) ? -0.5f : 2.7f;
+            float offsetX = (a.size == 5) ? 5f : 0.8f; // 5x5 luống hoặc 3x3 hố
+            float offsetZ = (a.size == 5) ? -0.2f : 2.7f;
             Vector3 pos = origin + new Vector3(
                 (a.startX + offsetX) * cellSize,
                 yOffset,
                 (a.startY + offsetZ) * cellSize
             );
+            GameObject go = null;
             if (prefab != null) Instantiate(prefab, pos, Quaternion.identity);
+            _areaObjects.Add(go);
         }
         _areaSaves = new List<AreaSave>(data.areas);
 
