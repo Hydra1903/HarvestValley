@@ -4,6 +4,7 @@ using UnityEngine.UI;
 public class UIStateMachine : MonoBehaviour
 {
     public static UIStateMachine Instance;
+    public InventoryUI inventoryUI;
     void Awake()
     {
         if (Instance == null) Instance = this;
@@ -12,23 +13,14 @@ public class UIStateMachine : MonoBehaviour
 
     [HideInInspector] public MainScreenState mainScreenState = new MainScreenState();
     [HideInInspector] public InventoryState inventoryState = new InventoryState();
-
-
-    public GameObject panelMainScreen;
-    public GameObject panelMainInventory;
-
-    public GameObject panelCalendar;
-    public GameObject panelIconAndTimeLine;
-
-    public GameObject panelInventory;
-    public GameObject panelAchievement;
-    public GameObject panelUnlock;
-    public GameObject panelPlant;
     
     public Button btnInventory;
     public Button btnAchievement;
     public Button btnUnlock;
     public Button btnPlant;
+
+    public ScrollRect scrollViewAchievement;
+    public ScrollRect scrollViewUnlock;
 
     public void ChangeState(IUIState newState)
     {

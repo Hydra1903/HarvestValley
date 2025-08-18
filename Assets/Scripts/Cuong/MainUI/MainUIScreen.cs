@@ -3,10 +3,16 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 using System.Globalization;
+using static Unity.Collections.Unicode;
 
 
 public class MainUIScreen : MonoBehaviour
 {
+    [Header("--- Level UI ---")]
+    public TextMeshProUGUI textFPS;
+    private float deltaTime = 0.0f;
+    private float fps = 0.0f;
+
     [Header("--- Level UI ---")]
     public GameObject[] panelLevelUp;
     public GameObject backgroundLevelUp;
@@ -60,11 +66,19 @@ public class MainUIScreen : MonoBehaviour
         UpdateXpUI();
         UpdateMpUI();
         UpdateGold();
+        InvokeRepeating(nameof(UpdateFPSDisplay), 0, 0.5f);
     }
     void Update()
     {
-
+        deltaTime += (Time.deltaTime - deltaTime) * 0.1f;
+        fps = 1.0f / deltaTime;
     }
+    #region ----- FPS UI -----
+    void UpdateFPSDisplay()
+    {
+        textFPS.text = $"{fps:0.} FPS";
+    }
+    #endregion
 
     #region ----- LEVEL XP UI -----
     public void UpdateXpUI()

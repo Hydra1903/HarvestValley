@@ -7,10 +7,18 @@ public enum CalendarState
 public class MainScreenState : IUIState
 {
     public CalendarState currentCalendarState = CalendarState.Off;
+    private HotBarUI hotBarUI;
+    private HotBar hotBar;
     public void Enter()
     {
-        UIStateMachine.Instance.panelMainScreen.SetActive(true);
-        currentCalendarState = CalendarState.Off;
+        UIManager.Instance.ShowUI("MainScreen");
+        UIManager.Instance.HideUI("Panel");
+        if (hotBarUI == null)
+            hotBarUI = GameObject.FindFirstObjectByType<HotBarUI>();
+        if (hotBar == null)
+            hotBar = GameObject.FindFirstObjectByType<HotBar>();
+        hotBar.UpdateData();
+        hotBarUI.UpdateAllSlots();
     }
     public void Update()
     {
@@ -20,26 +28,41 @@ public class MainScreenState : IUIState
         }
         if (Input.GetKeyDown(KeyCode.C))
         {
+            if (currentCalendarState == CalendarState.Off)
+            {
+                currentCalendarState = CalendarState.On;
+            }
+            else
+            {
+                currentCalendarState = CalendarState.Off;
+            }
             ChangeCalendarState();
         }
     }
     public void Exit()
     {
-        UIStateMachine.Instance.panelMainScreen.SetActive(false);
+        if (currentCalendarState == CalendarState.On)
+        {
+            currentCalendarState = CalendarState.Off;
+            ChangeCalendarState();
+        }
+        else
+        {
+            currentCalendarState = CalendarState.Off;
+        }   
+        UIManager.Instance.HideUI("MainScreen");    
     }
     public void ChangeCalendarState()
     {
         if (currentCalendarState == CalendarState.Off)
         {
-            UIStateMachine.Instance.panelCalendar.SetActive(true);
-            UIStateMachine.Instance.panelIconAndTimeLine.SetActive(false);
-            currentCalendarState = CalendarState.On;
+            UIManager.Instance.HideUI("Calendar");
+            UIManager.Instance.ShowUI("IconAndTimeLine");
         }
         else if (currentCalendarState == CalendarState.On)
         {
-            UIStateMachine.Instance.panelCalendar.SetActive(false);
-            UIStateMachine.Instance.panelIconAndTimeLine.SetActive(true);
-            currentCalendarState = CalendarState.Off;
+            UIManager.Instance.ShowUI("Calendar");
+            UIManager.Instance.HideUI("IconAndTimeLine");
         }
     }
 }
