@@ -19,7 +19,6 @@ public class AnimalPen : MonoBehaviour
     private HashSet<string> allowedTag = new HashSet<string>();
     public Barn barnReference; 
 
-
     [Header("UI")]
     public TMP_Text animalCountText;
     public GameObject animalInfoPanelPrefab;
@@ -30,7 +29,9 @@ public class AnimalPen : MonoBehaviour
 
     [Header("Animal List UI")]
     public Transform animalListParent;       
-    public GameObject animalUIItemPrefab;    
+    public GameObject animalUIItemPrefab;
+    public AnimalListUI listUI; // drag vào t? inspector
+    private List<AnimalInfo> animals = new List<AnimalInfo>();
 
     private void Start()
     {
@@ -80,6 +81,7 @@ public class AnimalPen : MonoBehaviour
         spawnedAnimals.Add(animal);
         UpdateAnimalCountUI();
         UpdateAnimalListUI();
+        listUI.Refresh(animals);
         return true;
     }
     public void RemoveAnimal(GameObject animal)
@@ -185,6 +187,16 @@ public class AnimalPen : MonoBehaviour
         Debug.Log("Selled" + animal.name);
 
         UpdateAnimalCountUI();
+    }
+    public void AddAnimal(AnimalInfo animal)
+    {
+        animals.Add(animal);
+        listUI.Refresh(animals);
+    }
+    public void RemoveAnimal(AnimalInfo animal)
+    {
+        animals.Remove(animal);
+        listUI.Refresh(animals);
     }
     private void OnTriggerExit(Collider other)
     {
