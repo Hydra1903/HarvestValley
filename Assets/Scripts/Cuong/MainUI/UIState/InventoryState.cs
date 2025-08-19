@@ -24,6 +24,10 @@ public class InventoryState : IUIState
         {
             UIStateMachine.Instance.ChangeState(UIStateMachine.Instance.mainScreenState);
         }
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            UIStateMachine.Instance.ChangeState(UIStateMachine.Instance.pauseState);
+        }
     }
     public void Exit()
     {

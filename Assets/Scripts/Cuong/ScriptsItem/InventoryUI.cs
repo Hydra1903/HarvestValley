@@ -31,7 +31,6 @@ public class InventoryUI : MonoBehaviour
                 int index = row * inventory.columns + col;
                 InventorySlotUI slotUI = slotsParent.GetChild(index).GetComponentInChildren<InventorySlotUI>();
                 slotUI?.SetSlot(row, col, inventory, this);
-                Debug.Log("a");
             }
         }
         UpdateAllSlots();

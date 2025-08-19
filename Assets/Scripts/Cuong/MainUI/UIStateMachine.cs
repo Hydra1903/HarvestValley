@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem.LowLevel;
 using UnityEngine.UI;
 
 public class UIStateMachine : MonoBehaviour
@@ -13,7 +14,9 @@ public class UIStateMachine : MonoBehaviour
 
     [HideInInspector] public MainScreenState mainScreenState = new MainScreenState();
     [HideInInspector] public InventoryState inventoryState = new InventoryState();
-    
+    [HideInInspector] public PauseState pauseState = new PauseState();
+    [HideInInspector] public SettingState settingState = new SettingState();
+
     public Button btnInventory;
     public Button btnAchievement;
     public Button btnUnlock;
@@ -21,6 +24,8 @@ public class UIStateMachine : MonoBehaviour
 
     public ScrollRect scrollViewAchievement;
     public ScrollRect scrollViewUnlock;
+
+    public Button btnSetting;
 
     public void ChangeState(IUIState newState)
     {
@@ -40,6 +45,8 @@ public class UIStateMachine : MonoBehaviour
         btnAchievement.onClick.AddListener(() => inventoryState.ChangeSubState(EInventoryState.Achievement));
         btnUnlock.onClick.AddListener(() => inventoryState.ChangeSubState(EInventoryState.Unlock));
         btnPlant.onClick.AddListener(() => inventoryState.ChangeSubState(EInventoryState.Plant));
+
+        btnSetting.onClick.AddListener(() => ChangeState(settingState));
     }
     void Update()
     {

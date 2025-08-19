@@ -38,6 +38,10 @@ public class MainScreenState : IUIState
             }
             ChangeCalendarState();
         }
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            UIStateMachine.Instance.ChangeState(UIStateMachine.Instance.pauseState);
+        }
     }
     public void Exit()
     {
