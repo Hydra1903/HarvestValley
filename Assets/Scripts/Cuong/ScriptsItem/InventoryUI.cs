@@ -33,7 +33,7 @@ public class InventoryUI : MonoBehaviour
                 slotUI?.SetSlot(row, col, inventory, this);
             }
         }
-
+        UpdateAllSlots();
         dragIcon.gameObject.SetActive(false);
     }
 
