@@ -37,7 +37,7 @@ public class Inventory : MonoBehaviour
                     if (amount <= 0) return true;
                 }
             }
-        }// THÊM VÀO CÙNG DATA
+        }// THÊM VÀO CÙNG KIỂU ITEM
 
         for (int r = 0; r < rows; r++)
         {
@@ -74,6 +74,17 @@ public class Inventory : MonoBehaviour
         }// TẠO Ô MỚI THÊM VÀO
 
         return false;
+    }
+
+    public void ShowArray()
+    {
+        for (int r = 0; r < rows; r++)
+        {
+            for (int c = 0; c < columns; c++)
+            {
+                Debug.Log(slots[r,c].item);
+            }
+        }
     }
 }
 // Nơi lưu trữ tất cả thông tin về vật phẩm có trong túi đồ, sử dụng mảng 2 chiều để lưu trữ, mỗi vị trí trong mảng là 1 ô đồ
