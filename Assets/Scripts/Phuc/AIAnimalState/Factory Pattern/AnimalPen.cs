@@ -81,7 +81,6 @@ public class AnimalPen : MonoBehaviour
         spawnedAnimals.Add(animal);
         UpdateAnimalCountUI();
         UpdateAnimalListUI();
-        listUI.Refresh(animals);
         return true;
     }
     public void RemoveAnimal(GameObject animal)
