@@ -14,17 +14,16 @@ public class PlantData : ScriptableObject
     public Sprite icon;
 
     [Header("Growth Stages")]
-    public GameObject[] growthPrefabs; // Prefab cho từng giai đoạn
-    public int[] daysPerStage;         // Số ngày ở mỗi giai đoạn
+    public GameObject[] growthPrefabs;  // Prefab cho từng giai đoạn
+    public int[] daysPerStage;          // Số ngày ở mỗi giai đoạn
 
     [Header("Growth Settings")]
-    public int maxHarvest = 1; // số lần thu hoạch tối đa
-    public int harvestValue = 25; //sản lượng
-
+    public int maxHarvest = 1;          // số lần thu hoạch tối đa // -1 vô hạn
+    public int harvestValue = 25;       //sản lượng
+    public int regrowDays = 3;          // số ngày chờ để ra quả tiếp (cho cây nhiều lần)
+    public int regrowStageIndex = -1;   // nếu >=0: stage dùng trong thời gian chờ hồi quả; -1 = giữ stage cuối
     [Header("Requirements")]
-    public bool needsWater = true; //nước
-    public bool needsFertilizer = false; //phân bón
-
+    public bool needsWater = true;      //nước
     
     [Header("Description")]
     [TextArea(3, 5)]
@@ -57,15 +56,14 @@ public class PlantInstance
     public float currentGrowth = 0f;
     public int harvestCount = 0;
     public bool needsWater = false;
-    public bool needsFertilizer = false;
     public int currentStage = 0;
     public int daysInCurrentStage = 0;
+    public int daysUntilNextHarvest = 0; 
 
     public PlantInstance(PlantData data)
     {
         plantData = data;
         needsWater = data.needsWater;
-        needsFertilizer = data.needsFertilizer;
     }
 
     public void AdvanceDay()
