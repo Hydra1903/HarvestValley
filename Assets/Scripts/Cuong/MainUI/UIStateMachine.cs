@@ -26,6 +26,15 @@ public class UIStateMachine : MonoBehaviour
     public ScrollRect scrollViewUnlock;
 
     public Button btnSetting;
+    public Button btnContinue;
+
+    public Button btnDisplay;
+    public Button btnSound;
+    public Button btnControl;
+
+    public ScrollRect scrollViewDisplay;
+    public ScrollRect scrollViewSound;
+    public ScrollRect scrollViewControl;
 
     public void ChangeState(IUIState newState)
     {
@@ -47,6 +56,12 @@ public class UIStateMachine : MonoBehaviour
         btnPlant.onClick.AddListener(() => inventoryState.ChangeSubState(EInventoryState.Plant));
 
         btnSetting.onClick.AddListener(() => ChangeState(settingState));
+
+        btnDisplay.onClick.AddListener(() => settingState.ChangeSubState(ESettingState.Display));
+        btnSound.onClick.AddListener(() => settingState.ChangeSubState(ESettingState.Sound));
+        btnControl.onClick.AddListener(() => settingState.ChangeSubState(ESettingState.Control));
+
+        btnContinue.onClick.AddListener(() => ChangeState(mainScreenState));
     }
     void Update()
     {

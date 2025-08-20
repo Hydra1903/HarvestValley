@@ -6,6 +6,7 @@ public class PauseState : IUIState
     {
         UIManager.Instance.ShowUI("Pause");
         UIManager.Instance.ShowUI("Panel");
+        UIStateMachine.Instance.btnContinue.interactable = true;
     }
     public void Update()
     {

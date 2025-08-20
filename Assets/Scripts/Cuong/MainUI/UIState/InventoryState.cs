@@ -7,6 +7,11 @@ public enum EInventoryState
     Unlock,
     Plant
 }
+public enum StatisticsTable
+{
+    On,
+    Off
+}
 public class InventoryState : IUIState
 {
     public EInventoryState currentInventoryState;
@@ -15,7 +20,7 @@ public class InventoryState : IUIState
     {
         UIManager.Instance.ShowUI("MainInventory");
         UIManager.Instance.ShowUI("Panel");
-        ResetUI(currentInventoryState);
+        ResetUI();
         UIStateMachine.Instance.inventoryUI.UpdateAllSlots();
     }
     public void Update()
@@ -37,56 +42,17 @@ public class InventoryState : IUIState
     {
         UIStateMachine.Instance.scrollViewAchievement.verticalNormalizedPosition = 1f;
         UIStateMachine.Instance.scrollViewUnlock.verticalNormalizedPosition = 1f;
-        switch (currentInventoryState)
-        {
-            case EInventoryState.Inventory:
-                UIManager.Instance.HideUI("Inventory1");
-                break;
-            case EInventoryState.Achievement:
-                UIManager.Instance.HideUI("Achievement");
-                break;
-            case EInventoryState.Unlock:
-                UIManager.Instance.HideUI("Unlock");
-                break;
-            case EInventoryState.Plant:
-                UIManager.Instance.HideUI("Plant");
-                break;
-        }
+        CheckHideUI();
         currentInventoryState = newState;
-        switch (currentInventoryState)
-        {
-            case EInventoryState.Inventory:
-                UIManager.Instance.ShowUI("Inventory1");
-                break;
-            case EInventoryState.Achievement:
-                UIManager.Instance.ShowUI("Achievement");
-                break;
-            case EInventoryState.Unlock:
-                UIManager.Instance.ShowUI("Unlock");
-                break;
-            case EInventoryState.Plant:
-                UIManager.Instance.ShowUI("Plant");
-                break;
-        }
+        CheckShowUI();
     }
-    public void ResetUI(EInventoryState currentState)
+    public void ResetUI()
     {
-        if (currentState != EInventoryState.Inventory)
+        if (currentInventoryState != EInventoryState.Inventory)
         {
-            switch (currentState)
-            {
-                case EInventoryState.Achievement:
-                    UIManager.Instance.HideUI("Achievement");
-                    break;
-                case EInventoryState.Unlock:
-                    UIManager.Instance.HideUI("Unlock");
-                    break;
-                case EInventoryState.Plant:
-                    UIManager.Instance.HideUI("Plant");
-                    break;
-            }
+            CheckHideUI();
             currentInventoryState = EInventoryState.Inventory;
-            UIManager.Instance.ShowUI("Inventory1");
+            CheckShowUI();
         }
 
         UIStateMachine.Instance.btnInventory.interactable = false;
@@ -96,5 +62,43 @@ public class InventoryState : IUIState
 
         UIStateMachine.Instance.scrollViewAchievement.verticalNormalizedPosition = 1f;
         UIStateMachine.Instance.scrollViewUnlock.verticalNormalizedPosition = 1f;
+    }
+    public void CheckShowUI()
+    {
+        switch (currentInventoryState)
+        {
+            case EInventoryState.Inventory:
+                UIManager.Instance.ShowUI("Inventory1");
+                break;
+            case EInventoryState.Achievement:
+                UIManager.Instance.ShowUI("Achievement");
+                UIManager.Instance.ShowUI("StatisticsTable");
+                break;
+            case EInventoryState.Unlock:
+                UIManager.Instance.ShowUI("Unlock");
+                break;
+            case EInventoryState.Plant:
+                UIManager.Instance.ShowUI("Plant");
+                break;
+        }
+    }
+    public void CheckHideUI()
+    {
+        switch (currentInventoryState)
+        {
+            case EInventoryState.Inventory:
+                UIManager.Instance.HideUI("Inventory1");
+                break;
+            case EInventoryState.Achievement:
+                UIManager.Instance.HideUI("Achievement");
+                UIManager.Instance.HideUI("StatisticsTable");
+                break;
+            case EInventoryState.Unlock:
+                UIManager.Instance.HideUI("Unlock");
+                break;
+            case EInventoryState.Plant:
+                UIManager.Instance.HideUI("Plant");
+                break;
+        }
     }
 }
