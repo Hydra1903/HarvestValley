@@ -13,10 +13,8 @@ MonoBehaviour:
   m_Name: Corn
   m_EditorClassIdentifier: 
   plantName: Corn
-  plantType: 4
-  size: 2
-  prefab: {fileID: 1238140437920138, guid: 8a75c96f0b8e01649958f3ecc981d315, type: 3}
-  icon: {fileID: 0}
+  plantType: 11
+  size: 1
   growthPrefabs:
   - {fileID: 1238140437920138, guid: 8a75c96f0b8e01649958f3ecc981d315, type: 3}
   - {fileID: 1765584645647972, guid: 98ae3468366a8a94faf48267904b86c6, type: 3}
@@ -28,4 +26,4 @@ MonoBehaviour:
   regrowDays: 2
   regrowStageIndex: 2
   needsWater: 1
-  description: "C\xE2y tr\u1ED3ng"
+  description: "C\xE2y b\u1EAFp  C\xE2y Ng\xF4"

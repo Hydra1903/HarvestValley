@@ -8,10 +8,6 @@ public class PlantData : ScriptableObject
     public string plantName = "New Plant";
     public PlantType plantType = PlantType.Carrot;
     public PlantSize size = PlantSize.Small;
-    
-    [Header("Visual")]
-    public GameObject prefab;
-    public Sprite icon;
 
     [Header("Growth Stages")]
     public GameObject[] growthPrefabs;  // Prefab cho từng giai đoạn

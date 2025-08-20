@@ -29,7 +29,7 @@ public class FarmGrid : MonoBehaviour
     private SimpleGhostManager simpleGhostManager; 
 
     private Tile[,] tiles;
-    private GameObject[,] tileObjects;
+
 
     public GameObject ghostPlotPrefab;
     private GameObject ghostPlotInstance;
@@ -45,7 +45,6 @@ public class FarmGrid : MonoBehaviour
     void Start()
     {
         tiles = new Tile[gridWidth, gridHeight];
-        tileObjects = new GameObject[gridWidth, gridHeight];
 
         for (int x = 0; x < gridWidth; x++)
         {
@@ -87,7 +86,7 @@ public class FarmGrid : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.Q)) currentPlantType = PlantType.Carrot;  // 1x1
             if (Input.GetKeyDown(KeyCode.W)) currentPlantType = PlantType.Corn;  // 2x2
-            if (Input.GetKeyDown(KeyCode.E)) currentPlantType = PlantType.Apple;   // 3x3
+            if (Input.GetKeyDown(KeyCode.E)) currentPlantType = PlantType.Watermelon;   // 3x3
         }
     }
 
@@ -111,7 +110,6 @@ public class FarmGrid : MonoBehaviour
             HideGhosts();
             return;
         }
-
         //check thêm biên theo origin/size để chắc chắn
         if (!IsWorldPointInsideThisGrid(hit.point))
         {
@@ -261,18 +259,6 @@ public class FarmGrid : MonoBehaviour
         int x = Mathf.FloorToInt((worldPos.x - origin.x) / cellSize);
         int y = Mathf.FloorToInt((worldPos.z - origin.z) / cellSize);
         return new Vector2Int(x, y);
-    }
-
-    public void DigTile(int x, int y)
-    {
-        if (x < 0 || x >= gridWidth || y < 0 || y >= gridHeight) return;
-        if (tiles[x, y].state != SoilState.Normal) return;
-
-        tiles[x, y].state = SoilState.Dug;
-
-        float dugYOffset = 0.28f; 
-        Vector3 pos = origin + new Vector3((x + 0.5f) * cellSize, dugYOffset, (y + 0.5f) * cellSize);
-        tileObjects[x, y] = Instantiate(dugSoilPrefab, pos, Quaternion.identity);
     }
 
     // Hàm làm ướt đất 
@@ -435,10 +421,22 @@ public class FarmGrid : MonoBehaviour
             dugYOffset,
             (startY + offsetZ) * cellSize
         );
-        var go = Instantiate(prefab, pos, Quaternion.identity);
-        _areaObjects.Add(go);
+
+        GameObject dirt;
+
+        if (currentTool == ToolType.Shovel)
+        {
+            dirt = Instantiate(prefab, pos, RandomizeRotation());
+        }
+        else
+        {
+            dirt = Instantiate(prefab, pos, Quaternion.identity);
+        }    
+         
+        _areaObjects.Add(dirt);
     }
 
+    //Hủy đất
     void FlattenAreaAt(Vector2Int gridPos)
     {
         int x = gridPos.x, y = gridPos.y;
@@ -577,6 +575,15 @@ public class FarmGrid : MonoBehaviour
         simpleGhostManager.ShowGhost(plantData, ghostPos);
     }
 
+
+    //Xoay prefab ngẫu nhiên theo trục Y 
+    Quaternion RandomizeRotation()
+    {
+        float randomY = Random.Range(0f, 360f);
+        return Quaternion.Euler(0f, randomY, 0f);
+    }
+
+
     void PlantSeed(Vector2Int startPos, PlantData plantData)
     {
         if (plantData == null)
@@ -620,15 +627,13 @@ public class FarmGrid : MonoBehaviour
         GameObject stagePrefab = null;
         if (plantData.growthPrefabs != null && plantData.growthPrefabs.Length > 0)
             stagePrefab = plantData.growthPrefabs[0];
-        else
-            stagePrefab = plantData.prefab;
 
         if (stagePrefab != null && IsInGrid(centerX, centerY))
         {
             if (tiles[centerX, centerY].plantObject != null)
                 Destroy(tiles[centerX, centerY].plantObject);
 
-            tiles[centerX, centerY].plantObject = Instantiate(stagePrefab, plantPos, Quaternion.identity);
+            tiles[centerX, centerY].plantObject = Instantiate(stagePrefab, plantPos, RandomizeRotation());
         }
 
         Debug.Log($"Đã trồng {plantData.plantName} ({plantData.plantType}) tại ({startPos.x}, {startPos.y}) size {size}");
@@ -655,6 +660,7 @@ public class FarmGrid : MonoBehaviour
         return 0;
     }
 
+    //Kiểm tra số lần thu hoạch
     bool HasMoreHarvests(PlantInstance inst)
     {
         int max = inst.plantData.maxHarvest;
@@ -662,6 +668,7 @@ public class FarmGrid : MonoBehaviour
         return inst.harvestCount < max;          // còn lượt
     }
 
+    //Kiểm tra đã trưởng thành chưa
     bool IsMature(PlantInstance inst)
     {
         // phải tới stage cuối đã
@@ -717,16 +724,16 @@ public class FarmGrid : MonoBehaviour
         // 2) Cây còn lượt thu nữa? (maxHarvest > 1 hoặc -1)
         if (HasMoreHarvests(inst))
         {
-            // Đặt cooldown
-            inst.daysUntilNextHarvest = Mathf.Max(0, inst.plantData.regrowDays);
 
-            // Nếu có stage riêng cho giai đoạn “đang hồi quả” → chuyển mesh
-            if (inst.plantData.regrowStageIndex >= 0 && inst.plantData.regrowStageIndex != inst.currentStage)
-            {
-                inst.currentStage = inst.plantData.regrowStageIndex;
-                ReplacePlantMeshAtCenter(cx, cy, inst);
-            }
-            // Nếu regrowStageIndex == -1: giữ nguyên mesh stage cuối (đơn giản)
+            inst.daysUntilNextHarvest = Mathf.Max(1, inst.plantData.regrowDays);
+
+            int last = GetLastStageIndex(inst.plantData);
+            if (inst.plantData.regrowStageIndex >= 0)
+                inst.currentStage = Mathf.Clamp(inst.plantData.regrowStageIndex, 0, last - 1);
+            else
+                inst.currentStage = Mathf.Max(0, last - 1);
+
+            ReplacePlantMeshAtCenter(cx, cy, inst);
             return;
         }
 
@@ -749,9 +756,9 @@ public class FarmGrid : MonoBehaviour
             if (inst.plantData.growthPrefabs != null && inst.plantData.growthPrefabs.Length > inst.currentStage)
                 stagePrefab = inst.plantData.growthPrefabs[inst.currentStage];
             else
-                stagePrefab = inst.plantData.prefab;
+                stagePrefab = inst.plantData.growthPrefabs[0];
 
-            tile.plantObject = stagePrefab ? Instantiate(stagePrefab, pos, Quaternion.identity) : null;
+            tile.plantObject = stagePrefab ? Instantiate(stagePrefab, pos, RandomizeRotation()) : null;
         }
     }
 
@@ -792,42 +799,40 @@ public class FarmGrid : MonoBehaviour
             for (int y = 0; y < gridHeight; y++)
             {
                 Tile tile = tiles[x, y];
-                if (tile.plantInstance != null && tile.plantObject != null)
-                {
-                    var inst = tile.plantInstance;
-                    int last = GetLastStageIndex(inst.plantData);
+                if (tile.plantInstance == null || tile.plantObject == null) continue;
 
-                    if (inst.currentStage < last)
+                var inst = tile.plantInstance;
+                int last = GetLastStageIndex(inst.plantData);
+
+                // === 1) Xử lý cây có regrow (nhiều lần thu hoạch) với cooldown ===
+                bool isMultiHarvest = inst.plantData.maxHarvest != 1;
+
+                if (isMultiHarvest && inst.daysUntilNextHarvest > 0)
+                {
+                    inst.daysUntilNextHarvest--;
+
+                    if (inst.daysUntilNextHarvest == 0 && inst.currentStage < last)
                     {
-                        // đang lớn bình thường
                         int prev = inst.currentStage;
-                        inst.AdvanceDay();
+                        inst.AdvanceDay(); // tăng đúng 1 stage
                         if (inst.currentStage != prev)
                             ReplacePlantMeshAtCenter(x, y, inst);
                     }
-                    else
-                    {
-                        // đã ở stage cuối
-                        if (inst.plantData.maxHarvest != 1)
-                        {
-                            // cây nhiều lần: đếm ngược hồi quả
-                            if (inst.daysUntilNextHarvest > 0)
-                            {
-                                inst.daysUntilNextHarvest--;
-                                // Khi hết chờ → nếu đang ở regrowStageIndex, trả về last stage để "có quả" trở lại
-                                if (inst.daysUntilNextHarvest == 0 && inst.plantData.regrowStageIndex >= 0)
-                                {
-                                    inst.currentStage = last;
-                                    ReplacePlantMeshAtCenter(x, y, inst);
-                                }
-                            }
-                        }
-                    }
+                    continue;
+                }
+
+                // === 2) Không cooldown: tăng trưởng bình thường ===
+                if (inst.currentStage < last)
+                {
+                    int prev = inst.currentStage;
+                    inst.AdvanceDay();
+                    if (inst.currentStage != prev)
+                        ReplacePlantMeshAtCenter(x, y, inst);
                 }
             }
         }
 
-        Debug.Log("Qua ngày: Tất cả cây trung tâm đã được cập nhật.");
+        Debug.Log("Qua ngày: cập nhật tăng trưởng + regrow theo countdown.");
     }
 
     void SyncPlantSavesFromWorld()
@@ -898,7 +903,7 @@ public class FarmGrid : MonoBehaviour
 
             GameObject prefab = (a.size == 5) ? dugSoilPrefab : holePrefab;
 
-            float yOffset = 0.28f;
+            float yOffset = 0.235f;
             float offsetX = (a.size == 5) ? 5f : 0.8f; // 5x5 luống hoặc 3x3 hố
             float offsetZ = (a.size == 5) ? -0.2f : 2.7f;
             Vector3 pos = origin + new Vector3(
@@ -947,7 +952,7 @@ public class FarmGrid : MonoBehaviour
             if (plantData.growthPrefabs != null && plantData.growthPrefabs.Length > p.stage)
                 stagePrefab = plantData.growthPrefabs[p.stage];
             else
-                stagePrefab = plantData.prefab;
+                stagePrefab = plantData.growthPrefabs[0];
 
             if (stagePrefab != null && IsInGrid(p.centerX, p.centerY))
             {
@@ -960,7 +965,7 @@ public class FarmGrid : MonoBehaviour
                 if (tiles[p.centerX, p.centerY].plantObject != null)
                     Destroy(tiles[p.centerX, p.centerY].plantObject);
 
-                tiles[p.centerX, p.centerY].plantObject = Instantiate(stagePrefab, pos, Quaternion.identity);
+                tiles[p.centerX, p.centerY].plantObject = Instantiate(stagePrefab, pos, RandomizeRotation());
             }
         }
     }
