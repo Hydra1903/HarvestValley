@@ -3,7 +3,7 @@ using TMPro;
 using UnityEngine.UI;
 using System.Globalization;
 
-public enum FarmStallState
+public enum EFarmStallState
 {
     NotForSale,   
     Selling,     
@@ -17,7 +17,7 @@ public class FarmStallUI : MonoBehaviour
     public Button buttonSell;
     public Button buttonCollect;
     public GameObject prevent;
-    public FarmStallState currentState = FarmStallState.NotForSale;
+    public EFarmStallState currentState = EFarmStallState.NotForSale;
 
     public TextMeshProUGUI[] priceTexts;
     public ReceiveItem[] receiveItems;
@@ -29,13 +29,13 @@ public class FarmStallUI : MonoBehaviour
     }
     public void Sell()
     {
-        currentState = FarmStallState.Selling;
+        currentState = EFarmStallState.Selling;
         Notification.Instance.ShowNotification("Quay trở lại vào ngày mai!");
         UpdateUI();
     }
     public void Collect()
     {
-        currentState = FarmStallState.NotForSale;
+        currentState = EFarmStallState.NotForSale;
         Gold.Instance.AddGold(farmStall.totalAmount);
         farmStall.totalAmount = 0;
         UpdateReceiveDataItem();
@@ -45,7 +45,7 @@ public class FarmStallUI : MonoBehaviour
     {
         totalAmountText.text = farmStall.totalAmount.ToString("N0", new CultureInfo("de-DE"));
 
-        if (farmStall.totalAmount > 0 && currentState == FarmStallState.NotForSale)
+        if (farmStall.totalAmount > 0 && currentState == EFarmStallState.NotForSale)
         {
             buttonSell.interactable = true;
         }
@@ -56,17 +56,17 @@ public class FarmStallUI : MonoBehaviour
 
         switch (currentState)
         {
-            case FarmStallState.NotForSale:
+            case EFarmStallState.NotForSale:
                 buttonCollect.interactable = false;
                 prevent.SetActive(false);
                 statusText.text = "Chưa có gì để bán!";
                 break;
-            case FarmStallState.Selling:
+            case EFarmStallState.Selling:
                 buttonCollect.interactable = true;
                 prevent.SetActive(true);
                 statusText.text = "Đang bán!";
                 break;
-            case FarmStallState.ReadyToCollect:
+            case EFarmStallState.ReadyToCollect:
                 statusText.text = "Có thể nhận!";
                 break;
         }

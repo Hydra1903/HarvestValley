@@ -3,7 +3,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 using System.Globalization;
-using static Unity.Collections.Unicode;
 
 
 public class MainUIScreen : MonoBehaviour
@@ -122,7 +121,7 @@ public class MainUIScreen : MonoBehaviour
     #region ----- GOLD UI -----
     public void UpdateGold()
     {
-        textGold.text = Gold.Instance.gold.ToString();
+        textGold.text = Gold.Instance.gold.ToString("N0", new CultureInfo("de-DE"));
     }
     #endregion
 

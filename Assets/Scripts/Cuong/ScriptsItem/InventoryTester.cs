@@ -5,6 +5,7 @@ public class InventoryTester : MonoBehaviour
     public Inventory inventory;
     public Barn barn;
     public InventoryUI inventoryUI1;
+    public InventoryUI inventoryUI2;
     public BarnUI barnUI;
     public ItemData item1, item2, item3, item4;
     public void OnClickSpawnItem()

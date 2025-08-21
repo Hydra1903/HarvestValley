@@ -42,6 +42,18 @@ public class MainScreenState : IUIState
         {
             UIStateMachine.Instance.ChangeState(UIStateMachine.Instance.pauseState);
         }
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            UIStateMachine.Instance.ChangeState(UIStateMachine.Instance.seedShopState);
+        }
+        if (Input.GetKeyDown(KeyCode.T))
+        {
+            UIStateMachine.Instance.ChangeState(UIStateMachine.Instance.barnState);
+        }
+        if (Input.GetKeyDown(KeyCode.Y))
+        {
+            UIStateMachine.Instance.ChangeState(UIStateMachine.Instance.farmStallState);
+        }
     }
     public void Exit()
     {

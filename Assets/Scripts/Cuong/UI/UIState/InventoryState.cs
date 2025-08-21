@@ -21,7 +21,7 @@ public class InventoryState : IUIState
         UIManager.Instance.ShowUI("MainInventory");
         UIManager.Instance.ShowUI("Panel");
         ResetUI();
-        UIStateMachine.Instance.inventoryUI.UpdateAllSlots();
+        UIStateMachine.Instance.inventoryUI1.UpdateAllSlots();
     }
     public void Update()
     {
