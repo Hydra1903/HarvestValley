@@ -85,8 +85,9 @@ public class FarmGrid : MonoBehaviour
         if (currentTool == ToolType.Seed)
         {
             if (Input.GetKeyDown(KeyCode.Q)) currentPlantType = PlantType.Carrot;  // 1x1
-            if (Input.GetKeyDown(KeyCode.W)) currentPlantType = PlantType.Corn;  // 2x2
-            if (Input.GetKeyDown(KeyCode.E)) currentPlantType = PlantType.Watermelon;   // 3x3
+            if (Input.GetKeyDown(KeyCode.W)) currentPlantType = PlantType.Corn;  // 1x1
+            if (Input.GetKeyDown(KeyCode.E)) currentPlantType = PlantType.Watermelon;   // 2x2
+            if (Input.GetKeyDown(KeyCode.R)) currentPlantType = PlantType.Apple;   // 3x3
         }
     }
 
@@ -413,9 +414,9 @@ public class FarmGrid : MonoBehaviour
         });
 
         // 3) Đặt prefab ở tâm vùng (ổn định với mọi cellSize/origin)
-        float dugYOffset = 0.235f;
-        float offsetX = (size == 5) ? 5f : 0.8f; // 5x5 luống hoặc 3x3 hố
-        float offsetZ = (size == 5) ? -0.2f : 2.7f;
+        float dugYOffset = (size == 5) ? 0.235f : 0.45f; // độ cao 5 là luống 3 là hố
+        float offsetX = (size == 5) ? 5f : 1.5f; // trục x 5 là luống 3 là hố
+        float offsetZ = (size == 5) ? -0.2f : 1.5f; // trục z 5 là luống 3 là hố
         Vector3 pos = origin + new Vector3(
             (startX + offsetX) * cellSize,
             dugYOffset,
