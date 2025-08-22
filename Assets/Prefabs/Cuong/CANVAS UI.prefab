@@ -501,6 +501,8 @@ MonoBehaviour:
   plus10Btn: {fileID: 266091486861655032}
   minus10Btn: {fileID: 7203052847821158514}
   shop: {fileID: 513329156475484763}
+  levelUnlock: 0
+  panelUnlock: {fileID: 0}
 --- !u!1 &17117507106438220
 GameObject:
   m_ObjectHideFlags: 0
@@ -19290,6 +19292,8 @@ MonoBehaviour:
   plus10Btn: {fileID: 8999693011594428119}
   minus10Btn: {fileID: 3630675798229431697}
   shop: {fileID: 513329156475484763}
+  levelUnlock: 0
+  panelUnlock: {fileID: 0}
 --- !u!1 &454940119056203945
 GameObject:
   m_ObjectHideFlags: 0
@@ -36637,6 +36641,8 @@ MonoBehaviour:
   plus10Btn: {fileID: 7314878849263403789}
   minus10Btn: {fileID: 5550485065637941842}
   shop: {fileID: 6530551327487146182}
+  levelUnlock: 0
+  panelUnlock: {fileID: 0}
 --- !u!1 &878302936004467088
 GameObject:
   m_ObjectHideFlags: 0
@@ -40139,6 +40145,8 @@ MonoBehaviour:
   plus10Btn: {fileID: 7601760398524788812}
   minus10Btn: {fileID: 5658669715730797087}
   shop: {fileID: 513329156475484763}
+  levelUnlock: 0
+  panelUnlock: {fileID: 0}
 --- !u!1 &965632591265638787
 GameObject:
   m_ObjectHideFlags: 0
@@ -67493,6 +67501,8 @@ MonoBehaviour:
   plus10Btn: {fileID: 267553520109933135}
   minus10Btn: {fileID: 7403757336354386875}
   shop: {fileID: 6530551327487146182}
+  levelUnlock: 0
+  panelUnlock: {fileID: 0}
 --- !u!1 &1569652072853301501
 GameObject:
   m_ObjectHideFlags: 0
@@ -84399,6 +84409,8 @@ MonoBehaviour:
   plus10Btn: {fileID: 573292835592243232}
   minus10Btn: {fileID: 7585944203046209504}
   shop: {fileID: 513329156475484763}
+  levelUnlock: 0
+  panelUnlock: {fileID: 0}
 --- !u!1 &1974663048112213942
 GameObject:
   m_ObjectHideFlags: 0
@@ -90649,6 +90661,8 @@ MonoBehaviour:
   plus10Btn: {fileID: 3504729550669903127}
   minus10Btn: {fileID: 1329956812231532524}
   shop: {fileID: 6530551327487146182}
+  levelUnlock: 0
+  panelUnlock: {fileID: 0}
 --- !u!1 &2126767755285898637
 GameObject:
   m_ObjectHideFlags: 0
@@ -97090,6 +97104,8 @@ MonoBehaviour:
   plus10Btn: {fileID: 1069637690657323482}
   minus10Btn: {fileID: 1286185424324127280}
   shop: {fileID: 513329156475484763}
+  levelUnlock: 0
+  panelUnlock: {fileID: 0}
 --- !u!1 &2298299077227405213
 GameObject:
   m_ObjectHideFlags: 0
@@ -104231,6 +104247,8 @@ MonoBehaviour:
   plus10Btn: {fileID: 4339508245995502137}
   minus10Btn: {fileID: 4750654141202926515}
   shop: {fileID: 513329156475484763}
+  levelUnlock: 0
+  panelUnlock: {fileID: 0}
 --- !u!1 &2430774758921661160
 GameObject:
   m_ObjectHideFlags: 0
@@ -110327,6 +110345,8 @@ MonoBehaviour:
   plus10Btn: {fileID: 8668482990512409377}
   minus10Btn: {fileID: 155361982804904327}
   shop: {fileID: 513329156475484763}
+  levelUnlock: 0
+  panelUnlock: {fileID: 0}
 --- !u!1 &2543799829867517500
 GameObject:
   m_ObjectHideFlags: 0
@@ -112434,6 +112454,8 @@ MonoBehaviour:
   plus10Btn: {fileID: 6412725526715364366}
   minus10Btn: {fileID: 4590050284351611190}
   shop: {fileID: 513329156475484763}
+  levelUnlock: 0
+  panelUnlock: {fileID: 0}
 --- !u!1 &2602324518244550638
 GameObject:
   m_ObjectHideFlags: 0
@@ -115493,6 +115515,8 @@ MonoBehaviour:
   plus10Btn: {fileID: 3571871771739458639}
   minus10Btn: {fileID: 2478788268039881746}
   shop: {fileID: 513329156475484763}
+  levelUnlock: 0
+  panelUnlock: {fileID: 0}
 --- !u!1 &2687962067316427440
 GameObject:
   m_ObjectHideFlags: 0
@@ -116182,6 +116206,8 @@ MonoBehaviour:
   plus10Btn: {fileID: 8197803987456151984}
   minus10Btn: {fileID: 8658832927693560302}
   shop: {fileID: 6530551327487146182}
+  levelUnlock: 0
+  panelUnlock: {fileID: 0}
 --- !u!1 &2700743937389161589
 GameObject:
   m_ObjectHideFlags: 0
@@ -128780,6 +128806,8 @@ MonoBehaviour:
   plus10Btn: {fileID: 7597840908079675219}
   minus10Btn: {fileID: 8118942328467582831}
   shop: {fileID: 513329156475484763}
+  levelUnlock: 0
+  panelUnlock: {fileID: 0}
 --- !u!1 &2959739001223184364
 GameObject:
   m_ObjectHideFlags: 0
@@ -144077,6 +144105,8 @@ MonoBehaviour:
   plus10Btn: {fileID: 1745677704925148763}
   minus10Btn: {fileID: 1425246237462843923}
   shop: {fileID: 513329156475484763}
+  levelUnlock: 0
+  panelUnlock: {fileID: 0}
 --- !u!1 &3346910603615147754
 GameObject:
   m_ObjectHideFlags: 0
@@ -144891,9 +144921,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sellPriceSpring: 08000000060000001f0000000800000014000000260000001000000010000000220000000d0000001c000000090000001b00000016000000aa000000a5000000c300000090000000a8000000b400000016000000180000001c0000001a00000015000000140000001400000028000000
+  sellPriceSummer: 
+  sellPriceFall: 
+  sellPriceWinter: 
+  canGrowInSpring: 
+  canGrowInSummer: 
+  canGrowInFall: 
+  canGrowInWinter: 
   quantity: 
   totalAmount: 0
-  farmStallUI: {fileID: 5417329299939720421}
 --- !u!114 &5417329299939720421
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -145000,6 +145036,10 @@ MonoBehaviour:
   - {fileID: 3281650999448065163}
   - {fileID: 2675323382301256786}
   - {fileID: 7284485330095042140}
+  highlightSeason: []
+  arrowIncrease: []
+  arrowDecrease: []
+  scrollViewFarmStall: {fileID: 0}
 --- !u!1 &3371025093583615694
 GameObject:
   m_ObjectHideFlags: 0
@@ -149718,6 +149758,8 @@ MonoBehaviour:
   plus10Btn: {fileID: 6179508551022690575}
   minus10Btn: {fileID: 3217671152691924177}
   shop: {fileID: 513329156475484763}
+  levelUnlock: 0
+  panelUnlock: {fileID: 0}
 --- !u!1 &3480165521720990036
 GameObject:
   m_ObjectHideFlags: 0
@@ -176692,6 +176734,8 @@ MonoBehaviour:
   plus10Btn: {fileID: 1614387322083615159}
   minus10Btn: {fileID: 8766252624761696548}
   shop: {fileID: 6530551327487146182}
+  levelUnlock: 0
+  panelUnlock: {fileID: 0}
 --- !u!1 &4167422593545837469
 GameObject:
   m_ObjectHideFlags: 0
@@ -193886,6 +193930,8 @@ MonoBehaviour:
   plus10Btn: {fileID: 3488835855534430664}
   minus10Btn: {fileID: 3751146363160622823}
   shop: {fileID: 513329156475484763}
+  levelUnlock: 0
+  panelUnlock: {fileID: 0}
 --- !u!1 &4515629903408365954
 GameObject:
   m_ObjectHideFlags: 0
@@ -207861,6 +207907,8 @@ MonoBehaviour:
   plus10Btn: {fileID: 977012052042899175}
   minus10Btn: {fileID: 5520051556844775726}
   shop: {fileID: 6530551327487146182}
+  levelUnlock: 0
+  panelUnlock: {fileID: 0}
 --- !u!1 &4847128781811641142
 GameObject:
   m_ObjectHideFlags: 0
@@ -238804,11 +238852,11 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 598470680493702547}
+  - {fileID: 4900189622531664677}
   - {fileID: 6531912082010161529}
   - {fileID: 6696812155329171887}
   - {fileID: 9112095381607729172}
-  - {fileID: 598470680493702547}
-  - {fileID: 4900189622531664677}
   - {fileID: 9045175488650031352}
   m_Father: {fileID: 3283102007448835409}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -270276,6 +270324,8 @@ MonoBehaviour:
   plus10Btn: {fileID: 5554881566911484208}
   minus10Btn: {fileID: 5434613996726933463}
   shop: {fileID: 6530551327487146182}
+  levelUnlock: 0
+  panelUnlock: {fileID: 0}
 --- !u!1 &6281289116553248782
 GameObject:
   m_ObjectHideFlags: 0
@@ -287767,6 +287817,8 @@ MonoBehaviour:
   plus10Btn: {fileID: 5541211078782426853}
   minus10Btn: {fileID: 6000530396136402302}
   shop: {fileID: 513329156475484763}
+  levelUnlock: 0
+  panelUnlock: {fileID: 0}
 --- !u!1 &6640439403269448301
 GameObject:
   m_ObjectHideFlags: 0
@@ -293764,6 +293816,8 @@ MonoBehaviour:
   plus10Btn: {fileID: 5097112813601282772}
   minus10Btn: {fileID: 6176974931885328261}
   shop: {fileID: 513329156475484763}
+  levelUnlock: 0
+  panelUnlock: {fileID: 0}
 --- !u!1 &6775641172536120154
 GameObject:
   m_ObjectHideFlags: 0
@@ -342543,6 +342597,8 @@ MonoBehaviour:
   plus10Btn: {fileID: 6904934861290114314}
   minus10Btn: {fileID: 6438759142793356351}
   shop: {fileID: 513329156475484763}
+  levelUnlock: 0
+  panelUnlock: {fileID: 0}
 --- !u!1 &7900494235500910440
 GameObject:
   m_ObjectHideFlags: 0
@@ -344790,6 +344846,8 @@ MonoBehaviour:
   plus10Btn: {fileID: 8510157222388179983}
   minus10Btn: {fileID: 4461809899783850754}
   shop: {fileID: 513329156475484763}
+  levelUnlock: 0
+  panelUnlock: {fileID: 0}
 --- !u!1 &7967485998042567768
 GameObject:
   m_ObjectHideFlags: 0
@@ -386333,6 +386391,8 @@ MonoBehaviour:
   plus10Btn: {fileID: 891531120452832303}
   minus10Btn: {fileID: 4557417326816878295}
   shop: {fileID: 513329156475484763}
+  levelUnlock: 0
+  panelUnlock: {fileID: 0}
 --- !u!1 &8944492234682454956
 GameObject:
   m_ObjectHideFlags: 0
@@ -391254,6 +391314,8 @@ MonoBehaviour:
   plus10Btn: {fileID: 3085493584313068197}
   minus10Btn: {fileID: 3218529786312712341}
   shop: {fileID: 513329156475484763}
+  levelUnlock: 0
+  panelUnlock: {fileID: 0}
 --- !u!1 &9035756584422384184
 GameObject:
   m_ObjectHideFlags: 0
@@ -393075,6 +393137,8 @@ MonoBehaviour:
   plus10Btn: {fileID: 7558008022053371787}
   minus10Btn: {fileID: 5162600061977731804}
   shop: {fileID: 513329156475484763}
+  levelUnlock: 0
+  panelUnlock: {fileID: 0}
 --- !u!1 &9069344917113955841
 GameObject:
   m_ObjectHideFlags: 0
@@ -397123,6 +397187,8 @@ MonoBehaviour:
   plus10Btn: {fileID: 9125897588030860887}
   minus10Btn: {fileID: 7698250475543662091}
   shop: {fileID: 6530551327487146182}
+  levelUnlock: 0
+  panelUnlock: {fileID: 0}
 --- !u!1 &9164988842524370542
 GameObject:
   m_ObjectHideFlags: 0

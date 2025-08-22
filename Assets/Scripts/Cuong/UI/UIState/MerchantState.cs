@@ -1,19 +1,19 @@
 using UnityEngine;
 
-public class FarmStallState : IUIState
+public class MerchantState : IUIState
 {
     public void Enter()
     {
-        UIManager.Instance.ShowUI("FarmStall");
+        UIManager.Instance.ShowUI("Merchant");
         UIManager.Instance.ShowUI("Inventory");
         UIManager.Instance.ShowUI("Panel");
-        FarmStallUI.Instance.ResetUI();
+        MerchantUI.Instance.ResetUI();
         UIStateMachine.Instance.inventoryUI2.UpdateAllSlots();
         UIStateMachine.Instance.inventoryUI2.UpdateGoldUI();
     }
     public void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Y))
+        if (Input.GetKeyDown(KeyCode.U))
         {
             UIStateMachine.Instance.ChangeState(UIStateMachine.Instance.mainScreenState);
         }
@@ -24,7 +24,7 @@ public class FarmStallState : IUIState
     }
     public void Exit()
     {
-        UIManager.Instance.HideUI("FarmStall");
+        UIManager.Instance.HideUI("Merchant");
         UIManager.Instance.HideUI("Inventory");
     }
 }

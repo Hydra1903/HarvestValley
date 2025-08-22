@@ -12,15 +12,29 @@ public class Merchant : MonoBehaviour
     public FarmStall farmStall;
     void Awake()
     {
-        quantity = new int[farmStall.sellPriceSpring.Length];
-        quantityItemsSold = new int[farmStall.sellPriceSpring.Length];
+        quantity = new int[28];
+        quantityItemsSold = new int[28];
     }
     public void TotalAmount()
     {
         totalAmount = 0;
-        for (int i = 0; i < farmStall.sellPriceSpring.Length; i++)
+        for (int i = 0; i < 28; i++)
         {
-            totalAmount += (farmStall.sellPriceSpring[i]+ bonusSellPrice[i]) * quantity[i];
+            switch (Season.Instance.currentSeason)
+            {
+                case SeasonState.Spring:
+                    totalAmount += (farmStall.sellPriceSpring[i] + bonusSellPrice[i]) * quantity[i];
+                    break;
+                case SeasonState.Summer:
+                    totalAmount += (farmStall.sellPriceSummer[i] + bonusSellPrice[i]) * quantity[i];
+                    break;
+                case SeasonState.Fall:
+                    totalAmount += (farmStall.sellPriceFall[i] + bonusSellPrice[i]) * quantity[i];
+                    break;
+                case SeasonState.Winter:
+                    totalAmount += (farmStall.sellPriceWinter[i] + bonusSellPrice[i]) * quantity[i];
+                    break;
+            }
         }
         merchantUI.UpdateUI();
     }

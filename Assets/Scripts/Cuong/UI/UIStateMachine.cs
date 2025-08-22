@@ -20,6 +20,7 @@ public class UIStateMachine : MonoBehaviour
     [HideInInspector] public SeedShopState seedShopState = new SeedShopState();
     [HideInInspector] public BarnState barnState = new BarnState();
     [HideInInspector] public FarmStallState farmStallState = new FarmStallState();
+    [HideInInspector] public MerchantState merchantState = new MerchantState();
 
     public Button btnInventory;
     public Button btnAchievement;
