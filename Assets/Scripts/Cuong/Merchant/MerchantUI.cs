@@ -2,8 +2,9 @@
 using UnityEngine.UI;
 using TMPro;
 using System.Globalization;
+using static MerchantState;
 
-public enum EMerchantState
+public enum EMerchantSaleState
 {
     NotForSale,
     ReadyForSale
@@ -14,7 +15,7 @@ public class MerchantUI : MonoBehaviour
     public Merchant merchant;
     public TextMeshProUGUI totalAmountText;
     public Button buttonSell;
-    public EMerchantState currentState = EMerchantState.NotForSale;
+    public EMerchantSaleState currentState = EMerchantSaleState.NotForSale;
 
     public ReceiveItem[] receiveItems;
     public MerchantReceiveItemUI[] merchantReceiveItemsUI;
@@ -25,19 +26,28 @@ public class MerchantUI : MonoBehaviour
 
     public ScrollRect scrollViewSeed;
     public ScrollRect scrollViewPlant;
+    public ScrollRect scrollViewAnimalProduct;
     public SeedShop seedShop;
     public SeedShopItemUI[] seedShopItemUI;
+
+    public Button buttonBuyFarmProducts;
+    public Button buttonSellSeeds;
+    public Button buttonBuyCrops;
+    public Button buttonBuyAnimalProducts;
     void Awake()
     {
         if (Instance == null) Instance = this;
     }
     public void Start()
     {
-        
+        buttonBuyFarmProducts.onClick.AddListener(() => UIStateMachine.Instance.merchantState.ChangeMerchantState(EMerchantState.BuyFarmProducts));
+        buttonSellSeeds.onClick.AddListener(() => UIStateMachine.Instance.merchantState.ChangeMerchantState(EMerchantState.SellSeeds));
+        buttonBuyCrops.onClick.AddListener(() => UIStateMachine.Instance.merchantState.ChangeBuyState(EBuyState.BuyCrops));
+        buttonBuyAnimalProducts.onClick.AddListener(() => UIStateMachine.Instance.merchantState.ChangeBuyState(EBuyState.BuyAnimalProducts));
     }
     public void Sell()
     {
-        currentState = EMerchantState.NotForSale;
+        currentState = EMerchantSaleState.NotForSale;
         Notification.Instance.ShowNotification("Đã bán với thương nhân!");
         Gold.Instance.AddGold(merchant.totalAmount);
         merchant.AddQuantityItemsSold();
@@ -51,19 +61,19 @@ public class MerchantUI : MonoBehaviour
 
         if (merchant.totalAmount > 0)
         {
-            currentState = EMerchantState.ReadyForSale;
+            currentState = EMerchantSaleState.ReadyForSale;
         }
         else
         {
-            currentState = EMerchantState.NotForSale;
+            currentState = EMerchantSaleState.NotForSale;
         }
 
         switch (currentState)
         {
-            case EMerchantState.NotForSale:
+            case EMerchantSaleState.NotForSale:
                 buttonSell.interactable = false;
                 break;
-            case EMerchantState.ReadyForSale:
+            case EMerchantSaleState.ReadyForSale:
                 buttonSell.interactable = true;
                 break;              
         }
@@ -144,10 +154,33 @@ public class MerchantUI : MonoBehaviour
             }
         }
     }
+    public void ReturnItemCrops()
+    {
+        for (int i = 0; i < 28; i++)
+        {
+            if (receiveItems[i] != null && merchantReceiveItemsUI[i] != null)
+            {
+                receiveItems[i].ReturnItem();
+                merchantReceiveItemsUI[i].UpdateAllSlots();
+            }
+        }
+    }
+    public void ReturnItemAnimalProducts()
+    {
+        for (int i = 28; i < 32; i++)
+        {
+            if (receiveItems[i] != null && merchantReceiveItemsUI[i] != null)
+            {
+                receiveItems[i].ReturnItem();
+                merchantReceiveItemsUI[i].UpdateAllSlots();
+            }
+        }
+    }
     public void ResetUI()
     {
         scrollViewSeed.verticalNormalizedPosition = 1f;
         scrollViewPlant.verticalNormalizedPosition = 1f;
+        scrollViewAnimalProduct.verticalNormalizedPosition = 1f;   
         UpdatePrice();
         UpdatePriceFarmStall();
         for (int i = 0; i < seedShop.amount.Length; i++)
@@ -157,5 +190,21 @@ public class MerchantUI : MonoBehaviour
             seedShopItemUI[i].UpdateUI();
             seedShopItemUI[i].UpdateUnlock();
         }
+        if (UIStateMachine.Instance.merchantState.currentMerchantState != EMerchantState.BuyFarmProducts)
+        {
+            UIStateMachine.Instance.merchantState.CheckHideUIMerchantState();
+            UIStateMachine.Instance.merchantState.currentMerchantState = EMerchantState.BuyFarmProducts;
+            UIStateMachine.Instance.merchantState.CheckShowUIMerchantState();
+        }
+        if (UIStateMachine.Instance.merchantState.currentBuyState != EBuyState.BuyCrops)
+        {
+            UIStateMachine.Instance.merchantState.CheckHideUIBuyState();
+            UIStateMachine.Instance.merchantState.currentBuyState = EBuyState.BuyCrops;
+            UIStateMachine.Instance.merchantState.CheckShowUIBuyState();
+        }
+        buttonBuyFarmProducts.interactable = false;
+        buttonSellSeeds.interactable = true;
+        buttonBuyCrops.interactable = false;
+        buttonBuyAnimalProducts.interactable= true;
     }
 }

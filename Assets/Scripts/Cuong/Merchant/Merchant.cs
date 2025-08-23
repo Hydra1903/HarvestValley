@@ -6,14 +6,15 @@ public class Merchant : MonoBehaviour
     public int[] salesLimit;
     public int[] quantityItemsSold;
     public int[] bonusSellPrice;
+    public int[] sellPriceAnimalProduct;
     public int totalAmount;
 
     public MerchantUI merchantUI;
     public FarmStall farmStall;
     void Awake()
     {
-        quantity = new int[28];
-        quantityItemsSold = new int[28];
+        quantity = new int[32];
+        quantityItemsSold = new int[32];
     }
     public void TotalAmount()
     {
@@ -35,6 +36,10 @@ public class Merchant : MonoBehaviour
                     totalAmount += (farmStall.sellPriceWinter[i] + bonusSellPrice[i]) * quantity[i];
                     break;
             }
+        }
+        for (int i = 0; i < 4; i++)
+        {
+            totalAmount += (sellPriceAnimalProduct[i]) * quantity[28 + i];
         }
         merchantUI.UpdateUI();
     }

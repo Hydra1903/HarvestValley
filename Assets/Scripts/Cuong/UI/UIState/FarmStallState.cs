@@ -24,6 +24,7 @@ public class FarmStallState : IUIState
     }
     public void Exit()
     {
+        FarmStallUI.Instance.ReturnItem();
         UIManager.Instance.HideUI("FarmStall");
         UIManager.Instance.HideUI("Inventory");
     }

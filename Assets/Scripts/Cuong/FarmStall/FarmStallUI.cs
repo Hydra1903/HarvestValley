@@ -97,6 +97,20 @@ public class FarmStallUI : MonoBehaviour
             }
         }
     }
+    public void ReturnItem()
+    {
+        if (currentState == EFarmStallState.NotForSale)
+        {
+            for (int i = 0; i < receiveItems.Length; i++)
+            {
+                if (receiveItems[i] != null && receiveItemsUI[i] != null)
+                {
+                    receiveItems[i].ReturnItem();
+                    receiveItemsUI[i].UpdateAllSlots();
+                }
+            }
+        }
+    }
 
     public void UpdatePrice()
     {
