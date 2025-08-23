@@ -21,7 +21,6 @@ public class PlantSave
     public int centerX;
     public int centerY;
     public int harvestCount; //số lần thu hoạch
-    public int cooldown; // daysUntilNextHarvest
 }
 
 [Serializable]

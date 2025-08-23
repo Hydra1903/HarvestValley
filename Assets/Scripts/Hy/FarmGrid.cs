@@ -214,16 +214,16 @@ public class FarmGrid : MonoBehaviour
             info.size = 5;
             info.prefab = dugSoilPrefab;
             info.ghost = ghostPlotInstance;
-            info.offsetX = 0f;
-            info.offsetZ = 5f;
+            info.offsetX = 5f;
+            info.offsetZ = -0.2f;
         }
         else // Shovel
         {
             info.size = 3;
             info.prefab = holePrefab;
             info.ghost = ghostHoleInstance;
-            info.offsetX = 0.8f;
-            info.offsetZ = 2.7f;
+            info.offsetX = 1.5f;
+            info.offsetZ = 1.5f;
         }
         
         return info;
@@ -625,9 +625,7 @@ public class FarmGrid : MonoBehaviour
             (startPos.y + (size * 0.5f)) * cellSize
         );
 
-        GameObject stagePrefab = null;
-        if (plantData.growthPrefabs != null && plantData.growthPrefabs.Length > 0)
-            stagePrefab = plantData.growthPrefabs[0];
+        GameObject stagePrefab = GetPrefabFor(newPlantInstance, 0);
 
         if (stagePrefab != null && IsInGrid(centerX, centerY))
         {
@@ -651,16 +649,6 @@ public class FarmGrid : MonoBehaviour
         });
     }
 
-    //lấy giai đoạn cuối
-    int GetLastStageIndex(PlantData data)
-    {
-        if (data.growthPrefabs != null && data.growthPrefabs.Length > 0)
-            return data.growthPrefabs.Length - 1;
-        if (data.daysPerStage != null && data.daysPerStage.Length > 0)
-            return data.daysPerStage.Length - 1;
-        return 0;
-    }
-
     //Kiểm tra số lần thu hoạch
     bool HasMoreHarvests(PlantInstance inst)
     {
@@ -672,13 +660,7 @@ public class FarmGrid : MonoBehaviour
     //Kiểm tra đã trưởng thành chưa
     bool IsMature(PlantInstance inst)
     {
-        // phải tới stage cuối đã
-        if (inst.currentStage < GetLastStageIndex(inst.plantData)) return false;
-        // cây nhiều lần: cần cooldown = 0 mới “có quả”
-        if (inst.plantData.maxHarvest != 1)      // >1 hoặc -1
-            return inst.daysUntilNextHarvest <= 0;
-        // cây một lần: chỉ cần tới stage cuối
-        return true;
+        return inst.currentStage >= GetLastStageIndexFor(inst);
     }
 
     bool TryGetPlantCenterFrom(int x, int y, out int cx, out int cy)
@@ -725,17 +707,24 @@ public class FarmGrid : MonoBehaviour
         // 2) Cây còn lượt thu nữa? (maxHarvest > 1 hoặc -1)
         if (HasMoreHarvests(inst))
         {
-
-            inst.daysUntilNextHarvest = Mathf.Max(1, inst.plantData.regrowDays);
-
-            int last = GetLastStageIndex(inst.plantData);
-            if (inst.plantData.regrowStageIndex >= 0)
-                inst.currentStage = Mathf.Clamp(inst.plantData.regrowStageIndex, 0, last - 1);
+            // Nếu cây nhiều lần, sau lần thu hoạch đầu tiên (harvestCount >= 1),
+            // chuyển sang chuỗi mature ngay, KHÔNG countdown.
+            if (UseMatureChain(inst))
+            {
+                inst.currentStage = 0;             // bắt đầu mature từ stage 0
+                inst.daysInCurrentStage = 0;
+                inst.daysUntilNextHarvest = 0;     // bỏ countdown
+                ReplacePlantMeshAtCenter(cx, cy, inst);
+                return;
+            }
             else
-                inst.currentStage = Mathf.Max(0, last - 1);
-
-            ReplacePlantMeshAtCenter(cx, cy, inst);
-            return;
+            {
+                // Trường hợp đặc biệt: nếu muốn ngay lần 1-còn-lượt vẫn tăng lại theo growth,
+                // có thể lùi về last-1 (tuỳ bạn). Ở đây cho gọn: cứ để ở stage cuối hiện tại,
+                // và AdvanceDay sẽ tính theo growth (vì harvestCount=0).
+                // Không cần chỉnh gì thêm.
+                return;
+            }
         }
 
         // 3) Hết lượt → xóa cây, trả đất về Dug để trồng tiếp
@@ -751,15 +740,17 @@ public class FarmGrid : MonoBehaviour
         if (tile.plantObject != null)
         {
             Vector3 pos = tile.plantObject.transform.position;
+            // (tuỳ bạn: có thể giữ nguyên góc Y cũ thay vì random mỗi lần)
+            float yRot = tile.plantObject.transform.eulerAngles.y;
             Destroy(tile.plantObject);
 
-            GameObject stagePrefab = null;
-            if (inst.plantData.growthPrefabs != null && inst.plantData.growthPrefabs.Length > inst.currentStage)
-                stagePrefab = inst.plantData.growthPrefabs[inst.currentStage];
-            else
-                stagePrefab = inst.plantData.growthPrefabs[0];
+            GameObject stagePrefab = GetPrefabFor(inst, inst.currentStage); // <--- dùng helper
 
-            tile.plantObject = stagePrefab ? Instantiate(stagePrefab, pos, RandomizeRotation()) : null;
+            // nếu muốn giữ hướng cũ:
+            tile.plantObject = stagePrefab ? Instantiate(stagePrefab, pos, Quaternion.Euler(0f, yRot, 0f)) : null;
+
+            // hoặc nếu vẫn thích random mỗi lần (như code cũ) thì:
+            // tile.plantObject = stagePrefab ? Instantiate(stagePrefab, pos, RandomizeRotation()) : null;
         }
     }
 
@@ -803,38 +794,75 @@ public class FarmGrid : MonoBehaviour
                 if (tile.plantInstance == null || tile.plantObject == null) continue;
 
                 var inst = tile.plantInstance;
-                int last = GetLastStageIndex(inst.plantData);
+                int last = GetLastStageIndexFor(inst);
 
-                // === 1) Xử lý cây có regrow (nhiều lần thu hoạch) với cooldown ===
-                bool isMultiHarvest = inst.plantData.maxHarvest != 1;
-
-                if (isMultiHarvest && inst.daysUntilNextHarvest > 0)
-                {
-                    inst.daysUntilNextHarvest--;
-
-                    if (inst.daysUntilNextHarvest == 0 && inst.currentStage < last)
-                    {
-                        int prev = inst.currentStage;
-                        inst.AdvanceDay(); // tăng đúng 1 stage
-                        if (inst.currentStage != prev)
-                            ReplacePlantMeshAtCenter(x, y, inst);
-                    }
-                    continue;
-                }
-
-                // === 2) Không cooldown: tăng trưởng bình thường ===
                 if (inst.currentStage < last)
                 {
-                    int prev = inst.currentStage;
-                    inst.AdvanceDay();
-                    if (inst.currentStage != prev)
+                    inst.daysInCurrentStage++;
+                    int need = GetRequiredDaysForCurrentStage(inst);
+                    if (inst.daysInCurrentStage >= need)
+                    {
+                        inst.currentStage++;
+                        inst.daysInCurrentStage = 0;
                         ReplacePlantMeshAtCenter(x, y, inst);
+                    }
                 }
+                // Đang ở stage cuối -> chờ thu hoạch
             }
         }
 
-        Debug.Log("Qua ngày: cập nhật tăng trưởng + regrow theo countdown.");
+        Debug.Log("Qua ngày: tăng trưởng theo growth (lần đầu) hoặc mature-regrow (từ lần 2), không dùng cooldown.");
     }
+
+    // Dùng mature chain nếu cây có matureRegrowPrefabs và đã thu ít nhất 1 lần
+    bool UseMatureChain(PlantInstance inst)
+    {
+        return inst.plantData.HasMatureRegrowChain() && inst.harvestCount >= 1;
+    }
+
+    int GetLastStageIndexFor(PlantInstance inst)
+    {
+        var pd = inst.plantData;
+        bool mature = UseMatureChain(inst);
+
+        if (!mature)
+        {
+            if (pd.growthPrefabs != null && pd.growthPrefabs.Length > 0)
+                return pd.growthPrefabs.Length - 1;
+        }
+        else
+        {
+            if (pd.matureRegrowPrefabs != null && pd.matureRegrowPrefabs.Length > 0)
+                return pd.matureRegrowPrefabs.Length - 1;
+        }
+        return 0;
+    }
+
+    GameObject GetPrefabFor(PlantInstance inst, int stage)
+    {
+        var pd = inst.plantData;
+        bool mature = UseMatureChain(inst);
+
+        if (!mature)
+        {
+            if (pd.growthPrefabs != null && pd.growthPrefabs.Length > stage)
+                return pd.growthPrefabs[stage];
+            return (pd.growthPrefabs != null && pd.growthPrefabs.Length > 0) ? pd.growthPrefabs[0] : null;
+        }
+        else
+        {
+            if (pd.matureRegrowPrefabs != null && pd.matureRegrowPrefabs.Length > stage)
+                return pd.matureRegrowPrefabs[stage];
+            return (pd.matureRegrowPrefabs != null && pd.matureRegrowPrefabs.Length > 0) ? pd.matureRegrowPrefabs[0] : null;
+        }
+    }
+
+    int GetRequiredDaysForCurrentStage(PlantInstance inst)
+    {
+        return inst.plantData.GetRequiredDaysForStage(UseMatureChain(inst), inst.currentStage);
+    }
+
+    //SaveData
 
     void SyncPlantSavesFromWorld()
     {
@@ -854,7 +882,6 @@ public class FarmGrid : MonoBehaviour
                         rec.size = inst.plantData.GetSizeInt();
                         rec.type = inst.plantData.plantType;
                         rec.harvestCount = inst.harvestCount;               
-                        rec.cooldown = inst.daysUntilNextHarvest;
                     }
                 }
             }
@@ -904,16 +931,16 @@ public class FarmGrid : MonoBehaviour
 
             GameObject prefab = (a.size == 5) ? dugSoilPrefab : holePrefab;
 
-            float yOffset = 0.235f;
-            float offsetX = (a.size == 5) ? 5f : 0.8f; // 5x5 luống hoặc 3x3 hố
-            float offsetZ = (a.size == 5) ? -0.2f : 2.7f;
+            float yOffset = (a.size == 5) ? 0.235f : 0.45f;
+            float offsetX = (a.size == 5) ? 5f : 1.5f;
+            float offsetZ = (a.size == 5) ? -0.2f : 1.5f;
             Vector3 pos = origin + new Vector3(
                 (a.startX + offsetX) * cellSize,
                 yOffset,
                 (a.startY + offsetZ) * cellSize
             );
             GameObject go = null;
-            if (prefab != null) Instantiate(prefab, pos, Quaternion.identity);
+            if (prefab != null) go = Instantiate(prefab, pos, Quaternion.identity);
             _areaObjects.Add(go);
         }
         _areaSaves = new List<AreaSave>(data.areas);
@@ -935,7 +962,6 @@ public class FarmGrid : MonoBehaviour
                 currentStage = p.stage,
                 daysInCurrentStage = p.daysInStage,
                  harvestCount = p.harvestCount,                 
-                daysUntilNextHarvest = p.cooldown
             };
 
             for (int dx = 0; dx < size; dx++)
@@ -949,11 +975,7 @@ public class FarmGrid : MonoBehaviour
                 }
 
             // Instantiate prefab đúng stage tại tâm
-            GameObject stagePrefab = null;
-            if (plantData.growthPrefabs != null && plantData.growthPrefabs.Length > p.stage)
-                stagePrefab = plantData.growthPrefabs[p.stage];
-            else
-                stagePrefab = plantData.growthPrefabs[0];
+            GameObject stagePrefab = GetPrefabFor(inst, p.stage); 
 
             if (stagePrefab != null && IsInGrid(p.centerX, p.centerY))
             {
@@ -962,7 +984,6 @@ public class FarmGrid : MonoBehaviour
                     0.45f,
                     (startY + size * 0.5f) * cellSize
                 );
-
                 if (tiles[p.centerX, p.centerY].plantObject != null)
                     Destroy(tiles[p.centerX, p.centerY].plantObject);
 
