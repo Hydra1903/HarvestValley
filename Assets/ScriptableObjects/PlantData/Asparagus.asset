@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 71849a011fc748e4788f3888d3873774, type: 3}
+  m_Name: Asparagus
+  m_EditorClassIdentifier: 
+  plantName: Asparagus
+  plantType: 2
+  size: 1
+  growthPrefabs:
+  - {fileID: 1629941940252082, guid: 40e82017b463b214a9cf836c3c1c6bfa, type: 3}
+  - {fileID: 1174647434239538, guid: 8f60647937d3cbb4db3e93fd9eaa4a34, type: 3}
+  - {fileID: 1199271238553124, guid: bea198dc2e30fe3448f7aa32111996f3, type: 3}
+  - {fileID: 1323926329857942, guid: 4f06db74b35c95649b42331e5418dd11, type: 3}
+  daysPerStage: 01000000010000000100000001000000
+  maxHarvest: 1
+  harvestValue: 25
+  regrowDays: 3
+  regrowStageIndex: -1
+  needsWater: 1
+  description: "C\xE2y M\u0103ng T\xE2y - C\xE2y ng\u1EAFn ng\xE0y - K\xEDch th\u01B0\u1EDBc
+    1x1"

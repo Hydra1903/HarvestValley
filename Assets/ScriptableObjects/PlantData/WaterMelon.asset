@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 71849a011fc748e4788f3888d3873774, type: 3}
+  m_Name: WaterMelon
+  m_EditorClassIdentifier: 
+  plantName: Watermelon
+  plantType: 27
+  size: 2
+  growthPrefabs:
+  - {fileID: 1007727438656034, guid: ca9d40d33d365944bb44b0d49d60a736, type: 3}
+  - {fileID: 1515436524733090, guid: 6959eb03be9c6d146821f1006c2c921d, type: 3}
+  - {fileID: 1249356799843690, guid: cc0427c0aff87fa4eb459ba6500c2ee8, type: 3}
+  - {fileID: 1302423569103364, guid: c8c80aee2ae26664796026608c2ab496, type: 3}
+  daysPerStage: 01000000010000000100000001000000
+  maxHarvest: 1
+  harvestValue: 25
+  regrowDays: 3
+  regrowStageIndex: -1
+  needsWater: 1
+  description: "C\xE2y d\u01B0a h\u1EA5u - C\xE2y d\xE0i ng\xE0y - K\xEDch th\u01B0\u1EDBc
+    2x2"
