@@ -16,15 +16,15 @@ MonoBehaviour:
   plantType: 2
   size: 1
   growthPrefabs:
-  - {fileID: 1629941940252082, guid: 40e82017b463b214a9cf836c3c1c6bfa, type: 3}
   - {fileID: 1174647434239538, guid: 8f60647937d3cbb4db3e93fd9eaa4a34, type: 3}
   - {fileID: 1199271238553124, guid: bea198dc2e30fe3448f7aa32111996f3, type: 3}
-  - {fileID: 1323926329857942, guid: 4f06db74b35c95649b42331e5418dd11, type: 3}
-  daysPerStage: 01000000010000000100000001000000
+  - {fileID: 1323926329857942, guid: cf082781eb05cac45a85d0936438a2a6, type: 3}
+  daysPerStage: 010000000100000001000000
   maxHarvest: 1
-  harvestValue: 25
-  regrowDays: 3
-  regrowStageIndex: -1
+  harvestValue: 1
+  matureRegrowPrefabs: []
+  matureRegrowDaysPerStage: 
+  useMatureRegrowAfterHarvestCount: 1
   needsWater: 1
   description: "C\xE2y M\u0103ng T\xE2y - C\xE2y ng\u1EAFn ng\xE0y - K\xEDch th\u01B0\u1EDBc
     1x1"

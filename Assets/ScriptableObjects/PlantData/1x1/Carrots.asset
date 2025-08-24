@@ -21,9 +21,10 @@ MonoBehaviour:
   - {fileID: 1879033853735152, guid: 9b38237972a54f14dbca44485a1d713f, type: 3}
   daysPerStage: 0100000001000000
   maxHarvest: 1
-  harvestValue: 25
-  regrowDays: 3
-  regrowStageIndex: -1
+  harvestValue: 3
+  matureRegrowPrefabs: []
+  matureRegrowDaysPerStage: 
+  useMatureRegrowAfterHarvestCount: 1
   needsWater: 1
   description: "C\xE2y c\xE0 r\u1ED1t - C\xE2y ng\u1EAFn ng\xE0y - K\xEDch th\u01B0\u1EDBc
     1x1"

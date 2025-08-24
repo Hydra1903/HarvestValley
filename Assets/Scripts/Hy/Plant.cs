@@ -16,8 +16,6 @@ public class PlantData : ScriptableObject
     [Header("Growth Settings")]
     public int maxHarvest = 1;          // số lần thu hoạch tối đa // -1 vô hạn
     public int harvestValue = 25;       //sản lượng
-    public int regrowDays = 3;          // số ngày chờ để ra quả tiếp (cho cây nhiều lần)
-    public int regrowStageIndex = -1;   // nếu >=0: stage dùng trong thời gian chờ hồi quả; -1 = giữ stage cuối
 
     [Header("Second Growth Stages")]
     public GameObject[] matureRegrowPrefabs;     // Giai đoạn phát triển cho cây đã trưởng thành

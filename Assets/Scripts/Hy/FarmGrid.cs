@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using nTools.PrefabPainter;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class FarmGrid : MonoBehaviour
@@ -84,10 +85,11 @@ public class FarmGrid : MonoBehaviour
 
         if (currentTool == ToolType.Seed)
         {
-            if (Input.GetKeyDown(KeyCode.Q)) currentPlantType = PlantType.Carrot;  // 1x1
+            if (Input.GetKeyDown(KeyCode.Q)) currentPlantType = PlantType.Asparagus;  // 1x1
             if (Input.GetKeyDown(KeyCode.W)) currentPlantType = PlantType.Corn;  // 1x1
             if (Input.GetKeyDown(KeyCode.E)) currentPlantType = PlantType.Watermelon;   // 2x2
             if (Input.GetKeyDown(KeyCode.R)) currentPlantType = PlantType.Apple;   // 3x3
+            if (Input.GetKeyDown(KeyCode.R)) currentPlantType = PlantType.Chilli;   // 1x1
         }
     }
 
@@ -214,8 +216,8 @@ public class FarmGrid : MonoBehaviour
             info.size = 5;
             info.prefab = dugSoilPrefab;
             info.ghost = ghostPlotInstance;
-            info.offsetX = 5f;
-            info.offsetZ = -0.2f;
+            info.offsetX = -0.2f;
+            info.offsetZ = 5f;
         }
         else // Shovel
         {
@@ -585,6 +587,7 @@ public class FarmGrid : MonoBehaviour
     }
 
 
+
     void PlantSeed(Vector2Int startPos, PlantData plantData)
     {
         if (plantData == null)
@@ -615,25 +618,28 @@ public class FarmGrid : MonoBehaviour
             }
         }
 
+        GameObject stagePrefab = GetPrefabFor(newPlantInstance, 0);
+
+
         // Tính ô trung tâm (nơi đặt GameObject của cây)
+        float prefabY = stagePrefab.transform.position.y;
         int centerX = startPos.x + (size / 2);
         int centerY = startPos.y + (size / 2);
-
-        Vector3 plantPos = origin + new Vector3(
-            (startPos.x + (size * 0.5f)) * cellSize,
-            0.45f,
-            (startPos.y + (size * 0.5f)) * cellSize
-        );
-
-        GameObject stagePrefab = GetPrefabFor(newPlantInstance, 0);
 
         if (stagePrefab != null && IsInGrid(centerX, centerY))
         {
             if (tiles[centerX, centerY].plantObject != null)
                 Destroy(tiles[centerX, centerY].plantObject);
 
+            Vector3 plantPos = origin + new Vector3(
+                (startPos.x + (size * 0.5f)) * cellSize,
+                prefabY,   
+                (startPos.y + (size * 0.5f)) * cellSize
+            );
+
             tiles[centerX, centerY].plantObject = Instantiate(stagePrefab, plantPos, RandomizeRotation());
         }
+
 
         Debug.Log($"Đã trồng {plantData.plantName} ({plantData.plantType}) tại ({startPos.x}, {startPos.y}) size {size}");
 
@@ -739,18 +745,25 @@ public class FarmGrid : MonoBehaviour
         var tile = tiles[cx, cy];
         if (tile.plantObject != null)
         {
-            Vector3 pos = tile.plantObject.transform.position;
-            // (tuỳ bạn: có thể giữ nguyên góc Y cũ thay vì random mỗi lần)
+            // Giữ nguyên XZ, chỉ thay Y theo prefab stage mới
+            Vector3 basePos = tile.plantObject.transform.position;
             float yRot = tile.plantObject.transform.eulerAngles.y;
+
             Destroy(tile.plantObject);
 
-            GameObject stagePrefab = GetPrefabFor(inst, inst.currentStage); // <--- dùng helper
+            GameObject stagePrefab = GetPrefabFor(inst, inst.currentStage);
+            if (stagePrefab != null)
+            {
+                float prefabY = stagePrefab.transform.position.y;
 
-            // nếu muốn giữ hướng cũ:
-            tile.plantObject = stagePrefab ? Instantiate(stagePrefab, pos, Quaternion.Euler(0f, yRot, 0f)) : null;
+                Vector3 newPos = new Vector3(
+                    basePos.x,
+                    prefabY,   
+                    basePos.z
+                );
 
-            // hoặc nếu vẫn thích random mỗi lần (như code cũ) thì:
-            // tile.plantObject = stagePrefab ? Instantiate(stagePrefab, pos, RandomizeRotation()) : null;
+                tile.plantObject = Instantiate(stagePrefab, newPos, Quaternion.Euler(0f, yRot, 0f));
+            }
         }
     }
 

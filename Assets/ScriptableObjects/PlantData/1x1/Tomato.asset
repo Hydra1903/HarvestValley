@@ -20,11 +20,15 @@ MonoBehaviour:
   - {fileID: 1147994195056072, guid: 6093d78fcacb75e49bbfafe6afffd50b, type: 3}
   - {fileID: 1800831289374606, guid: 8756b3906e0b139478a61afb270745f3, type: 3}
   - {fileID: 1261134927141026, guid: c95c7029f809329408df85121d291868, type: 3}
-  daysPerStage: 01000000010000000100000001000000
-  maxHarvest: 1
+  daysPerStage: 010000000100000001000000
+  maxHarvest: 4
   harvestValue: 3
-  regrowDays: 3
-  regrowStageIndex: -1
+  matureRegrowPrefabs:
+  - {fileID: 3932209992825817091, guid: 46450f30b4d05a141bc8a5a9da5dc67d, type: 3}
+  - {fileID: 1800831289374606, guid: 8756b3906e0b139478a61afb270745f3, type: 3}
+  - {fileID: 1261134927141026, guid: c95c7029f809329408df85121d291868, type: 3}
+  matureRegrowDaysPerStage: 010000000100000001000000
+  useMatureRegrowAfterHarvestCount: 1
   needsWater: 1
   description: "C\xE2y C\xE0 Chua - C\xE2y ng\u1EAFn ng\xE0y - K\xEDch th\u01B0\u1EDBc
     1x1"
