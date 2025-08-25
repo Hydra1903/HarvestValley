@@ -15,7 +15,7 @@ public class AnimalCellUI : MonoBehaviour
     private AnimalData animalData;
     private void Awake()
     {
-        Clear(); // ð?m b?o cell tr?ng lúc start
+        Clear(); // dam bao cell trong khi play
     }
     public void Setup(GameObject animal, AnimalData data, int index, AnimalPen pen)
     {
@@ -47,7 +47,7 @@ public class AnimalCellUI : MonoBehaviour
         Debug.Log($"[Cell] Sell clicked. Animal={(linkedAnimal ? linkedAnimal.name : "null")}  Pen={(linkedPen ? linkedPen.name : "null")}");
         if (linkedAnimal != null && linkedPen != null)
         {
-            linkedPen.SellAnimal(linkedAnimal);  // g?i v? chu?ng ð? x? l?
+            linkedPen.SellAnimal(linkedAnimal);//link goi ve chuong xu ly SellAnimal
             Clear();
         }
     }
