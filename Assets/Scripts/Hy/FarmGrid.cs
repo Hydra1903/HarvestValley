@@ -89,7 +89,7 @@ public class FarmGrid : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.W)) currentPlantType = PlantType.Corn;  // 1x1
             if (Input.GetKeyDown(KeyCode.E)) currentPlantType = PlantType.Watermelon;   // 2x2
             if (Input.GetKeyDown(KeyCode.R)) currentPlantType = PlantType.Apple;   // 3x3
-            if (Input.GetKeyDown(KeyCode.R)) currentPlantType = PlantType.Chilli;   // 1x1
+            if (Input.GetKeyDown(KeyCode.R)) currentPlantType = PlantType.Cabbage;   // 1x1
         }
     }
 

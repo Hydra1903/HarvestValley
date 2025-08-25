@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 71849a011fc748e4788f3888d3873774, type: 3}
+  m_Name: Cabbage
+  m_EditorClassIdentifier: 
+  plantName: Cabbage
+  plantType: 6
+  size: 1
+  growthPrefabs:
+  - {fileID: 1672034531426954, guid: c96739a622874b544b577fd6b11f734a, type: 3}
+  - {fileID: 1830502130717366, guid: 4ac6e8397df801045a1bc175269a42f7, type: 3}
+  - {fileID: 1648437061671814, guid: 52ab019931328cb4fb6adcda3e7ef1fc, type: 3}
+  daysPerStage: 0100000001000000
+  maxHarvest: 1
+  harvestValue: 1
+  matureRegrowPrefabs: []
+  matureRegrowDaysPerStage: 
+  useMatureRegrowAfterHarvestCount: 1
+  needsWater: 1
+  description: "C\xE2y b\u1EAFp c\u1EA3i"
