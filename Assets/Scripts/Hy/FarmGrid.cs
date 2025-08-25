@@ -36,7 +36,10 @@ public class FarmGrid : MonoBehaviour
     private GameObject ghostPlotInstance;
     public GameObject ghostHolePrefab;
     private GameObject ghostHoleInstance;
-    
+
+
+    private Inventory inventory;
+
     public ToolType currentTool = ToolType.Hoe;
 
     private List<AreaSave> _areaSaves = new();

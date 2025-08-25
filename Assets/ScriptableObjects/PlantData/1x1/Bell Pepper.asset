@@ -23,8 +23,11 @@ MonoBehaviour:
   daysPerStage: 010000000100000001000000
   maxHarvest: 1
   harvestValue: 25
-  matureRegrowPrefabs: []
-  matureRegrowDaysPerStage: 
+  matureRegrowPrefabs:
+  - {fileID: 3832199828595282069, guid: 4e3c3b069baa84d4ea71439d661dde5e, type: 3}
+  - {fileID: 2385055559573773016, guid: f263bb15707dc2b4c8e17372a26a4048, type: 3}
+  - {fileID: 1695036058323326, guid: 8d09daa567e1a8746aaf50b31328fc50, type: 3}
+  matureRegrowDaysPerStage: 010000000100000001000000
   useMatureRegrowAfterHarvestCount: 1
   needsWater: 1
   description: "M\xF4 t\u1EA3 v\u1EC1 lo\u1EA1i c\xE2y n\xE0y..."
