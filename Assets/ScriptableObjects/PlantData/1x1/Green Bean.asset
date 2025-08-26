@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 71849a011fc748e4788f3888d3873774, type: 3}
+  m_Name: Green Bean
+  m_EditorClassIdentifier: 
+  plantName: Green Bean
+  plantType: 15
+  size: 1
+  growthPrefabs: []
+  daysPerStage: 
+  harvestItem: {fileID: 11400000, guid: bdf240f8e11601a4ea80458a4c40818e, type: 2}
+  maxHarvest: 5
+  harvestValue: 1
+  matureRegrowPrefabs: []
+  matureRegrowDaysPerStage: 
+  useMatureRegrowAfterHarvestCount: 1
+  needsWater: 1
+  description: "M\xF4 t\u1EA3 v\u1EC1 lo\u1EA1i c\xE2y n\xE0y..."
