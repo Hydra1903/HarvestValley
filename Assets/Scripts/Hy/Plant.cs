@@ -14,6 +14,7 @@ public class PlantData : ScriptableObject
     public int[] daysPerStage;          // Số ngày ở mỗi giai đoạn
 
     [Header("Growth Settings")]
+    public ItemData harvestItem;
     public int maxHarvest = 1;          // số lần thu hoạch tối đa // -1 vô hạn
     public int harvestValue = 25;       //sản lượng
 

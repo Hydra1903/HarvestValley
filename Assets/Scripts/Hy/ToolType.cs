@@ -2,9 +2,9 @@ using UnityEngine;
 
 public enum ToolType
 {
+    None,
     Hoe,        
     Shovel,
     Harvest,
-    Seed        // Công cụ trồng cây
-
+    Watering
 }
