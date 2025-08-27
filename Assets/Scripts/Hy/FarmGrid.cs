@@ -42,6 +42,7 @@ public class FarmGrid : MonoBehaviour
     private List<GameObject> _areaObjects = new();
 
     [SerializeField] private HotBarUI _hotbarUI;
+    private Inventory inventory;
 
     void Start()
     {
@@ -71,6 +72,8 @@ public class FarmGrid : MonoBehaviour
         currentItem = (_hotbarUI != null) ? _hotbarUI.currentItem : null;
 
         HandleMouseInput();
+
+        _hotbarUI.UpdateAllSlots();
 
         if (Input.GetKeyDown(KeyCode.N))
         {
@@ -117,10 +120,8 @@ public class FarmGrid : MonoBehaviour
         Vector3 worldPos = hit.point;
         Vector2Int gridPos = WorldToGrid(worldPos);
 
-        // =========================
         // 1) Nếu current item là SEED
-        // =========================
-        if (item != null && item.itemData != null && item.itemData.itemType == ItemType.Seed)
+        if (item != null && item.itemData != null && item.itemData.itemType == ItemType.Seed && item.quantity > 0)
         {
             HideAllGhosts();
 
@@ -612,7 +613,7 @@ public class FarmGrid : MonoBehaviour
         return false;
     }
 
-    void HarvestAt(Vector2Int gridPos)
+    private void HarvestAt(Vector2Int gridPos)
     {
         int x = gridPos.x, y = gridPos.y;
         if (!IsInGrid(x, y)) return;
@@ -622,43 +623,65 @@ public class FarmGrid : MonoBehaviour
 
         if (!TryGetPlantCenterFrom(x, y, out int cx, out int cy))
         {
-            Debug.LogWarning("Không tìm được ô tâm."); return;
+            Debug.LogWarning("Không tìm được ô tâm.");
+            return;
         }
 
         var inst = tiles[cx, cy].plantInstance;
-        if (!IsMature(inst)) { Debug.Log("Chưa chín."); return; }
+        if (inst == null || inst.plantData == null)
+        {
+            Debug.LogWarning("Thiếu dữ liệu cây.");
+            return;
+        }
 
-        // 1) Cộng sản lượng
+        if (!IsMature(inst))
+        {
+            Debug.Log("Chưa chín.");
+            return;
+        }
+
+        // 1) Tính sản lượng và thử add vào túi trước
         int yield = Mathf.Max(0, inst.plantData.harvestValue);
-        inst.harvestCount++;
-        Debug.Log($"Thu hoạch {inst.plantData.plantName} (+{yield}). Lần {inst.harvestCount}/{(inst.plantData.maxHarvest < 0 ? "∞" : inst.plantData.maxHarvest)}");
-        TryAddHarvestToInventory(inst.plantData, yield);
+        if (yield <= 0 || inst.plantData.harvestItem == null)
+        {
+            Debug.LogWarning("[Harvest] Dữ liệu harvest không hợp lệ.");
+            return;
+        }
 
-        // 2) Cây còn lượt thu nữa? (maxHarvest > 1 hoặc -1)
+        if (!TryAddHarvestToInventory(inst.plantData, yield))
+        {
+            // ❌ Túi đầy -> KHÔNG đụng vào trạng thái cây
+            Debug.LogWarning($"[Harvest] Túi đầy, không thể thu {yield} x {inst.plantData.harvestItem.itemName}");
+            return;
+        }
+
+        // 2) Add thành công -> cập nhật trạng thái cây
+        inst.harvestCount++;
+        Debug.Log(
+            $"Thu hoạch {inst.plantData.plantName} (+{yield}). " +
+            $"Lần {inst.harvestCount}/{(inst.plantData.maxHarvest < 0 ? "∞" : inst.plantData.maxHarvest.ToString())}"
+        );
+
+        // 3) Còn lượt thu nữa?
         if (HasMoreHarvests(inst))
         {
-            // Nếu cây nhiều lần, sau lần thu hoạch đầu tiên (harvestCount >= 1),
-            // chuyển sang chuỗi mature ngay, KHÔNG countdown.
+            // a) Dùng chuỗi mature ngay (không countdown)
             if (UseMatureChain(inst))
             {
-                inst.currentStage = 0;             // bắt đầu mature từ stage 0
+                inst.currentStage = 0;
                 inst.daysInCurrentStage = 0;
-                inst.daysUntilNextHarvest = 0;     // bỏ countdown
+                inst.daysUntilNextHarvest = 0;
                 ReplacePlantMeshAtCenter(cx, cy, inst);
                 return;
             }
-            else
-            {
-                // Trường hợp đặc biệt: nếu muốn ngay lần 1-còn-lượt vẫn tăng lại theo growth,
-                // có thể lùi về last-1 (tuỳ bạn). Ở đây cho gọn: cứ để ở stage cuối hiện tại,
-                // và AdvanceDay sẽ tính theo growth (vì harvestCount=0).
-                // Không cần chỉnh gì thêm.
-                return;
-            }
+
+            // b) Không dùng mature chain -> để AdvanceDay xử lý regrow bình thường
+            return;
         }
 
-        // 3) Hết lượt → xóa cây, trả đất về Dug để trồng tiếp
+        // 4) Hết lượt -> xóa cây + cập nhật save
         RemovePlantAtCenter(cx, cy);
+
         int idx = _plantSaves.FindIndex(p => p.centerX == cx && p.centerY == cy);
         if (idx >= 0) _plantSaves.RemoveAt(idx);
     }
@@ -666,20 +689,23 @@ public class FarmGrid : MonoBehaviour
     bool TryAddHarvestToInventory(PlantData pd, int amount)
     {
         if (pd == null || pd.harvestItem == null || amount <= 0) return false;
-
         if (Inventory.Instance == null)
         {
             Debug.LogWarning("[Harvest] Inventory.Instance = null");
             return false;
         }
 
+        // Thử thêm vào túi
         bool ok = Inventory.Instance.AddItem(pd.harvestItem, amount);
         if (!ok)
         {
-            Debug.LogWarning($"[Harvest] Túi đầy, không thể thêm {amount} x {pd.harvestItem.itemName}");
-            // TODO: nếu muốn, có thể spawn rơi ra đất ở đây
+            // Túi đầy => KHÔNG thu hoạch
+            Debug.LogWarning($"[Harvest] Túi đầy, không thể thu {amount} x {pd.harvestItem.itemName}");
+            return false;
         }
-        return ok;
+
+        // Thêm thành công => ok
+        return true;
     }
     // đổi mesh theo inst.currentStage tại ô tâm
     void ReplacePlantMeshAtCenter(int cx, int cy, PlantInstance inst)
@@ -770,7 +796,7 @@ public class FarmGrid : MonoBehaviour
     }
 
     // Dùng mature chain nếu cây có matureRegrowPrefabs và đã thu ít nhất 1 lần
-    bool UseMatureChain(PlantInstance inst)
+    private bool UseMatureChain(PlantInstance inst)
     {
         return inst.plantData.HasMatureRegrowChain() && inst.harvestCount >= 1;
     }
@@ -793,7 +819,7 @@ public class FarmGrid : MonoBehaviour
         return 0;
     }
 
-    GameObject GetPrefabFor(PlantInstance inst, int stage)
+    private GameObject GetPrefabFor(PlantInstance inst, int stage)
     {
         var pd = inst.plantData;
         bool mature = UseMatureChain(inst);
@@ -812,7 +838,7 @@ public class FarmGrid : MonoBehaviour
         }
     }
 
-    int GetRequiredDaysForCurrentStage(PlantInstance inst)
+    private int GetRequiredDaysForCurrentStage(PlantInstance inst)
     {
         return inst.plantData.GetRequiredDaysForStage(UseMatureChain(inst), inst.currentStage);
     }
