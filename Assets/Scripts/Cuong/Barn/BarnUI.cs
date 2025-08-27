@@ -10,7 +10,7 @@ public class BarnUI : MonoBehaviour
     public TextMeshProUGUI dragQuantityText;
     public DragItem dragItem;
 
-    public BarnSlotUI draggingFromSlot;
+    /*public*/ BarnSlotUI draggingFromSlot;
     public InventoryItem item;
     public int capacity;
     public TextMeshProUGUI capacityText;
