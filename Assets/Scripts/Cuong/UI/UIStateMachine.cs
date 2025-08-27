@@ -21,6 +21,7 @@ public class UIStateMachine : MonoBehaviour
     [HideInInspector] public BarnState barnState = new BarnState();
     [HideInInspector] public FarmStallState farmStallState = new FarmStallState();
     [HideInInspector] public MerchantState merchantState = new MerchantState();
+    [HideInInspector] public BuilderState builderState = new BuilderState();
 
     public Button btnInventory;
     public Button btnAchievement;

@@ -58,6 +58,10 @@ public class MainScreenState : IUIState
         {
             UIStateMachine.Instance.ChangeState(UIStateMachine.Instance.merchantState);
         }
+        if (Input.GetKeyDown(KeyCode.I))
+        {
+            UIStateMachine.Instance.ChangeState(UIStateMachine.Instance.builderState);
+        }
     }
     public void Exit()
     {
