@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 71849a011fc748e4788f3888d3873774, type: 3}
+  m_Name: Cherry
+  m_EditorClassIdentifier: 
+  plantName: Cherry
+  plantType: 9
+  size: 3
+  growthPrefabs:
+  - {fileID: 1268094566149260, guid: 7ef339d27756c7443935cd5b159fcf0a, type: 3}
+  - {fileID: 1268094566149260, guid: b4d758b9936243342b3212916be6161c, type: 3}
+  - {fileID: 1268094566149260, guid: 17d1cdf303bde8c4c8a55193e98805d6, type: 3}
+  - {fileID: 1315716995744334, guid: 6afa2c71e1426fe418e31bfedc83c35e, type: 3}
+  daysPerStage: 010000000100000001000000
+  harvestItem: {fileID: 11400000, guid: 418ed84030d78274c9796a031506d5ed, type: 2}
+  maxHarvest: 10
+  harvestValue: 10
+  matureRegrowPrefabs:
+  - {fileID: 1268094566149260, guid: 17d1cdf303bde8c4c8a55193e98805d6, type: 3}
+  - {fileID: 1315716995744334, guid: 6afa2c71e1426fe418e31bfedc83c35e, type: 3}
+  matureRegrowDaysPerStage: 0100000001000000
+  useMatureRegrowAfterHarvestCount: 1
+  needsWater: 1
+  description: "M\xF4 t\u1EA3 v\u1EC1 lo\u1EA1i c\xE2y n\xE0y..."
