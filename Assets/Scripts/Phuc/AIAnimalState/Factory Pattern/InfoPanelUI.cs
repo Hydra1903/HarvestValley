@@ -1,4 +1,5 @@
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -46,4 +47,12 @@ public class InfoPanelUI : MonoBehaviour
     }
 
     public bool IsShowingOwner(AnimalInfo owner) => currentOwner == owner;
+       public void RefreshUI(AnimalInfo owner)
+    {
+        if (owner != null && owner.data != null)
+        {
+            Show(owner.data, owner);
+        }
+    }
+
 }

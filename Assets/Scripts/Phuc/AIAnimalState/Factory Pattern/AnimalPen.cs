@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class AnimalPen : MonoBehaviour
 {
+    public int penId;
     public CinemachineInputAxisController playerAxisController;
     public FirstCameraTesting firstCameraTesting;
 
@@ -51,8 +52,19 @@ public class AnimalPen : MonoBehaviour
                 firstCameraTesting.allowMouseLook = true;
             }        
         }
+        if (sharedInfoPanel != null)
+        {
+            InfoPanelManager.instance.RegisterPanel(penId, sharedInfoPanel);
+        }
     }
-
+    private void OnDestroy()
+    {
+        // ?? G? ðãng k? panel khi pen b? xóa
+        if (InfoPanelManager.instance != null)
+        {
+            InfoPanelManager.instance.UnregisterPanel(penId);
+        }
+    }
     public Vector3 GetRandomSpawnPosition()
 {
     Transform basePoint = Random.value < 0.5f ? spawnPointType1 : spawnPointType2;
