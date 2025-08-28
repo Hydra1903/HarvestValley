@@ -128,7 +128,21 @@ public class FarmGrid : MonoBehaviour
             if (pd != null)
             {
                 int size = pd.GetSizeInt();
-                Vector2Int seedStartPos = CalculateStartPosition(gridPos, size);
+
+                Vector2Int seedStartPos;
+                if (size == 3)
+                {
+                    // ✨ BẮT BUỘC snap vào block hố 3×3
+                    if (!TrySnapStartToHole3x3(gridPos, out seedStartPos))
+                    {
+                        HideAllGhosts(); // không đứng trong hố 3×3 -> không hiển thị ghost
+                        return;
+                    }
+                }
+                else
+                {
+                    seedStartPos = CalculateStartPosition(gridPos, size);
+                }
 
                 if (CanPlantAt(seedStartPos, size, pd))
                 {
@@ -137,8 +151,6 @@ public class FarmGrid : MonoBehaviour
                     if (Input.GetMouseButtonDown(0))
                     {
                         PlantSeed(seedStartPos, pd);
-
-                        // Trừ 1 hạt trong hotbar
                         if (_hotbarUI != null && _hotbarUI.hotbar != null)
                         {
                             _hotbarUI.hotbar.UseAndRemoveItem(_hotbarUI.valueScroll, 1);
@@ -206,6 +218,51 @@ public class FarmGrid : MonoBehaviour
             return;
         }
     }
+
+    // Tìm area chứa điểm (x,y) với loại đất chỉ định
+    bool TryFindAreaContaining(int x, int y, SoilType requiredType, out AreaSave area, out int idx)
+    {
+        for (int i = 0; i < _areaSaves.Count; i++)
+        {
+            var a = _areaSaves[i];
+            if (a.soilType != requiredType) continue;
+            if (x >= a.startX && x < a.startX + a.size &&
+                y >= a.startY && y < a.startY + a.size)
+            {
+                area = a; idx = i; return true;
+            }
+        }
+        area = default; idx = -1; return false;
+    }
+
+    // Kiểm tra block bắt đầu tại (startX,startY) có trùng khít một area mong muốn không
+    bool IsExactAreaMatch(int startX, int startY, int size, SoilType type)
+    {
+        for (int i = 0; i < _areaSaves.Count; i++)
+        {
+            var a = _areaSaves[i];
+            if (a.soilType == type && a.size == size && a.startX == startX && a.startY == startY)
+                return true;
+        }
+        return false;
+    }
+
+    // Snap startPos về đầu block hố 3×3 chứa con trỏ (nếu có)
+    bool TrySnapStartToHole3x3(Vector2Int hoverPos, out Vector2Int snappedStart)
+    {
+        if (TryFindAreaContaining(hoverPos.x, hoverPos.y, SoilType.Hole, out var a, out _)
+            && a.size == 3)
+        {
+            snappedStart = new Vector2Int(a.startX, a.startY);
+            return true;
+        }
+        snappedStart = default;
+        return false;
+    }
+
+
+
+    //////// CƠ CHẾ ĐẤT ///////
 
     //kiểm tra click
     private bool IsWorldPointInsideThisGrid(Vector3 worldPos)
@@ -303,8 +360,6 @@ public class FarmGrid : MonoBehaviour
     {
         waterPrefab.SetActive(true);
     }
-
-    
 
     bool IsInGrid(int x, int y)
     {
@@ -438,35 +493,6 @@ public class FarmGrid : MonoBehaviour
     }
 
 
-    // ===== PLANT SYSTEM =====
-
-    private bool CanPlantAt(Vector2Int startPos, int size, PlantData plantData)
-    {
-        for (int x = 0; x < size; x++)
-        {
-            for (int y = 0; y < size; y++)
-            {
-                int checkX = startPos.x + x;
-                int checkY = startPos.y + y;
-
-                if (!IsInGrid(checkX, checkY))
-                    return false;
-
-                Tile tile = tiles[checkX, checkY];
-
-                // Kiểm tra tile có thể trồng cây không
-                if (tile.state != SoilState.Dug || tile.plantInstance != null)
-                    return false;
-
-                // Sử dụng logic từ PlantData để kiểm tra
-                bool isHole = IsHoleArea(new Vector2Int(checkX, checkY), 1);
-                if (!plantData.CanPlantOn(tile.state, isHole))
-                    return false;
-            }
-        }
-        return true;
-    }
-
     private bool IsHoleArea(Vector2Int pos, int size)
     {
         for (int x = 0; x < size; x++)
@@ -486,6 +512,42 @@ public class FarmGrid : MonoBehaviour
         return true;
     }
 
+
+    // ===== PLANT SYSTEM =====
+
+    private bool CanPlantAt(Vector2Int startPos, int size, PlantData plantData)
+    {
+        // ✨ Nếu là cây 3×3, yêu cầu phải trùng khít một block hố 3×3
+        if (size == 3)
+        {
+            if (!IsExactAreaMatch(startPos.x, startPos.y, 3, SoilType.Hole))
+                return false;
+        }
+
+        for (int x = 0; x < size; x++)
+        {
+            for (int y = 0; y < size; y++)
+            {
+                int checkX = startPos.x + x;
+                int checkY = startPos.y + y;
+
+                if (!IsInGrid(checkX, checkY))
+                    return false;
+
+                Tile tile = tiles[checkX, checkY];
+
+                // Ô phải đã đào và chưa có cây
+                if (tile.state != SoilState.Dug || tile.plantInstance != null)
+                    return false;
+
+                // Logic dựa trên PlantData (giữ nguyên của bạn)
+                bool isHole = (tiles[checkX, checkY].soilType == SoilType.Hole);
+                if (!plantData.CanPlantOn(tile.state, isHole))
+                    return false;
+            }
+        }
+        return true;
+    }
 
     private void ShowPlantGhostPreview(Vector2Int startPos, PlantData plantData)
     {
@@ -514,7 +576,7 @@ public class FarmGrid : MonoBehaviour
     }
 
 
-
+    //hàm trồng cây
     private void PlantSeed(Vector2Int startPos, PlantData plantData)
     {
         if (plantData == null)
@@ -616,6 +678,7 @@ public class FarmGrid : MonoBehaviour
         return false;
     }
 
+    //hàm thu hoạch
     private void HarvestAt(Vector2Int gridPos)
     {
         int x = gridPos.x, y = gridPos.y;
@@ -695,6 +758,7 @@ public class FarmGrid : MonoBehaviour
         if (idx >= 0) _plantSaves.RemoveAt(idx);
     }
 
+    //thêm vào túi đồ
     bool TryAddHarvestToInventory(PlantData pd, int amount)
     {
         if (pd == null || pd.harvestItem == null || amount <= 0) return false;
@@ -716,6 +780,7 @@ public class FarmGrid : MonoBehaviour
         // Thêm thành công => ok
         return true;
     }
+
     // đổi mesh theo inst.currentStage tại ô tâm
     void ReplacePlantMeshAtCenter(int cx, int cy, PlantInstance inst)
     {
@@ -865,7 +930,7 @@ public class FarmGrid : MonoBehaviour
         return true;
     }
 
-    //SaveData
+    /// ======SAVE DATA======
 
     void SyncPlantSavesFromWorld()
     {
