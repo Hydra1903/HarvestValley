@@ -191,9 +191,17 @@ public class FarmGrid : MonoBehaviour
                     var a = _areaSaves[idx];
                     if (a.soilType == expectedType)
                     {
-                        int digCost = (toolInfo.size == 5) ? 10 : 6; 
-                        if (!UseEnergy(digCost)) return; 
-                        FlattenAreaAt(gridPos);
+                        int digCost = (toolInfo.size == 5) ? 10 : 6;
+                        if (Mp.Instance != null && Mp.Instance.mp < digCost)
+                        {
+                            Notification.Instance?.ShowNotification("Hết năng lượng!");
+                            return;
+                        }
+
+                        if (FlattenAreaAt(gridPos)) // thành công thật sự
+                        {
+                            if (digCost > 0) Mp.Instance?.UseMp(digCost); // giờ mới trừ
+                        }
                         return;
                     }
                 }
@@ -201,8 +209,18 @@ public class FarmGrid : MonoBehaviour
                 if (CanPlaceSoil(startPos.x, startPos.y, toolInfo.size))
                 {
                     int digCost = (toolInfo.size == 5) ? 10 : 6;
-                    if (!UseEnergy(digCost)) return;
+
+                    // Chỉ kiểm tra đủ NL
+                    if (Mp.Instance != null && Mp.Instance.mp < digCost)
+                    {
+                        Notification.Instance?.ShowNotification("Hết năng lượng!");
+                        return;
+                    }
+
                     PlaceArea(startPos.x, startPos.y, toolInfo.size, toolInfo.prefab);
+
+                    // Thành công rồi mới trừ
+                    if (digCost > 0) Mp.Instance?.UseMp(digCost);
                 }
             }
             return;
@@ -443,14 +461,14 @@ public class FarmGrid : MonoBehaviour
     }
 
     //Hủy đất
-    void FlattenAreaAt(Vector2Int gridPos)
+    bool FlattenAreaAt(Vector2Int gridPos)
     {
         int x = gridPos.x, y = gridPos.y;
-        if (x < 0 || y < 0 || x >= gridWidth || y >= gridHeight) return;
+        if (x < 0 || y < 0 || x >= gridWidth || y >= gridHeight) return false;
 
         if (!TryFindAreaContaining(x, y, out int idx))
         {
-            Debug.Log("Không có luống/hố để hủy tại đây."); return;
+            Debug.Log("Không có luống/hố để hủy tại đây."); return false;
         }
 
         var a = _areaSaves[idx];
@@ -463,7 +481,7 @@ public class FarmGrid : MonoBehaviour
                 if (t.plantInstance != null)
                 {
                     Debug.LogWarning("Không thể hủy vì vùng đang có cây!");
-                    return;
+                    return false;
                 }
             }
 
@@ -490,25 +508,6 @@ public class FarmGrid : MonoBehaviour
             _areaObjects.RemoveAt(idx);
 
         Debug.Log($"Đã hủy {(a.size == 5 ? "luống 5x5" : "hố 3x3")} tại ({a.startX},{a.startY}).");
-    }
-
-
-    private bool IsHoleArea(Vector2Int pos, int size)
-    {
-        for (int x = 0; x < size; x++)
-        {
-            for (int y = 0; y < size; y++)
-            {
-                int checkX = pos.x + x;
-                int checkY = pos.y + y;
-
-                if (!IsInGrid(checkX, checkY))
-                    return false;
-
-                if (tiles[checkX, checkY].soilType != SoilType.Hole)
-                    return false;
-            }
-        }
         return true;
     }
 
@@ -689,71 +688,60 @@ public class FarmGrid : MonoBehaviour
 
         if (!TryGetPlantCenterFrom(x, y, out int cx, out int cy))
         {
-            Debug.LogWarning("Không tìm được ô tâm.");
-            return;
+            Debug.LogWarning("Không tìm được ô tâm."); return;
         }
 
         var inst = tiles[cx, cy].plantInstance;
-        if (inst == null || inst.plantData == null)
+        if (inst == null || inst.plantData == null) { Debug.LogWarning("Thiếu dữ liệu cây."); return; }
+        if (!IsMature(inst)) { Debug.Log("Chưa chín."); return; }
+
+        int cost = Mathf.Max(0, inst.plantData.energyHarvest);
+        // 1) CHỈ kiểm tra đủ NL (không trừ)
+        if (Mp.Instance != null && Mp.Instance.mp < cost)
         {
-            Debug.LogWarning("Thiếu dữ liệu cây.");
+            Notification.Instance?.ShowNotification("Hết năng lượng!");
             return;
         }
 
-        if (!IsMature(inst))
-        {
-            Debug.Log("Chưa chín.");
-            return;
-        }
-
-        // 1) Tính sản lượng kiểm tra túi còn chổ không
+        // 2) Thử add vào túi (một lần duy nhất)
         int yield = Mathf.Max(0, inst.plantData.harvestValue);
-        if (Inventory.Instance != null && !Inventory.Instance.AddItem(inst.plantData.harvestItem, yield))
-        {
-            Debug.LogWarning("[Harvest] Túi đầy, không thu hoạch và không trừ NL.");
-            return;
-        }
-
-        //nếu còn trừ năng lượng
-        int harvestCost = Mathf.Max(0, inst.plantData.energyHarvest);
-        if (!UseEnergy(harvestCost)) return;
-
-        //thêm vào túi
         if (yield <= 0 || inst.plantData.harvestItem == null)
         {
             Debug.LogWarning("[Harvest] Dữ liệu harvest không hợp lệ.");
             return;
         }
-        TryAddHarvestToInventory(inst.plantData, yield);
+        if (!TryAddHarvestToInventory(inst.plantData, yield))
+        {
+            // Túi đầy -> KHÔNG trừ NL, KHÔNG đổi trạng thái cây
+            Debug.LogWarning($"[Harvest] Túi đầy, không thu {yield} x {inst.plantData.harvestItem.itemName}");
+            return;
+        }
 
-        // 2) Add thành công -> cập nhật trạng thái cây + XP
+        // 3) AddItem đã thành công → giờ mới TRỪ NL (không đụng Inventory)
+        if (cost > 0) Mp.Instance?.UseMp(cost);
+
+        // 4) Cập nhật trạng thái cây + XP
         inst.harvestCount++;
-        if (Xp.Instance != null) Xp.Instance.AddXp(Mathf.Max(0, inst.plantData.xpHarvest));  
-            Debug.Log(
-            $"Thu hoạch {inst.plantData.plantName} (+{yield}).  + {inst.plantData.xpHarvest} XP " +
+        if (Xp.Instance != null) Xp.Instance.AddXp(Mathf.Max(0, inst.plantData.xpHarvest));
+        Debug.Log(
+            $"Thu hoạch {inst.plantData.plantName} (+{yield})  +{inst.plantData.xpHarvest} XP. " +
             $"Lần {inst.harvestCount}/{(inst.plantData.maxHarvest < 0 ? "∞" : inst.plantData.maxHarvest.ToString())}"
         );
 
-        // 3) Còn lượt thu nữa?
+        // 5) Regrow hay xóa
         if (HasMoreHarvests(inst))
         {
-            // a) Dùng chuỗi mature ngay (không countdown)
             if (UseMatureChain(inst))
             {
                 inst.currentStage = 0;
                 inst.daysInCurrentStage = 0;
                 inst.daysUntilNextHarvest = 0;
                 ReplacePlantMeshAtCenter(cx, cy, inst);
-                return;
             }
-
-            // b) Không dùng mature chain -> để AdvanceDay xử lý regrow bình thường
             return;
         }
 
-        // 4) Hết lượt -> xóa cây + cập nhật save
         RemovePlantAtCenter(cx, cy);
-
         int idx = _plantSaves.FindIndex(p => p.centerX == cx && p.centerY == cy);
         if (idx >= 0) _plantSaves.RemoveAt(idx);
     }
