@@ -42,7 +42,6 @@ public class FarmGrid : MonoBehaviour
     private List<GameObject> _areaObjects = new();
 
     [SerializeField] private HotBarUI _hotbarUI;
-    private Inventory inventory;
 
     void Start()
     {
@@ -180,6 +179,8 @@ public class FarmGrid : MonoBehaviour
                     var a = _areaSaves[idx];
                     if (a.soilType == expectedType)
                     {
+                        int digCost = (toolInfo.size == 5) ? 10 : 6; 
+                        if (!UseEnergy(digCost)) return; 
                         FlattenAreaAt(gridPos);
                         return;
                     }
@@ -187,6 +188,8 @@ public class FarmGrid : MonoBehaviour
 
                 if (CanPlaceSoil(startPos.x, startPos.y, toolInfo.size))
                 {
+                    int digCost = (toolInfo.size == 5) ? 10 : 6;
+                    if (!UseEnergy(digCost)) return;
                     PlaceArea(startPos.x, startPos.y, toolInfo.size, toolInfo.prefab);
                 }
             }
@@ -640,25 +643,31 @@ public class FarmGrid : MonoBehaviour
             return;
         }
 
-        // 1) Tính sản lượng và thử add vào túi trước
+        // 1) Tính sản lượng kiểm tra túi còn chổ không
         int yield = Mathf.Max(0, inst.plantData.harvestValue);
+        if (Inventory.Instance != null && !Inventory.Instance.AddItem(inst.plantData.harvestItem, yield))
+        {
+            Debug.LogWarning("[Harvest] Túi đầy, không thu hoạch và không trừ NL.");
+            return;
+        }
+
+        //nếu còn trừ năng lượng
+        int harvestCost = Mathf.Max(0, inst.plantData.energyHarvest);
+        if (!UseEnergy(harvestCost)) return;
+
+        //thêm vào túi
         if (yield <= 0 || inst.plantData.harvestItem == null)
         {
             Debug.LogWarning("[Harvest] Dữ liệu harvest không hợp lệ.");
             return;
         }
+        TryAddHarvestToInventory(inst.plantData, yield);
 
-        if (!TryAddHarvestToInventory(inst.plantData, yield))
-        {
-            // ❌ Túi đầy -> KHÔNG đụng vào trạng thái cây
-            Debug.LogWarning($"[Harvest] Túi đầy, không thể thu {yield} x {inst.plantData.harvestItem.itemName}");
-            return;
-        }
-
-        // 2) Add thành công -> cập nhật trạng thái cây
+        // 2) Add thành công -> cập nhật trạng thái cây + XP
         inst.harvestCount++;
-        Debug.Log(
-            $"Thu hoạch {inst.plantData.plantName} (+{yield}). " +
+        if (Xp.Instance != null) Xp.Instance.AddXp(Mathf.Max(0, inst.plantData.xpHarvest));  
+            Debug.Log(
+            $"Thu hoạch {inst.plantData.plantName} (+{yield}).  + {inst.plantData.xpHarvest} XP " +
             $"Lần {inst.harvestCount}/{(inst.plantData.maxHarvest < 0 ? "∞" : inst.plantData.maxHarvest.ToString())}"
         );
 
@@ -841,6 +850,19 @@ public class FarmGrid : MonoBehaviour
     private int GetRequiredDaysForCurrentStage(PlantInstance inst)
     {
         return inst.plantData.GetRequiredDaysForStage(UseMatureChain(inst), inst.currentStage);
+    }
+
+    private bool UseEnergy(int amount)
+    {
+        if (amount <= 0) return true;
+        if (Mp.Instance.mp < amount)
+        {
+            Notification.Instance.ShowNotification("Hết năng lượng!");
+            return false;
+        }
+        
+        Mp.Instance.UseMp(amount); 
+        return true;
     }
 
     //SaveData

@@ -17,6 +17,8 @@ public class PlantData : ScriptableObject
     public ItemData harvestItem;
     public int maxHarvest = 1;          // số lần thu hoạch tối đa // -1 vô hạn
     public int harvestValue = 25;       //sản lượng
+    public int xpHarvest = 5;       // XP nhận được khi thu hoạch cây này
+    public int energyHarvest = 5;  // Năng lượng tiêu hao khi thu hoạch
 
     [Header("Second Growth Stages")]
     public GameObject[] matureRegrowPrefabs;     // Giai đoạn phát triển cho cây đã trưởng thành
