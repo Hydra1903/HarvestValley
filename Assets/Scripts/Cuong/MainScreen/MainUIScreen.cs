@@ -20,6 +20,7 @@ public class MainUIScreen : MonoBehaviour
     public TextMeshProUGUI textCurrentXp;
     public TextMeshProUGUI textCurrentLevel;
     public LevelManager levelManager;
+    public Animator animator;
 
     [Header("--- Mana UI ---")]
     public Slider mpBar;
@@ -104,9 +105,15 @@ public class MainUIScreen : MonoBehaviour
 
     IEnumerator Hide(GameObject currentPanelLevelUp)
     {
-        yield return new WaitForSeconds(3f);
-        backgroundLevelUp.SetActive(false);
+        yield return new WaitForSeconds(4f);
+        Invoke("HideUI",1f);
+        animator.Play("Off");
         currentPanelLevelUp.SetActive(false);
+    }
+    public void HideUI()
+
+    {
+        backgroundLevelUp.SetActive(false);
     }
     #endregion
 
