@@ -1,0 +1,94 @@
+﻿using UnityEngine;
+
+public class FarmManager : MonoBehaviour
+{
+    public static FarmManager Instance { get; private set; }
+
+    [Header("Save/ID")]
+    public string gridId = "";
+
+    [Header("Kích thước")]
+    public int gridWidth = 30;
+    public int gridHeight = 20;
+    public float cellSize = 1f;
+    public Vector3 origin = Vector3.zero;
+
+    [Header("Database & UI")]
+    public PlantDatabase plantDatabase;
+    public HotBarUI hotbarUI;
+
+    public Tile[,] Tiles { get; private set; }
+
+    private void Awake()
+    {
+        if (Instance != null && Instance != this) { Destroy(gameObject); return; }
+        Instance = this;
+
+        if (!hotbarUI) hotbarUI = FindFirstObjectByType<HotBarUI>();
+        if (!plantDatabase) plantDatabase = FindFirstObjectByType<PlantDatabase>();
+    }
+
+    private void Start()
+    {
+        AllocateTiles(gridWidth, gridHeight);
+        SoilManager.Instance.Initialize(this);
+        PlantManager.Instance.Initialize(this, SoilManager.Instance);
+        FarmSaveSystem.Instance.Initialize(this);
+    }
+
+    private void Update()
+    {
+        GetComponent<FarmInput>().HandleInput(this, SoilManager.Instance, PlantManager.Instance);
+
+        if (Input.GetKeyDown(KeyCode.N))
+        {
+            PlantManager.Instance.AdvanceDay();
+        }
+
+    }
+
+    // === Helpers chung ===
+    public void AllocateTiles(int width, int height)
+    {
+        gridWidth = width;
+        gridHeight = height;
+
+        Tiles = new Tile[gridWidth, gridHeight];
+        for (int x = 0; x < gridWidth; x++)
+            for (int y = 0; y < gridHeight; y++)
+                Tiles[x, y] = new Tile();
+    }
+
+    public Vector2Int WorldToGrid(Vector3 worldPos)
+    {
+        int x = Mathf.FloorToInt((worldPos.x - origin.x) / cellSize);
+        int y = Mathf.FloorToInt((worldPos.z - origin.z) / cellSize);
+        return new Vector2Int(x, y);
+    }
+
+    public bool IsInGrid(int x, int y) => x >= 0 && x < gridWidth && y >= 0 && y < gridHeight;
+
+    public bool IsWorldPointInsideThisGrid(Vector3 worldPos)
+    {
+        Vector3 local = worldPos - origin;
+        return local.x >= 0 && local.z >= 0 &&
+               local.x < gridWidth * cellSize &&
+               local.z < gridHeight * cellSize;
+    }
+
+    public Vector2Int CalculateStartPosition(Vector2Int gridPos, int size)
+    {
+        int startX = gridPos.x - (size / 2);
+        int startY = gridPos.y - (size / 2);
+
+        // Đảm bảo vùng không vượt ra ngoài lưới
+        if (startX < 0) startX = 0;
+        if (startY < 0) startY = 0;
+        if (startX + size > gridWidth) startX = gridWidth - size;
+        if (startY + size > gridHeight) startY = gridHeight - size;
+
+        return new Vector2Int(startX, startY);
+    }
+}
+
+
