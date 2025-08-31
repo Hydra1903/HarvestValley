@@ -78,6 +78,15 @@ public class FarmInput : MonoBehaviour
             return;
         }
 
+        // Watering
+        if (item.itemData.toolType == ToolType.Watering)
+        {
+            // không cần ghost đặc biệt – click là tưới
+            if (Input.GetMouseButtonDown(0))
+                SoilManager.Instance.TryWaterAt(gridPos);
+            return;
+        }
+
         soil.HideGhosts(); plant.HideGhost();
     }
 }

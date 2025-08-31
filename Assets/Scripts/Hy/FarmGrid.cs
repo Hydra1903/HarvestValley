@@ -62,7 +62,7 @@ public class FarmGrid : MonoBehaviour
 
         var ghostManagerObj = new GameObject($"SimpleGhostManager_{gridId}");
         simpleGhostManager = ghostManagerObj.AddComponent<SimpleGhostManager>();
-        simpleGhostManager.Initialize(ghostMaterial);
+        //simpleGhostManager.Initialize(ghostMaterial);
     }
 
     void Update()
@@ -563,7 +563,7 @@ public class FarmGrid : MonoBehaviour
         );
 
         //hiển thị ghost
-        simpleGhostManager.ShowGhost(plantData, ghostPos);
+        //simpleGhostManager.ShowGhost(plantData, ghostPos);
     }
 
 

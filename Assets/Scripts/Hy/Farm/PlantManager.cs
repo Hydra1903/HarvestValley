@@ -31,6 +31,8 @@ public class PlantManager : MonoBehaviour
     }
 
     // ===== Hover SEED =====
+
+    //Lấy dữ liệu 
     public bool HandleSeedHover(Vector2Int gridPos, InventoryItem seedItem)
     {
         if (seedItem == null || seedItem.itemData == null || seedItem.itemData.itemType != ItemType.Seed)
@@ -41,6 +43,8 @@ public class PlantManager : MonoBehaviour
 
         int size = pd.GetSizeInt();
         Vector2Int start;
+
+        // Với cây 3x3: bắt buộc snap vào đúng 1 hố 3x3
         if (size == 3)
         {
             if (!soil.TrySnapStartToHole3x3(gridPos, out start)) { HideGhost(); return false; }
@@ -50,6 +54,13 @@ public class PlantManager : MonoBehaviour
         {
             start = farm.CalculateStartPosition(gridPos, size);
         }
+
+        if (!AreaIsDug(start, size))
+        {
+            HideGhost();
+            return false;
+        }
+
 
         if (!CanPlantAt(start, size, pd)) { HideGhost(); return false; }
 
@@ -91,7 +102,7 @@ public class PlantManager : MonoBehaviour
         return true;
     }
 
-    // ===== Thu hoạch (không trừ NL nếu túi đầy) =====
+    // ===== Thu hoạch =====
     public bool TryHarvest(Vector2Int gridPos)
     {
         int x = gridPos.x, y = gridPos.y;
@@ -154,6 +165,16 @@ public class PlantManager : MonoBehaviour
     // ===== Qua ngày =====
     public void AdvanceDay()
     {
+        // 4.1 Reset tưới của hôm trước
+        SoilManager.Instance.ResetDailyWater();
+
+        // 4.2 Nếu trời mưa hôm nay → tưới toàn bộ
+        if (Weather.Instance != null && Weather.Instance.currentWeather == WeatherState.Rainy)
+        {
+            SoilManager.Instance.WaterAllAreas();
+        }
+
+
         for (int x = 0; x < farm.gridWidth; x++)
         {
             for (int y = 0; y < farm.gridHeight; y++)
@@ -177,10 +198,12 @@ public class PlantManager : MonoBehaviour
                 }
             }
         }
-        Debug.Log("Qua ngày: tăng trưởng theo growth/mature chain.");
+        Debug.Log("Qua ngày: tăng trưởng.");
     }
 
     // ===== Core planting helpers =====
+
+    //Có thể trồng không?
     public bool CanPlantAt(Vector2Int startPos, int size, PlantData plantData)
     {
         for (int x = 0; x < size; x++)
@@ -198,6 +221,7 @@ public class PlantManager : MonoBehaviour
         return true;
     }
 
+    //Hàm trồng cây
     private void PlantSeed(Vector2Int startPos, PlantData plantData)
     {
         int size = plantData.GetSizeInt();
@@ -247,6 +271,7 @@ public class PlantManager : MonoBehaviour
     }
 
     // ===== Tile / Prefab helpers =====
+
     private bool TryGetPlantCenterFrom(int x, int y, out int cx, out int cy)
     {
         cx = cy = -1;
@@ -368,6 +393,20 @@ public class PlantManager : MonoBehaviour
 
     private bool IsMature(PlantInstance inst) => inst.currentStage >= GetLastStageIndexFor(inst);
 
+    //Nếu là khu vực đã đào 
+    private bool AreaIsDug(Vector2Int start, int size)
+    {
+        for (int x = 0; x < size; x++)
+            for (int y = 0; y < size; y++)
+            {
+                int cx = start.x + x, cy = start.y + y;
+                if (!farm.IsInGrid(cx, cy)) return false;
+                if (farm.Tiles[cx, cy].state != SoilState.Dug) return false;
+            }
+        return true;
+    }
+
+    //Random xoay 
     private Quaternion RandomizeRotation()
     {
         float y = Random.Range(0f, 360f);

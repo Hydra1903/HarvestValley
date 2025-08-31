@@ -6,7 +6,7 @@ public class SimpleGhostManager : MonoBehaviour
 {
     private GameObject currentGhostInstance;
     private PlantType currentPlantType;
-    private Material ghostMaterial; 
+    private Material ghostMaterial;
 
     public void Initialize(Material ghostMat)
     {
@@ -63,21 +63,21 @@ public class SimpleGhostManager : MonoBehaviour
     void DisableUnnecessaryComponents()
     {
         if (currentGhostInstance == null) return;
-        
+
         // Vô hiệu hóa collider
         Collider[] colliders = currentGhostInstance.GetComponentsInChildren<Collider>();
         foreach (var collider in colliders)
         {
             collider.enabled = false;
         }
-        
+
         // Vô hiệu hóa rigidbody
         Rigidbody[] rigidbodies = currentGhostInstance.GetComponentsInChildren<Rigidbody>();
         foreach (var rb in rigidbodies)
         {
             rb.isKinematic = true;
         }
-        
+
         // Vô hiệu hóa các script khác
         MonoBehaviour[] scripts = currentGhostInstance.GetComponentsInChildren<MonoBehaviour>();
         foreach (var script in scripts)
@@ -93,9 +93,9 @@ public class SimpleGhostManager : MonoBehaviour
     void ApplyGhostMaterial()
     {
         if (currentGhostInstance == null || ghostMaterial == null) return;
-        
+
         Renderer[] renderers = currentGhostInstance.GetComponentsInChildren<Renderer>();
-        
+
         foreach (var renderer in renderers)
         {
             Material[] materials = new Material[renderer.materials.Length];

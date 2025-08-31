@@ -16,13 +16,22 @@ public class SoilManager : MonoBehaviour
     public GameObject ghostPlotPrefab;
     public GameObject ghostHolePrefab;
 
+    [Header("Watering")]
+    [SerializeField] private string waterChildName = "WaterOverlay"; // tên child trong prefab luống/hố bật
+    [SerializeField] private string holeChildName = "Hole"; // tên child tắt
+    [SerializeField] private int waterCost = 3; // năng lượng cho mỗi lần tưới (tuỳ bạn)
+
     private GameObject ghostPlotInstance;
     private GameObject ghostHoleInstance;
+
+    [SerializeField] private Material ghostRed;
+    [SerializeField] private Material ghostBlack;
 
     private FarmManager farm;
 
     private readonly List<AreaSave> _areaSaves = new();
     private readonly List<GameObject> _areaObjects = new();
+    private readonly HashSet<int> _wateredAreaIdx = new();
 
     private void Awake()
     {
@@ -50,12 +59,12 @@ public class SoilManager : MonoBehaviour
     public void HandleToolHover(Vector2Int gridPos, InventoryItem currentItem)
     {
         var info = GetToolInfo((currentItem?.itemData?.toolType) ?? ToolType.None);
-        var start = FarmManager.Instance.CalculateStartPosition(gridPos, info.size);
+        var start = farm.CalculateStartPosition(gridPos, info.size);
 
-        if (CanPlaceSoil(start.x, start.y, info.size))
-            ShowGhost(start, info);
-        else
-            HideGhosts();
+        bool canPlace = CanPlaceSoil(start.x, start.y, info.size);
+
+        // LUÔN hiện ghost, chỉ đổi material nếu không hợp lệ
+        ShowGhost(start, info, canPlace);
     }
 
     public void HideGhosts()
@@ -64,7 +73,7 @@ public class SoilManager : MonoBehaviour
         if (ghostHoleInstance) ghostHoleInstance.SetActive(false);
     }
 
-    private void ShowGhost(Vector2Int startPos, ToolInfo info)
+    private void ShowGhost(Vector2Int startPos, ToolInfo info, bool valid)
     {
         var ghost = info.size == 5 ? ghostPlotInstance : ghostHoleInstance;
         if (!ghost) return;
@@ -76,7 +85,19 @@ public class SoilManager : MonoBehaviour
         );
 
         ghost.transform.position = ghostPos;
+        ApplyGhostMaterial(ghost, valid);
         ghost.SetActive(true);
+    }
+
+    //Áp Material cho ghost
+    private void ApplyGhostMaterial(GameObject go, bool valid)
+    {
+        var mat = valid ? ghostRed : ghostBlack;
+        if (mat == null) return;
+
+        var renderers = go.GetComponentsInChildren<Renderer>(true);
+        for (int i = 0; i < renderers.Length; i++)
+            renderers[i].material = mat;
     }
 
     // ===== Click: Đào hoặc Hủy =====
@@ -138,6 +159,7 @@ public class SoilManager : MonoBehaviour
         return true;
     }
 
+    //Hàm đào đất
     public void PlaceArea(int startX, int startY, int size)
     {
         for (int dx = 0; dx < size; dx++)
@@ -171,6 +193,7 @@ public class SoilManager : MonoBehaviour
         _areaObjects.Add(go);
     }
 
+    //Xóa đất
     public bool FlattenAreaAt(Vector2Int gridPos)
     {
         int x = gridPos.x, y = gridPos.y;
@@ -211,7 +234,7 @@ public class SoilManager : MonoBehaviour
         return true;
     }
 
-    // ===== Strategy helpers cho cây lớn =====
+    // ===== Ép cây 3x3 vào đúng tâm =====
     public bool TrySnapStartToHole3x3(Vector2Int hoverPos, out Vector2Int snappedStart)
     {
         if (TryFindAreaContaining(hoverPos.x, hoverPos.y, out int idx))
@@ -261,7 +284,87 @@ public class SoilManager : MonoBehaviour
         return info;
     }
 
-    // ===== Save helpers =====
+    // ====== Watering ======
+
+    //tìm tên con của prefab
+    private static Transform FindChildRecursive(Transform root, string name)
+    {
+        if (!root) return null;
+        if (root.name == name) return root;
+        for (int i = 0; i < root.childCount; i++)
+        {
+            var c = root.GetChild(i);
+            var r = FindChildRecursive(c, name);
+            if (r != null) return r;
+        }
+        return null;
+    }
+
+    private void SetAreaWaterOverlay(int areaIndex, bool enable)
+    {
+        if (areaIndex < 0 || areaIndex >= _areaObjects.Count) return;
+        var areaObj = _areaObjects[areaIndex];
+        if (!areaObj) return;
+
+        var child = FindChildRecursive(areaObj.transform, waterChildName);
+        if (child) child.gameObject.SetActive(enable);
+    }
+
+    private void SetAreaHole(int areaIndex, bool enable)
+    {
+        if (areaIndex < 0 || areaIndex >= _areaObjects.Count) return;
+        var areaObj = _areaObjects[areaIndex];
+        if (!areaObj) return;
+
+        var child = FindChildRecursive(areaObj.transform, holeChildName);
+        if (child) child.gameObject.SetActive(enable);
+    }
+
+    public bool TryWaterAt(Vector2Int gridPos)
+    {
+        // tìm vùng (luống/hố) chứa gridPos
+        if (!TryFindAreaContaining(gridPos.x, gridPos.y, out int idx))
+        {
+            Debug.Log("Không có vùng để tưới ở đây.");
+            return false;
+        }
+
+        // kiểm tra năng lượng (chỉ CHECK)
+        if (waterCost > 0 && (Mp.Instance == null || Mp.Instance.mp < waterCost))
+        {
+            Notification.Instance?.ShowNotification("Hết năng lượng!");
+            return false;
+        }
+
+        // bật overlay nước
+        SetAreaWaterOverlay(idx, true);
+        SetAreaHole(idx, false);
+        _wateredAreaIdx.Add(idx);
+
+        // trừ năng lượng sau khi thành công
+        if (waterCost > 0) Mp.Instance?.UseMp(waterCost);
+
+        return true;
+    }
+
+    public void ResetDailyWater()
+    {
+        // tắt overlay toàn bộ vùng đã tưới
+        foreach (var idx in _wateredAreaIdx)
+            SetAreaWaterOverlay(idx, false);
+        _wateredAreaIdx.Clear();
+    }
+
+    public void WaterAllAreas()
+    {
+        for (int i = 0; i < _areaObjects.Count; i++)
+        {
+            SetAreaWaterOverlay(i, true);
+            _wateredAreaIdx.Add(i);
+        }
+    }
+
+    // ===== Save =====
     public List<AreaSave> GetAreas() => _areaSaves;
     public void ClearAreas()
     {

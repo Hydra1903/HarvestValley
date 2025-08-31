@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System;
 using UnityEngine;
 
@@ -18,6 +18,7 @@ public class FarmSaveSystem : MonoBehaviour
 
     public void Initialize(FarmManager f) => farm = f;
 
+    //Đồng bộ đến FarmGridSave
     public FarmGridSave BuildSave()
     {
         SyncPlantSavesFromWorld();
@@ -33,6 +34,7 @@ public class FarmSaveSystem : MonoBehaviour
         };
     }
 
+    //Hàm Load khởi tạo dựng lại từ dữ liệu
     public void LoadFromSave(FarmGridSave data)
     {
         // apply size + origin
@@ -54,6 +56,7 @@ public class FarmSaveSystem : MonoBehaviour
     // ===== Helpers =====
     private List<PlantSave> GetPlants() => PlantManager.Instance.GetPlants();
 
+    //Ghi lại trạng thái, ngày, số lần thu hoạch về save
     private void SyncPlantSavesFromWorld()
     {
         var plants = GetPlants();
