@@ -165,8 +165,8 @@ public class PlantManager : MonoBehaviour
     // ===== Qua ngày =====
     public void AdvanceDay()
     {
-        // 4.1 Reset tưới của hôm trước
-        SoilManager.Instance.ResetDailyWater();
+        // Thời tiết hiện tại
+        bool isRainy = Weather.Instance != null && Weather.Instance.currentWeather == WeatherState.Rainy;
 
         // 4.2 Nếu trời mưa hôm nay → tưới toàn bộ
         if (Weather.Instance != null && Weather.Instance.currentWeather == WeatherState.Rainy)
@@ -181,6 +181,11 @@ public class PlantManager : MonoBehaviour
             {
                 Tile tile = farm.Tiles[x, y];
                 if (tile.plantInstance == null || tile.plantObject == null) continue;
+
+
+                //Không tưới & không mưa KHÔNG phát triển
+                bool watered = isRainy || SoilManager.Instance.IsTileWatered(x, y);
+                if (!watered) continue;
 
                 var inst = tile.plantInstance;
                 int last = GetLastStageIndexFor(inst);
@@ -198,6 +203,14 @@ public class PlantManager : MonoBehaviour
                 }
             }
         }
+
+        //Reset tưới của hôm trước
+        SoilManager.Instance.ResetDailyWater();
+
+        // 3) NGÀY MỚI: nếu trời mưa -> tưới toàn bộ ngay từ đầu ngày mới
+        if (isRainy)
+            SoilManager.Instance.WaterAllAreas();
+
         Debug.Log("Qua ngày: tăng trưởng.");
     }
 

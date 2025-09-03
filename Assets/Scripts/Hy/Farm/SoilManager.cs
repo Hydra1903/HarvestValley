@@ -273,13 +273,13 @@ public class SoilManager : MonoBehaviour
     private ToolInfo GetToolInfo(ToolType tool)
     {
         var info = new ToolInfo();
-        if (tool == ToolType.Hoe) // 5x5
+        if (tool == ToolType.Hoe) //Hoe 5x5
         {
-            info.size = 5; info.offsetY = 0.235f; info.offsetX = -0.2f; info.offsetZ = 5f;
+            info.size = 5; info.offsetY = 0.26f; info.offsetX = 5f; info.offsetZ = -0.2f;
         }
         else // Shovel 3x3
         {
-            info.size = 3; info.offsetY = 0.45f; info.offsetX = 1.5f; info.offsetZ = 1.5f;
+            info.size = 3; info.offsetY = 0.47f; info.offsetX = 1.5f; info.offsetZ = 1.5f;
         }
         return info;
     }
@@ -300,6 +300,16 @@ public class SoilManager : MonoBehaviour
         return null;
     }
 
+    //Ô này đã tưới chưa
+    public bool IsTileWatered(int x, int y)
+    {
+        if (!FarmManager.Instance.IsInGrid(x, y)) return false;
+        if (TryFindAreaContaining(x, y, out int idx))
+            return _wateredAreaIdx.Contains(idx);
+        return false;
+    }
+
+    //Bật 
     private void SetAreaWaterOverlay(int areaIndex, bool enable)
     {
         if (areaIndex < 0 || areaIndex >= _areaObjects.Count) return;
@@ -320,6 +330,7 @@ public class SoilManager : MonoBehaviour
         if (child) child.gameObject.SetActive(enable);
     }
 
+    //Tìm vùng đã tưới
     public bool TryWaterAt(Vector2Int gridPos)
     {
         // tìm vùng (luống/hố) chứa gridPos
@@ -338,20 +349,32 @@ public class SoilManager : MonoBehaviour
 
         // bật overlay nước
         SetAreaWaterOverlay(idx, true);
+
         SetAreaHole(idx, false);
-        _wateredAreaIdx.Add(idx);
+        bool ok = _wateredAreaIdx.Add(idx);
 
         // trừ năng lượng sau khi thành công
-        if (waterCost > 0) Mp.Instance?.UseMp(waterCost);
+        if (waterCost > 0 && ok)
+        {
+            Mp.Instance?.UseMp(waterCost);
+        }
+        else
+        {
+            return false;
+        }
 
         return true;
     }
 
+    //Tắt toàn bộ
     public void ResetDailyWater()
     {
         // tắt overlay toàn bộ vùng đã tưới
         foreach (var idx in _wateredAreaIdx)
             SetAreaWaterOverlay(idx, false);
+        foreach (var idx in _wateredAreaIdx) 
+            SetAreaHole(idx, true);
+           
         _wateredAreaIdx.Clear();
     }
 
