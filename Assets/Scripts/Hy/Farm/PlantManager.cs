@@ -200,6 +200,7 @@ public class PlantManager : MonoBehaviour
                         inst.daysInCurrentStage = 0;
                         ReplacePlantMeshAtCenter(x, y, inst);
                     }
+                    Debug.Log("Qua ngày: tăng trưởng.");
                 }
             }
         }
@@ -211,7 +212,7 @@ public class PlantManager : MonoBehaviour
         if (isRainy)
             SoilManager.Instance.WaterAllAreas();
 
-        Debug.Log("Qua ngày: tăng trưởng.");
+
     }
 
     // ===== Core planting helpers =====
