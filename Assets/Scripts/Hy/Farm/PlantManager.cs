@@ -266,8 +266,10 @@ public class PlantManager : MonoBehaviour
                 stagePrefab.transform.position.y,
                 (startPos.y + (size * 0.5f)) * farm.cellSize
             );
-
             farm.Tiles[centerX, centerY].plantObject = Instantiate(stagePrefab, plantPos, RandomizeRotation());
+            var clickable = farm.Tiles[centerX, centerY].plantObject.GetComponentInChildren<PlantClickable>();
+            if (clickable != null)
+                clickable.Init(centerX, centerY);
         }
 
         _plantSaves.Add(new PlantSave
@@ -319,6 +321,9 @@ public class PlantManager : MonoBehaviour
                 float prefabY = stagePrefab.transform.position.y;
                 Vector3 newPos = new Vector3(basePos.x, prefabY, basePos.z);
                 tile.plantObject = Instantiate(stagePrefab, newPos, Quaternion.Euler(0f, yRot, 0f));
+                var clickable = tile.plantObject.GetComponentInChildren<PlantClickable>();
+                if (clickable != null)
+                    clickable.Init(cx, cy);
             }
         }
     }
