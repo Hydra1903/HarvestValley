@@ -107,6 +107,7 @@ public class FarmInput : MonoBehaviour
         // Watering
         if (item.itemData.toolType == ToolType.Watering)
         {
+            soil.HideGhosts(); plant.HideGhost();
             if (Input.GetMouseButtonDown(0))
                 soil.TryWaterAt(gridPos);
             return;
