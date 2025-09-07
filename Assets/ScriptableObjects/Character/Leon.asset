@@ -12,10 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f0eb325eda62b5c4fbe257b40b7fa4bb, type: 3}
   m_Name: Leon
   m_EditorClassIdentifier: 
-  characterName: 
+  characterName: Leon
   characterIcon: {fileID: 0}
-  characterPrefab: {fileID: 0}
-  maxHealth: 0
-  maxStamina: 0
+  sex: Nam
+  age: 27
+  habit: "Ch\u1EA1y b\u1ED9, Xem phim"
+  genitive: "M\u1EA1nh m\u1EBD, T\u1ED1t b\u1EE5ng, Tr\xE1ch nhi\u1EC7m"
+  maxStamina: 130
   moveSpeed: 0
-  jumpForce: 0
+  skill: "Th\u1EC3 l\u1EF1c t\u1ED1t, 20% t\u1EC9 l\u1EC7 kh\xF4ng t\u1ED1n th\u1EC3
+    l\u1EF1c "

@@ -12,10 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f0eb325eda62b5c4fbe257b40b7fa4bb, type: 3}
   m_Name: May
   m_EditorClassIdentifier: 
-  characterName: 
+  characterName: May
   characterIcon: {fileID: 0}
-  characterPrefab: {fileID: 0}
-  maxHealth: 0
-  maxStamina: 0
+  sex: "N\u1EEF"
+  age: 29
+  habit: "Vi\u1EBFt ti\u1EC3u thuy\u1EBFt, Nu\xF4i th\xFA c\u01B0ng"
+  genitive: "L\xE3ng m\u1EA1n, M\u01A1 m\u1ED9ng, Tinh t\u1EBF"
+  maxStamina: 85
   moveSpeed: 0
-  jumpForce: 0
+  skill: "Gi\u1EA3m 10% gi\xE1 mua h\u1EA1n gi\u1ED1ng v\xE0 x\xE2y d\u1EF1ng"
