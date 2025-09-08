@@ -47,4 +47,6 @@ public class ItemData : ScriptableObject
     public ToolType toolType;
     public string description;
     public string season;
+
+    public GameObject placeablePrefab;
 }

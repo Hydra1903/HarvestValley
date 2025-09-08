@@ -113,6 +113,44 @@ public class FarmInput : MonoBehaviour
             return;
         }
 
+        //Sprinkler
+        if (item.itemData.toolType == ToolType.Sprinkler)
+        {
+            soil.HideGhosts(); plant.HideGhost();
+            if (Input.GetMouseButtonDown(0))
+            {
+                int gx = gridPos.x;
+                int gy = gridPos.y;
+                if (farm.IsInGrid(gx, gy))
+                {
+                    var t = farm.Tiles[gx, gy];
+                    if (t.plantInstance == null) // trống thì cho đặt
+                    {
+                        var prefab = item.itemData.placeablePrefab;
+                        if (prefab != null)
+                        {
+                            Vector3 pos = farm.origin + new Vector3(
+                                (gx + 0.5f) * farm.cellSize,
+                                prefab.transform.position.y,
+                                (gy + 0.5f) * farm.cellSize
+                            );
+
+                            var go = Instantiate(prefab, pos, Quaternion.identity);
+                            var sp = go.GetComponent<Sprinkler>();
+                            if (sp == null) sp = go.AddComponent<Sprinkler>();
+                            sp.Init(gx, gy, 7); // 15×15 vùng tưới
+                            SoilManager.Instance.RegisterSprinkler(sp);
+
+                            // trừ vật phẩm nếu cần
+                            farm.hotbarUI?.hotbar?.UseAndRemoveItem(farm.hotbarUI.valueScroll, 1);
+                            farm.hotbarUI?.UpdateAllSlots();
+                        }
+                    }
+                }
+            }
+            return;
+        }
+
         soil.HideGhosts(); plant.HideGhost();
     }
 

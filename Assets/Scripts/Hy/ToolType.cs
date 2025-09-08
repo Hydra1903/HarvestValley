@@ -6,5 +6,6 @@ public enum ToolType
     Hoe,        
     Shovel,
     Harvest,
-    Watering
+    Watering,
+    Sprinkler
 }

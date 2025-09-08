@@ -5,6 +5,7 @@ public class SoilManager : MonoBehaviour
 {
     public static SoilManager Instance { get; private set; }
 
+
     [Header("Raycast")]
     public LayerMask gridMask;
 
@@ -12,17 +13,19 @@ public class SoilManager : MonoBehaviour
     public GameObject dugSoilPrefab;  // luống 5x5
     public GameObject holePrefab;     // hố 3x3
 
-    [Header("Ghost đất")]
+    [Header("Ghost")]
     public GameObject ghostPlotPrefab;
     public GameObject ghostHolePrefab;
+    public GameObject ghostSprinkler;
+
+    private GameObject ghostPlotInstance;
+    private GameObject ghostHoleInstance;
+    private GameObject ghostSprinklerInstance;
 
     [Header("Watering")]
     [SerializeField] private string waterChildName = "WaterOverlay"; // tên child trong prefab luống/hố bật
     [SerializeField] private string holeChildName = "Hole"; // tên child tắt
     [SerializeField] private int waterCost = 3; // năng lượng cho mỗi lần tưới (tuỳ bạn)
-
-    private GameObject ghostPlotInstance;
-    private GameObject ghostHoleInstance;
 
     [SerializeField] private Material ghostRed;
     [SerializeField] private Material ghostBlack;
@@ -32,6 +35,8 @@ public class SoilManager : MonoBehaviour
     private readonly List<AreaSave> _areaSaves = new();
     private readonly List<GameObject> _areaObjects = new();
     private readonly HashSet<int> _wateredAreaIdx = new();
+    private readonly List<Sprinkler> _sprinklers = new();
+
 
     private void Awake()
     {
@@ -71,6 +76,7 @@ public class SoilManager : MonoBehaviour
     {
         if (ghostPlotInstance) ghostPlotInstance.SetActive(false);
         if (ghostHoleInstance) ghostHoleInstance.SetActive(false);
+        if (ghostSprinklerInstance) ghostSprinklerInstance.SetActive(false);
     }
 
     private void ShowGhost(Vector2Int startPos, ToolInfo info, bool valid)
@@ -377,7 +383,8 @@ public class SoilManager : MonoBehaviour
            
         _wateredAreaIdx.Clear();
     }
-
+    
+    //tưới toàn bộ vùng
     public void WaterAllAreas()
     {
         for (int i = 0; i < _areaObjects.Count; i++)
@@ -385,6 +392,50 @@ public class SoilManager : MonoBehaviour
             SetAreaWaterOverlay(i, true);
             _wateredAreaIdx.Add(i);
         }
+    }
+
+    //Tưới toàn bộ theo máy tưới
+    public void WaterBySprinklers()
+    {
+        foreach (var s in _sprinklers)
+        {
+            if (s != null)
+                WaterSquare(new Vector2Int(s.gridX, s.gridY), s.halfRange);
+        }
+    }
+    // Tưới tất cả luống/hố có ô bất kỳ nằm trong vùng (Máy tưới)
+    public void WaterSquare(Vector2Int center, int half)
+    {
+        int minX = Mathf.Max(0, center.x - half);
+        int maxX = Mathf.Min(FarmManager.Instance.gridWidth - 1, center.x + half);
+        int minY = Mathf.Max(0, center.y - half);
+        int maxY = Mathf.Min(FarmManager.Instance.gridHeight - 1, center.y + half);
+
+        for (int i = 0; i < _areaSaves.Count; i++)
+        {
+            var a = _areaSaves[i];
+
+            // kiểm tra overlap
+            bool overlap = !(a.startX + a.size - 1 < minX || a.startX > maxX ||
+                             a.startY + a.size - 1 < minY || a.startY > maxY);
+
+            if (overlap)
+            {
+                SetAreaWaterOverlay(i, true);
+                _wateredAreaIdx.Add(i);
+                SetAreaHole(i, false); // nếu là hố thì bật layer nước
+            }
+        }
+    }
+
+    public void RegisterSprinkler(Sprinkler s)
+    {
+        if (s != null && !_sprinklers.Contains(s))
+            _sprinklers.Add(s);
+    }
+    public void UnregisterSprinkler(Sprinkler s)
+    {
+        if (s != null) _sprinklers.Remove(s);
     }
 
     // ===== Save =====
