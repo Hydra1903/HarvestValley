@@ -2,15 +2,8 @@ using UnityEngine;
 
 public class HanaScript : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    public CharacterData characterData;
+    /*Skill: ti le 15% +1 item khi thu hoach
+      MP: 90/90
+     */
 }

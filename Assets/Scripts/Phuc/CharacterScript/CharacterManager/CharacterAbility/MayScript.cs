@@ -2,15 +2,8 @@ using UnityEngine;
 
 public class MayScript : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    public CharacterData characterData;
+    /*Skill: giam 10% gia mua hat giong
+      MP: 85/85
+     */
 }

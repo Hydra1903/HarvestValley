@@ -2,15 +2,8 @@ using UnityEngine;
 
 public class KaiScript : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    public CharacterData characterData;
+    /*Skill: nhan them 8% gia ban nong san
+      MP: 110/110
+     */
 }

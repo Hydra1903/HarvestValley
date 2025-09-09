@@ -2,15 +2,8 @@ using UnityEngine;
 
 public class LeonScript : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    public CharacterData characterData;
+    /*Skill: 20% ti le khong ton the luc
+      MP: 130/130
+     */
 }
