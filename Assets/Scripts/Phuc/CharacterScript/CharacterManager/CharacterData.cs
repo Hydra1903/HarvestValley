@@ -12,6 +12,6 @@ public class CharacterData : ScriptableObject
     public string genitive;
     [Header("Stamina and capacity")]
     public int maxStamina;
-    public float moveSpeed;
     public string skill;
+    public Mesh SkinnyCharacter;
 }

@@ -54,7 +54,7 @@ public class TestingHarvestAnimal : MonoBehaviour
                 }
 
                 ItemData itemToGive = GetItemDataByType();
-                if (itemToGive != null && playerInventory.AddItem(itemToGive, 1))
+                if (itemToGive != null && playerInventory.AddItem(itemToGive, 1))//doi lai neu la cuu thi cho 3 long, de cho 1 xo sua
                 {
                     Debug.Log($"Succes harvest {itemToGive.itemName} from{animalType}");
                     feeding.ResetHarvest();

@@ -554,6 +554,7 @@ GameObject:
   - component: {fileID: 1366521131689250757}
   - component: {fileID: 6778475931765115615}
   - component: {fileID: 858550914819227677}
+  - component: {fileID: 4988403435144333300}
   m_Layer: 0
   m_Name: TestingMovingCharacter 1
   m_TagString: Player
@@ -660,6 +661,25 @@ MonoBehaviour:
   mouseSensitivity: 100
   Camera: {fileID: 0}
   animator: {fileID: 1366521131689250757}
+--- !u!114 &4988403435144333300
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2406396377988144604}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3f16ef6613ff97045b1e5be6653c3dbe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cameraTransform: {fileID: 4764189911076884144}
+  controller: {fileID: 6778475931765115615}
+  walkSpeed: 5
+  sprintSpeed: 8
+  gravity: -9.81
+  mouseSensitivity: 2
+  allowMouseLook: 1
 --- !u!1 &2954475879872686180
 GameObject:
   m_ObjectHideFlags: 0
