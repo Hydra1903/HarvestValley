@@ -74,7 +74,7 @@ public class PlantDatabase : ScriptableObject
                 continue;
             }
             
-            if (plant.prefab == null)
+            if (plant.growthPrefabs == null)
             {
                 Debug.LogWarning($"Plant {plant.plantName} ({plant.plantType}) missing prefab!");
             }

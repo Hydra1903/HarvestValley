@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using nTools.PrefabPainter;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class FarmGrid : MonoBehaviour
@@ -18,34 +19,33 @@ public class FarmGrid : MonoBehaviour
     public GameObject waterPrefab; // Thảm nước
 
     [Header("Plant system")]
-    public PlantType currentPlantType = PlantType.Carrot;
     public PlantDatabase plantDatabase;
+    public InventoryItem currentItem;
+
 
     [Header("Input Filter")]
-    [SerializeField] private LayerMask gridMask; 
+    [SerializeField] private LayerMask gridMask;
 
     [Header("Ghost system")]
     public Material ghostMaterial;
-    private SimpleGhostManager simpleGhostManager; 
+    private SimpleGhostManager simpleGhostManager;
 
     private Tile[,] tiles;
-    private GameObject[,] tileObjects;
 
     public GameObject ghostPlotPrefab;
     private GameObject ghostPlotInstance;
     public GameObject ghostHolePrefab;
     private GameObject ghostHoleInstance;
-    
-    public ToolType currentTool = ToolType.Hoe;
 
     private List<AreaSave> _areaSaves = new();
     private List<PlantSave> _plantSaves = new();
     private List<GameObject> _areaObjects = new();
 
+    [SerializeField] private HotBarUI _hotbarUI;
+
     void Start()
     {
         tiles = new Tile[gridWidth, gridHeight];
-        tileObjects = new GameObject[gridWidth, gridHeight];
 
         for (int x = 0; x < gridWidth; x++)
         {
@@ -62,126 +62,228 @@ public class FarmGrid : MonoBehaviour
 
         var ghostManagerObj = new GameObject($"SimpleGhostManager_{gridId}");
         simpleGhostManager = ghostManagerObj.AddComponent<SimpleGhostManager>();
-        simpleGhostManager.Initialize(ghostMaterial);
+        //simpleGhostManager.Initialize(ghostMaterial);
     }
 
     void Update()
     {
-        HandleToolSwitching();
+        // LẤY MỚI currentItem NGAY ĐẦU FRAME
+        currentItem = (_hotbarUI != null) ? _hotbarUI.currentItem : null;
+
         HandleMouseInput();
 
-        if (Input.GetKeyDown(KeyCode.N)) 
+        _hotbarUI.UpdateAllSlots();
+
+        if (Input.GetKeyDown(KeyCode.N))
         {
             AdvanceDay();
         }
     }
 
-    void HandleToolSwitching()
+    private void Awake()
     {
-        if (Input.GetKeyDown(KeyCode.Alpha1)) currentTool = ToolType.Hoe;
-        if (Input.GetKeyDown(KeyCode.Alpha2)) currentTool = ToolType.Shovel;
-        if (Input.GetKeyDown(KeyCode.Alpha3)) currentTool = ToolType.Seed;
-        if (Input.GetKeyDown(KeyCode.Alpha4)) currentTool = ToolType.Harvest;
-
-        if (currentTool == ToolType.Seed)
+        if (_hotbarUI == null)
         {
-            if (Input.GetKeyDown(KeyCode.Q)) currentPlantType = PlantType.Carrot;  // 1x1
-            if (Input.GetKeyDown(KeyCode.W)) currentPlantType = PlantType.Corn;  // 2x2
-            if (Input.GetKeyDown(KeyCode.E)) currentPlantType = PlantType.Apple;   // 3x3
+            _hotbarUI = FindFirstObjectByType<HotBarUI>();
+            if (_hotbarUI == null)
+            {
+                Debug.LogError("[FarmGrid] Không tìm thấy HotBarUI. Hãy kéo thả vào Inspector hoặc đảm bảo có HotBarUI trong scene.");
+            }
         }
     }
 
     void HandleMouseInput()
     {
+        var item = currentItem;
+
         // 1) Raycast chỉ vào layer FarmGround
         var cam = Camera.main;
-        if (!cam) { HideGhosts(); return; }
+        if (!cam) { HideAllGhosts(); return; }
 
         Ray ray = cam.ScreenPointToRay(Input.mousePosition);
         if (!Physics.Raycast(ray, out RaycastHit hit, 1000f, gridMask))
         {
-            HideGhosts();
+            HideAllGhosts();
             return;
         }
 
         // 2) Chỉ xử lý nếu hit thuộc FarmGrid này
         var hitGrid = hit.collider.GetComponentInParent<FarmGrid>();
-        if (hitGrid != this)
+        if (hitGrid != this || !IsWorldPointInsideThisGrid(hit.point))
         {
-            HideGhosts();
+            HideAllGhosts();
             return;
         }
 
-        //check thêm biên theo origin/size để chắc chắn
-        if (!IsWorldPointInsideThisGrid(hit.point))
-        {
-            HideGhosts();
-            return;
-        }
-
-        // 3) Từ đây là đang hover đúng grid này → hiện ghost + cho click
+        // 3) Hover đúng grid
         Vector3 worldPos = hit.point;
         Vector2Int gridPos = WorldToGrid(worldPos);
 
-        if (currentTool == ToolType.Seed)
+        // 1) Nếu current item là SEED
+        if (item != null && item.itemData != null && item.itemData.itemType == ItemType.Seed && item.quantity > 0)
         {
-            HandlePlantingInput(gridPos); // logic cũ
+            HideAllGhosts();
+
+            PlantData pd = (plantDatabase != null) ? plantDatabase.GetPlantData(item.itemData.plantType) : null;
+            if (pd != null)
+            {
+                int size = pd.GetSizeInt();
+
+                Vector2Int seedStartPos;
+                if (size == 3)
+                {
+                    // ✨ BẮT BUỘC snap vào block hố 3×3
+                    if (!TrySnapStartToHole3x3(gridPos, out seedStartPos))
+                    {
+                        HideAllGhosts(); // không đứng trong hố 3×3 -> không hiển thị ghost
+                        return;
+                    }
+                }
+                else
+                {
+                    seedStartPos = CalculateStartPosition(gridPos, size);
+                }
+
+                if (CanPlantAt(seedStartPos, size, pd))
+                {
+                    ShowPlantGhostPreview(seedStartPos, pd);
+
+                    if (Input.GetMouseButtonDown(0))
+                    {
+                        PlantSeed(seedStartPos, pd);
+                        if (_hotbarUI != null && _hotbarUI.hotbar != null)
+                        {
+                            _hotbarUI.hotbar.UseAndRemoveItem(_hotbarUI.valueScroll, 1);
+                            _hotbarUI.UpdateAllSlots();
+                        }
+                    }
+                }
+            }
+            return; 
         }
 
-        if (currentTool == ToolType.Hoe || currentTool == ToolType.Shovel)
+        // Nếu không có item/không phải seed mà lại null -> dừng
+        if (item == null || item.itemData == null)
         {
+            HideAllGhosts();
+            return;
+        }
+
+        // 2) Hoe/Shovel (Đào đất)
+        if (item.itemData.toolType == ToolType.Hoe || item.itemData.toolType == ToolType.Shovel)
+        {
+            HideAllGhosts();
+
             ToolInfo toolInfo = GetCurrentToolInfo();
             Vector2Int startPos = CalculateStartPosition(gridPos, toolInfo.size);
 
-            // Luôn xử lý ghost theo hover (không cần bấm chuột)
             if (CanPlaceSoil(startPos.x, startPos.y, toolInfo.size))
-            {
-                ShowGhostPreview(startPos, toolInfo); // <-- gọi khi HOVER
-            }
+                ShowGhostPreview(startPos, toolInfo);
             else
-            {
-                // Không đặt được → ẩn ghost (hoặc bạn có thể hiện ghost đỏ nếu muốn)
-                HideGhosts();
-            }
+                HideAllGhosts();
 
-            // Click trái: toggle hủy nếu đang click vào một vùng cùng loại, ngược lại là đặt mới
             if (Input.GetMouseButtonDown(0))
             {
                 var expectedType = (toolInfo.size == 5) ? SoilType.Plot : SoilType.Hole;
 
-                // Nếu click trúng vùng cùng loại → hủy
                 if (TryFindAreaContaining(gridPos.x, gridPos.y, out int idx))
                 {
                     var a = _areaSaves[idx];
                     if (a.soilType == expectedType)
                     {
-                        FlattenAreaAt(gridPos);
+                        int digCost = (toolInfo.size == 5) ? 10 : 6;
+                        if (Mp.Instance != null && Mp.Instance.mp < digCost)
+                        {
+                            Notification.Instance?.ShowNotification("Hết năng lượng!");
+                            return;
+                        }
+
+                        if (FlattenAreaAt(gridPos)) // thành công thật sự
+                        {
+                            if (digCost > 0) Mp.Instance?.UseMp(digCost); // giờ mới trừ
+                        }
                         return;
                     }
                 }
 
-                // Không trúng vùng cùng loại → thử đặt mới
                 if (CanPlaceSoil(startPos.x, startPos.y, toolInfo.size))
                 {
+                    int digCost = (toolInfo.size == 5) ? 10 : 6;
+
+                    // Chỉ kiểm tra đủ NL
+                    if (Mp.Instance != null && Mp.Instance.mp < digCost)
+                    {
+                        Notification.Instance?.ShowNotification("Hết năng lượng!");
+                        return;
+                    }
+
                     PlaceArea(startPos.x, startPos.y, toolInfo.size, toolInfo.prefab);
+
+                    // Thành công rồi mới trừ
+                    if (digCost > 0) Mp.Instance?.UseMp(digCost);
                 }
             }
             return;
         }
 
-        if (currentTool == ToolType.Harvest)
+
+        // 3) Harvest
+        if (item.itemData.toolType == ToolType.Harvest)
         {
-            HideGhosts();
+            HideAllGhosts();
             if (Input.GetMouseButtonDown(0))
                 HarvestAt(gridPos);
             return;
         }
-
-
     }
 
+    // Tìm area chứa điểm (x,y) với loại đất chỉ định
+    bool TryFindAreaContaining(int x, int y, SoilType requiredType, out AreaSave area, out int idx)
+    {
+        for (int i = 0; i < _areaSaves.Count; i++)
+        {
+            var a = _areaSaves[i];
+            if (a.soilType != requiredType) continue;
+            if (x >= a.startX && x < a.startX + a.size &&
+                y >= a.startY && y < a.startY + a.size)
+            {
+                area = a; idx = i; return true;
+            }
+        }
+        area = default; idx = -1; return false;
+    }
+
+    // Kiểm tra block bắt đầu tại (startX,startY) có trùng khít một area mong muốn không
+    bool IsExactAreaMatch(int startX, int startY, int size, SoilType type)
+    {
+        for (int i = 0; i < _areaSaves.Count; i++)
+        {
+            var a = _areaSaves[i];
+            if (a.soilType == type && a.size == size && a.startX == startX && a.startY == startY)
+                return true;
+        }
+        return false;
+    }
+
+    // Snap startPos về đầu block hố 3×3 chứa con trỏ (nếu có)
+    bool TrySnapStartToHole3x3(Vector2Int hoverPos, out Vector2Int snappedStart)
+    {
+        if (TryFindAreaContaining(hoverPos.x, hoverPos.y, SoilType.Hole, out var a, out _)
+            && a.size == 3)
+        {
+            snappedStart = new Vector2Int(a.startX, a.startY);
+            return true;
+        }
+        snappedStart = default;
+        return false;
+    }
+
+
+
+    //////// CƠ CHẾ ĐẤT ///////
+
     //kiểm tra click
-    bool IsWorldPointInsideThisGrid(Vector3 worldPos)
+    private bool IsWorldPointInsideThisGrid(Vector3 worldPos)
     {
         Vector3 local = worldPos - origin; // dùng origin của từng grid
         return local.x >= 0 && local.z >= 0 &&
@@ -190,43 +292,49 @@ public class FarmGrid : MonoBehaviour
     }
 
     //ẩn các ghost của đất và cây
-    void HideGhosts()
+    private void HideAllGhosts()
     {
         if (ghostPlotInstance) ghostPlotInstance.SetActive(false);
         if (ghostHoleInstance) ghostHoleInstance.SetActive(false);
         if (simpleGhostManager != null) simpleGhostManager.HideGhost();
-    }
-
+    }   
+    
     struct ToolInfo
     {
         public int size;
         public GameObject prefab;
         public GameObject ghost;
+        public float offsetY;
         public float offsetX;
         public float offsetZ;
     }
 
-    ToolInfo GetCurrentToolInfo()
+    private ToolInfo GetCurrentToolInfo()
     {
         ToolInfo info = new ToolInfo();
-        
-        if (currentTool == ToolType.Hoe)
+
+        var item = currentItem;
+        var toolType = (item != null && item.itemData != null) ? item.itemData.toolType : ToolType.None;
+
+        if (toolType == ToolType.Hoe)
         {
             info.size = 5;
             info.prefab = dugSoilPrefab;
             info.ghost = ghostPlotInstance;
-            info.offsetX = 0f;
+            info.offsetY = 0.235f;
+            info.offsetX = -0.2f;
             info.offsetZ = 5f;
         }
-        else // Shovel
+        else // Shovel mặc định
         {
             info.size = 3;
             info.prefab = holePrefab;
             info.ghost = ghostHoleInstance;
-            info.offsetX = 0.8f;
-            info.offsetZ = 2.7f;
+            info.offsetY = 0.45f;
+            info.offsetX = 1.5f;
+            info.offsetZ = 1.5f;
         }
-        
+
         return info;
     }
 
@@ -244,14 +352,16 @@ public class FarmGrid : MonoBehaviour
         return new Vector2Int(startX, startY);
     }
 
-    void ShowGhostPreview(Vector2Int startPos, ToolInfo toolInfo)
+    private void ShowGhostPreview(Vector2Int startPos, ToolInfo toolInfo)
     {
+        if (toolInfo.ghost == null) return;
+
         Vector3 ghostPos = origin + new Vector3(
             (startPos.x + toolInfo.offsetX) * cellSize,
-            0.28f,
+            toolInfo.offsetY,
             (startPos.y + toolInfo.offsetZ) * cellSize
         );
-        
+
         toolInfo.ghost.transform.position = ghostPos;
         toolInfo.ghost.SetActive(true);
     }
@@ -263,110 +373,10 @@ public class FarmGrid : MonoBehaviour
         return new Vector2Int(x, y);
     }
 
-    public void DigTile(int x, int y)
-    {
-        if (x < 0 || x >= gridWidth || y < 0 || y >= gridHeight) return;
-        if (tiles[x, y].state != SoilState.Normal) return;
-
-        tiles[x, y].state = SoilState.Dug;
-
-        float dugYOffset = 0.28f; 
-        Vector3 pos = origin + new Vector3((x + 0.5f) * cellSize, dugYOffset, (y + 0.5f) * cellSize);
-        tileObjects[x, y] = Instantiate(dugSoilPrefab, pos, Quaternion.identity);
-    }
-
     // Hàm làm ướt đất 
     public void WetTile(GameObject waterMatPrefab)
     {
         waterPrefab.SetActive(true);
-    }
-
-    void OnDrawGizmos()
-    {
-        float gizmoYOffset = 0.3f; 
-        Gizmos.color = Color.red;
-        for (int x = 0; x <= gridWidth; x++)
-        {
-            Vector3 from = origin + new Vector3(x * cellSize, gizmoYOffset, 0);
-            Vector3 to = origin + new Vector3(x * cellSize, gizmoYOffset, gridHeight * cellSize);
-            Gizmos.DrawLine(from, to);
-        }
-        for (int y = 0; y <= gridHeight; y++)
-        {
-            Vector3 from = origin + new Vector3(0, gizmoYOffset, y * cellSize);
-            Vector3 to = origin + new Vector3(gridWidth * cellSize, gizmoYOffset, y * cellSize);
-            Gizmos.DrawLine(from, to);
-        }
-
-        // Vẽ outline cho các vùng luống 5x5 và hố 3x3
-        if (tiles != null)
-        {
-            // Đánh dấu các vùng đã vẽ để không vẽ trùng
-            bool[,] visited = new bool[gridWidth, gridHeight];
-            for (int x = 0; x < gridWidth; x++)
-            {
-                for (int y = 0; y < gridHeight; y++)
-                {
-                    if (!visited[x, y] && tiles[x, y].state == SoilState.Dug)
-                    {
-                        // Kiểm tra vùng 5x5
-                        bool isPlot = true;
-                        if (x + 4 < gridWidth && y + 4 < gridHeight)
-                        {
-                            for (int dx = 0; dx < 5; dx++)
-                            for (int dy = 0; dy < 5; dy++)
-                                if (tiles[x + dx, y + dy].state != SoilState.Dug)
-                                    isPlot = false;
-                        }
-                        else isPlot = false;
-
-                        // Kiểm tra vùng 3x3 
-                        bool isHole = false;
-                        if (!isPlot && x + 2 < gridWidth && y + 2 < gridHeight)
-                        {
-                            isHole = true;
-                            for (int dx = 0; dx < 3; dx++)
-                            for (int dy = 0; dy < 3; dy++)
-                                if (tiles[x + dx, y + dy].state != SoilState.Dug)
-                                    isHole = false;
-                        }
-
-                        if (isPlot)
-                        {
-                            Gizmos.color = Color.green;
-                            Vector3 p1 = origin + new Vector3(x * cellSize, gizmoYOffset + 0.01f, y * cellSize);
-                            Vector3 p2 = origin + new Vector3((x + 5) * cellSize, gizmoYOffset + 0.01f, y * cellSize);
-                            Vector3 p3 = origin + new Vector3((x + 5) * cellSize, gizmoYOffset + 0.01f, (y + 5) * cellSize);
-                            Vector3 p4 = origin + new Vector3(x * cellSize, gizmoYOffset + 0.01f, (y + 5) * cellSize);
-                            Gizmos.DrawLine(p1, p2);
-                            Gizmos.DrawLine(p2, p3);
-                            Gizmos.DrawLine(p3, p4);
-                            Gizmos.DrawLine(p4, p1);
-                            // Đánh dấu đã vẽ vùng này
-                            for (int dx = 0; dx < 5; dx++)
-                            for (int dy = 0; dy < 5; dy++)
-                                visited[x + dx, y + dy] = true;
-                        }
-                        else if (isHole)
-                        {
-                            Gizmos.color = Color.blue;
-                            Vector3 p1 = origin + new Vector3(x * cellSize, gizmoYOffset + 0.02f, y * cellSize);
-                            Vector3 p2 = origin + new Vector3((x + 3) * cellSize, gizmoYOffset + 0.02f, y * cellSize);
-                            Vector3 p3 = origin + new Vector3((x + 3) * cellSize, gizmoYOffset + 0.02f, (y + 3) * cellSize);
-                            Vector3 p4 = origin + new Vector3(x * cellSize, gizmoYOffset + 0.02f, (y + 3) * cellSize);
-                            Gizmos.DrawLine(p1, p2);
-                            Gizmos.DrawLine(p2, p3);
-                            Gizmos.DrawLine(p3, p4);
-                            Gizmos.DrawLine(p4, p1);
-                            // Đánh dấu đã vẽ vùng này
-                            for (int dx = 0; dx < 3; dx++)
-                            for (int dy = 0; dy < 3; dy++)
-                                visited[x + dx, y + dy] = true;
-                        }
-                    }
-                }
-            }
-        }
     }
 
     bool IsInGrid(int x, int y)
@@ -427,26 +437,38 @@ public class FarmGrid : MonoBehaviour
         });
 
         // 3) Đặt prefab ở tâm vùng (ổn định với mọi cellSize/origin)
-        float dugYOffset = 0.235f;
-        float offsetX = (size == 5) ? 5f : 0.8f; // 5x5 luống hoặc 3x3 hố
-        float offsetZ = (size == 5) ? -0.2f : 2.7f;
+        float dugYOffset = (size == 5) ? 0.235f : 0.45f; // độ cao 5 là luống 3 là hố
+        float offsetX = (size == 5) ? 5f : 1.5f; // trục x 5 là luống 3 là hố
+        float offsetZ = (size == 5) ? -0.2f : 1.5f; // trục z 5 là luống 3 là hố
         Vector3 pos = origin + new Vector3(
             (startX + offsetX) * cellSize,
             dugYOffset,
             (startY + offsetZ) * cellSize
         );
-        var go = Instantiate(prefab, pos, Quaternion.identity);
-        _areaObjects.Add(go);
+
+        GameObject dirt;
+
+        if (_hotbarUI.currentItem.itemData.toolType == ToolType.Shovel)
+        {
+            dirt = Instantiate(prefab, pos, RandomizeRotation());
+        }
+        else
+        {
+            dirt = Instantiate(prefab, pos, Quaternion.identity);
+        }
+
+        _areaObjects.Add(dirt);
     }
 
-    void FlattenAreaAt(Vector2Int gridPos)
+    //Hủy đất
+    bool FlattenAreaAt(Vector2Int gridPos)
     {
         int x = gridPos.x, y = gridPos.y;
-        if (x < 0 || y < 0 || x >= gridWidth || y >= gridHeight) return;
+        if (x < 0 || y < 0 || x >= gridWidth || y >= gridHeight) return false;
 
         if (!TryFindAreaContaining(x, y, out int idx))
         {
-            Debug.Log("Không có luống/hố để hủy tại đây."); return;
+            Debug.Log("Không có luống/hố để hủy tại đây."); return false;
         }
 
         var a = _areaSaves[idx];
@@ -459,7 +481,7 @@ public class FarmGrid : MonoBehaviour
                 if (t.plantInstance != null)
                 {
                     Debug.LogWarning("Không thể hủy vì vùng đang có cây!");
-                    return;
+                    return false;
                 }
             }
 
@@ -486,52 +508,39 @@ public class FarmGrid : MonoBehaviour
             _areaObjects.RemoveAt(idx);
 
         Debug.Log($"Đã hủy {(a.size == 5 ? "luống 5x5" : "hố 3x3")} tại ({a.startX},{a.startY}).");
+        return true;
     }
 
 
     // ===== PLANT SYSTEM =====
 
-    void HandlePlantingInput(Vector2Int gridPos)
+    private bool CanPlantAt(Vector2Int startPos, int size, PlantData plantData)
     {
-        if (plantDatabase == null) return;
-        
-        PlantData plantData = plantDatabase.GetPlantData(currentPlantType);
-        if (plantData == null) return;
-        
-        int size = plantData.GetSizeInt();
-        Vector2Int startPos = CalculateStartPosition(gridPos, size);
-        
-        if (CanPlantAt(startPos, size, plantData))
+        // ✨ Nếu là cây 3×3, yêu cầu phải trùng khít một block hố 3×3
+        if (size == 3)
         {
-            ShowPlantGhostPreview(startPos, plantData);
-            
-            if (Input.GetMouseButtonDown(0))
-            {
-                PlantSeed(startPos, plantData);
-            }
+            if (!IsExactAreaMatch(startPos.x, startPos.y, 3, SoilType.Hole))
+                return false;
         }
-    }
-    
-    bool CanPlantAt(Vector2Int startPos, int size, PlantData plantData)
-    {
+
         for (int x = 0; x < size; x++)
         {
             for (int y = 0; y < size; y++)
             {
                 int checkX = startPos.x + x;
                 int checkY = startPos.y + y;
-                
+
                 if (!IsInGrid(checkX, checkY))
                     return false;
-                    
+
                 Tile tile = tiles[checkX, checkY];
-                
-                // Kiểm tra tile có thể trồng cây không
+
+                // Ô phải đã đào và chưa có cây
                 if (tile.state != SoilState.Dug || tile.plantInstance != null)
                     return false;
-                    
-                // Sử dụng logic từ PlantData để kiểm tra
-                bool isHole = IsHoleArea(new Vector2Int(checkX, checkY), 1);
+
+                // Logic dựa trên PlantData (giữ nguyên của bạn)
+                bool isHole = (tiles[checkX, checkY].soilType == SoilType.Hole);
                 if (!plantData.CanPlantOn(tile.state, isHole))
                     return false;
             }
@@ -539,45 +548,35 @@ public class FarmGrid : MonoBehaviour
         return true;
     }
 
-    bool IsHoleArea(Vector2Int pos, int size)
-    {
-        for (int x = 0; x < size; x++)
-        {
-            for (int y = 0; y < size; y++)
-            {
-                int checkX = pos.x + x;
-                int checkY = pos.y + y;
-
-                if (!IsInGrid(checkX, checkY))
-                    return false;
-
-                if (tiles[checkX, checkY].soilType != SoilType.Hole)
-                    return false;
-            }
-        }
-        return true;
-    }
-
-
-    void ShowPlantGhostPreview(Vector2Int startPos, PlantData plantData)
+    private void ShowPlantGhostPreview(Vector2Int startPos, PlantData plantData)
     {
         if (simpleGhostManager == null || plantData == null) return;
-        
+
         // Tính toán offset dựa trên kích thước
         float offsetX = plantData.GetSizeInt() * 0.5f;
         float offsetZ = plantData.GetSizeInt() * 0.5f;
-        
+
         Vector3 ghostPos = origin + new Vector3(
             (startPos.x + offsetX) * cellSize,
             0.45f,
             (startPos.y + offsetZ) * cellSize
         );
-        
+
         //hiển thị ghost
-        simpleGhostManager.ShowGhost(plantData, ghostPos);
+        //simpleGhostManager.ShowGhost(plantData, ghostPos);
     }
 
-    void PlantSeed(Vector2Int startPos, PlantData plantData)
+
+    //Xoay prefab ngẫu nhiên theo trục Y 
+    Quaternion RandomizeRotation()
+    {
+        float randomY = Random.Range(0f, 360f);
+        return Quaternion.Euler(0f, randomY, 0f);
+    }
+
+
+    //hàm trồng cây
+    private void PlantSeed(Vector2Int startPos, PlantData plantData)
     {
         if (plantData == null)
         {
@@ -607,29 +606,28 @@ public class FarmGrid : MonoBehaviour
             }
         }
 
+        GameObject stagePrefab = GetPrefabFor(newPlantInstance, 0);
+
+
         // Tính ô trung tâm (nơi đặt GameObject của cây)
+        float prefabY = stagePrefab.transform.position.y;
         int centerX = startPos.x + (size / 2);
         int centerY = startPos.y + (size / 2);
-
-        Vector3 plantPos = origin + new Vector3(
-            (startPos.x + (size * 0.5f)) * cellSize,
-            0.45f,
-            (startPos.y + (size * 0.5f)) * cellSize
-        );
-
-        GameObject stagePrefab = null;
-        if (plantData.growthPrefabs != null && plantData.growthPrefabs.Length > 0)
-            stagePrefab = plantData.growthPrefabs[0];
-        else
-            stagePrefab = plantData.prefab;
 
         if (stagePrefab != null && IsInGrid(centerX, centerY))
         {
             if (tiles[centerX, centerY].plantObject != null)
                 Destroy(tiles[centerX, centerY].plantObject);
 
-            tiles[centerX, centerY].plantObject = Instantiate(stagePrefab, plantPos, Quaternion.identity);
+            Vector3 plantPos = origin + new Vector3(
+                (startPos.x + (size * 0.5f)) * cellSize,
+                prefabY,
+                (startPos.y + (size * 0.5f)) * cellSize
+            );
+
+            tiles[centerX, centerY].plantObject = Instantiate(stagePrefab, plantPos, RandomizeRotation());
         }
+
 
         Debug.Log($"Đã trồng {plantData.plantName} ({plantData.plantType}) tại ({startPos.x}, {startPos.y}) size {size}");
 
@@ -645,16 +643,7 @@ public class FarmGrid : MonoBehaviour
         });
     }
 
-    //lấy giai đoạn cuối
-    int GetLastStageIndex(PlantData data)
-    {
-        if (data.growthPrefabs != null && data.growthPrefabs.Length > 0)
-            return data.growthPrefabs.Length - 1;
-        if (data.daysPerStage != null && data.daysPerStage.Length > 0)
-            return data.daysPerStage.Length - 1;
-        return 0;
-    }
-
+    //Kiểm tra số lần thu hoạch
     bool HasMoreHarvests(PlantInstance inst)
     {
         int max = inst.plantData.maxHarvest;
@@ -662,15 +651,10 @@ public class FarmGrid : MonoBehaviour
         return inst.harvestCount < max;          // còn lượt
     }
 
+    //Kiểm tra đã trưởng thành chưa
     bool IsMature(PlantInstance inst)
     {
-        // phải tới stage cuối đã
-        if (inst.currentStage < GetLastStageIndex(inst.plantData)) return false;
-        // cây nhiều lần: cần cooldown = 0 mới “có quả”
-        if (inst.plantData.maxHarvest != 1)      // >1 hoặc -1
-            return inst.daysUntilNextHarvest <= 0;
-        // cây một lần: chỉ cần tới stage cuối
-        return true;
+        return inst.currentStage >= GetLastStageIndexFor(inst);
     }
 
     bool TryGetPlantCenterFrom(int x, int y, out int cx, out int cy)
@@ -693,7 +677,8 @@ public class FarmGrid : MonoBehaviour
         return false;
     }
 
-    void HarvestAt(Vector2Int gridPos)
+    //hàm thu hoạch
+    private void HarvestAt(Vector2Int gridPos)
     {
         int x = gridPos.x, y = gridPos.y;
         if (!IsInGrid(x, y)) return;
@@ -707,33 +692,81 @@ public class FarmGrid : MonoBehaviour
         }
 
         var inst = tiles[cx, cy].plantInstance;
+        if (inst == null || inst.plantData == null) { Debug.LogWarning("Thiếu dữ liệu cây."); return; }
         if (!IsMature(inst)) { Debug.Log("Chưa chín."); return; }
 
-        // 1) Cộng sản lượng
-        int yield = Mathf.Max(0, inst.plantData.harvestValue);
-        inst.harvestCount++;
-        Debug.Log($"Thu hoạch {inst.plantData.plantName} (+{yield}). Lần {inst.harvestCount}/{(inst.plantData.maxHarvest < 0 ? "∞" : inst.plantData.maxHarvest)}");
-
-        // 2) Cây còn lượt thu nữa? (maxHarvest > 1 hoặc -1)
-        if (HasMoreHarvests(inst))
+        int cost = Mathf.Max(0, inst.plantData.energyHarvest);
+        // 1) CHỈ kiểm tra đủ NL (không trừ)
+        if (Mp.Instance != null && Mp.Instance.mp < cost)
         {
-            // Đặt cooldown
-            inst.daysUntilNextHarvest = Mathf.Max(0, inst.plantData.regrowDays);
-
-            // Nếu có stage riêng cho giai đoạn “đang hồi quả” → chuyển mesh
-            if (inst.plantData.regrowStageIndex >= 0 && inst.plantData.regrowStageIndex != inst.currentStage)
-            {
-                inst.currentStage = inst.plantData.regrowStageIndex;
-                ReplacePlantMeshAtCenter(cx, cy, inst);
-            }
-            // Nếu regrowStageIndex == -1: giữ nguyên mesh stage cuối (đơn giản)
+            Notification.Instance?.ShowNotification("Hết năng lượng!");
             return;
         }
 
-        // 3) Hết lượt → xóa cây, trả đất về Dug để trồng tiếp
+        // 2) Thử add vào túi (một lần duy nhất)
+        int yield = Mathf.Max(0, inst.plantData.harvestValue);
+        if (yield <= 0 || inst.plantData.harvestItem == null)
+        {
+            Debug.LogWarning("[Harvest] Dữ liệu harvest không hợp lệ.");
+            return;
+        }
+        if (!TryAddHarvestToInventory(inst.plantData, yield))
+        {
+            // Túi đầy -> KHÔNG trừ NL, KHÔNG đổi trạng thái cây
+            Debug.LogWarning($"[Harvest] Túi đầy, không thu {yield} x {inst.plantData.harvestItem.itemName}");
+            return;
+        }
+
+        // 3) AddItem đã thành công → giờ mới TRỪ NL (không đụng Inventory)
+        if (cost > 0) Mp.Instance?.UseMp(cost);
+
+        // 4) Cập nhật trạng thái cây + XP
+        inst.harvestCount++;
+        if (Xp.Instance != null) Xp.Instance.AddXp(Mathf.Max(0, inst.plantData.xpHarvest));
+        Debug.Log(
+            $"Thu hoạch {inst.plantData.plantName} (+{yield})  +{inst.plantData.xpHarvest} XP. " +
+            $"Lần {inst.harvestCount}/{(inst.plantData.maxHarvest < 0 ? "∞" : inst.plantData.maxHarvest.ToString())}"
+        );
+
+        // 5) Regrow hay xóa
+        if (HasMoreHarvests(inst))
+        {
+            if (UseMatureChain(inst))
+            {
+                inst.currentStage = 0;
+                inst.daysInCurrentStage = 0;
+                inst.daysUntilNextHarvest = 0;
+                ReplacePlantMeshAtCenter(cx, cy, inst);
+            }
+            return;
+        }
+
         RemovePlantAtCenter(cx, cy);
         int idx = _plantSaves.FindIndex(p => p.centerX == cx && p.centerY == cy);
         if (idx >= 0) _plantSaves.RemoveAt(idx);
+    }
+
+    //thêm vào túi đồ
+    bool TryAddHarvestToInventory(PlantData pd, int amount)
+    {
+        if (pd == null || pd.harvestItem == null || amount <= 0) return false;
+        if (Inventory.Instance == null)
+        {
+            Debug.LogWarning("[Harvest] Inventory.Instance = null");
+            return false;
+        }
+
+        // Thử thêm vào túi
+        bool ok = Inventory.Instance.AddItem(pd.harvestItem, amount);
+        if (!ok)
+        {
+            // Túi đầy => KHÔNG thu hoạch
+            Debug.LogWarning($"[Harvest] Túi đầy, không thể thu {amount} x {pd.harvestItem.itemName}");
+            return false;
+        }
+
+        // Thêm thành công => ok
+        return true;
     }
 
     // đổi mesh theo inst.currentStage tại ô tâm
@@ -742,16 +775,25 @@ public class FarmGrid : MonoBehaviour
         var tile = tiles[cx, cy];
         if (tile.plantObject != null)
         {
-            Vector3 pos = tile.plantObject.transform.position;
+            // Giữ nguyên XZ, chỉ thay Y theo prefab stage mới
+            Vector3 basePos = tile.plantObject.transform.position;
+            float yRot = tile.plantObject.transform.eulerAngles.y;
+
             Destroy(tile.plantObject);
 
-            GameObject stagePrefab = null;
-            if (inst.plantData.growthPrefabs != null && inst.plantData.growthPrefabs.Length > inst.currentStage)
-                stagePrefab = inst.plantData.growthPrefabs[inst.currentStage];
-            else
-                stagePrefab = inst.plantData.prefab;
+            GameObject stagePrefab = GetPrefabFor(inst, inst.currentStage);
+            if (stagePrefab != null)
+            {
+                float prefabY = stagePrefab.transform.position.y;
 
-            tile.plantObject = stagePrefab ? Instantiate(stagePrefab, pos, Quaternion.identity) : null;
+                Vector3 newPos = new Vector3(
+                    basePos.x,
+                    prefabY,
+                    basePos.z
+                );
+
+                tile.plantObject = Instantiate(stagePrefab, newPos, Quaternion.Euler(0f, yRot, 0f));
+            }
         }
     }
 
@@ -792,43 +834,91 @@ public class FarmGrid : MonoBehaviour
             for (int y = 0; y < gridHeight; y++)
             {
                 Tile tile = tiles[x, y];
-                if (tile.plantInstance != null && tile.plantObject != null)
-                {
-                    var inst = tile.plantInstance;
-                    int last = GetLastStageIndex(inst.plantData);
+                if (tile.plantInstance == null || tile.plantObject == null) continue;
 
-                    if (inst.currentStage < last)
+                var inst = tile.plantInstance;
+                int last = GetLastStageIndexFor(inst);
+
+                if (inst.currentStage < last)
+                {
+                    inst.daysInCurrentStage++;
+                    int need = GetRequiredDaysForCurrentStage(inst);
+                    if (inst.daysInCurrentStage >= need)
                     {
-                        // đang lớn bình thường
-                        int prev = inst.currentStage;
-                        inst.AdvanceDay();
-                        if (inst.currentStage != prev)
-                            ReplacePlantMeshAtCenter(x, y, inst);
-                    }
-                    else
-                    {
-                        // đã ở stage cuối
-                        if (inst.plantData.maxHarvest != 1)
-                        {
-                            // cây nhiều lần: đếm ngược hồi quả
-                            if (inst.daysUntilNextHarvest > 0)
-                            {
-                                inst.daysUntilNextHarvest--;
-                                // Khi hết chờ → nếu đang ở regrowStageIndex, trả về last stage để "có quả" trở lại
-                                if (inst.daysUntilNextHarvest == 0 && inst.plantData.regrowStageIndex >= 0)
-                                {
-                                    inst.currentStage = last;
-                                    ReplacePlantMeshAtCenter(x, y, inst);
-                                }
-                            }
-                        }
+                        inst.currentStage++;
+                        inst.daysInCurrentStage = 0;
+                        ReplacePlantMeshAtCenter(x, y, inst);
                     }
                 }
+                // Đang ở stage cuối -> chờ thu hoạch
             }
         }
 
-        Debug.Log("Qua ngày: Tất cả cây trung tâm đã được cập nhật.");
+        Debug.Log("Qua ngày: tăng trưởng theo growth (lần đầu) hoặc mature-regrow (từ lần 2), không dùng cooldown.");
     }
+
+    // Dùng mature chain nếu cây có matureRegrowPrefabs và đã thu ít nhất 1 lần
+    private bool UseMatureChain(PlantInstance inst)
+    {
+        return inst.plantData.HasMatureRegrowChain() && inst.harvestCount >= 1;
+    }
+
+    int GetLastStageIndexFor(PlantInstance inst)
+    {
+        var pd = inst.plantData;
+        bool mature = UseMatureChain(inst);
+
+        if (!mature)
+        {
+            if (pd.growthPrefabs != null && pd.growthPrefabs.Length > 0)
+                return pd.growthPrefabs.Length - 1;
+        }
+        else
+        {
+            if (pd.matureRegrowPrefabs != null && pd.matureRegrowPrefabs.Length > 0)
+                return pd.matureRegrowPrefabs.Length - 1;
+        }
+        return 0;
+    }
+
+    private GameObject GetPrefabFor(PlantInstance inst, int stage)
+    {
+        var pd = inst.plantData;
+        bool mature = UseMatureChain(inst);
+
+        if (!mature)
+        {
+            if (pd.growthPrefabs != null && pd.growthPrefabs.Length > stage)
+                return pd.growthPrefabs[stage];
+            return (pd.growthPrefabs != null && pd.growthPrefabs.Length > 0) ? pd.growthPrefabs[0] : null;
+        }
+        else
+        {
+            if (pd.matureRegrowPrefabs != null && pd.matureRegrowPrefabs.Length > stage)
+                return pd.matureRegrowPrefabs[stage];
+            return (pd.matureRegrowPrefabs != null && pd.matureRegrowPrefabs.Length > 0) ? pd.matureRegrowPrefabs[0] : null;
+        }
+    }
+
+    private int GetRequiredDaysForCurrentStage(PlantInstance inst)
+    {
+        return inst.plantData.GetRequiredDaysForStage(UseMatureChain(inst), inst.currentStage);
+    }
+
+    private bool UseEnergy(int amount)
+    {
+        if (amount <= 0) return true;
+        if (Mp.Instance.mp < amount)
+        {
+            Notification.Instance.ShowNotification("Hết năng lượng!");
+            return false;
+        }
+        
+        Mp.Instance.UseMp(amount); 
+        return true;
+    }
+
+    /// ======SAVE DATA======
 
     void SyncPlantSavesFromWorld()
     {
@@ -847,8 +937,7 @@ public class FarmGrid : MonoBehaviour
                         rec.daysInStage = inst.daysInCurrentStage;
                         rec.size = inst.plantData.GetSizeInt();
                         rec.type = inst.plantData.plantType;
-                        rec.harvestCount = inst.harvestCount;               
-                        rec.cooldown = inst.daysUntilNextHarvest;
+                        rec.harvestCount = inst.harvestCount;
                     }
                 }
             }
@@ -898,16 +987,16 @@ public class FarmGrid : MonoBehaviour
 
             GameObject prefab = (a.size == 5) ? dugSoilPrefab : holePrefab;
 
-            float yOffset = 0.28f;
-            float offsetX = (a.size == 5) ? 5f : 0.8f; // 5x5 luống hoặc 3x3 hố
-            float offsetZ = (a.size == 5) ? -0.2f : 2.7f;
+            float yOffset = (a.size == 5) ? 0.235f : 0.45f;
+            float offsetX = (a.size == 5) ? 5f : 1.5f;
+            float offsetZ = (a.size == 5) ? -0.2f : 1.5f;
             Vector3 pos = origin + new Vector3(
                 (a.startX + offsetX) * cellSize,
                 yOffset,
                 (a.startY + offsetZ) * cellSize
             );
             GameObject go = null;
-            if (prefab != null) Instantiate(prefab, pos, Quaternion.identity);
+            if (prefab != null) go = Instantiate(prefab, pos, Quaternion.identity);
             _areaObjects.Add(go);
         }
         _areaSaves = new List<AreaSave>(data.areas);
@@ -928,8 +1017,7 @@ public class FarmGrid : MonoBehaviour
             {
                 currentStage = p.stage,
                 daysInCurrentStage = p.daysInStage,
-                 harvestCount = p.harvestCount,                 
-                daysUntilNextHarvest = p.cooldown
+                harvestCount = p.harvestCount,
             };
 
             for (int dx = 0; dx < size; dx++)
@@ -943,11 +1031,7 @@ public class FarmGrid : MonoBehaviour
                 }
 
             // Instantiate prefab đúng stage tại tâm
-            GameObject stagePrefab = null;
-            if (plantData.growthPrefabs != null && plantData.growthPrefabs.Length > p.stage)
-                stagePrefab = plantData.growthPrefabs[p.stage];
-            else
-                stagePrefab = plantData.prefab;
+            GameObject stagePrefab = GetPrefabFor(inst, p.stage);
 
             if (stagePrefab != null && IsInGrid(p.centerX, p.centerY))
             {
@@ -956,13 +1040,101 @@ public class FarmGrid : MonoBehaviour
                     0.45f,
                     (startY + size * 0.5f) * cellSize
                 );
-
                 if (tiles[p.centerX, p.centerY].plantObject != null)
                     Destroy(tiles[p.centerX, p.centerY].plantObject);
 
-                tiles[p.centerX, p.centerY].plantObject = Instantiate(stagePrefab, pos, Quaternion.identity);
+                tiles[p.centerX, p.centerY].plantObject = Instantiate(stagePrefab, pos, RandomizeRotation());
             }
         }
     }
+
+    void OnDrawGizmos()
+    {
+        float gizmoYOffset = 0.3f;
+        Gizmos.color = Color.red;
+        for (int x = 0; x <= gridWidth; x++)
+        {
+            Vector3 from = origin + new Vector3(x * cellSize, gizmoYOffset, 0);
+            Vector3 to = origin + new Vector3(x * cellSize, gizmoYOffset, gridHeight * cellSize);
+            Gizmos.DrawLine(from, to);
+        }
+        for (int y = 0; y <= gridHeight; y++)
+        {
+            Vector3 from = origin + new Vector3(0, gizmoYOffset, y * cellSize);
+            Vector3 to = origin + new Vector3(gridWidth * cellSize, gizmoYOffset, y * cellSize);
+            Gizmos.DrawLine(from, to);
+        }
+
+        // Vẽ outline cho các vùng luống 5x5 và hố 3x3
+        if (tiles != null)
+        {
+            // Đánh dấu các vùng đã vẽ để không vẽ trùng
+            bool[,] visited = new bool[gridWidth, gridHeight];
+            for (int x = 0; x < gridWidth; x++)
+            {
+                for (int y = 0; y < gridHeight; y++)
+                {
+                    if (!visited[x, y] && tiles[x, y].state == SoilState.Dug)
+                    {
+                        // Kiểm tra vùng 5x5
+                        bool isPlot = true;
+                        if (x + 4 < gridWidth && y + 4 < gridHeight)
+                        {
+                            for (int dx = 0; dx < 5; dx++)
+                                for (int dy = 0; dy < 5; dy++)
+                                    if (tiles[x + dx, y + dy].state != SoilState.Dug)
+                                        isPlot = false;
+                        }
+                        else isPlot = false;
+
+                        // Kiểm tra vùng 3x3 
+                        bool isHole = false;
+                        if (!isPlot && x + 2 < gridWidth && y + 2 < gridHeight)
+                        {
+                            isHole = true;
+                            for (int dx = 0; dx < 3; dx++)
+                                for (int dy = 0; dy < 3; dy++)
+                                    if (tiles[x + dx, y + dy].state != SoilState.Dug)
+                                        isHole = false;
+                        }
+
+                        if (isPlot)
+                        {
+                            Gizmos.color = Color.green;
+                            Vector3 p1 = origin + new Vector3(x * cellSize, gizmoYOffset + 0.01f, y * cellSize);
+                            Vector3 p2 = origin + new Vector3((x + 5) * cellSize, gizmoYOffset + 0.01f, y * cellSize);
+                            Vector3 p3 = origin + new Vector3((x + 5) * cellSize, gizmoYOffset + 0.01f, (y + 5) * cellSize);
+                            Vector3 p4 = origin + new Vector3(x * cellSize, gizmoYOffset + 0.01f, (y + 5) * cellSize);
+                            Gizmos.DrawLine(p1, p2);
+                            Gizmos.DrawLine(p2, p3);
+                            Gizmos.DrawLine(p3, p4);
+                            Gizmos.DrawLine(p4, p1);
+                            // Đánh dấu đã vẽ vùng này
+                            for (int dx = 0; dx < 5; dx++)
+                                for (int dy = 0; dy < 5; dy++)
+                                    visited[x + dx, y + dy] = true;
+                        }
+                        else if (isHole)
+                        {
+                            Gizmos.color = Color.blue;
+                            Vector3 p1 = origin + new Vector3(x * cellSize, gizmoYOffset + 0.02f, y * cellSize);
+                            Vector3 p2 = origin + new Vector3((x + 3) * cellSize, gizmoYOffset + 0.02f, y * cellSize);
+                            Vector3 p3 = origin + new Vector3((x + 3) * cellSize, gizmoYOffset + 0.02f, (y + 3) * cellSize);
+                            Vector3 p4 = origin + new Vector3(x * cellSize, gizmoYOffset + 0.02f, (y + 3) * cellSize);
+                            Gizmos.DrawLine(p1, p2);
+                            Gizmos.DrawLine(p2, p3);
+                            Gizmos.DrawLine(p3, p4);
+                            Gizmos.DrawLine(p4, p1);
+                            // Đánh dấu đã vẽ vùng này
+                            for (int dx = 0; dx < 3; dx++)
+                                for (int dy = 0; dy < 3; dy++)
+                                    visited[x + dx, y + dy] = true;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
 }
 

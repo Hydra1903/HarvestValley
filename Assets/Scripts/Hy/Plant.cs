@@ -8,20 +8,23 @@ public class PlantData : ScriptableObject
     public string plantName = "New Plant";
     public PlantType plantType = PlantType.Carrot;
     public PlantSize size = PlantSize.Small;
-    
-    [Header("Visual")]
-    public GameObject prefab;
-    public Sprite icon;
 
     [Header("Growth Stages")]
     public GameObject[] growthPrefabs;  // Prefab cho từng giai đoạn
     public int[] daysPerStage;          // Số ngày ở mỗi giai đoạn
 
     [Header("Growth Settings")]
+    public ItemData harvestItem;
     public int maxHarvest = 1;          // số lần thu hoạch tối đa // -1 vô hạn
     public int harvestValue = 25;       //sản lượng
-    public int regrowDays = 3;          // số ngày chờ để ra quả tiếp (cho cây nhiều lần)
-    public int regrowStageIndex = -1;   // nếu >=0: stage dùng trong thời gian chờ hồi quả; -1 = giữ stage cuối
+    public int xpHarvest = 5;       // XP nhận được khi thu hoạch cây này
+    public int energyHarvest = 5;  // Năng lượng tiêu hao khi thu hoạch
+
+    [Header("Second Growth Stages")]
+    public GameObject[] matureRegrowPrefabs;     // Giai đoạn phát triển cho cây đã trưởng thành
+    public int[] matureRegrowDaysPerStage;       // Số ngày mỗi giai đoạn
+    public int useMatureRegrowAfterHarvestCount = 1; //Được sử dụng khi maxHarvest lớn hơn 1
+
     [Header("Requirements")]
     public bool needsWater = true;      //nước
     
@@ -46,6 +49,29 @@ public class PlantData : ScriptableObject
     {
         return (int)size;
     }
+
+    public bool HasMatureRegrowChain()
+    {
+        return matureRegrowPrefabs != null && matureRegrowPrefabs.Length > 0;
+    }
+
+    //dùng giai đoạn 2 nếu thu hoạch trên 1 lần 
+    public int GetRequiredDaysForStage(bool useMatureChain, int stageIndex)
+    {
+        if (!useMatureChain)
+        {
+            if (daysPerStage != null && daysPerStage.Length > stageIndex)
+                return Mathf.Max(1, daysPerStage[stageIndex]);
+            return 1;
+        }
+        else
+        {
+            if (matureRegrowDaysPerStage != null && matureRegrowDaysPerStage.Length > stageIndex)
+                return Mathf.Max(1, matureRegrowDaysPerStage[stageIndex]);
+            return 1;
+        }
+    }
+
 }
 
 /// Instance của cây đã trồng - chứa trạng thái runtime
@@ -64,28 +90,5 @@ public class PlantInstance
     {
         plantData = data;
         needsWater = data.needsWater;
-    }
-
-    public void AdvanceDay()
-    {
-        // Nếu không có growthPrefabs thì không làm gì
-        if (plantData == null || plantData.growthPrefabs == null || plantData.growthPrefabs.Length == 0)
-            return;
-
-        // Nếu đã ở stage cuối thì không tăng nữa
-        if (currentStage >= plantData.growthPrefabs.Length - 1) return;
-
-        // Lấy số ngày cần cho stage hiện tại (fallback = 1)
-        int requiredDays = 1;
-        if (plantData.daysPerStage != null && plantData.daysPerStage.Length > currentStage)
-            requiredDays = Mathf.Max(1, plantData.daysPerStage[currentStage]);
-
-        daysInCurrentStage++;
-
-        if (daysInCurrentStage >= requiredDays)
-        {
-            currentStage++;
-            daysInCurrentStage = 0;
-        }
     }
 }

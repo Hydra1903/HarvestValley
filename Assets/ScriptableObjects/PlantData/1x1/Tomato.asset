@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 71849a011fc748e4788f3888d3873774, type: 3}
+  m_Name: Tomato
+  m_EditorClassIdentifier: 
+  plantName: Tomato
+  plantType: 26
+  size: 1
+  growthPrefabs:
+  - {fileID: 1994261357479266, guid: 2df64c7536facdf4bbf80d1495ae668b, type: 3}
+  - {fileID: 1147994195056072, guid: 6093d78fcacb75e49bbfafe6afffd50b, type: 3}
+  - {fileID: 1800831289374606, guid: 8756b3906e0b139478a61afb270745f3, type: 3}
+  - {fileID: 1261134927141026, guid: c95c7029f809329408df85121d291868, type: 3}
+  daysPerStage: 010000000100000001000000
+  harvestItem: {fileID: 11400000, guid: 45e9c042afd316f4ea869c7a9ca9b2f5, type: 2}
+  maxHarvest: 4
+  harvestValue: 3
+  xpHarvest: 18
+  energyHarvest: 5
+  matureRegrowPrefabs:
+  - {fileID: 3932209992825817091, guid: 46450f30b4d05a141bc8a5a9da5dc67d, type: 3}
+  - {fileID: 1800831289374606, guid: 8756b3906e0b139478a61afb270745f3, type: 3}
+  - {fileID: 1261134927141026, guid: c95c7029f809329408df85121d291868, type: 3}
+  matureRegrowDaysPerStage: 010000000100000001000000
+  useMatureRegrowAfterHarvestCount: 1
+  needsWater: 1
+  description: "C\xE2y C\xE0 Chua - C\xE2y ng\u1EAFn ng\xE0y - K\xEDch th\u01B0\u1EDBc
+    1x1"

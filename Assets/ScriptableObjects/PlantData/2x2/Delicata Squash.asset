@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 71849a011fc748e4788f3888d3873774, type: 3}
+  m_Name: Delicata Squash
+  m_EditorClassIdentifier: 
+  plantName: Delicata Squash
+  plantType: 13
+  size: 2
+  growthPrefabs:
+  - {fileID: 1007727438656034, guid: 0dbbb6973ad6c0a47b1721295439b125, type: 3}
+  - {fileID: 1515436524733090, guid: 75ccaa2097d89544a8d9cd1611f66f5c, type: 3}
+  - {fileID: 1249356799843690, guid: 4baa3a10cb2e4384abc37e4c52ead708, type: 3}
+  - {fileID: 1302423569103364, guid: 2c3124db8ba1fcb419ef0b0b41f5c5e1, type: 3}
+  daysPerStage: 010000000100000001000000
+  harvestItem: {fileID: 11400000, guid: 27e80c650e68c944eaa501d0e08dd69f, type: 2}
+  maxHarvest: 1
+  harvestValue: 1
+  xpHarvest: 162
+  energyHarvest: 5
+  matureRegrowPrefabs: []
+  matureRegrowDaysPerStage: 
+  useMatureRegrowAfterHarvestCount: 1
+  needsWater: 1
+  description: "B\xED Delicata "

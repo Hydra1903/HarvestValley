@@ -6,7 +6,7 @@ public class SimpleGhostManager : MonoBehaviour
 {
     private GameObject currentGhostInstance;
     private PlantType currentPlantType;
-    private Material ghostMaterial; 
+    private Material ghostMaterial;
 
     public void Initialize(Material ghostMat)
     {
@@ -17,21 +17,21 @@ public class SimpleGhostManager : MonoBehaviour
     /// Hiển thị ghost preview cho loại cây tại vị trí chỉ định
     public void ShowGhost(PlantData plantData, Vector3 position)
     {
-        if (plantData == null || plantData.prefab == null) return;
-        
-        // Nếu loại cây thay đổi hoặc chưa có ghost, tạo mới
+        if (plantData == null || plantData.growthPrefabs == null || plantData.growthPrefabs.Length == 0)
+            return;
+
         if (currentGhostInstance == null || currentPlantType != plantData.plantType)
         {
             CreateGhostFromPrefab(plantData);
         }
-        
+
         if (currentGhostInstance != null)
         {
             currentGhostInstance.transform.position = position;
             currentGhostInstance.SetActive(true);
         }
     }
-    
+
     /// Ẩn ghost preview
     public void HideGhost()
     {
@@ -44,45 +44,40 @@ public class SimpleGhostManager : MonoBehaviour
     /// Tạo ghost từ prefab gốc và áp dụng material nhạt màu
     void CreateGhostFromPrefab(PlantData plantData)
     {
-        // Xóa ghost cũ nếu có
         if (currentGhostInstance != null)
-        {
             DestroyImmediate(currentGhostInstance);
-        }
-        
-        // Tạo ghost mới từ prefab gốc
-        currentGhostInstance = Instantiate(plantData.prefab);
+
+        // 🔑 Luôn lấy stage 0 làm ghost
+        var src = plantData.growthPrefabs[0];
+
+        currentGhostInstance = Instantiate(src);
         currentGhostInstance.name = $"Ghost_{plantData.plantName}";
         currentPlantType = plantData.plantType;
-        
-        // Vô hiệu hóa các component không cần thiết
+
         DisableUnnecessaryComponents();
-        
-        // Áp dụng material ghost
         ApplyGhostMaterial();
-        
         currentGhostInstance.SetActive(false);
     }
-    
+
     /// Vô hiệu hóa các component không cần thiết cho ghost
     void DisableUnnecessaryComponents()
     {
         if (currentGhostInstance == null) return;
-        
+
         // Vô hiệu hóa collider
         Collider[] colliders = currentGhostInstance.GetComponentsInChildren<Collider>();
         foreach (var collider in colliders)
         {
             collider.enabled = false;
         }
-        
+
         // Vô hiệu hóa rigidbody
         Rigidbody[] rigidbodies = currentGhostInstance.GetComponentsInChildren<Rigidbody>();
         foreach (var rb in rigidbodies)
         {
             rb.isKinematic = true;
         }
-        
+
         // Vô hiệu hóa các script khác
         MonoBehaviour[] scripts = currentGhostInstance.GetComponentsInChildren<MonoBehaviour>();
         foreach (var script in scripts)
@@ -98,9 +93,9 @@ public class SimpleGhostManager : MonoBehaviour
     void ApplyGhostMaterial()
     {
         if (currentGhostInstance == null || ghostMaterial == null) return;
-        
+
         Renderer[] renderers = currentGhostInstance.GetComponentsInChildren<Renderer>();
-        
+
         foreach (var renderer in renderers)
         {
             Material[] materials = new Material[renderer.materials.Length];
