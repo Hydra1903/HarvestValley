@@ -14,27 +14,27 @@ public class IdleState : ICharacterState
         {
             characterStateMachine.ChangeState(characterStateMachine.walkState);
         }    
-        if (Input.GetKeyDown(KeyCode.Mouse1))
+        if (Input.GetKeyDown(KeyCode.F))
         {
             characterStateMachine.ChangeState(characterStateMachine.hoeState);
         }
-        if (Input.GetKeyDown(KeyCode.E))
+        if (Input.GetKeyDown(KeyCode.G))
         {
             characterStateMachine.ChangeState(characterStateMachine.digHoleState);
         }
-        if (Input.GetKeyDown(KeyCode.R))
+        if (Input.GetKeyDown(KeyCode.H))
         {
             characterStateMachine.ChangeState(characterStateMachine.harvestLowState);
         }
-        if (Input.GetKeyDown(KeyCode.T))
+        if (Input.GetKeyDown(KeyCode.J))
         {
             characterStateMachine.ChangeState(characterStateMachine.harvestHighState);
         }
-        if (Input.GetKeyDown(KeyCode.Y))
+        if (Input.GetKeyDown(KeyCode.K))
         {
             characterStateMachine.ChangeState(characterStateMachine.wateringState);
         }
-        if (Input.GetKeyDown(KeyCode.U))
+        if (Input.GetKeyDown(KeyCode.L))
         {
             characterStateMachine.ChangeState(characterStateMachine.mowingState);
         }

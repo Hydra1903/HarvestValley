@@ -15,7 +15,7 @@ public class InventoryUI : MonoBehaviour
 
     public TextMeshProUGUI gold;
 
-    void Awake()
+    void Start()
     {
         int totalSlots = inventory.rows * inventory.columns;
 

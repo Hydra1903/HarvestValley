@@ -3,11 +3,12 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 using System.Globalization;
+using NUnit.Framework.Interfaces;
 
 
 public class MainUIScreen : MonoBehaviour
 {
-    [Header("--- Level UI ---")]
+    [Header("--- FPS UI ---")]
     public TextMeshProUGUI textFPS;
     private float deltaTime = 0.0f;
     private float fps = 0.0f;
@@ -61,6 +62,9 @@ public class MainUIScreen : MonoBehaviour
     public Image iconWeatherTimeline;
     public TextMeshProUGUI textTimeline1;
     public TextMeshProUGUI textTimeline2;
+
+    [Header("--- Weather UI ---")]
+    public Slider staminaBar;
     void Start()
     {
         UpdateXpUI();
@@ -72,6 +76,8 @@ public class MainUIScreen : MonoBehaviour
     {
         deltaTime += (Time.deltaTime - deltaTime) * 0.1f;
         fps = 1.0f / deltaTime;
+
+        UpdateStamina();
     }
     #region ----- FPS UI -----
     void UpdateFPSDisplay()
@@ -290,5 +296,18 @@ public class MainUIScreen : MonoBehaviour
     }
     #endregion
 
+    #region ----- STAMINA UI -----
+    void UpdateStamina()
+    {
+        if (staminaBar.value > 0 && CharacterStateMachine.Instance.currentState == CharacterStateMachine.Instance.runState)
+        {
+            staminaBar.value -= 0.4f * Time.deltaTime;
+        }
+        else
+        {
+            staminaBar.value += 0.25f * Time.deltaTime;
+        }
+    }
+    #endregion
 }
 

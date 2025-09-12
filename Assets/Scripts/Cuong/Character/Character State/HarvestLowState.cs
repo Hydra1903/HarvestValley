@@ -2,7 +2,7 @@ public class HarvestLowState : ICharacterState
 {
     public void Enter(CharacterStateMachine characterStateMachine)
     {
-        characterStateMachine.animator.Play("HarvestLow");
+        characterStateMachine.animator.Play("HarvestHigh");
         CameraSwitcher.Instance.SwitchToActionView();
     }
     public void Update(CharacterStateMachine characterStateMachine)

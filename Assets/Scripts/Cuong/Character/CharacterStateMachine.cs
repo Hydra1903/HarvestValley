@@ -1,5 +1,5 @@
 using UnityEngine;
-using UnityEngine.InputSystem.XR;
+using UnityEngine.UI;
 
 public class CharacterStateMachine : MonoBehaviour
 {
@@ -33,8 +33,9 @@ public class CharacterStateMachine : MonoBehaviour
     public float mouseSensitivity;
     public Transform characterBody;
     public Transform cameraCharacter;
-
     float xRotation = 0f;
+
+    public MainUIScreen mainUIScreen;
     public void ChangeState(ICharacterState newState)
     {
         if (currentState != null)
@@ -49,7 +50,6 @@ public class CharacterStateMachine : MonoBehaviour
     void Start()
     {
         currentState = idleState;
-        Cursor.lockState = CursorLockMode.Locked;
     }
     void Update()
     {
@@ -59,7 +59,19 @@ public class CharacterStateMachine : MonoBehaviour
         mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;      
 
         if (currentState != null)
-            currentState.Update(this);        
+            currentState.Update(this);
+
+        if (Input.GetKeyDown(KeyCode.F1))
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
+
+        if (Input.GetKeyDown(KeyCode.F2))
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
     }
     public void PlayerMovement(float speed)
     {
