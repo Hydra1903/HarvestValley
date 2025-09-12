@@ -174,6 +174,8 @@ public class PlantManager : MonoBehaviour
             SoilManager.Instance.WaterAllAreas();
         }
 
+        //Máy tưới
+        SoilManager.Instance.WaterBySprinklers();
 
         for (int x = 0; x < farm.gridWidth; x++)
         {
