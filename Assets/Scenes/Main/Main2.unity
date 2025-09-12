@@ -114001,6 +114001,10 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 6067667923319747716, guid: 435a41237fed0bd43b2e65541818b748, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 6503858026356571765, guid: 435a41237fed0bd43b2e65541818b748, type: 3}
       propertyPath: m_Value
       value: 0.752
@@ -114013,7 +114017,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: CANVAS UI
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 5336567662469154376, guid: 435a41237fed0bd43b2e65541818b748, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
