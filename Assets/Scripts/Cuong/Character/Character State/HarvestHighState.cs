@@ -3,7 +3,7 @@ public class HarvestHighState : ICharacterState
     public void Enter(CharacterStateMachine characterStateMachine)
     {
         characterStateMachine.animator.Play("HarvestHigh");
-        CameraSwitcher.Instance.SwitchToActionView();
+        //CameraSwitcher.Instance.SwitchToActionView();
     }
     public void Update(CharacterStateMachine characterStateMachine)
     {
@@ -11,6 +11,6 @@ public class HarvestHighState : ICharacterState
     }
     public void Exit(CharacterStateMachine characterStateMachine)
     {
-        CameraSwitcher.Instance.StartCoroutine(CameraSwitcher.Instance.SwitchToMainView());
+        //CameraSwitcher.Instance.StartCoroutine(CameraSwitcher.Instance.SwitchToMainView());
     }
 }
