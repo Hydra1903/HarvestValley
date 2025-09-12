@@ -14,9 +14,9 @@ public class AnimalSlotUI : MonoBehaviour
     public void Setup(AnimalInfo animal)
     {
         animalRef = animal;
-        if (animal != null && animal.animalData != null)
+        if (animal != null && animal.data != null)
         {
-            icon.sprite = animal.animalData.icon;
+            icon.sprite = animal.data.icon;
             //nameText.text = animal.animalData.animalName;
         }
 

@@ -15,8 +15,8 @@ public class AnimalPen : MonoBehaviour
     public Transform[] wanderPoints;
     public int maxAnimals;
 
-    private List<GameObject> spawnedAnimals = new List<GameObject>();
-    private HashSet<string> allowedTag = new HashSet<string>();
+    private List<(GameObject animal, AnimalData data)> spawnedAnimals
+        = new List<(GameObject, AnimalData)>(); private HashSet<string> allowedTag = new HashSet<string>();
     public Barn barnReference; 
 
     [Header("UI")]
@@ -29,10 +29,9 @@ public class AnimalPen : MonoBehaviour
 
     [Header("Animal List UI")]
     public Transform animalListParent;       
-    public GameObject animalUIItemPrefab;
-    public AnimalListUI listUI; // drag vào t? inspector
+    public AnimalListUI listUI;
     private List<AnimalInfo> animals = new List<AnimalInfo>();
-
+    public AnimalCellUI[] cells;
     private void Start()
     {
         UpdateAnimalCountUI();
@@ -65,7 +64,7 @@ public class AnimalPen : MonoBehaviour
 }
     public bool CanSpawnMore() => spawnedAnimals.Count < maxAnimals;
 
-    public bool RegisterAnimal(GameObject animal)
+    public bool RegisterAnimal(GameObject animal, AnimalData data)
     {
         string tag = animal.tag;
         if (allowedTag.Count == 0)
@@ -78,18 +77,48 @@ public class AnimalPen : MonoBehaviour
             return false;
         }
 
-        spawnedAnimals.Add(animal);
+        spawnedAnimals.Add((animal, data));
         UpdateAnimalCountUI();
-        UpdateAnimalListUI();
+        // tim cell trong
+        for (int i = 0; i < cells.Length; i++)
+        {
+            if (!cells[i].gameObject.activeSelf || cells[i].IsEmpty())
+            {
+                cells[i].gameObject.SetActive(true);
+                cells[i].Setup(animal, data, i + 1, this);
+                break;
+            }
+        }
+        UpdateAnimalCells();
+        UpdateAnimalCountUI();
         return true;
     }
     public void RemoveAnimal(GameObject animal)
     {
-        if (spawnedAnimals.Contains(animal))
+        var index = spawnedAnimals.FindIndex(x => x.animal == animal);
+        if (index >= 0)
         {
-            spawnedAnimals.Remove(animal);
+            spawnedAnimals.RemoveAt(index);
             UpdateAnimalCountUI();
-            UpdateAnimalListUI();
+            UpdateAnimalCells();
+        }
+    }
+
+    public void UpdateAnimalCells()
+    {
+        // tat het cell
+        for (int i = 0; i < cells.Length; i++)
+        {
+            cells[i].Clear();
+            cells[i].gameObject.SetActive(false);
+        }
+
+        // bat cell dung voi so luong maxAnimal
+        for (int i = 0; i < spawnedAnimals.Count && i < maxAnimals; i++)
+        {
+            var (animal, data) = spawnedAnimals[i];
+            cells[i].gameObject.SetActive(true);
+            cells[i].Setup(animal, data, i + 1, this);
         }
     }
     public void UpdateAnimalCountUI()
@@ -143,49 +172,19 @@ public class AnimalPen : MonoBehaviour
             }
         }
     }
-    private void UpdateAnimalListUI()
-    {
-        if (animalListParent == null || animalUIItemPrefab == null) return;
-
-        foreach (Transform child in animalListParent)
-        {
-            Destroy(child.gameObject);
-        }
-
-        foreach (GameObject animal in spawnedAnimals)
-        {
-            GameObject uiItem = Instantiate(animalUIItemPrefab);
-            uiItem.transform.SetParent(animalListParent, false);
-            uiItem.SetActive(true);
-
-            Image iconImage = uiItem.GetComponentInChildren<Image>(true);
-            SpriteRenderer sr = animal.GetComponentInChildren<SpriteRenderer>();
-            if (iconImage != null && sr != null)
-            {
-                iconImage.sprite = sr.sprite;
-                iconImage.enabled = true;
-            }
-            Button sellBtn = uiItem.GetComponentInChildren<Button>();
-            if (sellBtn != null)
-            {
-                sellBtn.onClick.AddListener(() =>
-                {
-                    SellAnimal(animal);
-                });
-            }
-        }
-    }
 
     public void SellAnimal(GameObject animal)
     {
-        if (!spawnedAnimals.Contains(animal)) return;
-
-        spawnedAnimals.Remove(animal);
-        Destroy(animal);
-
-        Debug.Log("Selled" + animal.name);
-
+        var index = spawnedAnimals.FindIndex(x => x.animal == animal);
+       if (index >= 0)
+    {
+        var tuple = spawnedAnimals[index];
+        spawnedAnimals.RemoveAt(index);
+        Destroy(tuple.animal);
+        Debug.Log("Selled " + tuple.animal.name);
         UpdateAnimalCountUI();
+        UpdateAnimalCells();
+    }
     }
     public void AddAnimal(AnimalInfo animal)
     {

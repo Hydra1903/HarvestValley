@@ -2,11 +2,11 @@
 
 public class AnimalInfo : MonoBehaviour
 {
-    public AnimalData animalData;
+    //public AnimalData animalData;
 
     public InfoPanelUI infoPanel;
     private bool isPlayerNearby = false;
-
+    public AnimalData data;
     public void InjectPanel(InfoPanelUI panel)
     {
         infoPanel = panel;
@@ -20,7 +20,7 @@ public class AnimalInfo : MonoBehaviour
             if (infoPanel == null) return;
 
             if (infoPanel.IsShowingOwner(this)) infoPanel.Hide();
-            else infoPanel.Show(animalData, this);
+            else infoPanel.Show(data, this);
         }
     }
 

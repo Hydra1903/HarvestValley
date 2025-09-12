@@ -69,6 +69,7 @@ public class GameTime : MonoBehaviour
         {
             mainUIScreen.UpdateWeatherTimeline();
         }
+        FarmStallUI.Instance.CanCollect();
     }
     public void PauseGame()
     {

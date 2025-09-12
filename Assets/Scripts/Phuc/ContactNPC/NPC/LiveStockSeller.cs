@@ -109,15 +109,10 @@ public class LiveStockSeller : MonoBehaviour
                 Debug.LogWarning("Cant found");
             }
         }
-        if (!selectedPen.IsAllowedTag(obj.tag) && selectedPen.HasAssignedType())
-        {
-            Debug.LogWarning($"Pen not accepted the animal tag '{obj.tag}'");
-            Destroy(obj);
-            confirmPanel.SetActive(false);
-            return;
-        }
+        AnimalData data = obj.GetComponent<AnimalInfo>()?.data;
+        Sprite icon = (data != null) ? data.icon : null;
 
-        selectedPen.RegisterAnimal(obj);
+        selectedPen.RegisterAnimal(obj, data);
         Debug.Log($"Added {obj.name} to {selectedPen.name}");
 
         confirmPanel.SetActive(false);
