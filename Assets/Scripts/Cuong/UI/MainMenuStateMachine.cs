@@ -8,6 +8,7 @@ public class MainMenuStateMachine : MonoBehaviour
         if (Instance == null) Instance = this;
     }
     private IUIState currentState;
+    public Animator animatorCamera;
     [HideInInspector] public StartScreenState startScreenState = new StartScreenState();
     [HideInInspector] public CharacterSelectionState characterSelectionState = new CharacterSelectionState();
     public void ChangeState(IUIState newState)

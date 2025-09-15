@@ -63,8 +63,12 @@ public class MainUIScreen : MonoBehaviour
     public TextMeshProUGUI textTimeline1;
     public TextMeshProUGUI textTimeline2;
 
-    [Header("--- Weather UI ---")]
+    [Header("--- Stamina UI ---")]
     public Slider staminaBar;
+
+    [Header("--- Action UI ---")]
+    public Slider actionBar;
+    public Image frame;
     void Start()
     {
         UpdateXpUI();
@@ -78,6 +82,19 @@ public class MainUIScreen : MonoBehaviour
         fps = 1.0f / deltaTime;
 
         UpdateStamina();
+
+        if (Input.GetKey(KeyCode.Z))
+        {
+            frame.fillAmount += Time.deltaTime;
+            if (frame.fillAmount >= 1)
+            {
+                CharacterStateMachine.Instance.ExitState();
+            }
+        }
+        if (Input.GetKeyUp(KeyCode.Z))
+        {
+            frame.fillAmount = 0;
+        }
     }
     #region ----- FPS UI -----
     void UpdateFPSDisplay()
@@ -307,6 +324,17 @@ public class MainUIScreen : MonoBehaviour
         {
             staminaBar.value += 0.25f * Time.deltaTime;
         }
+    }
+    #endregion
+
+    #region ----- ACTION UI -----
+    public void ActionTime(float timeAnimation)
+    {
+        actionBar.value += Time.deltaTime * 1f / timeAnimation;
+    }
+    public void ResetBar()
+    {
+        actionBar.value = 0;       
     }
     #endregion
 }
