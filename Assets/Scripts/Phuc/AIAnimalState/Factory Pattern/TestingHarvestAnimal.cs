@@ -17,7 +17,7 @@ public class TestingHarvestAnimal : MonoBehaviour
 
     private AnimalFedding feeding;
     private Inventory playerInventory;
-
+    private bool canHarvest = false;
     private void Start()
     {
         feeding = GetComponent<AnimalFedding>();
@@ -34,46 +34,65 @@ public class TestingHarvestAnimal : MonoBehaviour
                 Debug.LogWarning($"Cant Found Barn for Assign {gameObject.name}!");
             }
         }
+        GameTime.Instance.OnNextDay += HandleNextDay;
+    }
+    private void OnDestroy()
+    {
+        if (GameTime.Instance != null)
+            GameTime.Instance.OnNextDay -= HandleNextDay;
+    }
+    private void HandleNextDay()
+    {
+        if (feeding != null && feeding.CanHarvest())
+        {
+            canHarvest = true;
+        }
     }
 
     private void Update()
     {
-        Inventory playerInventory = Inventory.Instance;
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         if (player == null) return;
 
         float distance = Vector3.Distance(player.transform.position, transform.position);
         if (distance <= interactDistance && Input.GetKeyDown(KeyCode.E))
         {
-            if (feeding != null && feeding.CanHarvest())
-            {
-                if (playerInventory == null)
-                {
-                    Debug.LogError("Cant found Inventory");
-                    return;
-                }
-
-                ItemData itemToGive = GetItemDataByType();
-                if (itemToGive != null && playerInventory.AddItem(itemToGive, 1))//doi lai neu la cuu thi cho 3 long, de cho 1 xo sua
-                {
-                    Debug.Log($"Succes harvest {itemToGive.itemName} from{animalType}");
-                    feeding.ResetHarvest();
-
-                    InventoryUI ui = FindAnyObjectByType<InventoryUI>();
-                    ui?.UpdateAllSlots();
-                }
-                else
-                {
-                    Debug.LogWarning("No longer adding that type of item.");
-                }
-            }
-            else
-            {
-                Debug.Log("This Animal still not eaten or cant harvest");
-            }
+            TryHarvest(player);
         }
     }
 
+    private void TryHarvest(GameObject player)
+    {
+        Inventory playerInventory = Inventory.Instance;
+        if (playerInventory == null)
+        {
+            Debug.LogError("Cant found Inventory");
+            return;
+        }
+
+        if (canHarvest && feeding != null && feeding.CanHarvest())
+        {
+            ItemData itemToGive = GetItemDataByType();
+
+            if (itemToGive != null && playerInventory.AddItem(itemToGive, GetHarvestAmount()))
+            {
+                Debug.Log($"Succes harvest {itemToGive.itemName} from {animalType}");
+                feeding.ResetHarvest();
+                canHarvest = false;
+
+                InventoryUI ui = FindAnyObjectByType<InventoryUI>();
+                ui?.UpdateAllSlots();
+            }
+            else
+            {
+                Debug.LogWarning("Inventory full ho?c không th? thêm item này.");
+            }
+        }
+        else
+        {
+            Debug.Log("Ch?a ?? ?i?u ki?n ?? thu ho?ch.");
+        }
+    }
     private ItemData GetItemDataByType()
     {
         switch (animalType)
@@ -84,5 +103,14 @@ public class TestingHarvestAnimal : MonoBehaviour
             case AnimalType.Goat: return goatMilkItem;
         }
         return null;
+    }
+
+    private int GetHarvestAmount()
+    {
+        switch (animalType)
+        {
+            case AnimalType.Goat: return 1;   // dê cho 1 s?a
+            default: return 3;                // c?u cho 3 lông
+        }
     }
 }

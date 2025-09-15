@@ -17,8 +17,11 @@ public class GameTime : MonoBehaviour
     public float timeSpeed = 60f; 
     private float timer;
 
+    public bool canHarvestToday = false;
     public TimeOfDay currentTimeOfDay;
     public MainUIScreen mainUIScreen;
+    public delegate void NextDayDelegate();
+    public event NextDayDelegate OnNextDay;
     void Awake()
     {
         if (Instance == null)
@@ -61,6 +64,7 @@ public class GameTime : MonoBehaviour
     {
         currentTimeOfDay = TimeOfDay.Day;
         hour = 6; minute = 0; day++;
+        OnNextDay?.Invoke();
     }
     public void PauseGame()
     {
