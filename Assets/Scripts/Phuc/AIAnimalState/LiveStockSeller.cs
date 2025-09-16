@@ -73,7 +73,7 @@ public class LiveStockSeller : MonoBehaviour
 
         if (!selectedPen.CanSpawnMore())
         {
-            Debug.LogWarning("Pen now full cant spawn.");
+            Notification.Instance.ShowNotification("Chuồng Nuôi Đã Đầy!");
             confirmPanel.SetActive(false);
             return;
         }
