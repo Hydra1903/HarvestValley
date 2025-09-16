@@ -603,7 +603,7 @@ GameObject:
   - component: {fileID: 4548241620176688258}
   - component: {fileID: 7210195611886335430}
   m_Layer: 0
-  m_Name: Pen1
+  m_Name: "Chu\u1ED3ng Nu\xF4i 1"
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -686,6 +686,9 @@ MonoBehaviour:
   inventoryPanels: {fileID: 0}
   penInfoPanel: {fileID: 0}
   penInfoText: {fileID: 0}
+  confirmSellPanel: {fileID: 0}
+  yesButton: {fileID: 0}
+  noButton: {fileID: 0}
   animalListParent: {fileID: 0}
   listUI: {fileID: 0}
   cells: []
@@ -1103,7 +1106,7 @@ GameObject:
   - component: {fileID: 7901052510370397904}
   - component: {fileID: 2497237857228415638}
   m_Layer: 0
-  m_Name: Pen2
+  m_Name: "Chu\u1ED3ng Nu\xF4i 2"
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1185,6 +1188,9 @@ MonoBehaviour:
   inventoryPanels: {fileID: 0}
   penInfoPanel: {fileID: 0}
   penInfoText: {fileID: 0}
+  confirmSellPanel: {fileID: 0}
+  yesButton: {fileID: 0}
+  noButton: {fileID: 0}
   animalListParent: {fileID: 0}
   listUI: {fileID: 0}
   cells: []

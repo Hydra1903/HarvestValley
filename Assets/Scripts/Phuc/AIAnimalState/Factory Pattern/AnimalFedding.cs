@@ -12,49 +12,70 @@ public class AnimalFedding : MonoBehaviour
 
     private void Start()
     {
-        InvokeRepeating(nameof(ConsumeHay), feedInterval, feedInterval);
+        InvokeRepeating(nameof(CheckAndConsume), feedInterval, feedInterval);
     }
 
-    void ConsumeHay()
+    void CheckAndConsume()
     {
-        if (canHarvest) return;
+        if (barn == null || barn.slots == null) return;
 
-        if (barn == null) return;
+        if (HasHay())
+        {
+            ConsumeHay();
+        }
+    }
+
+    bool HasHay()
+    {
+        if (barn == null || barn.slots == null) return false;
 
         for (int r = 0; r < barn.rows; r++)
         {
             for (int c = 0; c < barn.columns; c++)
             {
                 var slot = barn.slots[r, c];
-                if (slot.item != null && slot.item.itemData.itemName == "Hay Bale" && slot.item.quantity > 0)
+                if (slot != null && slot.item != null &&
+                    slot.item.itemData != null &&
+                    slot.item.itemData.itemName == "Hay Bale" &&
+                    slot.item.quantity > 0)
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    void ConsumeHay()
+    {
+        if (canHarvest) return;
+        if (barn == null || barn.slots == null) return;
+
+        for (int r = 0; r < barn.rows; r++)
+        {
+            for (int c = 0; c < barn.columns; c++)
+            {
+                var slot = barn.slots[r, c];
+                if (slot != null && slot.item != null &&
+                    slot.item.itemData != null &&
+                    slot.item.itemData.itemName == "Hay Bale" &&
+                    slot.item.quantity > 0)
                 {
                     slot.item.quantity--;
                     if (slot.item.quantity == 0)
-                    {
                         slot.item = null;
-                    }
-
-                    Debug.Log($"{animalType} has eaten Hay Bale Can harvest now");
                     canHarvest = true;
 
-                    if (barn.GetComponent<BarnUI>() != null)
-                        barn.GetComponent<BarnUI>().UpdateAllSlots();
+                    var barnUI = barn.GetComponent<BarnUI>();
+                    if (barnUI != null)
+                        barnUI.UpdateAllSlots();
 
                     return;
                 }
             }
         }
-
-        canHarvest = false;
     }
 
-    public bool CanHarvest()
-    {
-        return canHarvest;
-    }
-
-    public void ResetHarvest()
-    {
-        canHarvest = false;
-    }
+    public bool CanHarvest() => canHarvest;
+    public void ResetHarvest() => canHarvest = false;
 }

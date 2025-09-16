@@ -47,9 +47,6 @@ public class Teleporting : MonoBehaviour
             }
 
             if (cc) cc.enabled = true;
-
-            Debug.Log($"Success Teleport: {teleportType} ? {targetTeleport.teleportType}");
-
             StartCoroutine(SetCooldown());
             if (targetTeleport != null)
                 targetTeleport.StartCoroutine(targetTeleport.SetCooldown());
@@ -61,7 +58,6 @@ public class Teleporting : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             playerInZone = true;
-            Debug.Log($"Player entered {teleportType}");
         }
     }
 
@@ -70,7 +66,6 @@ public class Teleporting : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             playerInZone = false;
-            Debug.Log($"Player left {teleportType}");
         }
     }
 

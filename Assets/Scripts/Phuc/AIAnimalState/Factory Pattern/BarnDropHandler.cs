@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class BarnDropHandler : MonoBehaviour, IDropHandler
@@ -17,13 +17,13 @@ public class BarnDropHandler : MonoBehaviour, IDropHandler
         InventoryItem dragged = dragItem.draggedItem;
         if (dragged.itemData != hayBaleData)
         {
-            Debug.Log("Only Hay Bale can be placed in the Barn.");
+            Notification.Instance.ShowNotification("Chỉ có cỏ khô mới được thêm vào Chuồng Nuôi");
             return;
         }
 
         if (barnUI.capacity + dragged.quantity > barn.limitCapacity)
         {
-            Debug.Log("Pen is Full");
+            Notification.Instance.ShowNotification("Pen đã đầy!");
             return;
         }
 
@@ -36,7 +36,7 @@ public class BarnDropHandler : MonoBehaviour, IDropHandler
         }
         else
         {
-            Debug.Log("Pen is now full, can't put more!");
+            Notification.Instance.ShowNotification("Pen đã đầy không thể thêm!");
         }
     }
 }

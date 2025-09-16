@@ -6,30 +6,31 @@ public class AnimalCellUI : MonoBehaviour
 {
     [Header("UI References")]
     public Image icon;
-    //public TMP_Text nameText;
-    //public TMP_Text numberText;
     public Button sellButton;
 
-    private GameObject linkedAnimal;  
-    private AnimalPen linkedPen;      
+    private GameObject linkedAnimal;
+    private AnimalPen linkedPen;
     private AnimalData animalData;
+    private int cellIndex = -1; // <-- thêm
+    public TMP_Text indexText;
     private void Awake()
     {
-        Clear(); // dam bao cell trong khi play
+        Clear();
     }
+
     public void Setup(GameObject animal, AnimalData data, int index, AnimalPen pen)
     {
         linkedAnimal = animal;
         linkedPen = pen;
         animalData = data;
+        cellIndex = index; // <-- gán index t? AnimalPen
 
         if (data != null)
         {
             icon.sprite = data.icon;
             icon.enabled = true;
-            //nameText.text = data.animalName;
         }
-        //numberText.text = index.ToString();
+
         if (sellButton)
         {
             sellButton.onClick.RemoveAllListeners();
@@ -38,17 +39,16 @@ public class AnimalCellUI : MonoBehaviour
             sellButton.interactable = true;
         }
     }
-    public bool IsEmpty()
-    {
-        return linkedAnimal == null;
-    }
+
     private void SellAnimal()
     {
-        Debug.Log($"[Cell] Sell clicked. Animal={(linkedAnimal ? linkedAnimal.name : "null")}  Pen={(linkedPen ? linkedPen.name : "null")}");
         if (linkedAnimal != null && linkedPen != null)
         {
-            linkedPen.SellAnimal(linkedAnimal);//link goi ve chuong xu ly SellAnimal
-            Clear();
+            // l?y index c?a cell trong m?ng cells
+            int cellIndex = System.Array.IndexOf(linkedPen.cells, this);
+            string animalName = animalData != null ? animalData.animalName : "Animal";
+
+            linkedPen.ShowConfirmSell(cellIndex, animalName);
         }
     }
 
@@ -57,15 +57,23 @@ public class AnimalCellUI : MonoBehaviour
         linkedAnimal = null;
         linkedPen = null;
         animalData = null;
-
+        cellIndex = -1;
+        if (indexText != null)
+        {
+            indexText.text = "";
+        }
         icon.sprite = null;
         icon.enabled = false;
-        //nameText.text = "";
-        //numberText.text = "";
+
         if (sellButton)
         {
             sellButton.onClick.RemoveAllListeners();
             sellButton.gameObject.SetActive(false);
         }
+    }
+    public void SetIndexNumber(int number)
+    {
+        if (indexText != null)
+            indexText.text = number.ToString();
     }
 }

@@ -11,7 +11,7 @@ public class MainUIScreen : MonoBehaviour
     public GameObject[] panelLevelUp;
     public GameObject backgroundLevelUp;
     public TextMeshProUGUI textNumberLevelUp;
-    public Slider xpBar;
+    public Slider xpBar; 
     public TextMeshProUGUI textCurrentXp;
     public TextMeshProUGUI textCurrentLevel;
     public LevelManager levelManager;

@@ -27,12 +27,16 @@ public class AnimalPen : MonoBehaviour
     public GameObject inventoryPanels;
     public GameObject penInfoPanel;
     public TMP_Text penInfoText;
+    public GameObject confirmSellPanel;
+    public Button yesButton;
+    public Button noButton;
 
     [Header("Animal List UI")]
     public Transform animalListParent;       
     public AnimalListUI listUI;
     private List<AnimalInfo> animals = new List<AnimalInfo>();
     public AnimalCellUI[] cells;
+    private int pendingSellIndex = -1;
     private void Start()
     {
         UpdateAnimalCountUI();
@@ -59,7 +63,6 @@ public class AnimalPen : MonoBehaviour
     }
     private void OnDestroy()
     {
-        // ?? G? ðãng k? panel khi pen b? xóa
         if (InfoPanelManager.instance != null)
         {
             InfoPanelManager.instance.UnregisterPanel(penId);
@@ -85,24 +88,22 @@ public class AnimalPen : MonoBehaviour
         }
         else if (!allowedTag.Contains(tag))
         {
-            Debug.LogWarning($"Tag '{tag}' no allowed to spawn into this pen!");
-            return false;
+            Notification.Instance.ShowNotification($"Chu?ng Nuôi {penId} ch? ch?p nh?n {string.Join(",", allowedTag)}, không th? thêm {tag}!");
+            Destroy(animal);
+            return false; 
         }
-
         spawnedAnimals.Add((animal, data));
+        UpdateAnimalCells();
         UpdateAnimalCountUI();
-        // tim cell trong
         for (int i = 0; i < cells.Length; i++)
         {
-            if (!cells[i].gameObject.activeSelf || cells[i].IsEmpty())
+            if (!cells[i].gameObject.activeSelf)
             {
                 cells[i].gameObject.SetActive(true);
-                cells[i].Setup(animal, data, i + 1, this);
+                cells[i].Setup(animal, data, i, this);
                 break;
             }
         }
-        UpdateAnimalCells();
-        UpdateAnimalCountUI();
         return true;
     }
     public void RemoveAnimal(GameObject animal)
@@ -118,21 +119,20 @@ public class AnimalPen : MonoBehaviour
 
     public void UpdateAnimalCells()
     {
-        // tat het cell
         for (int i = 0; i < cells.Length; i++)
         {
             cells[i].Clear();
             cells[i].gameObject.SetActive(false);
         }
-
-        // bat cell dung voi so luong maxAnimal
         for (int i = 0; i < spawnedAnimals.Count && i < maxAnimals; i++)
         {
             var (animal, data) = spawnedAnimals[i];
             cells[i].gameObject.SetActive(true);
-            cells[i].Setup(animal, data, i + 1, this);
+            cells[i].Setup(animal, data, i, this);
+            cells[i].SetIndexNumber(i + 1);
         }
     }
+
     public void UpdateAnimalCountUI()
     {
         string countText = $"{spawnedAnimals.Count} / {maxAnimals}";
@@ -170,6 +170,7 @@ public class AnimalPen : MonoBehaviour
             if (show)
             {
                 UpdateAnimalCountUI();
+                UpdateAnimalCells();
             }
             else
             {
@@ -184,20 +185,54 @@ public class AnimalPen : MonoBehaviour
             }
         }
     }
+    public void ShowConfirmSell(int cellIndex, string animalName)
+    {
+        if (confirmSellPanel == null) return;
+        pendingSellIndex = cellIndex;
+        confirmSellPanel.SetActive(true);
+        if (yesButton != null)
+        {
+            yesButton.onClick.RemoveAllListeners();
+            yesButton.onClick.AddListener(() =>
+            {
+                SellAnimal(pendingSellIndex);
+                confirmSellPanel.SetActive(false);
+                pendingSellIndex = -1;
+            });
+        }
 
-    public void SellAnimal(GameObject animal)
+        if (noButton != null)
+        {
+            noButton.onClick.RemoveAllListeners();
+            noButton.onClick.AddListener(() =>
+            {
+                confirmSellPanel.SetActive(false);
+                pendingSellIndex = -1;
+            });
+        }
+    }
+
+    public void SellAnimal(int cellIndex)
     {
-        var index = spawnedAnimals.FindIndex(x => x.animal == animal);
-       if (index >= 0)
-    {
-        var tuple = spawnedAnimals[index];
-        spawnedAnimals.RemoveAt(index);
-        Destroy(tuple.animal);
-        Debug.Log("Selled " + tuple.animal.name);
+        if (cellIndex < 0 || cellIndex >= spawnedAnimals.Count) return;
+
+        var (animal, data) = spawnedAnimals[cellIndex];
+        if (animal != null) Destroy(animal);
+
+        spawnedAnimals.RemoveAt(cellIndex);
+
+        Notification.Instance.ShowNotification($"Chu?ng Nuôi {penId} ð? bán 1 ð?ng v?t!");
         UpdateAnimalCountUI();
         UpdateAnimalCells();
+
+        //N?u không c?n con nào trong pen -> reset tag
+        if (spawnedAnimals.Count == 0)
+        {
+            allowedTag.Clear();
+        }
     }
-    }
+
+
     public void AddAnimal(AnimalInfo animal)
     {
         animals.Add(animal);

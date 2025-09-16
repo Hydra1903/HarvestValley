@@ -67,24 +67,21 @@ public class LiveStockSeller : MonoBehaviour
     {
         if (selectedPen == null || selectedType == AnimalType.None)
         {
-            Debug.LogError("Pen or Animal havent been choosen");
+            Notification.Instance.ShowNotification("Chuồng Nuôi hoặc động vật chưa được chọn");
             return;
         }
-
         if (!selectedPen.CanSpawnMore())
         {
             Notification.Instance.ShowNotification("Chuồng Nuôi Đã Đầy!");
             confirmPanel.SetActive(false);
             return;
         }
-
         GameObject prefab = AnimalFactory.GetPrefab(selectedType);
         if (prefab == null)
         {
-            Debug.LogError("cant found Prefab");
+            Debug.LogError("Không tìm thấy prefab");
             return;
         }
-
         GameObject obj = Instantiate(prefab, selectedPen.GetRandomSpawnPosition(), Quaternion.identity);
 
         SimpleAI ai = obj.GetComponent<SimpleAI>();
@@ -92,7 +89,6 @@ public class LiveStockSeller : MonoBehaviour
         {
             ai.wanderPoints = selectedPen.wanderPoints;
         }
-
         AnimalFedding feeding = obj.GetComponent<AnimalFedding>();
         if (feeding != null)
         {
@@ -105,18 +101,20 @@ public class LiveStockSeller : MonoBehaviour
             info.InjectPanel(panel);
         }
         AnimalData data = obj.GetComponent<AnimalInfo>()?.data;
-        Sprite icon = (data != null) ? data.icon : null;
-
-        selectedPen.RegisterAnimal(obj, data);
-        Debug.Log($"Added {obj.name} to {selectedPen.name}");
-
+        bool success = selectedPen.RegisterAnimal(obj, data);
+        if (success)
+        {
+            Notification.Instance.ShowNotification($"Đã Thêm động vật đã mua vào {selectedPen.name}");
+        }
+        else
+        {
+            Notification.Instance.ShowNotification($"động vật đã chọn không được thêm vào {selectedPen.name} (loại không hợp lệ)");
+        }
         confirmPanel.SetActive(false);
         selectedType = AnimalType.None;
         selectedPen = null;
-
         CloseAllUI();
     }
-
     void BackToBuyMenu()
     {
         confirmPanel.SetActive(false);
