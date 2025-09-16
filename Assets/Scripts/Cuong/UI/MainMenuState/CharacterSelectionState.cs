@@ -9,13 +9,11 @@ public class CharacterSelectionState : IUIState
     }
     public void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            UIStateMachine.Instance.ChangeState(UIStateMachine.Instance.pauseState);
-        }
+        
     }
     public void Exit()
     {
         UIManager.Instance.HideUI("CharacterSelection");
+        MainMenuStateMachine.Instance.animatorCamera.Play("MoveOff");
     }
 }
