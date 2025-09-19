@@ -2,8 +2,6 @@
 
 public class FarmManager : MonoBehaviour
 {
-    public static FarmManager Instance { get; private set; }
-
     [Header("Save/ID")]
     public string gridId = "";
 
@@ -21,9 +19,6 @@ public class FarmManager : MonoBehaviour
 
     private void Awake()
     {
-        if (Instance != null && Instance != this) { Destroy(gameObject); return; }
-        Instance = this;
-
         if (!hotbarUI) hotbarUI = FindFirstObjectByType<HotBarUI>();
         if (!plantDatabase) plantDatabase = FindFirstObjectByType<PlantDatabase>();
     }

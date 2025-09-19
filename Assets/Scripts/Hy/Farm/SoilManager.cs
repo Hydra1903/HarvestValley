@@ -308,7 +308,7 @@ public class SoilManager : MonoBehaviour
     //Ô này đã tưới chưa
     public bool IsTileWatered(int x, int y)
     {
-        if (!FarmManager.Instance.IsInGrid(x, y)) return false;
+        if (!farm.IsInGrid(x, y)) return false;
         if (TryFindAreaContaining(x, y, out int idx))
             return _wateredAreaIdx.Contains(idx);
         return false;
@@ -406,9 +406,9 @@ public class SoilManager : MonoBehaviour
     public void WaterSquare(Vector2Int center, int half)
     {
         int minX = Mathf.Max(0, center.x - half);
-        int maxX = Mathf.Min(FarmManager.Instance.gridWidth - 1, center.x + half);
+        int maxX = Mathf.Min(farm.gridWidth - 1, center.x + half);
         int minY = Mathf.Max(0, center.y - half);
-        int maxY = Mathf.Min(FarmManager.Instance.gridHeight - 1, center.y + half);
+        int maxY = Mathf.Min(farm.gridHeight - 1, center.y + half);
 
         for (int i = 0; i < _areaSaves.Count; i++)
         {
@@ -443,10 +443,10 @@ public class SoilManager : MonoBehaviour
         if (ghostSprinklerInstance == null)
             ghostSprinklerInstance = Instantiate(ghostSprinklerPrefab);
 
-        Vector3 pos = FarmManager.Instance.origin + new Vector3(
-            (gridPos.x + 0.5f) * FarmManager.Instance.cellSize,
+        Vector3 pos = farm.origin + new Vector3(
+            (gridPos.x + 0.5f) * farm.cellSize,
             0.2f,
-            (gridPos.y + 0.5f) * FarmManager.Instance.cellSize
+            (gridPos.y + 0.5f) * farm.cellSize
         );
 
         ghostSprinklerInstance.transform.position = pos;
