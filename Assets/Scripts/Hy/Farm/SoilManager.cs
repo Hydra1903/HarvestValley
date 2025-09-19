@@ -5,7 +5,6 @@ public class SoilManager : MonoBehaviour
 {
     public static SoilManager Instance { get; private set; }
 
-
     [Header("Raycast")]
     public LayerMask gridMask;
 
@@ -16,7 +15,7 @@ public class SoilManager : MonoBehaviour
     [Header("Ghost")]
     public GameObject ghostPlotPrefab;
     public GameObject ghostHolePrefab;
-    public GameObject ghostSprinkler;
+    public GameObject ghostSprinklerPrefab;
 
     private GameObject ghostPlotInstance;
     private GameObject ghostHoleInstance;
@@ -436,6 +435,28 @@ public class SoilManager : MonoBehaviour
     public void UnregisterSprinkler(Sprinkler s)
     {
         if (s != null) _sprinklers.Remove(s);
+    }
+
+    public void ShowSprinklerGhost(Vector2Int gridPos)
+    {
+        if (ghostSprinklerPrefab == null) return;
+        if (ghostSprinklerInstance == null)
+            ghostSprinklerInstance = Instantiate(ghostSprinklerPrefab);
+
+        Vector3 pos = FarmManager.Instance.origin + new Vector3(
+            (gridPos.x + 0.5f) * FarmManager.Instance.cellSize,
+            0.2f,
+            (gridPos.y + 0.5f) * FarmManager.Instance.cellSize
+        );
+
+        ghostSprinklerInstance.transform.position = pos;
+        ghostSprinklerInstance.SetActive(true);
+    }
+
+    public void HideSprinklerGhost()
+    {
+        if (ghostSprinklerInstance != null)
+            ghostSprinklerInstance.SetActive(false);
     }
 
     // ===== Save =====
