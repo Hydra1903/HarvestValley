@@ -4,17 +4,7 @@ using UnityEngine;
 
 public class FarmSaveSystem : MonoBehaviour
 {
-    public static FarmSaveSystem Instance { get; private set; }
-
     private FarmManager farm;
-
-    private void Awake()
-    {
-         if (Instance == null)
-            Instance = this;
-        else
-            Destroy(gameObject);
-    }
 
     public void Initialize(FarmManager f) => farm = f;
 

@@ -168,14 +168,9 @@ public class PlantManager : MonoBehaviour
         // Thời tiết hiện tại
         bool isRainy = Weather.Instance != null && Weather.Instance.currentWeather == WeatherState.Rainy;
 
-        // 4.2 Nếu trời mưa hôm nay → tưới toàn bộ
-        if (Weather.Instance != null && Weather.Instance.currentWeather == WeatherState.Rainy)
-        {
-            SoilManager.Instance.WaterAllAreas();
-        }
-
-        //Máy tưới
-        SoilManager.Instance.WaterBySprinklers();
+        soil.ResetDailyWater();      // 1) Xóa trạng thái tưới hôm trước
+        if (isRainy) soil.WaterAllAreas();  // 2) Mưa hôm nay -> tưới toàn bộ
+        soil.WaterBySprinklers();    // 3) Máy tưới hoạt động trong ngày
 
         for (int x = 0; x < farm.gridWidth; x++)
         {

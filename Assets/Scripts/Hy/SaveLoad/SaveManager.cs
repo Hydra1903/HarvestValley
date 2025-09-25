@@ -7,41 +7,25 @@ public static class SaveManager
     static string PathFor(string slot) =>
         System.IO.Path.Combine(Application.persistentDataPath, $"farm_{slot}.json");
 
-    public static void Save(string slot, IEnumerable<FarmGrid> grids)
+    // SaveManager.cs
+    public static void Save(string slot, IEnumerable<FarmManager> farms)
     {
         var game = new GameSave();
-
-        foreach (var g in grids)
-            game.grids.Add(g.BuildSave()); // gọi FarmGrid.BuildSave()
-
-        var json = JsonUtility.ToJson(game, true);
-        File.WriteAllText(PathFor(slot), json);
-        Debug.Log($"[SaveManager] Saved -> {PathFor(slot)}");
+        foreach (var f in farms) game.grids.Add(f.BuildSave());
+        File.WriteAllText(PathFor(slot), JsonUtility.ToJson(game, true));
     }
 
-    public static bool Load(string slot, IEnumerable<FarmGrid> grids)
+    public static bool Load(string slot, IEnumerable<FarmManager> farms)
     {
         var path = PathFor(slot);
-        if (!File.Exists(path))
-        {
-            Debug.LogWarning($"[SaveManager] No save at {path}");
-            return false;
-        }
+        if (!File.Exists(path)) return false;
 
-        var json = File.ReadAllText(path);
-        var game = JsonUtility.FromJson<GameSave>(json);
-
+        var game = JsonUtility.FromJson<GameSave>(File.ReadAllText(path));
         var dict = new Dictionary<string, FarmGridSave>();
         foreach (var s in game.grids) dict[s.gridId] = s;
 
-        foreach (var g in grids)
-        {
-            if (dict.TryGetValue(g.gridId, out var s))
-                g.LoadFromSave(s); // gọi FarmGrid.LoadFromSave()
-        }
-
-        Debug.Log($"[SaveManager] Loaded <- {path}");
+        foreach (var f in farms)
+            if (dict.TryGetValue(f.gridId, out var s)) f.LoadFromSave(s);
         return true;
-
     }
 }

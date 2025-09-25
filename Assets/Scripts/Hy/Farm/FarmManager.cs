@@ -16,6 +16,10 @@ public class FarmManager : MonoBehaviour
     public HotBarUI hotbarUI;
 
     public Tile[,] Tiles { get; private set; }
+    private FarmSaveSystem _save;
+
+    public FarmGridSave BuildSave() => _save.BuildSave();
+    public void LoadFromSave(FarmGridSave s) => _save.LoadFromSave(s);
 
     private void Awake()
     {
@@ -28,7 +32,6 @@ public class FarmManager : MonoBehaviour
         AllocateTiles(gridWidth, gridHeight);
         SoilManager.Instance.Initialize(this);
         PlantManager.Instance.Initialize(this, SoilManager.Instance);
-        FarmSaveSystem.Instance.Initialize(this);
     }
 
     private void Update()
