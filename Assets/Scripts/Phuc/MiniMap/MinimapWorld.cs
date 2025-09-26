@@ -15,6 +15,7 @@ public class MinimapWorld : MonoBehaviour
 
     private void OnDestroy()
     {
-        MiniMapController.Instance.RemoveMinimapWorldObject(this);
+        if (MiniMapController.Instance != null)
+            MiniMapController.Instance.RemoveMinimapWorldObject(this);
     }
 }
