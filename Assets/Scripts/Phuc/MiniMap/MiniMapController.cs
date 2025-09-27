@@ -216,7 +216,7 @@ public class MiniMapController : MonoBehaviour
         float mapScale = miniMapContent.localScale.x;
         float scaleFactor = 1f / mapScale; 
 
-        Vector2 miniSize = miniMapContent.rect.size / 2f;
+        Vector2 miniSize = miniMapContent.rect.size / 2.223f;
         foreach (var kvp in miniMapWorldObjectsLookup)
         {
             var miniMapWorldObject = kvp.Key;
@@ -234,7 +234,7 @@ public class MiniMapController : MonoBehaviour
 
     private void UpdateFullMapIcons()
     {
-        Vector2 fullSize = fullMapContent.rect.size / 2f;
+        Vector2 fullSize = fullMapContent.rect.size / 2.223f;
 
         foreach (var kvp in miniMapWorldObjectsLookup)
         {
