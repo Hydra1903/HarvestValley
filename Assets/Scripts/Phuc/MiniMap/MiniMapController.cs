@@ -33,6 +33,8 @@ public class MiniMapController : MonoBehaviour
     [SerializeField] float maxZoom = 10f;
     [SerializeField] float minZoom = 1f;
     [SerializeField] bool scaleFullmapIconsWithZoom = false;
+    private Vector3 defaultPosition; 
+    private Vector3 defaultScale;
 
     [Header("Transform and Panel")]
     [SerializeField] RectTransform scrollViewRectTransform;
@@ -48,6 +50,8 @@ public class MiniMapController : MonoBehaviour
 
     private MinimapMode currentMiniMapMode = MinimapMode.Mini;
     private MinimapIcon1 followIcon;
+    private MinimapIcon1 followMiniIcon;
+    private MinimapIcon1 followFullIcon;
     private Vector2 scrollViewDefaultSize;
     private Vector2 scrollViewDefaultPosition;
 
@@ -67,6 +71,8 @@ public class MiniMapController : MonoBehaviour
     private void Start()
     {
         CalculateTransformationMatrix();
+        defaultPosition = fullMapContent.anchoredPosition;
+        defaultScale = fullMapContent.localScale;
     }
 
     private void Update()
@@ -74,42 +80,50 @@ public class MiniMapController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.M))
         {
             fullMapPanel.SetActive(!fullMapPanel.activeSelf);
+
+            // chuy?n mode ð? phân bi?t zoom
+            if (fullMapPanel.activeSelf)
+                SetMinimapMode(MinimapMode.Fullscreen);
+            else
+                SetMinimapMode(MinimapMode.Mini);
         }
 
         // ch? cho zoom khi ðang m? fullmap
-        if (fullMapPanel.activeSelf)
+        if (currentMiniMapMode == MinimapMode.Fullscreen && fullMapPanel.activeSelf)
         {
             float zoom = Input.GetAxis("Mouse ScrollWheel");
-            ZoomMap(zoom);
+            if (zoom != 0)
+            {
+                ZoomMap(zoom);
+            }
         }
 
         UpdateMiniMapIcons();
         UpdateFullMapIcons();
         CenterMapOnIcon();
     }
-
     public void RegisterMinimapWorldObject(MinimapWorld miniMapWorldObject, bool followObject = false)
     {
         // Icon cho minimap
         var minimapIcon = Instantiate(minimapIconPrefab, miniMapContent);
         minimapIcon.Image.sprite = miniMapWorldObject.MinimapIcon;
-
-        // ép size g?c cho minimap
-        minimapIcon.RectTransform.sizeDelta = new Vector2(61, 61);
+        minimapIcon.RectTransform.sizeDelta = new Vector2(60, 60); // nh? hõn
 
         // Icon cho fullmap
         var fullmapIcon = Instantiate(minimapIconPrefab, fullMapContent);
         fullmapIcon.Image.sprite = miniMapWorldObject.MinimapIcon;
+        fullmapIcon.RectTransform.sizeDelta = new Vector2(42, 42); // to hõn
 
-        // dùng chung size g?c (không scale 0.5f nhý trý?c n?a)
-        fullmapIcon.RectTransform.sizeDelta = new Vector2(61, 61);
-
-        // G?p vào dictionary
         miniMapWorldObjectsLookup[miniMapWorldObject] = new MinimapIconPair(minimapIcon, fullmapIcon);
 
         if (followObject)
-            followIcon = minimapIcon;
+        {
+            // follow luôn c? 2 icon
+            followMiniIcon = minimapIcon;
+            followFullIcon = fullmapIcon;
+        }
     }
+
 
     public void RemoveMinimapWorldObject(MinimapWorld minimapWorldObject)
     {
@@ -142,6 +156,8 @@ public class MiniMapController : MonoBehaviour
                 scrollViewRectTransform.pivot = Vector2.one;
                 scrollViewRectTransform.anchoredPosition = scrollViewDefaultPosition;
                 currentMiniMapMode = MinimapMode.Mini;
+                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
                 break;
 
             case MinimapMode.Fullscreen:
@@ -151,7 +167,8 @@ public class MiniMapController : MonoBehaviour
                 scrollViewRectTransform.pivot = halfVector2;
                 scrollViewRectTransform.anchoredPosition = Vector2.zero;
                 currentMiniMapMode = MinimapMode.Fullscreen;
-                miniMapContent.transform.localScale = Vector3.one * defaultScaleWhenFullScreen;
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
                 break;
         }
     }
@@ -159,32 +176,47 @@ public class MiniMapController : MonoBehaviour
     private void ZoomMap(float zoom)
     {
         if (zoom == 0) return;
-        if (currentMiniMapMode == MinimapMode.Fullscreen)
+
+        float currentScale = fullMapContent.localScale.x;
+        float zoomAmount = (zoom > 0 ? zoomSpeed : -zoomSpeed) * currentScale;
+        float newScale = currentScale + zoomAmount;
+        float clampedScale = Mathf.Clamp(newScale, minZoom, maxZoom);
+        if (Mathf.Approximately(clampedScale, minZoom))
         {
-            float currentMapScale = fullMapContent.localScale.x;
-            float zoomAmount = (zoom > 0 ? zoomSpeed : -zoomSpeed) * currentMapScale;
-            float newScale = currentMapScale + zoomAmount;
-            float clampedScale = Mathf.Clamp(newScale, minZoom, maxZoom);
-
-            fullMapContent.localScale = Vector3.one * clampedScale;
+            fullMapContent.localScale = defaultScale;
+            fullMapContent.anchoredPosition = defaultPosition;
+            fullMapContent.pivot = new Vector2(0.5f, 0.5f);
+            return;
         }
+        Vector2 localMousePos;
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(
+            fullMapContent, Input.mousePosition, null, out localMousePos
+        );
+        Vector2 pivot = new Vector2(
+            (localMousePos.x / fullMapContent.rect.width) + 0.5f,
+            (localMousePos.y / fullMapContent.rect.height) + 0.5f
+        );
+
+        fullMapContent.pivot = pivot;
+        Vector2 offset = -localMousePos * (clampedScale - currentScale);
+        fullMapContent.anchoredPosition += offset;
+        fullMapContent.localScale = Vector3.one * clampedScale;
     }
-
-
     private void CenterMapOnIcon()
     {
-        if (followIcon != null)
+        if (followMiniIcon != null)
         {
             float mapScale = miniMapContent.transform.localScale.x;
-            miniMapContent.anchoredPosition = (-followIcon.RectTransform.anchoredPosition * mapScale);
+            miniMapContent.anchoredPosition = (-followMiniIcon.RectTransform.anchoredPosition * mapScale);
         }
     }
 
     private void UpdateMiniMapIcons()
     {
         float mapScale = miniMapContent.localScale.x;
-        float scaleFactor = 1f / mapScale; // càng zoom th? icon càng nh? l?i
+        float scaleFactor = 1f / mapScale; 
 
+        Vector2 miniSize = miniMapContent.rect.size / 2f;
         foreach (var kvp in miniMapWorldObjectsLookup)
         {
             var miniMapWorldObject = kvp.Key;
@@ -192,15 +224,17 @@ public class MiniMapController : MonoBehaviour
 
             var mapPosition = WorldToMiniMapPosition(miniMapWorldObject.transform.position);
 
+            mapPosition.x = Mathf.Clamp(mapPosition.x, -miniSize.x, miniSize.x);
+            mapPosition.y = Mathf.Clamp(mapPosition.y, -miniSize.y, miniSize.y);
+
             pair.miniIcon.RectTransform.anchoredPosition = mapPosition;
-            pair.miniIcon.RectTransform.localScale = Vector3.one * scaleFactor;
+            pair.miniIcon.RectTransform.localScale = Vector3.one * scaleFactor; 
         }
     }
 
     private void UpdateFullMapIcons()
     {
-        float mapScale = miniMapContent.localScale.x;
-        float scaleFactor = 0.85f / mapScale; // fullmap c?ng scale y chang minimap
+        Vector2 fullSize = fullMapContent.rect.size / 2f;
 
         foreach (var kvp in miniMapWorldObjectsLookup)
         {
@@ -209,11 +243,16 @@ public class MiniMapController : MonoBehaviour
 
             var mapPosition = WorldToFullMapPosition(miniMapWorldObject.transform.position);
 
+            mapPosition.x = Mathf.Clamp(mapPosition.x, -fullSize.x, fullSize.x);
+            mapPosition.y = Mathf.Clamp(mapPosition.y, -fullSize.y, fullSize.y);
+
             pair.fullIcon.RectTransform.anchoredPosition = mapPosition;
-            pair.fullIcon.RectTransform.localScale = Vector3.one * scaleFactor;
+            pair.fullIcon.RectTransform.localScale = Vector3.one;
             pair.fullIcon.IconRectTransform.localRotation = Quaternion.identity;
         }
     }
+
+
     private Vector2 WorldToMiniMapPosition(Vector3 worldPos)
     {
         var pos = new Vector2(worldPos.x, worldPos.z);
