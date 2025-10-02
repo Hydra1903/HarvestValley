@@ -6,40 +6,21 @@ public class Merchant : MonoBehaviour
     public int[] salesLimit;
     public int[] quantityItemsSold;
     public int[] bonusSellPrice;
-    public int[] sellPriceAnimalProduct;
     public int totalAmount;
 
     public MerchantUI merchantUI;
     public FarmStall farmStall;
     void Awake()
     {
-        quantity = new int[32];
-        quantityItemsSold = new int[32];
+        quantity = new int[farmStall.sellPriceSpring.Length];
+        quantityItemsSold = new int[farmStall.sellPriceSpring.Length];
     }
     public void TotalAmount()
     {
         totalAmount = 0;
-        for (int i = 0; i < 28; i++)
+        for (int i = 0; i < farmStall.sellPriceSpring.Length; i++)
         {
-            switch (Season.Instance.currentSeason)
-            {
-                case SeasonState.Spring:
-                    totalAmount += (farmStall.sellPriceSpring[i] + bonusSellPrice[i]) * quantity[i];
-                    break;
-                case SeasonState.Summer:
-                    totalAmount += (farmStall.sellPriceSummer[i] + bonusSellPrice[i]) * quantity[i];
-                    break;
-                case SeasonState.Fall:
-                    totalAmount += (farmStall.sellPriceFall[i] + bonusSellPrice[i]) * quantity[i];
-                    break;
-                case SeasonState.Winter:
-                    totalAmount += (farmStall.sellPriceWinter[i] + bonusSellPrice[i]) * quantity[i];
-                    break;
-            }
-        }
-        for (int i = 0; i < 4; i++)
-        {
-            totalAmount += (sellPriceAnimalProduct[i]) * quantity[28 + i];
+            totalAmount += (farmStall.sellPriceSpring[i]+ bonusSellPrice[i]) * quantity[i];
         }
         merchantUI.UpdateUI();
     }

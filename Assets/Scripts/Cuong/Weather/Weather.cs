@@ -15,8 +15,6 @@ public class Weather : MonoBehaviour
     public WeatherState currentWeather;
     public List<WeatherSchedule> listWeather = new List<WeatherSchedule>();
     public List<WeatherSchedule> listWeatherOfMonth = new List<WeatherSchedule>();
-
-    public MainUIScreen mainUIScreen;
     void Awake()
     {
         if (Instance == null)
@@ -30,6 +28,7 @@ public class Weather : MonoBehaviour
         listWeather.Add(new WeatherSchedule(WeatherState.Rainy));
         listWeather.Add(new WeatherSchedule(WeatherState.Stormy));
         listWeather.Add(new WeatherSchedule(WeatherState.Snowy));
+        SetAppearanceRate(Season.Instance.currentSeason);
         SetListWeatherOfMonth();
     }
     public void SetAppearanceRate(SeasonState season)
@@ -66,7 +65,6 @@ public class Weather : MonoBehaviour
     public void SetListWeatherOfMonth()
     {
         listWeatherOfMonth.Clear();
-        SetAppearanceRate(Season.Instance.currentSeason);
         for (int i = 0 ; i < 30 ; i++)
         {
             listWeatherOfMonth.Add(RamdomWeatherOfDay());
@@ -105,14 +103,13 @@ public class Weather : MonoBehaviour
 
     public void SetCurrentWeather()
     {
-        WeatherSchedule weatherScheduleOfDay = listWeatherOfMonth[GameTime.Instance.day - 1];
-        if (weatherScheduleOfDay.weather == WeatherState.Clear)
+        if (listWeatherOfMonth[GameTime.Instance.day - 1].weather == WeatherState.Clear)
         {
             currentWeather = WeatherState.Clear;
         }
-        else if (weatherScheduleOfDay.weather == WeatherState.Rainy)
+        else if (listWeatherOfMonth[GameTime.Instance.day - 1].weather == WeatherState.Rainy)
         {
-            if (GameTime.Instance.hour >= weatherScheduleOfDay.randomWeatherStartTime && GameTime.Instance.hour < weatherScheduleOfDay.randomWeatherEndTime)
+            if (GameTime.Instance.hour >= listWeatherOfMonth[GameTime.Instance.day - 1].randomWeatherStartTime && GameTime.Instance.hour < listWeatherOfMonth[GameTime.Instance.day - 1].randomWeatherEndTime)
             {
                 currentWeather = WeatherState.Rainy;
             }
@@ -121,9 +118,9 @@ public class Weather : MonoBehaviour
                 currentWeather = WeatherState.Clear;
             }
         }
-        else if (weatherScheduleOfDay.weather == WeatherState.Stormy)
+        else if (listWeatherOfMonth[GameTime.Instance.day - 1].weather == WeatherState.Stormy)
         {
-            if (GameTime.Instance.hour >= weatherScheduleOfDay.randomWeatherStartTime && GameTime.Instance.hour < weatherScheduleOfDay.randomWeatherEndTime)
+            if (GameTime.Instance.hour >= listWeatherOfMonth[GameTime.Instance.day - 1].randomWeatherStartTime && GameTime.Instance.hour < listWeatherOfMonth[GameTime.Instance.day - 1].randomWeatherEndTime)
             {
                 currentWeather = WeatherState.Stormy;
             }
@@ -134,7 +131,7 @@ public class Weather : MonoBehaviour
         }
         else if (listWeatherOfMonth[GameTime.Instance.day - 1].weather == WeatherState.Snowy)
         {
-            if (GameTime.Instance.hour >= weatherScheduleOfDay.randomWeatherStartTime && GameTime.Instance.hour < weatherScheduleOfDay.randomWeatherEndTime)
+            if (GameTime.Instance.hour >= listWeatherOfMonth[GameTime.Instance.day - 1].randomWeatherStartTime && GameTime.Instance.hour < listWeatherOfMonth[GameTime.Instance.day - 1].randomWeatherEndTime)
             {
                 currentWeather = WeatherState.Snowy;
             }
@@ -143,8 +140,6 @@ public class Weather : MonoBehaviour
                 currentWeather = WeatherState.Clear;
             }
         }
-
-        mainUIScreen.UpdateWeather();
     }
 
     public int RandomWeatherStartTime(int timeRate)

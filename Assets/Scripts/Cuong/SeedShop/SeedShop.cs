@@ -14,7 +14,6 @@ public class SeedShop : MonoBehaviour
         if (inventory.AddItem(data[index], amount[index]))
         {
             inventoryUI.UpdateAllSlots();
-            inventoryUI.UpdateGoldUI();
         }
         else
         {
