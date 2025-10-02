@@ -65,10 +65,7 @@ public class GameTime : MonoBehaviour
         currentTimeOfDay = TimeOfDay.Day;
         hour = 6; minute = 0; day++;
 <<<<<<< HEAD
-<<<<<<< HEAD
         OnNextDay?.Invoke();
-=======
->>>>>>> parent of a3af75f (Merge pull request #24 from Hydra1903/ViCi)
 =======
 >>>>>>> parent of a3af75f (Merge pull request #24 from Hydra1903/ViCi)
     }
