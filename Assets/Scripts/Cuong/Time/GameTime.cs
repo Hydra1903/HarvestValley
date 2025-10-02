@@ -14,11 +14,14 @@ public class GameTime : MonoBehaviour
     public int hour = 6;
     public int minute = 0;
 
-    public float timeSpeed = 60f; 
+    public float timeSpeed = 60f;
     private float timer;
 
+    public bool canHarvestToday = false;
     public TimeOfDay currentTimeOfDay;
     public MainUIScreen mainUIScreen;
+    public delegate void NextDayDelegate();
+    public event NextDayDelegate OnNextDay;
     void Awake()
     {
         if (Instance == null)
@@ -29,19 +32,18 @@ public class GameTime : MonoBehaviour
     void Update()
     {
         timer += Time.deltaTime * timeSpeed;
-        if (timer >= 60) 
+        if (timer >= 60)
         {
             minute++; timer = 0;
         }
         if (minute >= 60)
         {
             minute = 0; hour++;
-            Weather.Instance.SetCurrentWeather();          
+            Weather.Instance.SetCurrentWeather();
         }
-        if (hour >= 18)
+        if (hour >= 19)
         {
             currentTimeOfDay = TimeOfDay.Night;
-            mainUIScreen.UpdateIconTimeOfDay();
         }
         if (hour >= 24)
         {
@@ -51,8 +53,6 @@ public class GameTime : MonoBehaviour
         {
             day = 1; month++;
             Season.Instance.ChangeOfSeasons();
-            Weather.Instance.SetListWeatherOfMonth();
-            mainUIScreen.UpdateWeatherTimeline();
         }
         if (month > 4)
         {
@@ -62,14 +62,9 @@ public class GameTime : MonoBehaviour
     }
     public void NextDay()
     {
-        hour = 6; minute = 0; day++;
         currentTimeOfDay = TimeOfDay.Day;
-        mainUIScreen.UpdateIconTimeOfDay();
-        if (day <= 30)
-        {
-            mainUIScreen.UpdateWeatherTimeline();
-        }
-        FarmStallUI.Instance.CanCollect();
+        hour = 6; minute = 0; day++;
+        OnNextDay?.Invoke();
     }
     public void PauseGame()
     {
