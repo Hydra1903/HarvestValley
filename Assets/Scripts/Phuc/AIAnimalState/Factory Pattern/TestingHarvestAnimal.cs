@@ -34,12 +34,12 @@ public class TestingHarvestAnimal : MonoBehaviour
                 Debug.LogWarning($"Cant Found Barn for Assign {gameObject.name}!");
             }
         }
-        //GameTime.Instance.OnNextDay += HandleNextDay;
+        GameTime.Instance.OnNextDay += HandleNextDay;
     }
     private void OnDestroy()
     {
-        //if (GameTime.Instance != null)
-        //    GameTime.Instance.OnNextDay -= HandleNextDay;
+        if (GameTime.Instance != null)
+            GameTime.Instance.OnNextDay -= HandleNextDay;
     }
     private void HandleNextDay()
     {
