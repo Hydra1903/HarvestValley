@@ -10,7 +10,7 @@ public class Season : MonoBehaviour
 {
     public static Season Instance;
     public SeasonState currentSeason = SeasonState.Spring;
-    public MainUIScreen mainUIScreen;
+    //public MainUIScreen mainUIScreen;
 
     void Awake()
     {
@@ -36,6 +36,6 @@ public class Season : MonoBehaviour
                 currentSeason = SeasonState.Spring;
                 break;
         }
-        mainUIScreen.UpdateSeason();
+        //mainUIScreen.UpdateSeason();
     }
 }

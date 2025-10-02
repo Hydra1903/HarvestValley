@@ -5,7 +5,7 @@ public class Mp : MonoBehaviour
     public static Mp Instance;
     public int mp = 0;
     public int maxMana = 100;
-    public MainUIScreen mainUIScreen;
+    //public MainUIScreen mainUIScreen;
     void Awake()
     {
         if (Instance == null)
@@ -18,7 +18,7 @@ public class Mp : MonoBehaviour
         if (mp >= amount)
         {
             mp -= amount;
-            mainUIScreen.UpdateMpUI();
+            //mainUIScreen.UpdateMpUI();
         }
         else
         {
@@ -34,7 +34,7 @@ public class Mp : MonoBehaviour
         else
         {
             mp = Mathf.Min(mp + amount, maxMana);
-            mainUIScreen.UpdateMpUI();
+            //mainUIScreen.UpdateMpUI();
         }
     }
 }
