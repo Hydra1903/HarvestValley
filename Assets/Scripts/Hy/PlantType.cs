@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public enum PlantTypes
+public enum PlantType
 {
     // Cây 1x1 - trồng trên luống
     Carrot,
