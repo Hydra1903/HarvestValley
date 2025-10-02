@@ -36,11 +36,12 @@ public class GameTime : MonoBehaviour
         if (minute >= 60)
         {
             minute = 0; hour++;
-            Weather.Instance.SetCurrentWeather();
+            Weather.Instance.SetCurrentWeather();          
         }
-        if (hour >= 19)
+        if (hour >= 18)
         {
             currentTimeOfDay = TimeOfDay.Night;
+            mainUIScreen.UpdateIconTimeOfDay();
         }
         if (hour >= 24)
         {
@@ -50,6 +51,8 @@ public class GameTime : MonoBehaviour
         {
             day = 1; month++;
             Season.Instance.ChangeOfSeasons();
+            Weather.Instance.SetListWeatherOfMonth();
+            mainUIScreen.UpdateWeatherTimeline();
         }
         if (month > 4)
         {
@@ -59,8 +62,14 @@ public class GameTime : MonoBehaviour
     }
     public void NextDay()
     {
-        currentTimeOfDay = TimeOfDay.Day;
         hour = 6; minute = 0; day++;
+        currentTimeOfDay = TimeOfDay.Day;
+        mainUIScreen.UpdateIconTimeOfDay();
+        if (day <= 30)
+        {
+            mainUIScreen.UpdateWeatherTimeline();
+        }
+        FarmStallUI.Instance.CanCollect();
     }
     public void PauseGame()
     {

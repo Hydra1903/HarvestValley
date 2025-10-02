@@ -15,7 +15,7 @@ public class InventoryUI : MonoBehaviour
 
     public TextMeshProUGUI gold;
 
-    private void Start()
+    void Start()
     {
         int totalSlots = inventory.rows * inventory.columns;
 
@@ -33,10 +33,9 @@ public class InventoryUI : MonoBehaviour
                 slotUI?.SetSlot(row, col, inventory, this);
             }
         }
-
+        UpdateAllSlots();
         dragIcon.gameObject.SetActive(false);
     }
-
     public void StartDrag(InventoryItem item, InventorySlotUI fromSlot)
     {
         dragItem.draggedItem = new InventoryItem(item.itemData, item.quantity);
