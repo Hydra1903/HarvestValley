@@ -130953,6 +130953,11 @@ GameObject:
   - component: {fileID: 7371904533792528214}
   - component: {fileID: 466999038477142319}
   - component: {fileID: 2493830096100040544}
+<<<<<<< HEAD
+=======
+  - component: {fileID: 571352418563603182}
+  - component: {fileID: 817697096678075367}
+>>>>>>> parent of 6614e8f (reset)
   m_Layer: 5
   m_Name: "---CHU\u1ED2NG NU\xD4I---"
   m_TagString: Untagged
@@ -131028,6 +131033,46 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+<<<<<<< HEAD
+=======
+--- !u!114 &571352418563603182
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3108736683627638376}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 078fb04e63dc67c4aa6eeb701ce71a72, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  barn: {fileID: 817697096678075367}
+  slotsParent: {fileID: 4775428496494398844}
+  dragIcon: {fileID: 6114347014120548608}
+  dragQuantityText: {fileID: 2163129563890899237}
+  dragItem: {fileID: 7618012047369583834}
+  item:
+    itemData: {fileID: 0}
+    quantity: 0
+  capacity: 0
+  capacityText: {fileID: 729117305040980965}
+--- !u!114 &817697096678075367
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3108736683627638376}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0223d0d927576e14b85c102db5a4edf4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rows: 1
+  columns: 1
+  limitCapacity: 10
+>>>>>>> parent of 6614e8f (reset)
 --- !u!1 &3109080391947416212
 GameObject:
   m_ObjectHideFlags: 0
@@ -225486,6 +225531,7 @@ MonoBehaviour:
     m_LineSpacing: 1
   m_Text: 9
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 --- !u!1 &5391960187889890558
 GameObject:
@@ -225613,6 +225659,8 @@ MonoBehaviour:
   columns: 1
   limitCapacity: 10
 >>>>>>> parent of 2c27ce8 (up)
+=======
+>>>>>>> parent of 6614e8f (reset)
 --- !u!1 &5394546378800170186
 GameObject:
   m_ObjectHideFlags: 0
@@ -271564,6 +271612,7 @@ MonoBehaviour:
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 --- !u!1 &6476595393318394876
 GameObject:
@@ -271702,6 +271751,8 @@ MonoBehaviour:
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
 >>>>>>> parent of 2c27ce8 (up)
+=======
+>>>>>>> parent of 6614e8f (reset)
 --- !u!1 &6478621488319303822
 GameObject:
   m_ObjectHideFlags: 0
@@ -331925,6 +331976,7 @@ MonoBehaviour:
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 --- !u!1 &7872160771107864984
 GameObject:
@@ -332132,6 +332184,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
 >>>>>>> parent of 2c27ce8 (up)
+=======
+>>>>>>> parent of 6614e8f (reset)
 --- !u!1 &7880955749024054180
 GameObject:
   m_ObjectHideFlags: 0
