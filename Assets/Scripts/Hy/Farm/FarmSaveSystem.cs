@@ -7,7 +7,8 @@ public class FarmSaveSystem : MonoBehaviour
     private FarmManager farm;
 
     public void Initialize(FarmManager f) => farm = f;
-
+    public PlantManager plantManager;
+    public SoilManager soilManager;
     //Đồng bộ đến FarmGridSave
     public FarmGridSave BuildSave()
     {
@@ -19,8 +20,10 @@ public class FarmSaveSystem : MonoBehaviour
             height = farm.gridHeight,
             cellSize = farm.cellSize,
             origin = farm.origin,
-            areas = new List<AreaSave>(SoilManager.Instance.GetAreas()),
-            plants = new List<PlantSave>(GetPlants())
+            areas = new List<AreaSave>(soilManager.GetAreas()),
+            plants = new List<PlantSave>(GetPlants()),
+            sprinklers = soilManager.GetSprinklerSaves(),
+            wateredCenters = soilManager.GetWateredCenters(),
         };
     }
 
@@ -33,18 +36,28 @@ public class FarmSaveSystem : MonoBehaviour
         farm.origin = data.origin;
 
         // soil
-        SoilManager.Instance.ClearAreas();
+        soilManager.ClearAreas();
         foreach (var a in data.areas)
-            SoilManager.Instance.AddAreaFromSave(a);
+            soilManager.AddAreaFromSave(a);
 
         // plants
-        PlantManager.Instance.ClearPlants();
+        plantManager.ClearPlants();
         foreach (var p in data.plants)
-        PlantManager.Instance.AddPlantFromSave(p);
+        plantManager.AddPlantFromSave(p);
+
+        //sprinkler
+        soilManager.ClearSprinklers();
+        foreach (var sp in data.sprinklers)
+            soilManager.AddSprinklerFromSave(sp);
+
+        //watered
+        soilManager.ClearWatered();
+        soilManager.ApplyWateredCenters(data.wateredCenters);
+
     }
 
     // ===== Helpers =====
-    private List<PlantSave> GetPlants() => PlantManager.Instance.GetPlants();
+    private List<PlantSave> GetPlants() => plantManager.GetPlants();
 
     //Ghi lại trạng thái, ngày, số lần thu hoạch về save
     private void SyncPlantSavesFromWorld()

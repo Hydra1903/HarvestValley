@@ -3,29 +3,21 @@ using UnityEngine;
 
 public class PlantManager : MonoBehaviour
 {
-    public static PlantManager Instance { get; private set; }
-
     [Header("Ghost cây")]
     public Material ghostMaterial;
     private SimpleGhostManager simpleGhostManager;
 
-    private FarmManager farm;
-    private SoilManager soil;
+    private FarmManager farmManager;
+    private SoilManager soilManager;
 
     private readonly List<PlantSave> _plantSaves = new();
     public List<PlantSave> GetPlants() => _plantSaves;
 
-    private void Awake()
-    {
-        if (Instance != null && Instance != this) { Destroy(gameObject); return; }
-        Instance = this;
-    }
-
     public void Initialize(FarmManager f, SoilManager s)
     {
-        farm = f; soil = s;
+        farmManager = f; soilManager = s;
 
-        var ghostManagerObj = new GameObject($"SimpleGhostManager_{farm.gridId}");
+        var ghostManagerObj = new GameObject($"SimpleGhostManager_{farmManager.gridId}");
         simpleGhostManager = ghostManagerObj.AddComponent<SimpleGhostManager>();
         simpleGhostManager.Initialize(ghostMaterial);
     }
@@ -38,7 +30,7 @@ public class PlantManager : MonoBehaviour
         if (seedItem == null || seedItem.itemData == null || seedItem.itemData.itemType != ItemType.Seed)
         { HideGhost(); return false; }
 
-        var pd = farm.plantDatabase ? farm.plantDatabase.GetPlantData(seedItem.itemData.plantType) : null;
+        var pd = farmManager.plantDatabase ? farmManager.plantDatabase.GetPlantData(seedItem.itemData.plantType) : null;
         if (pd == null) { HideGhost(); return false; }
 
         int size = pd.GetSizeInt();
@@ -47,12 +39,12 @@ public class PlantManager : MonoBehaviour
         // Với cây 3x3: bắt buộc snap vào đúng 1 hố 3x3
         if (size == 3)
         {
-            if (!soil.TrySnapStartToHole3x3(gridPos, out start)) { HideGhost(); return false; }
-            if (!soil.IsExactAreaMatch(start.x, start.y, 3, SoilType.Hole)) { HideGhost(); return false; }
+            if (!soilManager.TrySnapStartToHole3x3(gridPos, out start)) { HideGhost(); return false; }
+            if (!soilManager.IsExactAreaMatch(start.x, start.y, 3, SoilType.Hole)) { HideGhost(); return false; }
         }
         else
         {
-            start = farm.CalculateStartPosition(gridPos, size);
+            start = farmManager.CalculateStartPosition(gridPos, size);
         }
 
         if (!AreaIsDug(start, size))
@@ -65,10 +57,10 @@ public class PlantManager : MonoBehaviour
         if (!CanPlantAt(start, size, pd)) { HideGhost(); return false; }
 
         float offset = size * 0.5f;
-        Vector3 ghostPos = farm.origin + new Vector3(
-            (start.x + offset) * farm.cellSize,
+        Vector3 ghostPos = farmManager.origin + new Vector3(
+            (start.x + offset) * farmManager.cellSize,
             0.45f,
-            (start.y + offset) * farm.cellSize
+            (start.y + offset) * farmManager.cellSize
         );
         simpleGhostManager.ShowGhost(pd, ghostPos);
         return true;
@@ -81,19 +73,19 @@ public class PlantManager : MonoBehaviour
     {
         if (seedItem == null || seedItem.itemData == null || seedItem.itemData.itemType != ItemType.Seed) return false;
 
-        var pd = farm.plantDatabase ? farm.plantDatabase.GetPlantData(seedItem.itemData.plantType) : null;
+        var pd = farmManager.plantDatabase ? farmManager.plantDatabase.GetPlantData(seedItem.itemData.plantType) : null;
         if (pd == null) return false;
 
         int size = pd.GetSizeInt();
         Vector2Int start;
         if (size == 3)
         {
-            if (!soil.TrySnapStartToHole3x3(gridPos, out start)) return false;
-            if (!soil.IsExactAreaMatch(start.x, start.y, 3, SoilType.Hole)) return false;
+            if (!soilManager.TrySnapStartToHole3x3(gridPos, out start)) return false;
+            if (!soilManager.IsExactAreaMatch(start.x, start.y, 3, SoilType.Hole)) return false;
         }
         else
         {
-            start = farm.CalculateStartPosition(gridPos, size);
+            start = farmManager.CalculateStartPosition(gridPos, size);
         }
 
         if (!CanPlantAt(start, size, pd)) return false;
@@ -106,15 +98,15 @@ public class PlantManager : MonoBehaviour
     public bool TryHarvest(Vector2Int gridPos)
     {
         int x = gridPos.x, y = gridPos.y;
-        if (!farm.IsInGrid(x, y)) return false;
+        if (!farmManager.IsInGrid(x, y)) return false;
 
-        var t = farm.Tiles[x, y];
+        var t = farmManager.Tiles[x, y];
         if (t.plantInstance == null) { Debug.Log("Không có cây."); return false; }
 
         if (!TryGetPlantCenterFrom(x, y, out int cx, out int cy))
         { Debug.LogWarning("Không tìm được ô tâm."); return false; }
 
-        var inst = farm.Tiles[cx, cy].plantInstance;
+        var inst = farmManager.Tiles[cx, cy].plantInstance;
         if (inst == null || inst.plantData == null) { Debug.LogWarning("Thiếu dữ liệu cây."); return false; }
         if (!IsMature(inst)) { Debug.Log("Chưa chín."); return false; }
 
@@ -165,23 +157,29 @@ public class PlantManager : MonoBehaviour
     // ===== Qua ngày =====
     public void AdvanceDay()
     {
+        //Cập nhật UI
+        //GameTime.Instance.NextDay();
+
         // Thời tiết hiện tại
         bool isRainy = Weather.Instance != null && Weather.Instance.currentWeather == WeatherState.Rainy;
 
-        soil.ResetDailyWater();      // 1) Xóa trạng thái tưới hôm trước
-        if (isRainy) soil.WaterAllAreas();  // 2) Mưa hôm nay -> tưới toàn bộ
-        soil.WaterBySprinklers();    // 3) Máy tưới hoạt động trong ngày
+        soilManager.ResetDailyWater();      // 1) Xóa trạng thái tưới hôm trước
 
-        for (int x = 0; x < farm.gridWidth; x++)
+        if (isRainy) soilManager.WaterAllAreas();  // 2) Mưa hôm nay -> tưới toàn bộ
+
+        soilManager.WaterBySprinklers();    // 3) Máy tưới hoạt động trong ngày
+
+        //tăng trưởng khi được tưới
+        for (int x = 0; x < farmManager.gridWidth; x++)
         {
-            for (int y = 0; y < farm.gridHeight; y++)
+            for (int y = 0; y < farmManager.gridHeight; y++)
             {
-                Tile tile = farm.Tiles[x, y];
+                Tile tile = farmManager.Tiles[x, y];
                 if (tile.plantInstance == null || tile.plantObject == null) continue;
 
 
                 //Không tưới & không mưa KHÔNG phát triển
-                bool watered = isRainy || SoilManager.Instance.IsTileWatered(x, y);
+                bool watered = isRainy || soilManager.IsTileWatered(x, y);
                 if (!watered) continue;
 
                 var inst = tile.plantInstance;
@@ -201,18 +199,9 @@ public class PlantManager : MonoBehaviour
                 }
             }
         }
-
-        //Reset tưới của hôm trước
-        SoilManager.Instance.ResetDailyWater();
-
-        // 3) NGÀY MỚI: nếu trời mưa -> tưới toàn bộ ngay từ đầu ngày mới
-        if (isRainy)
-            SoilManager.Instance.WaterAllAreas();
-
-
     }
 
-    // ===== Core planting helpers =====
+    // ===== PLANTING =====
 
     //Có thể trồng không?
     public bool CanPlantAt(Vector2Int startPos, int size, PlantData plantData)
@@ -221,9 +210,9 @@ public class PlantManager : MonoBehaviour
             for (int y = 0; y < size; y++)
             {
                 int cx = startPos.x + x, cy = startPos.y + y;
-                if (!farm.IsInGrid(cx, cy)) return false;
+                if (!farmManager.IsInGrid(cx, cy)) return false;
 
-                var t = farm.Tiles[cx, cy];
+                var t = farmManager.Tiles[cx, cy];
                 if (t.state != SoilState.Dug || t.plantInstance != null) return false;
 
                 bool isHole = (t.soilType == SoilType.Hole);
@@ -243,9 +232,9 @@ public class PlantManager : MonoBehaviour
             for (int y = 0; y < size; y++)
             {
                 int tx = startPos.x + x, ty = startPos.y + y;
-                if (!farm.IsInGrid(tx, ty)) continue;
-                farm.Tiles[tx, ty].state = SoilState.Planted;
-                farm.Tiles[tx, ty].plantInstance = inst;
+                if (!farmManager.IsInGrid(tx, ty)) continue;
+                farmManager.Tiles[tx, ty].state = SoilState.Planted;
+                farmManager.Tiles[tx, ty].plantInstance = inst;
             }
 
         GameObject stagePrefab = GetPrefabFor(inst, 0);
@@ -253,20 +242,20 @@ public class PlantManager : MonoBehaviour
         int centerX = startPos.x + (size / 2);
         int centerY = startPos.y + (size / 2);
 
-        if (stagePrefab && farm.IsInGrid(centerX, centerY))
+        if (stagePrefab && farmManager.IsInGrid(centerX, centerY))
         {
-            if (farm.Tiles[centerX, centerY].plantObject)
-                Destroy(farm.Tiles[centerX, centerY].plantObject);
+            if (farmManager.Tiles[centerX, centerY].plantObject)
+                Destroy(farmManager.Tiles[centerX, centerY].plantObject);
 
-            Vector3 plantPos = farm.origin + new Vector3(
-                (startPos.x + (size * 0.5f)) * farm.cellSize,
+            Vector3 plantPos = farmManager.origin + new Vector3(
+                (startPos.x + (size * 0.5f)) * farmManager.cellSize,
                 stagePrefab.transform.position.y,
-                (startPos.y + (size * 0.5f)) * farm.cellSize
+                (startPos.y + (size * 0.5f)) * farmManager.cellSize
             );
-            farm.Tiles[centerX, centerY].plantObject = Instantiate(stagePrefab, plantPos, RandomizeRotation());
-            var clickable = farm.Tiles[centerX, centerY].plantObject.GetComponentInChildren<PlantClickable>();
+            farmManager.Tiles[centerX, centerY].plantObject = Instantiate(stagePrefab, plantPos, RandomizeRotation());
+            var clickable = farmManager.Tiles[centerX, centerY].plantObject.GetComponentInChildren<PlantClickable>();
             if (clickable != null)
-                clickable.Init(centerX, centerY);
+                clickable.Init(farmManager, centerX, centerY);
         }
 
         _plantSaves.Add(new PlantSave
@@ -288,15 +277,15 @@ public class PlantManager : MonoBehaviour
     private bool TryGetPlantCenterFrom(int x, int y, out int cx, out int cy)
     {
         cx = cy = -1;
-        var inst = farm.Tiles[x, y].plantInstance;
+        var inst = farmManager.Tiles[x, y].plantInstance;
         if (inst == null) return false;
 
-        int sx = Mathf.Max(0, x - 3), ex = Mathf.Min(farm.gridWidth - 1, x + 3);
-        int sy = Mathf.Max(0, y - 3), ey = Mathf.Min(farm.gridHeight - 1, y + 3);
+        int sx = Mathf.Max(0, x - 3), ex = Mathf.Min(farmManager.gridWidth - 1, x + 3);
+        int sy = Mathf.Max(0, y - 3), ey = Mathf.Min(farmManager.gridHeight - 1, y + 3);
         for (int i = sx; i <= ex; i++)
             for (int j = sy; j <= ey; j++)
             {
-                var t = farm.Tiles[i, j];
+                var t = farmManager.Tiles[i, j];
                 if (t.plantInstance == inst && t.plantObject != null)
                 { cx = i; cy = j; return true; }
             }
@@ -305,7 +294,7 @@ public class PlantManager : MonoBehaviour
 
     private void ReplacePlantMeshAtCenter(int cx, int cy, PlantInstance inst)
     {
-        var tile = farm.Tiles[cx, cy];
+        var tile = farmManager.Tiles[cx, cy];
         if (tile.plantObject)
         {
             Vector3 basePos = tile.plantObject.transform.position;
@@ -320,14 +309,14 @@ public class PlantManager : MonoBehaviour
                 tile.plantObject = Instantiate(stagePrefab, newPos, Quaternion.Euler(0f, yRot, 0f));
                 var clickable = tile.plantObject.GetComponentInChildren<PlantClickable>();
                 if (clickable != null)
-                    clickable.Init(cx, cy);
+                    clickable.Init(farmManager, cx, cy);
             }
         }
     }
 
     private void RemovePlantAtCenter(int cx, int cy)
     {
-        var inst = farm.Tiles[cx, cy].plantInstance;
+        var inst = farmManager.Tiles[cx, cy].plantInstance;
         if (inst == null) return;
 
         int size = inst.plantData.GetSizeInt();
@@ -338,18 +327,18 @@ public class PlantManager : MonoBehaviour
             for (int dy = 0; dy < size; dy++)
             {
                 int tx = startX + dx, ty = startY + dy;
-                if (!farm.IsInGrid(tx, ty)) continue;
+                if (!farmManager.IsInGrid(tx, ty)) continue;
 
-                if (farm.Tiles[tx, ty].state == SoilState.Planted)
-                    farm.Tiles[tx, ty].state = SoilState.Dug;
-                if (farm.Tiles[tx, ty].plantInstance == inst)
-                    farm.Tiles[tx, ty].plantInstance = null;
+                if (farmManager.Tiles[tx, ty].state == SoilState.Planted)
+                    farmManager.Tiles[tx, ty].state = SoilState.Dug;
+                if (farmManager.Tiles[tx, ty].plantInstance == inst)
+                    farmManager.Tiles[tx, ty].plantInstance = null;
             }
 
-        if (farm.Tiles[cx, cy].plantObject)
+        if (farmManager.Tiles[cx, cy].plantObject)
         {
-            Destroy(farm.Tiles[cx, cy].plantObject);
-            farm.Tiles[cx, cy].plantObject = null;
+            Destroy(farmManager.Tiles[cx, cy].plantObject);
+            farmManager.Tiles[cx, cy].plantObject = null;
         }
     }
 
@@ -416,8 +405,8 @@ public class PlantManager : MonoBehaviour
             for (int y = 0; y < size; y++)
             {
                 int cx = start.x + x, cy = start.y + y;
-                if (!farm.IsInGrid(cx, cy)) return false;
-                if (farm.Tiles[cx, cy].state != SoilState.Dug) return false;
+                if (!farmManager.IsInGrid(cx, cy)) return false;
+                if (farmManager.Tiles[cx, cy].state != SoilState.Dug) return false;
             }
         return true;
     }
@@ -431,10 +420,10 @@ public class PlantManager : MonoBehaviour
 
     public void ClearPlants()
     {
-        for (int x = 0; x < farm.gridWidth; x++)
-            for (int y = 0; y < farm.gridHeight; y++)
+        for (int x = 0; x < farmManager.gridWidth; x++)
+            for (int y = 0; y < farmManager.gridHeight; y++)
             {
-                var t = farm.Tiles[x, y];
+                var t = farmManager.Tiles[x, y];
                 if (t.plantObject) { GameObject.Destroy(t.plantObject); t.plantObject = null; }
                 t.plantInstance = null;
                 if (t.state == SoilState.Planted) t.state = SoilState.Dug;
@@ -444,7 +433,7 @@ public class PlantManager : MonoBehaviour
 
     public void AddPlantFromSave(PlantSave p)
     {
-        var pd = farm.plantDatabase ? farm.plantDatabase.GetPlantData(p.type) : null;
+        var pd = farmManager.plantDatabase ? farmManager.plantDatabase.GetPlantData(p.type) : null;
         if (pd == null) return;
 
         int size = p.size;
@@ -462,21 +451,21 @@ public class PlantManager : MonoBehaviour
             for (int dy = 0; dy < size; dy++)
             {
                 int tx = startX + dx, ty = startY + dy;
-                if (!farm.IsInGrid(tx, ty)) continue;
-                farm.Tiles[tx, ty].state = SoilState.Planted;
-                farm.Tiles[tx, ty].plantInstance = inst;
+                if (!farmManager.IsInGrid(tx, ty)) continue;
+                farmManager.Tiles[tx, ty].state = SoilState.Planted;
+                farmManager.Tiles[tx, ty].plantInstance = inst;
             }
 
         var prefab = GetPrefabFor(inst, p.stage);
-        if (prefab && farm.IsInGrid(p.centerX, p.centerY))
+        if (prefab && farmManager.IsInGrid(p.centerX, p.centerY))
         {
-            Vector3 pos = farm.origin + new Vector3(
-                (startX + size * 0.5f) * farm.cellSize, 0.45f,
-                (startY + size * 0.5f) * farm.cellSize
+            Vector3 pos = farmManager.origin + new Vector3(
+                (startX + size * 0.5f) * farmManager.cellSize, 0.45f,
+                (startY + size * 0.5f) * farmManager.cellSize
             );
-            if (farm.Tiles[p.centerX, p.centerY].plantObject)
-                GameObject.Destroy(farm.Tiles[p.centerX, p.centerY].plantObject);
-            farm.Tiles[p.centerX, p.centerY].plantObject = GameObject.Instantiate(prefab, pos, Quaternion.identity);
+            if (farmManager.Tiles[p.centerX, p.centerY].plantObject)
+                GameObject.Destroy(farmManager.Tiles[p.centerX, p.centerY].plantObject);
+            farmManager.Tiles[p.centerX, p.centerY].plantObject = GameObject.Instantiate(prefab, pos, Quaternion.identity);
         }
 
         _plantSaves.Add(p);

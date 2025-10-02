@@ -3,14 +3,13 @@ using UnityEngine;
 
 public class SoilManager : MonoBehaviour
 {
-    public static SoilManager Instance { get; private set; }
-
     [Header("Raycast")]
     public LayerMask gridMask;
 
     [Header("Prefabs đất")]
     public GameObject dugSoilPrefab;  // luống 5x5
     public GameObject holePrefab;     // hố 3x3
+    public GameObject sprinklerPrefab; //máy tưới
 
     [Header("Ghost")]
     public GameObject ghostPlotPrefab;
@@ -35,13 +34,6 @@ public class SoilManager : MonoBehaviour
     private readonly List<GameObject> _areaObjects = new();
     private readonly HashSet<int> _wateredAreaIdx = new();
     private readonly List<Sprinkler> _sprinklers = new();
-
-
-    private void Awake()
-    {
-        if (Instance != null && Instance != this) { Destroy(gameObject); return; }
-        Instance = this;
-    }
 
     public void Initialize(FarmManager f)
     {
@@ -427,12 +419,12 @@ public class SoilManager : MonoBehaviour
         }
     }
 
-    public void RegisterSprinkler(Sprinkler s)
+    public void GetSprinklers(Sprinkler s)
     {
         if (s != null && !_sprinklers.Contains(s))
             _sprinklers.Add(s);
     }
-    public void UnregisterSprinkler(Sprinkler s)
+    public void RemoveSprinklers(Sprinkler s)
     {
         if (s != null) _sprinklers.Remove(s);
     }
@@ -461,6 +453,8 @@ public class SoilManager : MonoBehaviour
 
     // ===== Save =====
     public List<AreaSave> GetAreas() => _areaSaves;
+  
+
     public void ClearAreas()
     {
         foreach (var go in _areaObjects) if (go) Destroy(go);
@@ -475,4 +469,94 @@ public class SoilManager : MonoBehaviour
             }
     }
     public void AddAreaFromSave(AreaSave a) => PlaceArea(a.startX, a.startY, a.size);
+
+    public void ClearSprinklers(bool destroyGameObjects = true)
+    {
+        if (destroyGameObjects)
+        {
+            foreach (var s in _sprinklers)
+                if (s != null) Destroy(s.gameObject);
+        }
+        _sprinklers.Clear();
+    }
+
+    public List<SprinklerSave> GetSprinklerSaves()
+    {
+        var list = new List<SprinklerSave>();
+        foreach (var s in _sprinklers)
+        {
+            if (s == null) continue;
+            list.Add(new SprinklerSave { gridX = s.gridX, gridY = s.gridY, halfRange = s.halfRange });
+        }
+        return list;
+    }
+
+    public void AddSprinklerFromSave(SprinklerSave ss)
+    {
+        // tái tạo sprinkler dưới Farm này
+        GameObject go;
+        if (sprinklerPrefab != null)
+        {
+            Vector3 pos = farm.origin + new Vector3(
+                (ss.gridX + 0.5f) * farm.cellSize,
+                0f,
+                (ss.gridY + 0.5f) * farm.cellSize
+            );
+            go = Instantiate(sprinklerPrefab, pos, Quaternion.identity, transform);
+        }
+        else
+        {
+            // fallback: tạo object rỗng có component Sprinkler
+            go = new GameObject($"Sprinkler_{ss.gridX}_{ss.gridY}");
+            go.transform.SetParent(transform, worldPositionStays: false);
+        }
+
+        var s = go.GetComponent<Sprinkler>();
+        if (!s) s = go.AddComponent<Sprinkler>();
+        s.Init(ss.gridX, ss.gridY, ss.halfRange);
+        GetSprinklers(s); 
+    }
+    // --- Water of the day ---
+    // Lưu ở dạng “center của vùng đã tưới” để khôi phục overlay đúng vùng
+    public List<Vector2Int> GetWateredCenters()
+    {
+        var res = new List<Vector2Int>();
+        foreach (var idx in _wateredAreaIdx)
+        {
+            if (idx < 0 || idx >= _areaSaves.Count) continue;
+            var a = _areaSaves[idx];
+            int cx = a.startX + a.size / 2;
+            int cy = a.startY + a.size / 2;
+            res.Add(new Vector2Int(cx, cy));
+        }
+        return res;
+    }
+
+    public void ApplyWateredCenters(List<Vector2Int> centers)
+    {
+        if (centers == null) return;
+        // dọn trước
+        ResetDailyWater();
+
+        // bật lại overlay theo danh sách center
+        for (int i = 0; i < _areaSaves.Count; i++)
+        {
+            var a = _areaSaves[i];
+            int cx = a.startX + a.size / 2;
+            int cy = a.startY + a.size / 2;
+
+            // có trong danh sách -> bật overlay + mark watered
+            if (centers.Contains(new Vector2Int(cx, cy)))
+            {
+                SetAreaWaterOverlay(i, true);
+                _wateredAreaIdx.Add(i);
+                SetAreaHole(i, false);
+            }
+        }
+    }
+
+    public void ClearWatered()
+    {
+        ResetDailyWater();
+    }
 }

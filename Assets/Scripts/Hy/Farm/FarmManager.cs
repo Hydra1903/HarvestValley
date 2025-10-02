@@ -18,6 +18,10 @@ public class FarmManager : MonoBehaviour
     public Tile[,] Tiles { get; private set; }
     private FarmSaveSystem _save;
 
+    public SoilManager soilManager;
+    public PlantManager plantManager;
+    public FarmInput farmInputManager;
+
     public FarmGridSave BuildSave() => _save.BuildSave();
     public void LoadFromSave(FarmGridSave s) => _save.LoadFromSave(s);
 
@@ -25,22 +29,29 @@ public class FarmManager : MonoBehaviour
     {
         if (!hotbarUI) hotbarUI = FindFirstObjectByType<HotBarUI>();
         if (!plantDatabase) plantDatabase = FindFirstObjectByType<PlantDatabase>();
+      
     }
 
     private void Start()
     {
         AllocateTiles(gridWidth, gridHeight);
-        SoilManager.Instance.Initialize(this);
-        PlantManager.Instance.Initialize(this, SoilManager.Instance);
+        soilManager.Initialize(this);
+        plantManager.Initialize(this, soilManager);
+
+        _save = GetComponent<FarmSaveSystem>();
+        if (_save == null) _save = gameObject.AddComponent<FarmSaveSystem>();
+        _save.Initialize(this);
+        _save.soilManager = soilManager;
+        _save.plantManager = plantManager;
     }
 
     private void Update()
     {
-        GetComponent<FarmInput>().HandleInput(this, SoilManager.Instance, PlantManager.Instance);
+        farmInputManager.HandleInput();
 
         if (Input.GetKeyDown(KeyCode.N))
         {
-            PlantManager.Instance.AdvanceDay();
+            plantManager.AdvanceDay();
         }
 
     }

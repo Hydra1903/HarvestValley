@@ -24,6 +24,13 @@ public class PlantSave
 }
 
 [Serializable]
+public class SprinklerSave
+{
+    public int gridX, gridY;
+    public int halfRange;
+}
+
+[Serializable]
 public class FarmGridSave
 {
     public string gridId;
@@ -33,6 +40,8 @@ public class FarmGridSave
     public Vector3 origin;
     public List<AreaSave> areas = new();
     public List<PlantSave> plants = new();
+    public List<SprinklerSave> sprinklers = new();  
+    public List<Vector2Int> wateredCenters = new();
 }
 
 [Serializable]
