@@ -89643,6 +89643,7 @@ MonoBehaviour:
   item2: {fileID: 11400000, guid: c99fdb3ada8497a49804f0ed71998657, type: 2}
   item3: {fileID: 11400000, guid: 018d6c8abe0be5647afe10f574b0a4c9, type: 2}
   item4: {fileID: 11400000, guid: 45e9c042afd316f4ea869c7a9ca9b2f5, type: 2}
+  item5: {fileID: 0}
 --- !u!1 &2166464992094708155
 GameObject:
   m_ObjectHideFlags: 0
@@ -204131,6 +204132,9 @@ MonoBehaviour:
   dragIcon: {fileID: 6114347014120548608}
   dragQuantityText: {fileID: 2163129563890899237}
   dragItem: {fileID: 7618012047369583834}
+  item:
+    itemData: {fileID: 0}
+    quantity: 0
   capacity: 0
   capacityText: {fileID: 8504302896855542098}
 --- !u!114 &152606326874993726
@@ -225482,7 +225486,6 @@ MonoBehaviour:
     m_LineSpacing: 1
   m_Text: 9
 <<<<<<< HEAD
-<<<<<<< HEAD
 =======
 --- !u!1 &5391960187889890558
 GameObject:
@@ -225610,8 +225613,6 @@ MonoBehaviour:
   columns: 1
   limitCapacity: 10
 >>>>>>> parent of 2c27ce8 (up)
-=======
->>>>>>> parent of 17c2ea8 (Success Fix Bugged)
 --- !u!1 &5394546378800170186
 GameObject:
   m_ObjectHideFlags: 0
@@ -271563,7 +271564,6 @@ MonoBehaviour:
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
 <<<<<<< HEAD
-<<<<<<< HEAD
 =======
 --- !u!1 &6476595393318394876
 GameObject:
@@ -271702,8 +271702,6 @@ MonoBehaviour:
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
 >>>>>>> parent of 2c27ce8 (up)
-=======
->>>>>>> parent of 17c2ea8 (Success Fix Bugged)
 --- !u!1 &6478621488319303822
 GameObject:
   m_ObjectHideFlags: 0
@@ -331927,7 +331925,6 @@ MonoBehaviour:
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
 <<<<<<< HEAD
-<<<<<<< HEAD
 =======
 --- !u!1 &7872160771107864984
 GameObject:
@@ -332135,8 +332132,6 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
 >>>>>>> parent of 2c27ce8 (up)
-=======
->>>>>>> parent of 17c2ea8 (Success Fix Bugged)
 --- !u!1 &7880955749024054180
 GameObject:
   m_ObjectHideFlags: 0
