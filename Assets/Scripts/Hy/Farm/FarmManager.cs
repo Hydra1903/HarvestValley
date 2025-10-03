@@ -52,8 +52,13 @@ public class FarmManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.N))
         {
             plantManager.AdvanceDay();
+            GameTime.Instance.NextDay();
         }
 
+        if(Weather.Instance.currentWeather == WeatherState.Rainy || Weather.Instance.currentWeather == WeatherState.Stormy)
+        {
+            soilManager.WaterAllAreas();
+        }
     }
 
     // === Helpers chung ===
@@ -78,7 +83,7 @@ public class FarmManager : MonoBehaviour
         return new Vector2Int(x, y);
     }
 
-    //Kiểm tra có nằm trong lươ
+    //Kiểm tra có nằm trong luoi
     public bool IsInGrid(int x, int y) => x >= 0 && x < gridWidth && y >= 0 && y < gridHeight;
 
     public bool IsWorldPointInsideThisGrid(Vector3 worldPos)
