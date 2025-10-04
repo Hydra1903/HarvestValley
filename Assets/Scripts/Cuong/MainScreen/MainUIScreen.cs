@@ -4,7 +4,9 @@ using UnityEngine.UI;
 using System.Collections;
 using System.Globalization;
 using NUnit.Framework.Interfaces;
-
+using UnityEngine.Localization;
+using UnityEngine.Localization.Settings;
+using System.Threading.Tasks;
 
 public class MainUIScreen : MonoBehaviour
 {
@@ -156,10 +158,11 @@ public class MainUIScreen : MonoBehaviour
     #endregion
 
     #region ----- TIME UI -----
-    public void UpdateTime()
+    public async void UpdateTime()
     {
         textTime.text = $"{GameTime.Instance.hour}:{GameTime.Instance.minute:00}";
-        textDay.text = "Ngày " + GameTime.Instance.day.ToString();
+        string day = await LocalizationSettings.StringDatabase.GetLocalizedStringAsync("UI_MainScreen", "TEXT_Day").Task;
+        textDay.text = day +" "+ GameTime.Instance.day.ToString();
     }
     public void UpdateIconTimeOfDay()
     {
@@ -262,14 +265,15 @@ public class MainUIScreen : MonoBehaviour
         }
     }
 
-    public void UpdateWeatherTimeline()
+    public async void UpdateWeatherTimeline()
     {
         WeatherSchedule weatherScheduleOfDay = Weather.Instance.listWeatherOfMonth[GameTime.Instance.day - 1];
 
         if (weatherScheduleOfDay.weather == WeatherState.Clear)
         {
             textTimeline1.text = "6h - 24h";
-            textTimeline2.text = "Không";
+            string none = await LocalizationSettings.StringDatabase.GetLocalizedStringAsync("UI_MainScreen", "TEXT_None").Task;
+            textTimeline2.text = none;
         }
         else if (weatherScheduleOfDay.weather == WeatherState.Rainy)
         {

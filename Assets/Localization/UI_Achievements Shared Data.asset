@@ -1,0 +1,372 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b11a58205ec3474ca216360e9fa74a8, type: 3}
+  m_Name: UI_Achievements Shared Data
+  m_EditorClassIdentifier: 
+  m_TableCollectionName: UI_Achievements
+  m_TableCollectionNameGuidString: b2ed50873b42bb84f84d3ff5b522009b
+  m_Entries:
+  - m_Id: 5765779456
+    m_Key: TEXT_Achievements
+    m_Metadata:
+      m_Items: []
+  - m_Id: 66163757056
+    m_Key: TEXT_Requirement
+    m_Metadata:
+      m_Items: []
+  - m_Id: 297437679616
+    m_Key: TEXT_Reward
+    m_Metadata:
+      m_Items: []
+  - m_Id: 385039912960
+    m_Key: TEXT_First Seed
+    m_Metadata:
+      m_Items: []
+  - m_Id: 509740765184
+    m_Key: TEXT_First Seed*
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1010502914048
+    m_Key: TEXT_Harvest I
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1038940295168
+    m_Key: TEXT_Harvest I*
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1423910293504
+    m_Key: TEXT_Harvest II
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1482081095680
+    m_Key: TEXT_Harvest II*
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1582081691648
+    m_Key: TEXT_Harvest III
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1633319309312
+    m_Key: TEXT_Harvest III*
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1707940171776
+    m_Key: TEXT_Botanist I
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1840597618688
+    m_Key: TEXT_Botanist I*
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2088573259776
+    m_Key: TEXT_Botanist II
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2154058928128
+    m_Key: TEXT_Botanist II*
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2313677361152
+    m_Key: TEXT_Botanist III
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2346707505152
+    m_Key: TEXT_Botanist III*
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5405684715520
+    m_Key: TEXT_Diligent I
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5624623190016
+    m_Key: TEXT_Diligent I*
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5790843457536
+    m_Key: TEXT_Diligent II
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5832144769024
+    m_Key: TEXT_Diligent II*
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6103465906176
+    m_Key: TEXT_Diligent III
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6125704105984
+    m_Key: TEXT_Diligent III*
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6917978771456
+    m_Key: TEXT_Hydroponics Expert I
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7014460346368
+    m_Key: TEXT_Hydroponics Expert I*
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7240541720576
+    m_Key: TEXT_Hydroponics Expert II
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7287098494976
+    m_Key: TEXT_Hydroponics Expert II*
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7372972675072
+    m_Key: TEXT_Livestock Farmer I
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7504090812416
+    m_Key: TEXT_Livestock Farmer I*
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7881922105344
+    m_Key: TEXT_Livestock Farmer II
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7915736584192
+    m_Key: TEXT_Livestock Farmer II*
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8004920070144
+    m_Key: TEXT_Livestock Farmer III
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8006551654400
+    m_Key: TEXT_Livestock Farmer III*
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10780152614912
+    m_Key: 'TEXT_First Market Sale '
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8223447502848
+    m_Key: TEXT_First Market Sale*
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8420399435776
+    m_Key: TEXT_Profit Maker I
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8644501098496
+    m_Key: TEXT_Profit Maker I*
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8655070744576
+    m_Key: TEXT_Profit Maker II
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8688541290496
+    m_Key: TEXT_ Profit Maker II*
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9232467021824
+    m_Key: TEXT_Profit Maker III
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9315476492288
+    m_Key: TEXT_Profit Maker III*
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30319221329920
+    m_Key: TEXT_Sweet Fruit I
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30452784746496
+    m_Key: TEXT_Sweet Fruit I*
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30582074167296
+    m_Key: TEXT_Sweet Fruit II
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30603498672128
+    m_Key: TEXT_Sweet Fruit II*
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30616488431616
+    m_Key: TEXT_Sweet Fruit III
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30642186932224
+    m_Key: TEXT_Sweet Fruit III*
+    m_Metadata:
+      m_Items: []
+  - m_Id: 31087907229696
+    m_Key: TEXT_Development I
+    m_Metadata:
+      m_Items: []
+  - m_Id: 31148741414912
+    m_Key: TEXT_Development I*
+    m_Metadata:
+      m_Items: []
+  - m_Id: 31239745228800
+    m_Key: TEXT_Development II
+    m_Metadata:
+      m_Items: []
+  - m_Id: 31573699907584
+    m_Key: TEXT_Development II*
+    m_Metadata:
+      m_Items: []
+  - m_Id: 31665198649344
+    m_Key: TEXT_Development III
+    m_Metadata:
+      m_Items: []
+  - m_Id: 31735667150848
+    m_Key: TEXT_Development III*
+    m_Metadata:
+      m_Items: []
+  - m_Id: 31853661310976
+    m_Key: TEXT_New Year
+    m_Metadata:
+      m_Items: []
+  - m_Id: 31936398151680
+    m_Key: TEXT_New Year*
+    m_Metadata:
+      m_Items: []
+  - m_Id: 32025011212288
+    m_Key: TEXT_Automation
+    m_Metadata:
+      m_Items: []
+  - m_Id: 32269836931072
+    m_Key: TEXT_Automation*
+    m_Metadata:
+      m_Items: []
+  - m_Id: 32515426013184
+    m_Key: TEXT_Into the Greenhouse
+    m_Metadata:
+      m_Items: []
+  - m_Id: 32690924081152
+    m_Key: TEXT_Into the Greenhouse*
+    m_Metadata:
+      m_Items: []
+  - m_Id: 35617310953472
+    m_Key: TEXT_Veteran I
+    m_Metadata:
+      m_Items: []
+  - m_Id: 38926092521472
+    m_Key: TEXT_Veteran I*
+    m_Metadata:
+      m_Items: []
+  - m_Id: 39034116820992
+    m_Key: TEXT_Veteran II
+    m_Metadata:
+      m_Items: []
+  - m_Id: 39091490705408
+    m_Key: TEXT_Veteran II*
+    m_Metadata:
+      m_Items: []
+  - m_Id: 39298576076800
+    m_Key: TEXT_Athlete I
+    m_Metadata:
+      m_Items: []
+  - m_Id: 39651459649536
+    m_Key: TEXT_Athlete I*
+    m_Metadata:
+      m_Items: []
+  - m_Id: 39674012422144
+    m_Key: TEXT_Athlete II
+    m_Metadata:
+      m_Items: []
+  - m_Id: 39979936567296
+    m_Key: TEXT_Athlete II*
+    m_Metadata:
+      m_Items: []
+  - m_Id: 40064867028992
+    m_Key: TEXT_Athlete III
+    m_Metadata:
+      m_Items: []
+  - m_Id: 40119288123392
+    m_Key: TEXT_Athlete III*
+    m_Metadata:
+      m_Items: []
+  - m_Id: 40190792617984
+    m_Key: TEXT_Tycoon I
+    m_Metadata:
+      m_Items: []
+  - m_Id: 40379121061888
+    m_Key: TEXT_Tycoon I*
+    m_Metadata:
+      m_Items: []
+  - m_Id: 40578904150016
+    m_Key: TEXT_Tycoon II
+    m_Metadata:
+      m_Items: []
+  - m_Id: 40615587532800
+    m_Key: TEXT_Tycoon II*
+    m_Metadata:
+      m_Items: []
+  - m_Id: 40744528826368
+    m_Key: TEXT_Tycoon III
+    m_Metadata:
+      m_Items: []
+  - m_Id: 40786367008768
+    m_Key: TEXT_Tycoon III*
+    m_Metadata:
+      m_Items: []
+  - m_Id: 44320521113600
+    m_Key: TEXT_Statistics
+    m_Metadata:
+      m_Items: []
+  - m_Id: 44382160605184
+    m_Key: TEXT_Harvested Crops
+    m_Metadata:
+      m_Items: []
+  - m_Id: 44472191340544
+    m_Key: TEXT_Types of Crops Planted
+    m_Metadata:
+      m_Items: []
+  - m_Id: 44552214466560
+    m_Key: TEXT_Times Watered
+    m_Metadata:
+      m_Items: []
+  - m_Id: 44633122590720
+    m_Key: TEXT_Greenhouse Crops Harvested
+    m_Metadata:
+      m_Items: []
+  - m_Id: 44730203951104
+    m_Key: TEXT_Animal Products Collected
+    m_Metadata:
+      m_Items: []
+  - m_Id: 44795979026432
+    m_Key: TEXT_Farm Products Sold
+    m_Metadata:
+      m_Items: []
+  - m_Id: 44884780830720
+    m_Key: TEXT_Perennial Harvests
+    m_Metadata:
+      m_Items: []
+  - m_Id: 44951122137088
+    m_Key: TEXT_Buildings Upgraded or Unlocked
+    m_Metadata:
+      m_Items: []
+  - m_Id: 45016930766848
+    m_Key: TEXT_Stamina Used
+    m_Metadata:
+      m_Items: []
+  - m_Id: 45074560503808
+    m_Key: TEXT_Total Money Earned
+    m_Metadata:
+      m_Items: []
+  m_Metadata:
+    m_Items: []
+  m_KeyGenerator:
+    rid: 204902886355501141
+  references:
+    version: 2
+    RefIds:
+    - rid: 204902886355501141
+      type: {class: DistributedUIDGenerator, ns: UnityEngine.Localization.Tables, asm: Unity.Localization}
+      data:
+        m_CustomEpoch: 1759570745169
