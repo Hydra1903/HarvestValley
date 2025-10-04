@@ -72,7 +72,7 @@ public class LiveStockSeller : MonoBehaviour
         }
         if (!selectedPen.CanSpawnMore())
         {
-            Notification.Instance.ShowNotification("Chuồng Nuôi Đã Đầy!");
+            Notification.Instance.ShowNotification("Chuồng Nuôi Đã Đầys!");
             confirmPanel.SetActive(false);
             return;
         }

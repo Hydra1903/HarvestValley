@@ -13,7 +13,7 @@ public class UIManager : MonoBehaviour
     {
         if (Instance == null) Instance = this;
 
-        UIView[] allViews = Object.FindObjectsByType<UIView>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        UIView[] allViews = UnityEngine.Object.FindObjectsByType<UIView>(FindObjectsInactive.Include, FindObjectsSortMode.None);
         foreach (var view in allViews)
         {
             if (!views.ContainsKey(view.viewName))
