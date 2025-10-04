@@ -8,7 +8,10 @@ public class StartScreenState : IUIState
     }
     public void Update()
     {
-        
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            MainMenuStateMachine.Instance.ChangeState(MainMenuStateMachine.Instance.settingMainMenuState);
+        }
     }
     public void Exit()
     {

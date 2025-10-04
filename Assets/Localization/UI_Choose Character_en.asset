@@ -1,0 +1,195 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9620f8c34305754d8cc9a7e49e852d9, type: 3}
+  m_Name: UI_Choose Character_en
+  m_EditorClassIdentifier: 
+  m_LocaleId:
+    m_Code: en
+  m_SharedData: {fileID: 11400000, guid: d57fcf702077ea64f88e997022b0f6a7, type: 2}
+  m_Metadata:
+    m_Items: []
+  m_TableData:
+  - m_Id: 40855326720
+    m_Localized: Choose Character
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1718279131136
+    m_Localized: Information
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1978678300672
+    m_Localized: 'Gender: <color=#255>Male</color>'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4180872450048
+    m_Localized: 'Age: <color=#255>31</color>'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4506199445504
+    m_Localized: 'Personality: <color=#255>Agile, introverted</color>'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4915014062080
+    m_Localized: 'Hobbies: <color=#255>Playing games, reading books</color>'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5392753676288
+    m_Localized: 'Occupation: <color=#255>Programmer</color>'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5771126034432
+    m_Localized: Abilities
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5940613664768
+    m_Localized: 'Skill: <color=#26663B>Action speed +20%</color>'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6564503801856
+    m_Localized: 'Energy/Stamina: <color=#E06803>100MP</color>'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3902693625856
+    m_Localized: 'Gender: <color=#255>Female</color>'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8894284484608
+    m_Localized: 'Age: <color=#255>29</color>'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8899665776640
+    m_Localized: 'Personality: <color=#255>Romantic, dreamy, delicate</color>'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8902434017280
+    m_Localized: 'Hobbies: <color=#255>Writing novels, raising pets</color>'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8904191430656
+    m_Localized: 'Occupation: <color=#255>Novelist</color>'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8905638465536
+    m_Localized: 'Skill: <color=#26663B>Seed purchase cost -10%</color>'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8907748200448
+    m_Localized: 'Energy/Stamina: <color=#E06803>85MP</color>'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8909606277120
+    m_Localized: 'Age: <color=#255>35</color>'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11865160339456
+    m_Localized: 'Personality: <color=#255>Sophisticated, food lover</color> '
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11866989056000
+    m_Localized: 'Hobbies: <color=#255>Cooking, drinking wine</color>'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11868029243392
+    m_Localized: 'Occupation: <color=#255>Chef</color>'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11869287534592
+    m_Localized: 'Skill: <color=#26663B>+8% profit from selling crops</color>'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11871296606208
+    m_Localized: 'Energy/Stamina: <color=#E06803>110MP</color>'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 13301621379072
+    m_Localized: 'Age: <color=#255>52</color>'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 13306092507136
+    m_Localized: 'Personality: <color=#255>Likes fixing things, smokes</color> '
+    m_Metadata:
+      m_Items: []
+  - m_Id: 13307917029376
+    m_Localized: 'Hobbies: <color=#255>Humorous, creative</color>'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 13309393424384
+    m_Localized: 'Occupation: <color=#255>Engineer</color>'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 13311972921344
+    m_Localized: 'Skill: <color=#26663B>+10% experience gain</color>'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 13313923272704
+    m_Localized: 'Energy/Stamina: <color=#E06803>100MP</color>'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14398440263680
+    m_Localized: 'Age: <color=#255>21</color>'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14400235425792
+    m_Localized: 'Personality: <color=#255>Honest, extroverted</color> '
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14401812484096
+    m_Localized: 'Hobbies: <color=#255>Photography, gardening</color>'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14403477622784
+    m_Localized: 'Occupation: <color=#255>Botanist</color>'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14405641883648
+    m_Localized: 'Skill: <color=#26663B>15% chance to gain extra harvest</color>'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14407504154624
+    m_Localized: 'Energy/Stamina: <color=#E06803>90MP</color>'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15273422409728
+    m_Localized: 'Age: <color=#255>27</color>'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15275305652224
+    m_Localized: 'Personality: <color=#255>Strong, responsible</color> '
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15278078087168
+    m_Localized: 'Hobbies: <color=#255>Running, watching movies</color>'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15279713865728
+    m_Localized: 'Occupation: <color=#255>Firefighter</color>'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15280972156928
+    m_Localized: 'Skill: <color=#26663B>20% chance to act for free</color>'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15282675044352
+    m_Localized: 'Energy/Stamina: <color=#E06803>130MP</color>'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22401553977344
+    m_Localized: Farm Name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22407753158656
+    m_Localized: Compelete
+    m_Metadata:
+      m_Items: []
+  references:
+    version: 2
+    RefIds: []
