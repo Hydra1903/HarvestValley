@@ -1,0 +1,200 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b11a58205ec3474ca216360e9fa74a8, type: 3}
+  m_Name: UI_Choose Character Shared Data
+  m_EditorClassIdentifier: 
+  m_TableCollectionName: UI_Choose Character
+  m_TableCollectionNameGuidString: d57fcf702077ea64f88e997022b0f6a7
+  m_Entries:
+  - m_Id: 40855326720
+    m_Key: TEXT_Choose Character
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1718279131136
+    m_Key: TEXT_Information
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1978678300672
+    m_Key: TEXT_Gender Male
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3902693625856
+    m_Key: 'TEXT_Gender Female '
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4180872450048
+    m_Key: TEXT_Age Rin
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4506199445504
+    m_Key: TEXT_Personality Rin
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4915014062080
+    m_Key: TEXT_Hobbies Rin
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5392753676288
+    m_Key: 'TEXT_Occupation Rin '
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5771126034432
+    m_Key: 'TEXT_Abilities  '
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5940613664768
+    m_Key: TEXT_Skill Rin
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6564503801856
+    m_Key: TEXT_Energy/Stamina Rin
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8894284484608
+    m_Key: TEXT_Age May
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8899665776640
+    m_Key: TEXT_Personality May
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8902434017280
+    m_Key: TEXT_Hobbies May
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8904191430656
+    m_Key: TEXT_Occupation May
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8905638465536
+    m_Key: TEXT_Skill May
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8907748200448
+    m_Key: TEXT_Energy/Stamina May
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8909606277120
+    m_Key: TEXT_Age Kai
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11865160339456
+    m_Key: TEXT_Personality Kai
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11866989056000
+    m_Key: TEXT_Hobbies Kai
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11868029243392
+    m_Key: 'TEXT_Occupation Kai '
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11869287534592
+    m_Key: TEXT_Skill Kai
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11871296606208
+    m_Key: TEXT_Energy/Stamina Kai
+    m_Metadata:
+      m_Items: []
+  - m_Id: 13301621379072
+    m_Key: TEXT_Age Max
+    m_Metadata:
+      m_Items: []
+  - m_Id: 13306092507136
+    m_Key: TEXT_Personality Max
+    m_Metadata:
+      m_Items: []
+  - m_Id: 13307917029376
+    m_Key: TEXT_Hobbies Max
+    m_Metadata:
+      m_Items: []
+  - m_Id: 13309393424384
+    m_Key: TEXT_Occupation Max
+    m_Metadata:
+      m_Items: []
+  - m_Id: 13311972921344
+    m_Key: TEXT_Skill Max
+    m_Metadata:
+      m_Items: []
+  - m_Id: 13313923272704
+    m_Key: TEXT_Energy/Stamina Max
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14398440263680
+    m_Key: 'TEXT_Age Hana '
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14400235425792
+    m_Key: TEXT_Personality Hana
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14401812484096
+    m_Key: TEXT_Hobbies Hana
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14403477622784
+    m_Key: TEXT_Occupation Hana
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14405641883648
+    m_Key: TEXT_Skill Hana
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14407504154624
+    m_Key: TEXT_Energy/Stamina Hana
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15273422409728
+    m_Key: TEXT_Age Leon
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15275305652224
+    m_Key: TEXT_Personality Leon
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15278078087168
+    m_Key: TEXT_Hobbies Leon
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15279713865728
+    m_Key: TEXT_Occupation Leon
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15280972156928
+    m_Key: TEXT_Skill Leon
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15282675044352
+    m_Key: TEXT_Energy/Stamina Leon
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22401553977344
+    m_Key: TEXT_Farm Name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22407753158656
+    m_Key: BTN_Compelete
+    m_Metadata:
+      m_Items: []
+  m_Metadata:
+    m_Items: []
+  m_KeyGenerator:
+    rid: 204902862500397057
+  references:
+    version: 2
+    RefIds:
+    - rid: 204902862500397057
+      type: {class: DistributedUIDGenerator, ns: UnityEngine.Localization.Tables, asm: Unity.Localization}
+      data:
+        m_CustomEpoch: 1759474907281
