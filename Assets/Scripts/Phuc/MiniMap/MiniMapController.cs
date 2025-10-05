@@ -107,12 +107,12 @@ public class MiniMapController : MonoBehaviour
         // Icon cho minimap
         var minimapIcon = Instantiate(minimapIconPrefab, miniMapContent);
         minimapIcon.Image.sprite = miniMapWorldObject.MinimapIcon;
-        minimapIcon.RectTransform.sizeDelta = new Vector2(60, 60); // nh? hõn
+        minimapIcon.RectTransform.sizeDelta = new Vector2(70, 70); // nh? hõn
 
         // Icon cho fullmap
         var fullmapIcon = Instantiate(minimapIconPrefab, fullMapContent);
         fullmapIcon.Image.sprite = miniMapWorldObject.MinimapIcon;
-        fullmapIcon.RectTransform.sizeDelta = new Vector2(42, 42); // to hõn
+        fullmapIcon.RectTransform.sizeDelta = new Vector2(60, 60); // to hõn
 
         miniMapWorldObjectsLookup[miniMapWorldObject] = new MinimapIconPair(minimapIcon, fullmapIcon);
 
