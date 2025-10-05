@@ -17,8 +17,9 @@ public class AnimalPen : MonoBehaviour
     public int maxAnimals;
 
     private List<(GameObject animal, AnimalData data)> spawnedAnimals
-        = new List<(GameObject, AnimalData)>(); private HashSet<string> allowedTag = new HashSet<string>();
-    public Barn barnReference; 
+        = new List<(GameObject, AnimalData)>();
+    private HashSet<string> allowedTag = new HashSet<string>();
+    public Barn barnReference;
 
     [Header("UI")]
     public TMP_Text animalCountText;
@@ -27,16 +28,18 @@ public class AnimalPen : MonoBehaviour
     public GameObject inventoryPanels;
     public GameObject penInfoPanel;
     public TMP_Text penInfoText;
+    public TMP_Text penQuality;
     public GameObject confirmSellPanel;
     public Button yesButton;
     public Button noButton;
 
     [Header("Animal List UI")]
-    public Transform animalListParent;       
+    public Transform animalListParent;
     public AnimalListUI listUI;
     private List<AnimalInfo> animals = new List<AnimalInfo>();
     public AnimalCellUI[] cells;
     private int pendingSellIndex = -1;
+
     private void Start()
     {
         UpdateAnimalCountUI();
@@ -54,13 +57,14 @@ public class AnimalPen : MonoBehaviour
             if (firstCameraTesting != null)
             {
                 firstCameraTesting.allowMouseLook = true;
-            }        
+            }
         }
         if (sharedInfoPanel != null)
         {
             InfoPanelManager.instance.RegisterPanel(penId, sharedInfoPanel);
         }
     }
+
     private void OnDestroy()
     {
         if (InfoPanelManager.instance != null)
@@ -68,15 +72,15 @@ public class AnimalPen : MonoBehaviour
             InfoPanelManager.instance.UnregisterPanel(penId);
         }
     }
-    public Vector3 GetRandomSpawnPosition()
-{
-    Transform basePoint = Random.value < 0.5f ? spawnPointType1 : spawnPointType2;
-  
-    Vector2 randomOffset = Random.insideUnitCircle * 1.5f;
-    Vector3 spawnPos = basePoint.position + new Vector3(randomOffset.x, 0f, randomOffset.y);
 
-    return spawnPos;    
-}
+    public Vector3 GetRandomSpawnPosition()
+    {
+        Transform basePoint = Random.value < 0.5f ? spawnPointType1 : spawnPointType2;
+        Vector2 randomOffset = Random.insideUnitCircle * 1.5f;
+        Vector3 spawnPos = basePoint.position + new Vector3(randomOffset.x, 0f, randomOffset.y);
+        return spawnPos;
+    }
+
     public bool CanSpawnMore() => spawnedAnimals.Count < maxAnimals;
 
     public bool RegisterAnimal(GameObject animal, AnimalData data)
@@ -90,7 +94,7 @@ public class AnimalPen : MonoBehaviour
         {
             Notification.Instance.ShowNotification($"Chu?ng Nuôi {penId} ch? ch?p nh?n {string.Join(",", allowedTag)}, không th? thêm {tag}!");
             Destroy(animal);
-            return false; 
+            return false;
         }
         spawnedAnimals.Add((animal, data));
         UpdateAnimalCells();
@@ -106,6 +110,7 @@ public class AnimalPen : MonoBehaviour
         }
         return true;
     }
+
     public void RemoveAnimal(GameObject animal)
     {
         var index = spawnedAnimals.FindIndex(x => x.animal == animal);
@@ -141,16 +146,54 @@ public class AnimalPen : MonoBehaviour
             animalCountText.text = countText;
 
         if (penInfoText != null)
-            penInfoText.text = "" + countText;
+            penInfoText.text = countText;
+
+        // ð?ng b? t?nh tr?ng ãn u?ng
+        UpdateAnimalFeedStatusUI();
     }
-    public bool IsAllowedTag(string tag)
+
+    public void UpdateAnimalFeedStatusUI()
     {
-        return allowedTag.Contains(tag);
+        bool allGood = true;
+
+        foreach (var (animal, data) in spawnedAnimals)
+        {
+            if (animal == null) continue;
+            var feeding = animal.GetComponent<AnimalFedding>();
+            if (feeding == null) continue;
+
+            if (feeding.animalType == AnimalFedding.AnimalType.Sheep)
+            {
+                if (!feeding.HasEatenToday())
+                {
+                    allGood = false;
+                    break;
+                }
+            }
+            else if (feeding.animalType == AnimalFedding.AnimalType.Goat)
+            {
+                if (feeding.GetMealsToday() < 2)
+                {
+                    allGood = false;
+                    break;
+                }
+            }
+        }
+
+        string statusText = allGood && spawnedAnimals.Count > 0 ? "Good" : "Bad";
+        Color statusColor = allGood && spawnedAnimals.Count > 0 ? Color.green : Color.red;
+        if (penQuality != null)
+        {
+            penQuality.text = statusText;
+            penQuality.color = statusColor;
+
+        }
     }
-    public bool HasAssignedType()
-    {
-        return allowedTag.Count > 0;
-    }
+
+    public bool IsAllowedTag(string tag) => allowedTag.Contains(tag);
+
+    public bool HasAssignedType() => allowedTag.Count > 0;
+
     public void ShowPenInfo(bool show)
     {
         if (penInfoPanel != null)
@@ -158,15 +201,13 @@ public class AnimalPen : MonoBehaviour
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
             if (playerAxisController != null)
-            {
                 playerAxisController.enabled = false;
-            }
             if (firstCameraTesting != null)
-            {
                 firstCameraTesting.allowMouseLook = false;
-            }
+
             penInfoPanel.SetActive(show);
             inventoryPanels.SetActive(show);
+
             if (show)
             {
                 UpdateAnimalCountUI();
@@ -185,6 +226,7 @@ public class AnimalPen : MonoBehaviour
             }
         }
     }
+
     public void ShowConfirmSell(int cellIndex, string animalName)
     {
         if (confirmSellPanel == null) return;
@@ -225,24 +267,24 @@ public class AnimalPen : MonoBehaviour
         UpdateAnimalCountUI();
         UpdateAnimalCells();
 
-        //N?u không c?n con nào trong pen -> reset tag
         if (spawnedAnimals.Count == 0)
         {
             allowedTag.Clear();
         }
     }
 
-
     public void AddAnimal(AnimalInfo animal)
     {
         animals.Add(animal);
         listUI.Refresh(animals);
     }
+
     public void RemoveAnimal(AnimalInfo animal)
     {
         animals.Remove(animal);
         listUI.Refresh(animals);
     }
+
     private void OnTriggerExit(Collider other)
     {
         if (other.CompareTag("Player"))

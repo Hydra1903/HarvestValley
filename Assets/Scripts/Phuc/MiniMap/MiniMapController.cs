@@ -107,7 +107,7 @@ public class MiniMapController : MonoBehaviour
         // Icon cho minimap
         var minimapIcon = Instantiate(minimapIconPrefab, miniMapContent);
         minimapIcon.Image.sprite = miniMapWorldObject.MinimapIcon;
-        minimapIcon.RectTransform.sizeDelta = new Vector2(70, 70); // nh? hõn
+        minimapIcon.RectTransform.sizeDelta = new Vector2(70, 70); // nho hõn
 
         // Icon cho fullmap
         var fullmapIcon = Instantiate(minimapIconPrefab, fullMapContent);
@@ -118,12 +118,10 @@ public class MiniMapController : MonoBehaviour
 
         if (followObject)
         {
-            // follow luôn c? 2 icon
             followMiniIcon = minimapIcon;
             followFullIcon = fullmapIcon;
         }
     }
-
 
     public void RemoveMinimapWorldObject(MinimapWorld minimapWorldObject)
     {
@@ -228,7 +226,17 @@ public class MiniMapController : MonoBehaviour
             mapPosition.y = Mathf.Clamp(mapPosition.y, -miniSize.y, miniSize.y);
 
             pair.miniIcon.RectTransform.anchoredPosition = mapPosition;
-            pair.miniIcon.RectTransform.localScale = Vector3.one * scaleFactor; 
+            pair.miniIcon.RectTransform.localScale = Vector3.one * scaleFactor;
+            if (miniMapWorldObject.isPlayer && pair.miniIcon.ViewCone != null)
+            {
+                float angle = -miniMapWorldObject.transform.eulerAngles.y;
+                pair.miniIcon.ViewCone.localRotation = Quaternion.Euler(0, 0, angle);
+            }
+            if (pair.miniIcon.ViewCone != null)
+            {
+                pair.miniIcon.ViewCone.localScale = Vector3.one * scaleFactor;
+                pair.miniIcon.ViewCone.anchoredPosition = Vector2.zero; // gi? ðúng tâm icon
+            }
         }
     }
 
@@ -249,6 +257,17 @@ public class MiniMapController : MonoBehaviour
             pair.fullIcon.RectTransform.anchoredPosition = mapPosition;
             pair.fullIcon.RectTransform.localScale = Vector3.one;
             pair.fullIcon.IconRectTransform.localRotation = Quaternion.identity;
+
+            if (miniMapWorldObject.isPlayer && pair.fullIcon.ViewCone != null)
+            {
+                float angle = -miniMapWorldObject.transform.eulerAngles.y;
+                pair.fullIcon.ViewCone.localRotation = Quaternion.Euler(0, 0, angle);
+            }
+            if (pair.fullIcon.ViewCone != null)
+            {
+                pair.fullIcon.ViewCone.localScale = Vector3.one; // luôn c? ð?nh nhý fullIcon
+                pair.fullIcon.ViewCone.anchoredPosition = Vector2.zero;
+            }
         }
     }
 

@@ -4111,6 +4111,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   followObject: 1
   minimapIcon: {fileID: 21300000, guid: cce7fe947f611aa448627a34fe4e5de5, type: 3}
+  isPlayer: 1
 --- !u!1 &1501555126
 GameObject:
   m_ObjectHideFlags: 0
@@ -5234,6 +5235,17 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1794148831 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 993587169324071126, guid: 435a41237fed0bd43b2e65541818b748, type: 3}
+  m_PrefabInstance: {fileID: 2075339093}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &1803184591 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 122503060298434798, guid: c2400844989821744ab76f158fdb19e8, type: 3}
@@ -5271,7 +5283,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1888270465
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6144,7 +6156,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3108736683627638376, guid: 435a41237fed0bd43b2e65541818b748, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3274426109200916439, guid: 435a41237fed0bd43b2e65541818b748, type: 3}
       propertyPath: m_SizeDelta.x
@@ -6272,7 +6284,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6366842524009762588, guid: 435a41237fed0bd43b2e65541818b748, type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0.48239768
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6366842524009762588, guid: 435a41237fed0bd43b2e65541818b748, type: 3}
       propertyPath: m_AnchorMax.y
@@ -7265,6 +7277,10 @@ PrefabInstance:
       propertyPath: maxAnimals
       value: 4
       objectReference: {fileID: 0}
+    - target: {fileID: 4548241620176688258, guid: c2400844989821744ab76f158fdb19e8, type: 3}
+      propertyPath: penQuality
+      value: 
+      objectReference: {fileID: 1794148831}
     - target: {fileID: 4548241620176688258, guid: c2400844989821744ab76f158fdb19e8, type: 3}
       propertyPath: penInfoText
       value: 

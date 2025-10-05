@@ -7,6 +7,7 @@ public class MinimapWorld : MonoBehaviour
     [SerializeField]
     private Sprite minimapIcon;
     public Sprite MinimapIcon => minimapIcon;
+    public bool isPlayer;
 
     private void Start()
     {

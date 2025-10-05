@@ -41,13 +41,13 @@ public class TestingHarvestAnimal : MonoBehaviour
         if (GameTime.Instance != null)
             GameTime.Instance.OnNextDay -= HandleNextDay;
     }
-    private void HandleNextDay()
+private void HandleNextDay()
+{
+    if (feeding != null && feeding.CanHarvest())
     {
-        if (feeding != null && feeding.CanHarvest())
-        {
-            canHarvest = true;
-        }
+        canHarvest = true;
     }
+}
 
     private void Update()
     {
@@ -76,7 +76,7 @@ public class TestingHarvestAnimal : MonoBehaviour
 
             if (itemToGive != null && playerInventory.AddItem(itemToGive, GetHarvestAmount()))
             {
-                Debug.Log($"Succes harvest {itemToGive.itemName} from {animalType}");
+                Notification.Instance.ShowNotification($"+1 {itemToGive.itemName} from {animalType}");
                 feeding.ResetHarvest();
                 canHarvest = false;
 
@@ -85,12 +85,15 @@ public class TestingHarvestAnimal : MonoBehaviour
             }
             else
             {
-                Debug.LogWarning("Inventory full ho?c không th? thêm item này.");
+
+                Notification.Instance.ShowNotification("Inventory full ho?c không th? thêm item này.");
             }
         }
         else
         {
-            Debug.Log("Ch?a ?? ?i?u ki?n ?? thu ho?ch.");
+            int fedDays = feeding != null ? feeding.GetDaysFed() : 0;
+
+            Notification.Instance.ShowNotification($"Chýa ð? ði?u ki?n thu ho?ch. Ngày ð? ãn: {fedDays}");
         }
     }
     private ItemData GetItemDataByType()
