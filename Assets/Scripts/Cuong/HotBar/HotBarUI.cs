@@ -12,7 +12,7 @@ public class HotBarUI : MonoBehaviour
     public int maxValue = 7;
 
     public GameObject[] frameHighlight;
-    private int currentHighlightIndex = 0;
+    public int currentHighlightIndex = 0;
 
     public InventoryItem currentItem;
 
@@ -39,14 +39,14 @@ public class HotBarUI : MonoBehaviour
     void Update()
     {
         float scroll = Input.mouseScrollDelta.y;
-        if (scroll > 0)
+        if (scroll < 0)
         {
             valueScroll++;
             if (valueScroll > maxValue) valueScroll = minValue;
             UpdateCurrentItem(valueScroll);
             UpdateFrameHighlight(valueScroll);
         }
-        else if (scroll < 0)
+        else if (scroll > 0)
         {
             valueScroll--;
             if (valueScroll < minValue) valueScroll = maxValue;

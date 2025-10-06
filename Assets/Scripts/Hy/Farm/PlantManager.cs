@@ -22,7 +22,7 @@ public class PlantManager : MonoBehaviour
         simpleGhostManager.Initialize(ghostMaterial);
     }
 
-    // ===== Hover SEED =====
+    // ===== SEED =====
 
     //Lấy dữ liệu 
     public bool HandleSeedHover(Vector2Int gridPos, InventoryItem seedItem)
@@ -151,6 +151,7 @@ public class PlantManager : MonoBehaviour
         RemovePlantAtCenter(cx, cy);
         int idx = _plantSaves.FindIndex(p => p.centerX == cx && p.centerY == cy);
         if (idx >= 0) _plantSaves.RemoveAt(idx);
+        CharacterStateMachine.Instance.ChangeState(CharacterStateMachine.Instance.harvestLowState);
         return true;
     }
 
@@ -162,12 +163,6 @@ public class PlantManager : MonoBehaviour
 
         // Thời tiết hiện tại
         bool isRainy = Weather.Instance != null && Weather.Instance.currentWeather == WeatherState.Rainy;
-
-        soilManager.ResetDailyWater();      // 1) Xóa trạng thái tưới hôm trước
-
-        if (isRainy) soilManager.WaterAllAreas();  // 2) Mưa hôm nay -> tưới toàn bộ
-
-        soilManager.WaterBySprinklers();    // 3) Máy tưới hoạt động trong ngày
 
         //tăng trưởng khi được tưới
         for (int x = 0; x < farmManager.gridWidth; x++)
@@ -199,6 +194,14 @@ public class PlantManager : MonoBehaviour
                 }
             }
         }
+
+
+
+        soilManager.ResetDailyWater();      // 1) Xóa trạng thái tưới hôm trước
+
+        if (isRainy) soilManager.WaterAllAreas();  // 2) Mưa hôm nay -> tưới toàn bộ
+
+        soilManager.WaterBySprinklers();    // 3) Máy tưới hoạt động trong ngày
     }
 
     // ===== PLANTING =====

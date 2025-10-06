@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using UnityEditor.EditorTools;
 using UnityEngine;
 
 public class SoilManager : MonoBehaviour
@@ -24,6 +25,7 @@ public class SoilManager : MonoBehaviour
     [SerializeField] private string waterChildName = "WaterOverlay"; // tên child trong prefab luống/hố bật
     [SerializeField] private string holeChildName = "Hole"; // tên child tắt
     [SerializeField] private int waterCost = 3; // năng lượng cho mỗi lần tưới (tuỳ bạn)
+    [SerializeField] private int sprinkerRange = 7; // năng lượng cho mỗi lần tưới (tuỳ bạn)
 
     [SerializeField] private Material ghostRed;
     [SerializeField] private Material ghostBlack;
@@ -156,6 +158,7 @@ public class SoilManager : MonoBehaviour
         return true;
     }
 
+  
     //Hàm đào đất
     public void PlaceArea(int startX, int startY, int size)
     {
@@ -346,8 +349,8 @@ public class SoilManager : MonoBehaviour
 
         // bật overlay nước
         SetAreaWaterOverlay(idx, true);
-
         SetAreaHole(idx, false);
+
         bool ok = _wateredAreaIdx.Add(idx);
 
         // trừ năng lượng sau khi thành công
@@ -419,6 +422,37 @@ public class SoilManager : MonoBehaviour
         }
     }
 
+    public bool PlaceSprinkler(Vector2Int gridPos, GameObject prefabOverride, int size = 1)
+    {
+        int startX = gridPos.x;
+        int startY = gridPos.y;
+
+        if (!CanPlaceSprinkler(startX, startY, size)) return false;
+        var usePrefab = prefabOverride != null ? prefabOverride : sprinklerPrefab;
+        if (usePrefab == null) return false;
+
+        int gx = startX + size / 2;
+        int gy = startY + size / 2;
+
+        Vector3 pos = farm.origin + new Vector3(
+            (gx + 0.5f) * farm.cellSize,
+            usePrefab.transform.position.y,
+            (gy + 0.5f) * farm.cellSize
+        );
+
+        var parent = transform; 
+        var go = Instantiate(usePrefab, pos, Quaternion.identity, parent);
+
+        var sp = go.GetComponent<Sprinkler>();
+        if (sp == null) sp = go.AddComponent<Sprinkler>();
+        sp.Init(gx, gy, sprinkerRange);
+
+        GetSprinklers(sp);
+        HideSprinklerGhost();
+
+        return true;
+    }
+
     public void GetSprinklers(Sprinkler s)
     {
         if (s != null && !_sprinklers.Contains(s))
@@ -449,6 +483,30 @@ public class SoilManager : MonoBehaviour
     {
         if (ghostSprinklerInstance != null)
             ghostSprinklerInstance.SetActive(false);
+    }
+
+    private bool IsSprinklerAt(int gx, int gy)
+    {
+        for (int i = 0; i < _sprinklers.Count; i++)
+        {
+            var s = _sprinklers[i];
+            if (s != null && s.gridX == gx && s.gridY == gy)
+                return true;
+        }
+        return false;
+    }
+
+    public bool CanPlaceSprinkler(int startX, int startY, int size)
+    {
+        for (int x = 0; x < size; x++)
+            for (int y = 0; y < size; y++)
+            {
+                int cx = startX + x, cy = startY + y;
+                if (!farm.IsInGrid(cx, cy)) return false;
+                if (farm.Tiles[cx, cy].state == SoilState.Planted || farm.Tiles[cx, cy].plantInstance != null) return false;
+                if (IsSprinklerAt(cx, cy)) return false;
+            }
+        return true;
     }
 
     // ===== Save =====
