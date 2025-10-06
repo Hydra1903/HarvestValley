@@ -19,21 +19,21 @@ public class AnimalFedding : MonoBehaviour
     private bool ateAtMorning = false;    // 7h
     private bool ateAtEvening = false;    // 19h
 
+    private int lastKnownDay = -1;
     private void Start()
     {
-        GameTime.Instance.OnNextDay += HandleNextDay;
+        lastKnownDay = GameTime.Instance.day;
     }
-
-    private void OnDestroy()
-    {
-        if (GameTime.Instance != null)
-            GameTime.Instance.OnNextDay -= HandleNextDay;
-    }
-
     private void Update()
     {
         int hour = GameTime.Instance.hour;
+        int currentDay = GameTime.Instance.day;
 
+        if (currentDay != lastKnownDay)
+        {
+            HandleNextDay();
+            lastKnownDay = currentDay;
+        }
         if (animalType == AnimalType.Goat)
         {
             if (hour >= 7 && !ateAtMorning)
@@ -73,6 +73,7 @@ public class AnimalFedding : MonoBehaviour
             {
                 Notification.Instance.ShowNotification("[Sheep] Hôm nay không ăn, giữ nguyên trạng thái.");
             }
+            sheepAteToday = false;
         }
         else if (animalType == AnimalType.Goat)
         {
@@ -85,14 +86,14 @@ public class AnimalFedding : MonoBehaviour
                     canHarvest = true;
                     Notification.Instance.ShowNotification("[Goat] Có thể thu hoạch!");
                 }
-                mealsToday = 0;
-                ateAtMorning = false;
-                ateAtEvening = false;
             }
             else
             {
                 Notification.Instance.ShowNotification($"[Goat] Ăn chưa đủ (mealsToday = {mealsToday}), giữ nguyên trạng thái.");
             }
+            mealsToday = 0;
+            ateAtMorning = false;
+            ateAtEvening = false;
         }
     }
     private void TryEatSheep()
@@ -103,7 +104,10 @@ public class AnimalFedding : MonoBehaviour
             sheepAteToday = true;
             Notification.Instance.ShowNotification("[Sheep] Đã ăn cỏ hôm nay.");
             var pen = GetComponentInParent<AnimalPen>();
-            pen?.UpdateAnimalFeedStatusUI();
+            if (pen != null)
+            {
+                pen.UpdateAnimalFeedStatusUI();
+            }
         }
     }
     private void TryEatGoatMeal(ref bool mealFlag)
@@ -115,7 +119,10 @@ public class AnimalFedding : MonoBehaviour
             mealFlag = true;
             Notification.Instance.ShowNotification($"[Goat] Ăn cỏ, mealsToday = {mealsToday}");
             var pen = GetComponentInParent<AnimalPen>();
-            pen?.UpdateAnimalFeedStatusUI();
+            if (pen != null)
+            {
+                pen.UpdateAnimalFeedStatusUI();
+            }
         }
     }
     bool HasHay()

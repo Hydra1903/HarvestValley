@@ -10,6 +10,7 @@ public class InfoPanelUI : MonoBehaviour
     [SerializeField] Text productText;
     [SerializeField] Text harvestText;
     [SerializeField] Image iconImage;
+    [SerializeField] Text feedText;
 
     private AnimalInfo currentOwner;
 
@@ -36,6 +37,32 @@ public class InfoPanelUI : MonoBehaviour
         else
         {
             harvestText.text = "Co the thu hoach: -";
+        }
+        if (feeding != null)
+        {
+            switch (feeding.animalType)
+            {
+                case AnimalFedding.AnimalType.Sheep:
+                    feedText.text = feeding.HasEatenToday()
+                        ? "Feeding Quality: Have Eat today"
+                        : "Feeding Quality: Havent Eat Today";
+                    break;
+
+                case AnimalFedding.AnimalType.Goat:
+                    int meals = feeding.GetMealsToday();
+                    feedText.text = $"Feeding Quality: {meals}/2";
+
+                    break;
+
+                default:
+                    feedText.text = "Feeding Quality: Unknow";
+                    feedText.color = Color.gray;
+                    break;
+            }
+        }
+        else
+        {
+            feedText.text = "T?nh tr?ng ãn: -";
         }
         gameObject.SetActive(true);
     }

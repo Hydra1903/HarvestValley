@@ -15,6 +15,7 @@ public class TestingHarvestAnimal : MonoBehaviour
     public enum AnimalType { Sheep_Black, Sheep_White, Sheep_Cream, Goat }
     public AnimalType animalType;
 
+    private int previousDay = -1;
     private AnimalFedding feeding;
     private Inventory playerInventory;
     private bool canHarvest = false;
@@ -34,23 +35,28 @@ public class TestingHarvestAnimal : MonoBehaviour
                 Debug.LogWarning($"Cant Found Barn for Assign {gameObject.name}!");
             }
         }
-        GameTime.Instance.OnNextDay += HandleNextDay;
-    }
-    private void OnDestroy()
-    {
         if (GameTime.Instance != null)
-            GameTime.Instance.OnNextDay -= HandleNextDay;
+            previousDay = GameTime.Instance.day;
     }
 private void HandleNextDay()
 {
-    if (feeding != null && feeding.CanHarvest())
-    {
-        canHarvest = true;
+        Debug.Log($"{gameObject.name} sang ngày m?i: {GameTime.Instance.day}");
+        if (feeding != null && feeding.CanHarvest())
+        {
+            canHarvest = true;
+        }
     }
-}
 
     private void Update()
     {
+        if (GameTime.Instance == null) return;
+
+        if (GameTime.Instance.day != previousDay)
+        {
+            previousDay = GameTime.Instance.day;
+            HandleNextDay(); 
+        }
+
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         if (player == null) return;
 
