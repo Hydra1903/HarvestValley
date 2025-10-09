@@ -12,12 +12,12 @@ public class AnimalFedding : MonoBehaviour
     public int daysFed = 0;
 
     // Sheep
-    private bool sheepAteToday = false;
+    private bool sheepAteToday = false;   // đã ăn trong ngày chưa
 
     // Goat
-    private int mealsToday = 0;
-    private bool ateAtMorning = false;   
-    private bool ateAtEvening = false;   
+    private int mealsToday = 0;           // số bữa đã ăn trong ngày
+    private bool ateAtMorning = false;    // 7h
+    private bool ateAtEvening = false;    // 19h
 
     private int lastKnownDay = -1;
     private void Start()
@@ -196,7 +196,7 @@ public class AnimalFedding : MonoBehaviour
     // Số ngày đã hoàn thành (được tính trong HandleNextDay)
     public int GetDaysFed() => daysFed;
 
-    // Reset flags hàng ngày 
+    // Reset flags hàng ngày (nếu bạn muốn gọi thủ công)
     public void ResetDailyEatFlags()
     {
         sheepAteToday = false;
