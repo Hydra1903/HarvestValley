@@ -44,7 +44,7 @@ public class MiniMapController : MonoBehaviour
 
     [SerializeField] MinimapIcon1 minimapIconPrefab;
 
-    // thay v? 1 matrix, tách ra 2 matrix riêng
+    //Matrix tinh map
     private Matrix4x4 miniMapMatrix;
     private Matrix4x4 fullMapMatrix;
 
@@ -81,14 +81,16 @@ public class MiniMapController : MonoBehaviour
         {
             fullMapPanel.SetActive(!fullMapPanel.activeSelf);
 
-            // chuy?n mode ð? phân bi?t zoom
             if (fullMapPanel.activeSelf)
+            {
                 SetMinimapMode(MinimapMode.Fullscreen);
+            }
             else
+            {
                 SetMinimapMode(MinimapMode.Mini);
+            }
         }
 
-        // ch? cho zoom khi ðang m? fullmap
         if (currentMiniMapMode == MinimapMode.Fullscreen && fullMapPanel.activeSelf)
         {
             float zoom = Input.GetAxis("Mouse ScrollWheel");
@@ -165,8 +167,6 @@ public class MiniMapController : MonoBehaviour
                 scrollViewRectTransform.pivot = halfVector2;
                 scrollViewRectTransform.anchoredPosition = Vector2.zero;
                 currentMiniMapMode = MinimapMode.Fullscreen;
-                Cursor.lockState = CursorLockMode.None;
-                Cursor.visible = true;
                 break;
         }
     }
@@ -235,7 +235,7 @@ public class MiniMapController : MonoBehaviour
             if (pair.miniIcon.ViewCone != null)
             {
                 pair.miniIcon.ViewCone.localScale = Vector3.one * scaleFactor;
-                pair.miniIcon.ViewCone.anchoredPosition = Vector2.zero; // gi? ðúng tâm icon
+                pair.miniIcon.ViewCone.anchoredPosition = Vector2.zero;
             }
         }
     }
@@ -265,7 +265,7 @@ public class MiniMapController : MonoBehaviour
             }
             if (pair.fullIcon.ViewCone != null)
             {
-                pair.fullIcon.ViewCone.localScale = Vector3.one; // luôn c? ð?nh nhý fullIcon
+                pair.fullIcon.ViewCone.localScale = Vector3.one;
                 pair.fullIcon.ViewCone.anchoredPosition = Vector2.zero;
             }
         }
