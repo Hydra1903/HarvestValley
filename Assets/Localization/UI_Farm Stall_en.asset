@@ -1,0 +1,93 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9620f8c34305754d8cc9a7e49e852d9, type: 3}
+  m_Name: UI_Farm Stall_en
+  m_EditorClassIdentifier: 
+  m_LocaleId:
+    m_Code: en
+  m_SharedData: {fileID: 11400000, guid: a86b685f3a3187b4e9459b4f7c710dc8, type: 2}
+  m_Metadata:
+    m_Items: []
+  m_TableData:
+  - m_Id: 255490445312
+    m_Localized: Farm Stall
+    m_Metadata:
+      m_Items: []
+  - m_Id: 598660009984
+    m_Localized: Each crop is sold according to its growing season, during seasons
+      when a crop cannot be grown, its price increases
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1056799641600
+    m_Localized: Current Season
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9061834346496
+    m_Localized: 'Sell Price:'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 193950697312256
+    m_Localized: 'Season: <color=#358D55>Spring</color> <color=#F33A38>Fall</color>'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 196020032688128
+    m_Localized: 'Season: <color=#358D55>Spring</color> <color=#E09628>Sum</color>'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 196378419187712
+    m_Localized: 'Season: <color=#E09628>Sum</color>'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 196522019573760
+    m_Localized: 'Season: <color=#358D55>Spring</color> <color=#33A9B0>WInter</color>'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 196767642210304
+    m_Localized: 'Season: <color=#358D55>Spring</color> <color=#F33A38>Fall</color>
+      <color=#33A9B0>WInter</color>'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 201714605674496
+    m_Localized: 'Season: <color=#E09628>Sum</color> <color=#F33A38>Fall</color>'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 201938485039104
+    m_Localized: 'Season: <color=#F33A38>Fall</color> <color=#33A9B0>Winter</color>'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 205992795754496
+    m_Localized: Collect
+    m_Metadata:
+      m_Items: []
+  - m_Id: 206112647991296
+    m_Localized: Sell
+    m_Metadata:
+      m_Items: []
+  - m_Id: 207278668697600
+    m_Localized: Nothing To Sell!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 208409104928768
+    m_Localized: Selling!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 208572779253760
+    m_Localized: Ready To Collect!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 230844520910848
+    m_Localized: Selling...
+    m_Metadata:
+      m_Items: []
+  references:
+    version: 2
+    RefIds: []

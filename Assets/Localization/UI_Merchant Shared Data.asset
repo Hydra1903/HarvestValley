@@ -1,0 +1,68 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b11a58205ec3474ca216360e9fa74a8, type: 3}
+  m_Name: UI_Merchant Shared Data
+  m_EditorClassIdentifier: 
+  m_TableCollectionName: UI_Merchant
+  m_TableCollectionNameGuidString: ecc3ae1cf1e58ca45b6343e14b4c85b6
+  m_Entries:
+  - m_Id: 47260028928
+    m_Key: TEXT_Merchant
+    m_Metadata:
+      m_Items: []
+  - m_Id: 103757303808
+    m_Key: TEXT_Describe1
+    m_Metadata:
+      m_Items: []
+  - m_Id: 630788378624
+    m_Key: TEXT_Describe2
+    m_Metadata:
+      m_Items: []
+  - m_Id: 957566603264
+    m_Key: TEXT_Time
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1213469478912
+    m_Key: BTN_Sell Produce
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1489916055552
+    m_Key: BTN_Buy Seeds
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1655972745216
+    m_Key: TEXT_Sell Price
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1886713991168
+    m_Key: TEXT_Farm Stall Price
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2443793059840
+    m_Key: BTN_Buy
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2492136607744
+    m_Key: BTN_Sell
+    m_Metadata:
+      m_Items: []
+  m_Metadata:
+    m_Items: []
+  m_KeyGenerator:
+    rid: 204902906326155348
+  references:
+    version: 2
+    RefIds:
+    - rid: 204902906326155348
+      type: {class: DistributedUIDGenerator, ns: UnityEngine.Localization.Tables, asm: Unity.Localization}
+      data:
+        m_CustomEpoch: 1759647664441

@@ -2,10 +2,11 @@
 using TMPro;
 using UnityEngine.UI;
 using System.Globalization;
+using UnityEngine.Localization.Settings;
 
 public enum EFarmStallState
 {
-    NotForSale,   
+    NothingToSell,   
     Selling,     
     ReadyToCollect  
 }
@@ -15,10 +16,11 @@ public class FarmStallUI : MonoBehaviour
     public FarmStall farmStall;
     public TextMeshProUGUI totalAmountText;
     public TextMeshProUGUI statusText;
+    public string status;
     public Button buttonSell;
     public Button buttonCollect;
     public GameObject prevent;
-    public EFarmStallState currentState = EFarmStallState.NotForSale;
+    public EFarmStallState currentState = EFarmStallState.NothingToSell;
 
     public TextMeshProUGUI[] priceTexts;
     public ReceiveItem[] receiveItems;
@@ -45,17 +47,17 @@ public class FarmStallUI : MonoBehaviour
     }
     public void Collect()
     {
-        currentState = EFarmStallState.NotForSale;
+        currentState = EFarmStallState.NothingToSell;
         Gold.Instance.AddGold(farmStall.totalAmount);
         farmStall.totalAmount = 0;
         UpdateReceiveDataItem();
         UpdateUI();
     }
-    public void UpdateUI()
+    public async void UpdateUI()
     {
         totalAmountText.text = farmStall.totalAmount.ToString("N0", new CultureInfo("de-DE"));
 
-        if (farmStall.totalAmount > 0 && currentState == EFarmStallState.NotForSale)
+        if (farmStall.totalAmount > 0 && currentState == EFarmStallState.NothingToSell)
         {
             buttonSell.interactable = true;
         }
@@ -65,17 +67,20 @@ public class FarmStallUI : MonoBehaviour
         }
         switch (currentState)
         {
-            case EFarmStallState.NotForSale:
+            case EFarmStallState.NothingToSell:
                 buttonCollect.interactable = false;
                 prevent.SetActive(false);
-                statusText.text = "Chưa có gì để bán!";
+                status = await LocalizationSettings.StringDatabase.GetLocalizedStringAsync("UI_Farm Stall", "TEXT_Nothing To Sell").Task;
+                statusText.text = status;
                 break;
             case EFarmStallState.Selling:
                 prevent.SetActive(true);
-                statusText.text = "Đang bán!";
+                status = await LocalizationSettings.StringDatabase.GetLocalizedStringAsync("UI_Farm Stall", "TEXT_Selling").Task;
+                statusText.text = status;
                 break;
             case EFarmStallState.ReadyToCollect:
-                statusText.text = "Có thể nhận!";
+                status = await LocalizationSettings.StringDatabase.GetLocalizedStringAsync("UI_Farm Stall", "TEXT_Ready To Collect").Task;
+                statusText.text = status;
                 break;
         }
     }
@@ -99,7 +104,7 @@ public class FarmStallUI : MonoBehaviour
     }
     public void ReturnItem()
     {
-        if (currentState == EFarmStallState.NotForSale)
+        if (currentState == EFarmStallState.NothingToSell)
         {
             for (int i = 0; i < receiveItems.Length; i++)
             {
