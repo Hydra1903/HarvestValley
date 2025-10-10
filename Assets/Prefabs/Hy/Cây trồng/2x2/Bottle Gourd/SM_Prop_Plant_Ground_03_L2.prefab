@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 4521307498851206}
   - component: {fileID: 33949165408197002}
   - component: {fileID: 23107982327518536}
+  - component: {fileID: -6754722954453528714}
   m_Layer: 0
   m_Name: SM_Prop_Plant_Ground_03_L2
   m_TagString: Untagged
@@ -87,6 +88,18 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &-6754722954453528714
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1159973154153784}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 94e2926d7bdb7df4888452b3841d3e15, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &2567535533541714845
 PrefabInstance:
   m_ObjectHideFlags: 0

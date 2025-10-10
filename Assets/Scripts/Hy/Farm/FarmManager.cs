@@ -2,8 +2,6 @@
 
 public class FarmManager : MonoBehaviour
 {
-    public static FarmManager Instance { get; private set; }
-
     [Header("Save/ID")]
     public string gridId = "";
 
@@ -18,33 +16,49 @@ public class FarmManager : MonoBehaviour
     public HotBarUI hotbarUI;
 
     public Tile[,] Tiles { get; private set; }
+    private FarmSaveSystem _save;
+
+    public SoilManager soilManager;
+    public PlantManager plantManager;
+    public FarmInput farmInputManager;
+
+    public FarmGridSave BuildSave() => _save.BuildSave();
+    public void LoadFromSave(FarmGridSave s) => _save.LoadFromSave(s);
 
     private void Awake()
     {
-        if (Instance != null && Instance != this) { Destroy(gameObject); return; }
-        Instance = this;
-
         if (!hotbarUI) hotbarUI = FindFirstObjectByType<HotBarUI>();
         if (!plantDatabase) plantDatabase = FindFirstObjectByType<PlantDatabase>();
+      
     }
 
     private void Start()
     {
         AllocateTiles(gridWidth, gridHeight);
-        SoilManager.Instance.Initialize(this);
-        PlantManager.Instance.Initialize(this, SoilManager.Instance);
-        FarmSaveSystem.Instance.Initialize(this);
+        soilManager.Initialize(this);
+        plantManager.Initialize(this, soilManager);
+
+        _save = GetComponent<FarmSaveSystem>();
+        if (_save == null) _save = gameObject.AddComponent<FarmSaveSystem>();
+        _save.Initialize(this);
+        _save.soilManager = soilManager;
+        _save.plantManager = plantManager;
     }
 
     private void Update()
     {
-        GetComponent<FarmInput>().HandleInput(this, SoilManager.Instance, PlantManager.Instance);
+        farmInputManager.HandleInput();
 
         if (Input.GetKeyDown(KeyCode.N))
         {
-            PlantManager.Instance.AdvanceDay();
+            plantManager.AdvanceDay();
+            GameTime.Instance.NextDay();
         }
 
+        if(Weather.Instance.currentWeather == WeatherState.Rainy || Weather.Instance.currentWeather == WeatherState.Stormy)
+        {
+            soilManager.WaterAllAreas();
+        }
     }
 
     // === Helpers chung ===
@@ -69,7 +83,7 @@ public class FarmManager : MonoBehaviour
         return new Vector2Int(x, y);
     }
 
-    //Kiểm tra có nằm trong lươ
+    //Kiểm tra có nằm trong luoi
     public bool IsInGrid(int x, int y) => x >= 0 && x < gridWidth && y >= 0 && y < gridHeight;
 
     public bool IsWorldPointInsideThisGrid(Vector3 worldPos)

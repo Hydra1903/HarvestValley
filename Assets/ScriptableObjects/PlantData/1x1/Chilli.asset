@@ -27,11 +27,9 @@ MonoBehaviour:
   xpHarvest: 24
   energyHarvest: 5
   matureRegrowPrefabs:
-  - {fileID: 136918721133433515, guid: 17be6efa7fe280542a0b0af972c2c409, type: 3}
-  - {fileID: 136918721133433515, guid: 3ec0fc1546739ca4e9deed2ab1a77135, type: 3}
   - {fileID: 1693142712922052, guid: 555120077b0eec840b8099a42205af08, type: 3}
   - {fileID: 1077264207915376, guid: cfca42c86aa71d1419b2a6f7ddfed71a, type: 3}
-  matureRegrowDaysPerStage: 01000000010000000100000001000000
+  matureRegrowDaysPerStage: 01000000
   useMatureRegrowAfterHarvestCount: 1
   needsWater: 1
   description: "C\xE2y \u1EDBt"

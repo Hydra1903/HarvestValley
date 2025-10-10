@@ -2,75 +2,82 @@
 
 public class FarmInput : MonoBehaviour
 {
-    [SerializeField] private LayerMask gridMask;
+    [SerializeField] private LayerMask gridMask;            //Layer của đất
 
     [Header("Raycast")]
-    [SerializeField] private LayerMask plantMask;          // Layer của cây/Hitbox
-    [SerializeField] private Transform player;             // Player để đo khoảng cách (nếu cần)
+    [SerializeField] private LayerMask plantMask;           // Layer của cây
+    [SerializeField] private Transform player;              // Player để đo khoảng cách
     [SerializeField] private float harvestClickDistance = 2.5f;
     [SerializeField] private bool requireHarvestTool = false;  // true: phải cầm tool Harvest mới được click
 
-    public void HandleInput(FarmManager farm, SoilManager soil, PlantManager plant)
+    public SoilManager soilManager;
+    public PlantManager plantManager;
+    public FarmManager farmManager;
+
+    private Camera cam;
+
+    private void Awake()
     {
-        var cam = Camera.main;
-        if (!cam) { soil.HideGhosts(); plant.HideGhost(); return; }
+        cam = Camera.main;
+    }
 
-        // Ray từ tâm camera
-        Ray ray = cam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
+    public void HandleInput()
+    {
+        if (!cam) { soilManager.HideGhosts(); plantManager.HideGhost(); return; }
 
-        Debug.DrawRay(ray.origin, ray.direction * harvestClickDistance, Color.red);
+        Ray centerRay = cam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
+        Debug.DrawRay(centerRay.origin, centerRay.direction * harvestClickDistance, Color.red);
 
-        if (!Physics.Raycast(ray, out RaycastHit hit, 1000f, gridMask | plantMask))
+        if (Physics.Raycast(centerRay, out var hitPlant, harvestClickDistance, plantMask))
         {
-            soil.HideGhosts(); plant.HideGhost();
-            return;
-        }
-
-        // 1) Nếu trúng cây
-        var clickable = hit.collider.GetComponentInParent<PlantClickable>();
-        if (clickable != null)
-        {
-            if (Input.GetMouseButtonDown(0))
+            var clickable = hitPlant.collider.GetComponentInParent<PlantClickable>();
+            if (clickable && Input.GetMouseButtonDown(0))
             {
-                // Nếu cần bắt buộc cầm tool Harvest
-                if (!requireHarvestTool || IsHoldingHarvest(farm))
+                // chỉ cần tool nếu bạn bật requireHarvestTool
+                if (!requireHarvestTool || IsHoldingHarvest(farmManager))
                 {
-                    float dist = player ? Vector3.Distance(player.position, hit.point) : 0f;
-                    if (player == null || dist <= harvestClickDistance)
+                    if (!player || Vector3.Distance(player.position, hitPlant.point) <= harvestClickDistance)
                     {
-                        PlantManager.Instance.TryHarvest(new Vector2Int(clickable.centerX, clickable.centerY));
+                        clickable.ownerFarm.GetComponent<PlantManager>().TryHarvest(new Vector2Int(clickable.centerX, clickable.centerY));
+                        return; 
                     }
-                    else
-                    {
-                        Notification.Instance?.ShowNotification("Quá xa để thu hoạch!");
-                    }
+                    Notification.Instance?.ShowNotification("Quá xa để thu hoạch!");
                 }
             }
-            return; // nếu trúng cây thì không xử lý đất nữa
+        }
+       
+        Ray mouseRay = cam.ScreenPointToRay(Input.mousePosition);
+        var item = farmManager.hotbarUI ? farmManager.hotbarUI.currentItem : null;
+        Debug.DrawRay(mouseRay.origin, mouseRay.direction * 1000f, Color.green);
+
+        if (!Physics.Raycast(mouseRay, out var hit, 1000f, gridMask))
+        {
+            soilManager.HideGhosts(); plantManager.HideGhost();
+            return;
         }
 
         // 2) Nếu trúng grid đất
         var hitGrid = hit.collider.GetComponentInParent<FarmManager>();
-        if (hitGrid != farm || !farm.IsWorldPointInsideThisGrid(hit.point))
+        if (hitGrid != farmManager || !farmManager.IsWorldPointInsideThisGrid(hit.point))
         {
-            soil.HideGhosts(); plant.HideGhost();
+            soilManager.HideGhosts(); plantManager.HideGhost();
             return;
         }
 
-        Vector2Int gridPos = farm.WorldToGrid(hit.point);
-        var item = farm.hotbarUI ? farm.hotbarUI.currentItem : null;
+        Vector2Int gridPos = farmManager.WorldToGrid(hit.point);
+        
 
         // Seed
         if (item != null && item.itemData != null && item.itemData.itemType == ItemType.Seed && item.quantity > 0)
         {
-            soil.HideGhosts(); plant.HideGhost();
+            soilManager.HideGhosts(); plantManager.HideGhost();
 
-            if (plant.HandleSeedHover(gridPos, item))
+            if (plantManager.HandleSeedHover(gridPos, item))
             {
-                if (Input.GetMouseButtonDown(0) && plant.TryPlant(gridPos, item))
+                if (Input.GetMouseButtonDown(0) && plantManager.TryPlant(gridPos, item))
                 {
-                    farm.hotbarUI?.hotbar?.UseAndRemoveItem(farm.hotbarUI.valueScroll, 1);
-                    farm.hotbarUI?.UpdateAllSlots();
+                    farmManager.hotbarUI?.hotbar?.UseAndRemoveItem(farmManager.hotbarUI.valueScroll, 1);
+                    farmManager.hotbarUI?.UpdateAllSlots();
                 }
             }
             return;
@@ -79,79 +86,61 @@ public class FarmInput : MonoBehaviour
         // Không có item
         if (item == null || item.itemData == null)
         {
-            soil.HideGhosts(); plant.HideGhost();
+            soilManager.HideGhosts(); plantManager.HideGhost();
+            if (Input.GetMouseButtonDown(0))
+            {
+                plantManager.TryHarvest(gridPos);
+            }
             return;
         }
 
         // Hoe/Shovel
         if (item.itemData.toolType == ToolType.Hoe || item.itemData.toolType == ToolType.Shovel)
         {
-            soil.HideGhosts(); plant.HideGhost();
-
-            soil.HandleToolHover(gridPos, item);
+            soilManager.HideGhosts(); plantManager.HideGhost();
+            soilManager.HandleToolHover(gridPos, item);
             if (Input.GetMouseButtonDown(0))
-                soil.TryDigOrFlatten(gridPos, item);
-
-            return;
-        }
-
-        // Harvest theo grid (nếu muốn giữ song song)
-        if (item.itemData.toolType == ToolType.Harvest)
-        {
-            soil.HideGhosts(); plant.HideGhost();
-            if (Input.GetMouseButtonDown(0))
-                plant.TryHarvest(gridPos);
+            {
+                CharacterStateMachine.Instance.ChangeState(CharacterStateMachine.Instance.hoeState);
+                soilManager.TryDigOrFlatten(gridPos, item);
+            }
             return;
         }
 
         // Watering
         if (item.itemData.toolType == ToolType.Watering)
         {
-            soil.HideGhosts(); plant.HideGhost();
+            soilManager.HideGhosts(); plantManager.HideGhost();
             if (Input.GetMouseButtonDown(0))
-                soil.TryWaterAt(gridPos);
+            {
+                soilManager.TryWaterAt(gridPos);
+                CharacterStateMachine.Instance.ChangeState(CharacterStateMachine.Instance.wateringState);
+            }
             return;
         }
 
-        //Sprinkler
+        // Sprinkler
         if (item.itemData.toolType == ToolType.Sprinkler)
         {
-            soil.HideGhosts(); plant.HideGhost();
+            soilManager.HideGhosts(); plantManager.HideGhost();
+            soilManager.ShowSprinklerGhost(gridPos);
+
             if (Input.GetMouseButtonDown(0))
             {
-                int gx = gridPos.x;
-                int gy = gridPos.y;
-                if (farm.IsInGrid(gx, gy))
+                if (soilManager.PlaceSprinkler(gridPos, item.itemData.placeablePrefab, 1))
                 {
-                    var t = farm.Tiles[gx, gy];
-                    if (t.plantInstance == null) // trống thì cho đặt
-                    {
-                        var prefab = item.itemData.placeablePrefab;
-                        if (prefab != null)
-                        {
-                            Vector3 pos = farm.origin + new Vector3(
-                                (gx + 0.5f) * farm.cellSize,
-                                prefab.transform.position.y,
-                                (gy + 0.5f) * farm.cellSize
-                            );
-
-                            var go = Instantiate(prefab, pos, Quaternion.identity);
-                            var sp = go.GetComponent<Sprinkler>();
-                            if (sp == null) sp = go.AddComponent<Sprinkler>();
-                            sp.Init(gx, gy, 7); // 15×15 vùng tưới
-                            SoilManager.Instance.RegisterSprinkler(sp);
-
-                            // trừ vật phẩm nếu cần
-                            farm.hotbarUI?.hotbar?.UseAndRemoveItem(farm.hotbarUI.valueScroll, 1);
-                            farm.hotbarUI?.UpdateAllSlots();
-                        }
-                    }
+                    farmManager.hotbarUI?.hotbar?.UseAndRemoveItem(farmManager.hotbarUI.valueScroll, 1);
+                    farmManager.hotbarUI?.UpdateAllSlots();
+                }
+                else
+                {
+                    Notification.Instance?.ShowNotification("Không thể đặt Sprinkler ở khu đất này!");
                 }
             }
             return;
         }
 
-        soil.HideGhosts(); plant.HideGhost();
+        soilManager.HideGhosts(); plantManager.HideGhost();
     }
 
     private bool IsHoldingHarvest(FarmManager farm)

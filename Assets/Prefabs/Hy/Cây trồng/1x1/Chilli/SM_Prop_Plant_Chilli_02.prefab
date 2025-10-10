@@ -11,7 +11,9 @@ GameObject:
   - component: {fileID: 8086760152430328768}
   - component: {fileID: 7879759033870731869}
   - component: {fileID: 1044835141303795885}
-  m_Layer: 0
+  - component: {fileID: 5785387390702992851}
+  - component: {fileID: 4186311533082524212}
+  m_Layer: 8
   m_Name: SM_Prop_Plant_Chilli_02
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -90,6 +92,40 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &5785387390702992851
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1244164763478238253}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 94e2926d7bdb7df4888452b3841d3e15, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!64 &4186311533082524212
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1244164763478238253}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 4300000, guid: c3d7acc6475149941a3c55eb4ad686d7, type: 3}
 --- !u!1001 &690760072146151626
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -101,6 +137,14 @@ PrefabInstance:
     - target: {fileID: 1902140391295820, guid: 8b370ec0b3164b84b8ebf50165a44314, type: 3}
       propertyPath: m_Name
       value: SM_Prop_Chilli_01_S
+      objectReference: {fileID: 0}
+    - target: {fileID: 1902140391295820, guid: 8b370ec0b3164b84b8ebf50165a44314, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 1902140391295820, guid: 8b370ec0b3164b84b8ebf50165a44314, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4781072823400612, guid: 8b370ec0b3164b84b8ebf50165a44314, type: 3}
       propertyPath: m_LocalPosition.x
@@ -164,6 +208,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Prop_Chilli_01_S (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 1902140391295820, guid: 8b370ec0b3164b84b8ebf50165a44314, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 1902140391295820, guid: 8b370ec0b3164b84b8ebf50165a44314, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4781072823400612, guid: 8b370ec0b3164b84b8ebf50165a44314, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.08789253
@@ -225,6 +277,14 @@ PrefabInstance:
     - target: {fileID: 1902140391295820, guid: 8b370ec0b3164b84b8ebf50165a44314, type: 3}
       propertyPath: m_Name
       value: SM_Prop_Chilli_01_S (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1902140391295820, guid: 8b370ec0b3164b84b8ebf50165a44314, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 1902140391295820, guid: 8b370ec0b3164b84b8ebf50165a44314, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4781072823400612, guid: 8b370ec0b3164b84b8ebf50165a44314, type: 3}
       propertyPath: m_LocalPosition.x

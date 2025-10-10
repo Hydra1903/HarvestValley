@@ -5,9 +5,10 @@ public class PlantClickable : MonoBehaviour
     public int centerX { get; private set; }
     public int centerY { get; private set; }
 
-    public void Init(int cx, int cy)
+    public FarmManager ownerFarm { get; private set; }
+    public void Init(FarmManager farm, int cx, int cy)
     {
-        centerX = cx;
-        centerY = cy;
+        ownerFarm = farm;
+        centerX = cx; centerY = cy;
     }
 }
