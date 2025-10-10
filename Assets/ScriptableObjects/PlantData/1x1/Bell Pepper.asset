@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 71849a011fc748e4788f3888d3873774, type: 3}
+  m_Name: Bell Pepper
+  m_EditorClassIdentifier: 
+  plantName: Bell Pepper
+  plantType: 4
+  size: 1
+  growthPrefabs:
+  - {fileID: 1903297692978248, guid: 37120ad57154f4c4f85d3b7bed1dfe1e, type: 3}
+  - {fileID: 6801779032159252297, guid: 5ab1af6aac780ce44b0f7213dace6c24, type: 3}
+  - {fileID: 5660135240558580776, guid: f95f3b95d59bf344bba17e07dc15d9e1, type: 3}
+  - {fileID: 1695036058323326, guid: 8d09daa567e1a8746aaf50b31328fc50, type: 3}
+  daysPerStage: 010000000100000001000000
+  harvestItem: {fileID: 11400000, guid: 1dab77bcd5940ab49917ab9696617145, type: 2}
+  maxHarvest: 3
+  harvestValue: 4
+  xpHarvest: 40
+  energyHarvest: 5
+  matureRegrowPrefabs:
+  - {fileID: 3832199828595282069, guid: 4e3c3b069baa84d4ea71439d661dde5e, type: 3}
+  - {fileID: 2385055559573773016, guid: f263bb15707dc2b4c8e17372a26a4048, type: 3}
+  - {fileID: 1695036058323326, guid: 8d09daa567e1a8746aaf50b31328fc50, type: 3}
+  matureRegrowDaysPerStage: 010000000100000001000000
+  useMatureRegrowAfterHarvestCount: 1
+  needsWater: 1
+  description: "M\xF4 t\u1EA3 v\u1EC1 lo\u1EA1i c\xE2y n\xE0y..."

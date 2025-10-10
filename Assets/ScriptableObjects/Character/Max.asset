@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f0eb325eda62b5c4fbe257b40b7fa4bb, type: 3}
+  m_Name: Max
+  m_EditorClassIdentifier: 
+  characterName: Max
+  characterIcon: {fileID: 0}
+  sex: Nam
+  age: 52
+  habit: "S\u1EEFa ch\u1EEFa, H\xFAt thu\u1ED1c"
+  genitive: "H\xE0i h\u01B0\u1EDBc, s\xE1ng t\u1EA1o"
+  maxStamina: 100
+  skill: None....
+  SkinnyCharacter: {fileID: 4300004, guid: 0125309e38bea8a48bc578cf8f220634, type: 3}

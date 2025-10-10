@@ -1,0 +1,51 @@
+﻿using System;
+using System.Collections.Generic;
+using UnityEngine;
+
+[Serializable]
+public class AreaSave
+{
+    public int startX;
+    public int startY;
+    public int size;         
+    public SoilType soilType; 
+}
+
+[Serializable]
+public class PlantSave
+{
+    public PlantType type;
+    public int size;          //kích cỡ
+    public int stage;         //trạng thái
+    public int daysInStage;   //ngày của trạng thái
+    public int centerX;
+    public int centerY;
+    public int harvestCount; //số lần thu hoạch
+}
+
+[Serializable]
+public class SprinklerSave
+{
+    public int gridX, gridY;
+    public int halfRange;
+}
+
+[Serializable]
+public class FarmGridSave
+{
+    public string gridId;
+    public int width;
+    public int height;
+    public float cellSize;
+    public Vector3 origin;
+    public List<AreaSave> areas = new();
+    public List<PlantSave> plants = new();
+    public List<SprinklerSave> sprinklers = new();  
+    public List<Vector2Int> wateredCenters = new();
+}
+
+[Serializable]
+public class GameSave
+{
+    public List<FarmGridSave> grids = new();
+}

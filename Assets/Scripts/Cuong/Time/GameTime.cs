@@ -14,9 +14,10 @@ public class GameTime : MonoBehaviour
     public int hour = 6;
     public int minute = 0;
 
-    public float timeSpeed = 60f; 
+    public float timeSpeed = 60f;
     private float timer;
 
+    //public bool canHarvestToday = false;
     public TimeOfDay currentTimeOfDay;
     public MainUIScreen mainUIScreen;
     void Awake()
@@ -29,7 +30,7 @@ public class GameTime : MonoBehaviour
     void Update()
     {
         timer += Time.deltaTime * timeSpeed;
-        if (timer >= 60) 
+        if (timer >= 60)
         {
             minute++; timer = 0;
         }

@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 71849a011fc748e4788f3888d3873774, type: 3}
+  m_Name: Cucumber
+  m_EditorClassIdentifier: 
+  plantName: Cucumber
+  plantType: 12
+  size: 1
+  growthPrefabs:
+  - {fileID: 1994261357479266, guid: 85e38a9ac82ea204f96acf37803bf071, type: 3}
+  - {fileID: 1147994195056072, guid: 6e0ea9f84883f3149929768fac155c41, type: 3}
+  - {fileID: 1800831289374606, guid: 01b10a87a23a7a2479cc3549ddd75ea0, type: 3}
+  - {fileID: 1800831289374606, guid: f1b5ade7bbd2abf418fbd52869b19f18, type: 3}
+  daysPerStage: 010000000100000001000000
+  harvestItem: {fileID: 11400000, guid: 1ebee89e50ff06043bfaf20244028b0a, type: 2}
+  maxHarvest: 2
+  harvestValue: 3
+  xpHarvest: 66
+  energyHarvest: 5
+  matureRegrowPrefabs:
+  - {fileID: 7785928225697737879, guid: 32f5c91201438c04fbecc0f6c54a4747, type: 3}
+  - {fileID: 9163095398680468706, guid: 18a81299918fe154888fd74a17cf8358, type: 3}
+  - {fileID: 1800831289374606, guid: 01b10a87a23a7a2479cc3549ddd75ea0, type: 3}
+  - {fileID: 1800831289374606, guid: f1b5ade7bbd2abf418fbd52869b19f18, type: 3}
+  matureRegrowDaysPerStage: 01000000010000000100000001000000
+  useMatureRegrowAfterHarvestCount: 1
+  needsWater: 1
+  description: "C\xE2y d\u01B0a leo \u0111\u1ED9t bi\u1EBFn"

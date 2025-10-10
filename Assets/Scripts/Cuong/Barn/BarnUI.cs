@@ -10,11 +10,11 @@ public class BarnUI : MonoBehaviour
     public TextMeshProUGUI dragQuantityText;
     public DragItem dragItem;
 
-    private BarnSlotUI draggingFromSlot;
-
+    BarnSlotUI draggingFromSlot;
+    public InventoryItem item;
     public int capacity;
     public TextMeshProUGUI capacityText;
-
+    public static event System.Action OnBarnChanged;
     private void Start()
     {
         int totalSlots = barn.rows * barn.columns;
@@ -62,6 +62,7 @@ public class BarnUI : MonoBehaviour
         dragItem.draggedItem = null;
         dragIcon.gameObject.SetActive(false);
         UpdateAllSlots();
+        OnBarnChanged?.Invoke();
     }
 
     public void UpdateAllSlots()

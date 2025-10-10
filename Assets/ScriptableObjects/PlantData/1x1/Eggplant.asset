@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 71849a011fc748e4788f3888d3873774, type: 3}
+  m_Name: Eggplant
+  m_EditorClassIdentifier: 
+  plantName: Eggplant
+  plantType: 14
+  size: 1
+  growthPrefabs:
+  - {fileID: 1994261357479266, guid: e05fd3876bc5dcc4abdb86a66791d6d2, type: 3}
+  - {fileID: 1147994195056072, guid: 3ba5d6d9bda3c7742b3096460b3a9203, type: 3}
+  - {fileID: 1800831289374606, guid: 5eae85124addea841b14cd3eafed020b, type: 3}
+  - {fileID: 1800831289374606, guid: 85a9ce7067f557d4e934a2d9fd2bd5ad, type: 3}
+  daysPerStage: 010000000100000001000000
+  harvestItem: {fileID: 11400000, guid: 07a630ef3a7c19546b1513450f7b8a26, type: 2}
+  maxHarvest: 4
+  harvestValue: 3
+  xpHarvest: 27
+  energyHarvest: 5
+  matureRegrowPrefabs:
+  - {fileID: 1800831289374606, guid: 06289b5cb71ab874caff55a875a2dd9d, type: 3}
+  - {fileID: 1800831289374606, guid: c053dba2e6c94a244905c98a54771871, type: 3}
+  - {fileID: 1800831289374606, guid: 5eae85124addea841b14cd3eafed020b, type: 3}
+  - {fileID: 1800831289374606, guid: 85a9ce7067f557d4e934a2d9fd2bd5ad, type: 3}
+  matureRegrowDaysPerStage: 01000000010000000100000001000000
+  useMatureRegrowAfterHarvestCount: 1
+  needsWater: 1
+  description: "M\xF4 t\u1EA3 v\u1EC1 lo\u1EA1i c\xE2y n\xE0y..."

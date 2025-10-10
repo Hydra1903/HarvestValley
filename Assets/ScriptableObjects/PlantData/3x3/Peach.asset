@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 71849a011fc748e4788f3888d3873774, type: 3}
+  m_Name: Peach
+  m_EditorClassIdentifier: 
+  plantName: Peach
+  plantType: 20
+  size: 3
+  growthPrefabs:
+  - {fileID: 1279607818152092, guid: edfef16160e2635449b1d118b5d43b81, type: 3}
+  - {fileID: 1279607818152092, guid: 2ed97a13e3ed52241bab15746bb95221, type: 3}
+  - {fileID: 1279607818152092, guid: e6d4feaca5e53394e835a9fd5e5d01e3, type: 3}
+  - {fileID: 1738070637598736, guid: 10d78674571d1cf46bc1fdf77c4d51c6, type: 3}
+  daysPerStage: 010000000100000001000000
+  harvestItem: {fileID: 11400000, guid: 3b2036619580c3340a35ff8eb87c060f, type: 2}
+  maxHarvest: 10
+  harvestValue: 5
+  xpHarvest: 130
+  energyHarvest: 5
+  matureRegrowPrefabs:
+  - {fileID: 1279607818152092, guid: e6d4feaca5e53394e835a9fd5e5d01e3, type: 3}
+  - {fileID: 1738070637598736, guid: 10d78674571d1cf46bc1fdf77c4d51c6, type: 3}
+  matureRegrowDaysPerStage: 0100000001000000
+  useMatureRegrowAfterHarvestCount: 1
+  needsWater: 1
+  description: "M\xF4 t\u1EA3 v\u1EC1 lo\u1EA1i c\xE2y n\xE0y..."

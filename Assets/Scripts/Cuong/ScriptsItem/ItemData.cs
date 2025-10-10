@@ -44,6 +44,9 @@ public class ItemData : ScriptableObject
     public Sprite icon;
     public int maxStack;
     public ItemType itemType;
+    public ToolType toolType;
     public string description;
     public string season;
+
+    public GameObject placeablePrefab;
 }

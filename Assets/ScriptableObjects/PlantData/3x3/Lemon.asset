@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 71849a011fc748e4788f3888d3873774, type: 3}
+  m_Name: Lemon
+  m_EditorClassIdentifier: 
+  plantName: Lemon
+  plantType: 17
+  size: 3
+  growthPrefabs:
+  - {fileID: 1850301125167232, guid: 21f606ffc40d21540bad157c547a5ce2, type: 3}
+  - {fileID: 1850301125167232, guid: 6ea942d6a9acfe34fac57087ea5e4aa3, type: 3}
+  - {fileID: 1850301125167232, guid: 1a52c82f8b0a3d14cb3485bc20c9487c, type: 3}
+  - {fileID: 1960223898543514, guid: b74cf8c52fbf0e64e8ccd959a6f18fdc, type: 3}
+  daysPerStage: 010000000100000001000000
+  harvestItem: {fileID: 11400000, guid: a067dd33b780d31488c190e8193a9315, type: 2}
+  maxHarvest: 10
+  harvestValue: 7
+  xpHarvest: 140
+  energyHarvest: 5
+  matureRegrowPrefabs:
+  - {fileID: 1850301125167232, guid: 1a52c82f8b0a3d14cb3485bc20c9487c, type: 3}
+  - {fileID: 1960223898543514, guid: b74cf8c52fbf0e64e8ccd959a6f18fdc, type: 3}
+  matureRegrowDaysPerStage: 0100000001000000
+  useMatureRegrowAfterHarvestCount: 1
+  needsWater: 1
+  description: "C\xE2y Chanh"

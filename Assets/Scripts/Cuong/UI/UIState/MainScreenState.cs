@@ -19,6 +19,7 @@ public class MainScreenState : IUIState
             hotBar = GameObject.FindFirstObjectByType<HotBar>();
         hotBar.UpdateData();
         hotBarUI.UpdateAllSlots();
+        hotBarUI.UpdateCurrentItem(hotBarUI.currentHighlightIndex);
     }
     public void Update()
     {
