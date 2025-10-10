@@ -76,8 +76,10 @@ public class PlantManager : MonoBehaviour
         var pd = farmManager.plantDatabase ? farmManager.plantDatabase.GetPlantData(seedItem.itemData.plantType) : null;
         if (pd == null) return false;
 
+
         int size = pd.GetSizeInt();
         Vector2Int start;
+
         if (size == 3)
         {
             if (!soilManager.TrySnapStartToHole3x3(gridPos, out start)) return false;
@@ -101,12 +103,31 @@ public class PlantManager : MonoBehaviour
         if (!farmManager.IsInGrid(x, y)) return false;
 
         var t = farmManager.Tiles[x, y];
+        var inst = t?.plantInstance;
+        if (inst == null) return false;
+
+        int lastIdx = GetLastStageIndexFor(inst);
+
+        // phải ở stage có quả (last)
+        if (inst.currentStage < lastIdx)
+        {
+            Notification.Instance?.ShowNotification("Chưa có quả.");
+            return false;
+        }
+
+        // phải đúng mùa thu hoạch
+        var season = Season.Instance ? Season.Instance.currentSeason : SeasonState.Spring;
+        if (!inst.plantData.CanHarvestInSeason(season))
+        {
+            Notification.Instance?.ShowNotification("Không phải mùa thu hoạch.");
+            return false;
+        }
+
         if (t.plantInstance == null) { Debug.Log("Không có cây."); return false; }
 
         if (!TryGetPlantCenterFrom(x, y, out int cx, out int cy))
         { Debug.LogWarning("Không tìm được ô tâm."); return false; }
 
-        var inst = farmManager.Tiles[cx, cy].plantInstance;
         if (inst == null || inst.plantData == null) { Debug.LogWarning("Thiếu dữ liệu cây."); return false; }
         if (!IsMature(inst)) { Debug.Log("Chưa chín."); return false; }
 
@@ -123,6 +144,13 @@ public class PlantManager : MonoBehaviour
         if (Inventory.Instance == null || !Inventory.Instance.AddItem(inst.plantData.harvestItem, yield))
         {
             Debug.LogWarning($"[Harvest] Túi đầy, không thể thu {yield} x {inst.plantData.harvestItem.itemName}");
+            return false;
+        }
+
+        // phải ở stage có quả (last)
+        if (inst.currentStage < lastIdx)
+        {
+            Notification.Instance?.ShowNotification("Chưa có quả.");
             return false;
         }
 
@@ -163,44 +191,69 @@ public class PlantManager : MonoBehaviour
 
         // Thời tiết hiện tại
         bool isRainy = Weather.Instance != null && Weather.Instance.currentWeather == WeatherState.Rainy;
+        var season = Season.Instance ? Season.Instance.currentSeason : SeasonState.Spring;
 
         //tăng trưởng khi được tưới
         for (int x = 0; x < farmManager.gridWidth; x++)
         {
             for (int y = 0; y < farmManager.gridHeight; y++)
             {
-                Tile tile = farmManager.Tiles[x, y];
-                if (tile.plantInstance == null || tile.plantObject == null) continue;
+                var tile = farmManager.Tiles[x, y];
+                var inst = tile?.plantInstance;
+                var pd = inst?.plantData;
+                if (inst == null || pd == null) continue;
 
+                // các mốc stage
+                int lastIdx = GetLastStageIndexFor(inst);      // stage cuối = có quả
+                int preFruit = Mathf.Max(0, lastIdx - 1);       // stage ngay trước khi có quả
 
-                //Không tưới & không mưa KHÔNG phát triển
-                bool watered = isRainy || soilManager.IsTileWatered(x, y);
-                if (!watered) continue;
+                bool canGrow = pd.CanGrowInSeason(season);    // mùa phát triển?
+                bool canHarvest = pd.CanHarvestInSeason(season); // mùa ra quả?
 
-                var inst = tile.plantInstance;
-                int last = GetLastStageIndexFor(inst);
-
-                if (inst.currentStage < last)
+                // 1) Nếu đang ở stage có quả (last) mà KHÔNG phải mùa ra quả -> lùi ngay về preFruit (KHÔNG cần tưới)
+                if (inst.currentStage >= lastIdx && !canHarvest)
                 {
-                    inst.daysInCurrentStage++;
-                    int need = GetRequiredDaysForCurrentStage(inst);
-                    if (inst.daysInCurrentStage >= need)
+                    if (lastIdx > 0)
                     {
-                        inst.currentStage++;
+                        inst.currentStage = preFruit;
                         inst.daysInCurrentStage = 0;
                         ReplacePlantMeshAtCenter(x, y, inst);
                     }
-                    Debug.Log("Qua ngày: tăng trưởng.");
+                    continue; // sang ô tiếp theo
                 }
+
+                // 2) Tăng trưởng: chỉ tăng tới preFruit (last-1) khi ĐƯỢC TƯỚI + ĐÚNG MÙA PHÁT TRIỂN
+                if (inst.currentStage < preFruit)
+                {
+                    bool watered = isRainy || soilManager.IsTileWatered(x, y);
+                    if (watered && canGrow)
+                    {
+                        inst.daysInCurrentStage++;
+                        int need = GetRequiredDaysForCurrentStage(inst);
+                        if (inst.daysInCurrentStage >= need)
+                        {
+                            inst.currentStage++;
+                            inst.daysInCurrentStage = 0;
+                            ReplacePlantMeshAtCenter(x, y, inst);
+                        }
+                    }
+                    // dưới preFruit chắc chắn chưa có quả
+                    continue;
+                }
+
+                // 3) Ở preFruit (last-1): nếu là mùa ra quả -> nhảy lên last (có quả).
+                if (inst.currentStage == preFruit && canHarvest && lastIdx > preFruit)
+                {
+                    inst.currentStage = lastIdx;
+                    inst.daysInCurrentStage = 0;
+                    ReplacePlantMeshAtCenter(x, y, inst);
+                }
+                // nếu không phải mùa ra quả -> đứng yên tại preFruit
             }
         }
 
-
-
         soilManager.ResetDailyWater();      // 1) Xóa trạng thái tưới hôm trước
-
         if (isRainy) soilManager.WaterAllAreas();  // 2) Mưa hôm nay -> tưới toàn bộ
-
         soilManager.WaterBySprinklers();    // 3) Máy tưới hoạt động trong ngày
     }
 

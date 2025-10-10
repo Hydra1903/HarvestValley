@@ -442,6 +442,11 @@ public class SoilManager : MonoBehaviour
 
         var parent = transform; 
         var go = Instantiate(usePrefab, pos, Quaternion.identity, parent);
+        var t = farm.Tiles[gridPos.x, gridPos.y];
+        if (t != null)
+        {
+            t.state = SoilState.Planted;   
+        }
 
         var sp = go.GetComponent<Sprinkler>();
         if (sp == null) sp = go.AddComponent<Sprinkler>();

@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 /// ScriptableObject chứa dữ liệu cây trồng 
 [CreateAssetMenu(fileName = "New Plant Data", menuName = "Farm System/Plant Data")]
@@ -27,7 +28,11 @@ public class PlantData : ScriptableObject
 
     [Header("Requirements")]
     public bool needsWater = true;      //nước
-    
+
+    [Header("Seasons (arrays)")]
+    public SeasonState[] growthSeasons = new SeasonState[] { SeasonState.Spring };
+    public SeasonState[] harvestSeasons = new SeasonState[] { SeasonState.Summer };
+
     [Header("Description")]
     [TextArea(3, 5)]
     public string description = "Mô tả về loại cây này...";
@@ -44,7 +49,7 @@ public class PlantData : ScriptableObject
         else
             return !isHole;
     }
-    
+
     public int GetSizeInt()
     {
         return (int)size;
@@ -72,7 +77,22 @@ public class PlantData : ScriptableObject
         }
     }
 
+    public bool CanGrowInSeason(SeasonState s) => ContainsSeason(growthSeasons, s);
+    public bool CanHarvestInSeason(SeasonState s) => ContainsSeason(harvestSeasons, s);
+
+    // helper nội bộ, không cần Linq để gọn & tối ưu
+    private static bool ContainsSeason(SeasonState[] arr, SeasonState s)
+    {
+        if (arr == null) return false;
+        for (int i = 0; i < arr.Length; i++)
+            if (arr[i] == s) return true;
+        return false;
+    }
+
 }
+
+
+
 
 /// Instance của cây đã trồng - chứa trạng thái runtime
 [System.Serializable]
