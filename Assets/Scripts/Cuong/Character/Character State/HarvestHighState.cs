@@ -3,6 +3,10 @@ public class HarvestHighState : ICharacterState
     public void Enter(CharacterStateMachine characterStateMachine)
     {
         characterStateMachine.animator.Play("HarvestHigh");
+        if (CharacterSelection.Instance.currentCharacter == ECharacter.Rin)
+        {
+            characterStateMachine.animator.speed = 1.2f;
+        }
         UIManager.Instance.ShowUI("ActionBar");
         //CameraSwitcher.Instance.SwitchToActionView();
         CharacterStateMachine.Instance.mainUIScreen.ResetBar();
@@ -17,6 +21,7 @@ public class HarvestHighState : ICharacterState
     public void Exit(CharacterStateMachine characterStateMachine)
     {
         //CameraSwitcher.Instance.StartCoroutine(CameraSwitcher.Instance.SwitchToMainView());
+        characterStateMachine.animator.speed = 1f;
         UIManager.Instance.HideUI("ActionBar");
     }
 }

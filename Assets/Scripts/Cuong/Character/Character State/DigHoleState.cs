@@ -3,6 +3,10 @@ public class DigHoleState : ICharacterState
     public void Enter(CharacterStateMachine characterStateMachine)
     {
         characterStateMachine.animator.Play("DigHole");
+        if (CharacterSelection.Instance.currentCharacter == ECharacter.Rin)
+        {
+            characterStateMachine.animator.speed = 1.2f;
+        }
         UIManager.Instance.ShowUI("ActionBar");
         CameraSwitcher.Instance.SwitchToActionView();
         CharacterStateMachine.Instance.mainUIScreen.ResetBar();
@@ -16,6 +20,7 @@ public class DigHoleState : ICharacterState
     }
     public void Exit(CharacterStateMachine characterStateMachine)
     {
+        characterStateMachine.animator.speed = 1f;
         CameraSwitcher.Instance.StartCoroutine(CameraSwitcher.Instance.SwitchToMainView());
         UIManager.Instance.HideUI("ActionBar");
     }

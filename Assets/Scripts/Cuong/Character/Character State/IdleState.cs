@@ -41,6 +41,5 @@ public class IdleState : ICharacterState
     }
     public void Exit(CharacterStateMachine characterStateMachine)
     {
-
     }
 }
