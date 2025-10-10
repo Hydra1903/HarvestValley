@@ -20,7 +20,7 @@ MonoBehaviour:
   - {fileID: 1268094566149260, guid: b4d758b9936243342b3212916be6161c, type: 3}
   - {fileID: 1268094566149260, guid: 17d1cdf303bde8c4c8a55193e98805d6, type: 3}
   - {fileID: 1315716995744334, guid: 6afa2c71e1426fe418e31bfedc83c35e, type: 3}
-  daysPerStage: 010000000100000001000000
+  daysPerStage: 050000000500000006000000
   harvestItem: {fileID: 11400000, guid: 418ed84030d78274c9796a031506d5ed, type: 2}
   maxHarvest: 10
   harvestValue: 10
@@ -29,7 +29,9 @@ MonoBehaviour:
   matureRegrowPrefabs:
   - {fileID: 1268094566149260, guid: 17d1cdf303bde8c4c8a55193e98805d6, type: 3}
   - {fileID: 1315716995744334, guid: 6afa2c71e1426fe418e31bfedc83c35e, type: 3}
-  matureRegrowDaysPerStage: 0100000001000000
+  matureRegrowDaysPerStage: 06000000
   useMatureRegrowAfterHarvestCount: 1
   needsWater: 1
+  growthSeasons: 00000000
+  harvestSeasons: 0100000002000000
   description: "M\xF4 t\u1EA3 v\u1EC1 lo\u1EA1i c\xE2y n\xE0y..."
