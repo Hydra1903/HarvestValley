@@ -41,6 +41,10 @@ public class Merchant : MonoBehaviour
         {
             totalAmount += (sellPriceAnimalProduct[i]) * quantity[28 + i];
         }
+        if (CharacterSelection.Instance.currentCharacter == ECharacter.Kai)
+        {
+            totalAmount = (int)(totalAmount * 1.08f);
+        }
         merchantUI.UpdateUI();
     }
     public void AddQuantityItemsSold()

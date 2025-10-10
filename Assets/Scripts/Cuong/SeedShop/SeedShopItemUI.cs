@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using UnityEngine;
+using System;
 using UnityEngine.UI;
 
 public class SeedShopItemUI : MonoBehaviour
@@ -23,7 +24,15 @@ public class SeedShopItemUI : MonoBehaviour
     }
     public void CalculatePrice()
     {
-        totalPrice = shop.amount[itemIndex] * shop.price[itemIndex];
+        if (CharacterSelection.Instance.currentCharacter == ECharacter.May)
+        {
+            totalPrice = (int)Math.Round((float)shop.amount[itemIndex] * shop.price[itemIndex] * 0.9f, MidpointRounding.AwayFromZero);
+        }
+        else
+        {
+            totalPrice = shop.amount[itemIndex] * shop.price[itemIndex];
+        }
+
     }
     public void ChangeAmount(int delta)
     {
