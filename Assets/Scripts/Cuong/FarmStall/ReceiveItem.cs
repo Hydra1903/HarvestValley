@@ -13,6 +13,7 @@ public class ReceiveItem : MonoBehaviour
     }
     public void DestroyDataItem()
     {
+        slots = new InventorySlot[2];
         slots[0] = new InventorySlot();
         slots[1] = new InventorySlot();
     }

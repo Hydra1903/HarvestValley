@@ -1,0 +1,148 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b11a58205ec3474ca216360e9fa74a8, type: 3}
+  m_Name: UI_Settings Shared Data
+  m_EditorClassIdentifier: 
+  m_TableCollectionName: UI_Settings
+  m_TableCollectionNameGuidString: 1cd06ea755786bf4d8b3e73c32b0903f
+  m_Entries:
+  - m_Id: 43791339520
+    m_Key: TEXT_Settings
+    m_Metadata:
+      m_Items: []
+  - m_Id: 225102712832
+    m_Key: BTN_Display
+    m_Metadata:
+      m_Items: []
+  - m_Id: 360301907968
+    m_Key: BTN_Audio
+    m_Metadata:
+      m_Items: []
+  - m_Id: 487452233728
+    m_Key: BTN_Controls
+    m_Metadata:
+      m_Items: []
+  - m_Id: 586542665728
+    m_Key: TEXT_Map
+    m_Metadata:
+      m_Items: []
+  - m_Id: 722941431808
+    m_Key: TEXT_Field of View
+    m_Metadata:
+      m_Items: []
+  - m_Id: 745615839232
+    m_Key: TEXT_UI Scale
+    m_Metadata:
+      m_Items: []
+  - m_Id: 789567950848
+    m_Key: TEXT_Brightness
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1325881020416
+    m_Key: TEXT_Graphics
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1470894886912
+    m_Key: TEXT_Environment Effects
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1580869537792
+    m_Key: TEXT_Language
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1718807613440
+    m_Key: BTN_Reset to Default
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8330708439040
+    m_Key: 'TEXT_Sound '
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8557259575296
+    m_Key: TEXT_Master Volume
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8738172489728
+    m_Key: TEXT_Music
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8892497711104
+    m_Key: TEXT_Effects
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9053588344832
+    m_Key: TEXT_Animal Sounds
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9223491211264
+    m_Key: TEXT_UI Sounds
+    m_Metadata:
+      m_Items: []
+  - m_Id: 38500697821184
+    m_Key: TEXT_Mouse
+    m_Metadata:
+      m_Items: []
+  - m_Id: 38832223997952
+    m_Key: TEXT_Mouse Sensitivity
+    m_Metadata:
+      m_Items: []
+  - m_Id: 38942806822912
+    m_Key: TEXT_Keyboard
+    m_Metadata:
+      m_Items: []
+  - m_Id: 39436237328384
+    m_Key: TEXT_Forward
+    m_Metadata:
+      m_Items: []
+  - m_Id: 39526905597952
+    m_Key: TEXT_Left
+    m_Metadata:
+      m_Items: []
+  - m_Id: 39540511920128
+    m_Key: TEXT_Right
+    m_Metadata:
+      m_Items: []
+  - m_Id: 39555397505024
+    m_Key: TEXT_Backward
+    m_Metadata:
+      m_Items: []
+  - m_Id: 39884130275328
+    m_Key: TEXT_Run
+    m_Metadata:
+      m_Items: []
+  - m_Id: 39929420369920
+    m_Key: TEXT_Open Inventory
+    m_Metadata:
+      m_Items: []
+  - m_Id: 40101491691520
+    m_Key: TEXT_Interact
+    m_Metadata:
+      m_Items: []
+  - m_Id: 40175483408384
+    m_Key: TEXT_Open Map
+    m_Metadata:
+      m_Items: []
+  - m_Id: 40317351546880
+    m_Key: TEXT_Open Calendar
+    m_Metadata:
+      m_Items: []
+  m_Metadata:
+    m_Items: []
+  m_KeyGenerator:
+    rid: 204902870066397184
+  references:
+    version: 2
+    RefIds:
+    - rid: 204902870066397184
+      type: {class: DistributedUIDGenerator, ns: UnityEngine.Localization.Tables, asm: Unity.Localization}
+      data:
+        m_CustomEpoch: 1759503729708

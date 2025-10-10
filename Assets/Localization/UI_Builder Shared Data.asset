@@ -1,0 +1,274 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b11a58205ec3474ca216360e9fa74a8, type: 3}
+  m_Name: UI_Builder Shared Data
+  m_EditorClassIdentifier: 
+  m_TableCollectionName: UI_Builder
+  m_TableCollectionNameGuidString: 6122b114b4ca98945a0c190986e4aef6
+  m_Entries:
+  - m_Id: 64288903168
+    m_Key: TEXT_Builder
+    m_Metadata:
+      m_Items: []
+  - m_Id: 146203660288
+    m_Key: TEXT_None
+    m_Metadata:
+      m_Items: []
+  - m_Id: 200687669248
+    m_Key: TEXT_Describe
+    m_Metadata:
+      m_Items: []
+  - m_Id: 691349934080
+    m_Key: 'TEXT_Opening hours '
+    m_Metadata:
+      m_Items: []
+  - m_Id: 775311511552
+    m_Key: TEXT_Time
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1399138734080
+    m_Key: TEXT_Crop Storage
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1503920836608
+    m_Key: TEXT_Crop Storage Level 1
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2673305374720
+    m_Key: TEXT_Crop Storage Level 2
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2711968468992
+    m_Key: TEXT_Crop Storage Level 3
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3153091809280
+    m_Key: TEXT_Information CS
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3669486129152
+    m_Key: TEXT_Capacity Level 1
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5079833432064
+    m_Key: TEXT_Capacity Level 2
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5097923465216
+    m_Key: TEXT_Capacity Level 3
+    m_Metadata:
+      m_Items: []
+  - m_Id: 13277755789312
+    m_Key: TEXT_Home
+    m_Metadata:
+      m_Items: []
+  - m_Id: 13522426318848
+    m_Key: TEXT_Home Level 1
+    m_Metadata:
+      m_Items: []
+  - m_Id: 13593867898880
+    m_Key: TEXT_Home Level 2
+    m_Metadata:
+      m_Items: []
+  - m_Id: 13671311527936
+    m_Key: TEXT_Information H1
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14067828445184
+    m_Key: TEXT_Information H2
+    m_Metadata:
+      m_Items: []
+  - m_Id: 16963705950208
+    m_Key: TEXT_Farmland
+    m_Metadata:
+      m_Items: []
+  - m_Id: 17037315985408
+    m_Key: TEXT_Farmland 1
+    m_Metadata:
+      m_Items: []
+  - m_Id: 17323757588480
+    m_Key: TEXT_Farmland 2
+    m_Metadata:
+      m_Items: []
+  - m_Id: 17385355137024
+    m_Key: TEXT_Farmland 3
+    m_Metadata:
+      m_Items: []
+  - m_Id: 40539658047488
+    m_Key: TEXT_Information F1
+    m_Metadata:
+      m_Items: []
+  - m_Id: 40788736790528
+    m_Key: TEXT_Information F2 1
+    m_Metadata:
+      m_Items: []
+  - m_Id: 41267512397824
+    m_Key: TEXT_Information F2 2
+    m_Metadata:
+      m_Items: []
+  - m_Id: 41416116588544
+    m_Key: TEXT_Information F2 3
+    m_Metadata:
+      m_Items: []
+  - m_Id: 17466544279552
+    m_Key: TEXT_Grass Field
+    m_Metadata:
+      m_Items: []
+  - m_Id: 41718295220224
+    m_Key: TEXT_Information GF
+    m_Metadata:
+      m_Items: []
+  - m_Id: 344530598154240
+    m_Key: TEXT_Animal Barn
+    m_Metadata:
+      m_Items: []
+  - m_Id: 345684442796032
+    m_Key: TEXT_Animal Barn 1 Level 1
+    m_Metadata:
+      m_Items: []
+  - m_Id: 345759751524352
+    m_Key: TEXT_Animal Barn 1 Level 2
+    m_Metadata:
+      m_Items: []
+  - m_Id: 345983001743360
+    m_Key: TEXT_Animal Barn 2 Level 1
+    m_Metadata:
+      m_Items: []
+  - m_Id: 346202825216000
+    m_Key: TEXT_Animal Barn 2 Level 2
+    m_Metadata:
+      m_Items: []
+  - m_Id: 346457629184000
+    m_Key: TEXT_Information AB1
+    m_Metadata:
+      m_Items: []
+  - m_Id: 346884164734976
+    m_Key: TEXT_Information AB2 1
+    m_Metadata:
+      m_Items: []
+  - m_Id: 346953421082624
+    m_Key: TEXT_Information AB2 2
+    m_Metadata:
+      m_Items: []
+  - m_Id: 349477234462720
+    m_Key: TEXT_Greenhouse
+    m_Metadata:
+      m_Items: []
+  - m_Id: 349674685517824
+    m_Key: TEXT_Greenhouse 1
+    m_Metadata:
+      m_Items: []
+  - m_Id: 349847830581248
+    m_Key: TEXT_Greenhouse 2
+    m_Metadata:
+      m_Items: []
+  - m_Id: 349982841032704
+    m_Key: TEXT_Information G1
+    m_Metadata:
+      m_Items: []
+  - m_Id: 350243810627584
+    m_Key: TEXT_Information G2 1
+    m_Metadata:
+      m_Items: []
+  - m_Id: 350274420658176
+    m_Key: 'TEXT_Information G2 2
+
+'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 351149528633344
+    m_Key: TEXT_Day 1
+    m_Metadata:
+      m_Items: []
+  - m_Id: 351325278359552
+    m_Key: TEXT_Day 2
+    m_Metadata:
+      m_Items: []
+  - m_Id: 351342831521792
+    m_Key: TEXT_Day 3
+    m_Metadata:
+      m_Items: []
+  - m_Id: 351353808015360
+    m_Key: TEXT_Day 4
+    m_Metadata:
+      m_Items: []
+  - m_Id: 351374922141696
+    m_Key: TEXT_Day 5
+    m_Metadata:
+      m_Items: []
+  - m_Id: 351877894688768
+    m_Key: TEXT_Unlock Level 8
+    m_Metadata:
+      m_Items: []
+  - m_Id: 352255906336768
+    m_Key: TEXT_Unlock Level 10
+    m_Metadata:
+      m_Items: []
+  - m_Id: 352372365381632
+    m_Key: TEXT_Unlock Level 11
+    m_Metadata:
+      m_Items: []
+  - m_Id: 352376643571712
+    m_Key: TEXT_Unlock Level 6
+    m_Metadata:
+      m_Items: []
+  - m_Id: 352636694614016
+    m_Key: TEXT_Unlock Level 13
+    m_Metadata:
+      m_Items: []
+  - m_Id: 352653241143296
+    m_Key: TEXT_Unlock Level 15
+    m_Metadata:
+      m_Items: []
+  - m_Id: 352670576201728
+    m_Key: TEXT_Unlock Level 17
+    m_Metadata:
+      m_Items: []
+  - m_Id: 352787756666880
+    m_Key: TEXT_Unlock Level 18
+    m_Metadata:
+      m_Items: []
+  - m_Id: 352802159906816
+    m_Key: TEXT_Unlock Level 20
+    m_Metadata:
+      m_Items: []
+  - m_Id: 352831322902528
+    m_Key: TEXT_Unlock Level 21
+    m_Metadata:
+      m_Items: []
+  - m_Id: 352954383781888
+    m_Key: TEXT_Unlock Level 25
+    m_Metadata:
+      m_Items: []
+  - m_Id: 355949762760704
+    m_Key: BTN_Unlock
+    m_Metadata:
+      m_Items: []
+  - m_Id: 356020763938816
+    m_Key: BTN_Upgrade
+    m_Metadata:
+      m_Items: []
+  - m_Id: 357684786941952
+    m_Key: BTN_Unlocked
+    m_Metadata:
+      m_Items: []
+  m_Metadata:
+    m_Items: []
+  m_KeyGenerator:
+    rid: 204902906326155350
+  references:
+    version: 2
+    RefIds:
+    - rid: 204902906326155350
+      type: {class: DistributedUIDGenerator, ns: UnityEngine.Localization.Tables, asm: Unity.Localization}
+      data:
+        m_CustomEpoch: 1759656033897

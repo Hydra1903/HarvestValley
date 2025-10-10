@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class AnimalPen : MonoBehaviour
 {
+    public int penId;
     public CinemachineInputAxisController playerAxisController;
     public FirstCameraTesting firstCameraTesting;
 
@@ -16,8 +17,9 @@ public class AnimalPen : MonoBehaviour
     public int maxAnimals;
 
     private List<(GameObject animal, AnimalData data)> spawnedAnimals
-        = new List<(GameObject, AnimalData)>(); private HashSet<string> allowedTag = new HashSet<string>();
-    public Barn barnReference; 
+        = new List<(GameObject, AnimalData)>();
+    private HashSet<string> allowedTag = new HashSet<string>();
+    public Barn barnReference;
 
     [Header("UI")]
     public TMP_Text animalCountText;
@@ -26,12 +28,18 @@ public class AnimalPen : MonoBehaviour
     public GameObject inventoryPanels;
     public GameObject penInfoPanel;
     public TMP_Text penInfoText;
+    public TMP_Text penQuality;
+    public GameObject confirmSellPanel;
+    public Button yesButton;
+    public Button noButton;
 
     [Header("Animal List UI")]
-    public Transform animalListParent;       
+    public Transform animalListParent;
     public AnimalListUI listUI;
     private List<AnimalInfo> animals = new List<AnimalInfo>();
     public AnimalCellUI[] cells;
+    private int pendingSellIndex = -1;
+
     private void Start()
     {
         UpdateAnimalCountUI();
@@ -49,19 +57,30 @@ public class AnimalPen : MonoBehaviour
             if (firstCameraTesting != null)
             {
                 firstCameraTesting.allowMouseLook = true;
-            }        
+            }
+        }
+        if (sharedInfoPanel != null)
+        {
+            InfoPanelManager.instance.RegisterPanel(penId, sharedInfoPanel);
+        }
+    }
+
+    private void OnDestroy()
+    {
+        if (InfoPanelManager.instance != null)
+        {
+            InfoPanelManager.instance.UnregisterPanel(penId);
         }
     }
 
     public Vector3 GetRandomSpawnPosition()
-{
-    Transform basePoint = Random.value < 0.5f ? spawnPointType1 : spawnPointType2;
-  
-    Vector2 randomOffset = Random.insideUnitCircle * 1.5f;
-    Vector3 spawnPos = basePoint.position + new Vector3(randomOffset.x, 0f, randomOffset.y);
+    {
+        Transform basePoint = Random.value < 0.5f ? spawnPointType1 : spawnPointType2;
+        Vector2 randomOffset = Random.insideUnitCircle * 1.5f;
+        Vector3 spawnPos = basePoint.position + new Vector3(randomOffset.x, 0f, randomOffset.y);
+        return spawnPos;
+    }
 
-    return spawnPos;    
-}
     public bool CanSpawnMore() => spawnedAnimals.Count < maxAnimals;
 
     public bool RegisterAnimal(GameObject animal, AnimalData data)
@@ -73,26 +92,25 @@ public class AnimalPen : MonoBehaviour
         }
         else if (!allowedTag.Contains(tag))
         {
-            Debug.LogWarning($"Tag '{tag}' no allowed to spawn into this pen!");
+            Notification.Instance.ShowNotification($"Chu?ng Nuôi {penId} ch? ch?p nh?n {string.Join(",", allowedTag)}, không th? thêm {tag}!");
+            Destroy(animal);
             return false;
         }
-
         spawnedAnimals.Add((animal, data));
+        UpdateAnimalCells();
         UpdateAnimalCountUI();
-        // tim cell trong
         for (int i = 0; i < cells.Length; i++)
         {
-            if (!cells[i].gameObject.activeSelf || cells[i].IsEmpty())
+            if (!cells[i].gameObject.activeSelf)
             {
                 cells[i].gameObject.SetActive(true);
-                cells[i].Setup(animal, data, i + 1, this);
+                cells[i].Setup(animal, data, i, this);
                 break;
             }
         }
-        UpdateAnimalCells();
-        UpdateAnimalCountUI();
         return true;
     }
+
     public void RemoveAnimal(GameObject animal)
     {
         var index = spawnedAnimals.FindIndex(x => x.animal == animal);
@@ -106,21 +124,20 @@ public class AnimalPen : MonoBehaviour
 
     public void UpdateAnimalCells()
     {
-        // tat het cell
         for (int i = 0; i < cells.Length; i++)
         {
             cells[i].Clear();
             cells[i].gameObject.SetActive(false);
         }
-
-        // bat cell dung voi so luong maxAnimal
         for (int i = 0; i < spawnedAnimals.Count && i < maxAnimals; i++)
         {
             var (animal, data) = spawnedAnimals[i];
             cells[i].gameObject.SetActive(true);
-            cells[i].Setup(animal, data, i + 1, this);
+            cells[i].Setup(animal, data, i, this);
+            cells[i].SetIndexNumber(i + 1);
         }
     }
+
     public void UpdateAnimalCountUI()
     {
         string countText = $"{spawnedAnimals.Count} / {maxAnimals}";
@@ -129,16 +146,54 @@ public class AnimalPen : MonoBehaviour
             animalCountText.text = countText;
 
         if (penInfoText != null)
-            penInfoText.text = "" + countText;
+            penInfoText.text = countText;
+
+        // ð?ng b? t?nh tr?ng ãn u?ng
+        UpdateAnimalFeedStatusUI();
     }
-    public bool IsAllowedTag(string tag)
+
+    public void UpdateAnimalFeedStatusUI()
     {
-        return allowedTag.Contains(tag);
+        bool allGood = true;
+
+        foreach (var (animal, data) in spawnedAnimals)
+        {
+            if (animal == null) continue;
+            var feeding = animal.GetComponent<AnimalFedding>();
+            if (feeding == null) continue;
+
+            if (feeding.animalType == AnimalFedding.AnimalType.Sheep)
+            {
+                if (!feeding.HasEatenToday())
+                {
+                    allGood = false;
+                    break;
+                }
+            }
+            else if (feeding.animalType == AnimalFedding.AnimalType.Goat)
+            {
+                if (feeding.GetMealsToday() < 2)
+                {
+                    allGood = false;
+                    break;
+                }
+            }
+        }
+
+        string statusText = allGood && spawnedAnimals.Count > 0 ? "Good" : "Bad";
+        Color statusColor = allGood && spawnedAnimals.Count > 0 ? Color.green : Color.red;
+        if (penQuality != null)
+        {
+            penQuality.text = statusText;
+            penQuality.color = statusColor;
+
+        }
     }
-    public bool HasAssignedType()
-    {
-        return allowedTag.Count > 0;
-    }
+
+    public bool IsAllowedTag(string tag) => allowedTag.Contains(tag);
+
+    public bool HasAssignedType() => allowedTag.Count > 0;
+
     public void ShowPenInfo(bool show)
     {
         if (penInfoPanel != null)
@@ -146,18 +201,17 @@ public class AnimalPen : MonoBehaviour
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
             if (playerAxisController != null)
-            {
                 playerAxisController.enabled = false;
-            }
             if (firstCameraTesting != null)
-            {
                 firstCameraTesting.allowMouseLook = false;
-            }
+
             penInfoPanel.SetActive(show);
             inventoryPanels.SetActive(show);
+
             if (show)
             {
                 UpdateAnimalCountUI();
+                UpdateAnimalCells();
             }
             else
             {
@@ -173,29 +227,64 @@ public class AnimalPen : MonoBehaviour
         }
     }
 
-    public void SellAnimal(GameObject animal)
+    public void ShowConfirmSell(int cellIndex, string animalName)
     {
-        var index = spawnedAnimals.FindIndex(x => x.animal == animal);
-       if (index >= 0)
+        if (confirmSellPanel == null) return;
+        pendingSellIndex = cellIndex;
+        confirmSellPanel.SetActive(true);
+        if (yesButton != null)
+        {
+            yesButton.onClick.RemoveAllListeners();
+            yesButton.onClick.AddListener(() =>
+            {
+                SellAnimal(pendingSellIndex);
+                confirmSellPanel.SetActive(false);
+                pendingSellIndex = -1;
+            });
+        }
+
+        if (noButton != null)
+        {
+            noButton.onClick.RemoveAllListeners();
+            noButton.onClick.AddListener(() =>
+            {
+                confirmSellPanel.SetActive(false);
+                pendingSellIndex = -1;
+            });
+        }
+    }
+
+    public void SellAnimal(int cellIndex)
     {
-        var tuple = spawnedAnimals[index];
-        spawnedAnimals.RemoveAt(index);
-        Destroy(tuple.animal);
-        Debug.Log("Selled " + tuple.animal.name);
+        if (cellIndex < 0 || cellIndex >= spawnedAnimals.Count) return;
+
+        var (animal, data) = spawnedAnimals[cellIndex];
+        if (animal != null) Destroy(animal);
+
+        spawnedAnimals.RemoveAt(cellIndex);
+
+        Notification.Instance.ShowNotification($"Chu?ng Nuôi {penId} ð? bán 1 ð?ng v?t!");
         UpdateAnimalCountUI();
         UpdateAnimalCells();
+
+        if (spawnedAnimals.Count == 0)
+        {
+            allowedTag.Clear();
+        }
     }
-    }
+
     public void AddAnimal(AnimalInfo animal)
     {
         animals.Add(animal);
         listUI.Refresh(animals);
     }
+
     public void RemoveAnimal(AnimalInfo animal)
     {
         animals.Remove(animal);
         listUI.Refresh(animals);
     }
+
     private void OnTriggerExit(Collider other)
     {
         if (other.CompareTag("Player"))

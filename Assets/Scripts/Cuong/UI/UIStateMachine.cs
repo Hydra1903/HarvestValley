@@ -22,7 +22,7 @@ public class UIStateMachine : MonoBehaviour
     [HideInInspector] public FarmStallState farmStallState = new FarmStallState();
     [HideInInspector] public MerchantState merchantState = new MerchantState();
     [HideInInspector] public BuilderState builderState = new BuilderState();
-
+    [HideInInspector] public MapState mapState = new MapState();
     public Button btnInventory;
     public Button btnAchievement;
     public Button btnUnlock;
