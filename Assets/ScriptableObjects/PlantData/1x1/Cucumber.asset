@@ -20,18 +20,18 @@ MonoBehaviour:
   - {fileID: 1147994195056072, guid: 6e0ea9f84883f3149929768fac155c41, type: 3}
   - {fileID: 1800831289374606, guid: 01b10a87a23a7a2479cc3549ddd75ea0, type: 3}
   - {fileID: 1800831289374606, guid: f1b5ade7bbd2abf418fbd52869b19f18, type: 3}
-  daysPerStage: 010000000100000001000000
+  daysPerStage: 020000000200000002000000
   harvestItem: {fileID: 11400000, guid: 1ebee89e50ff06043bfaf20244028b0a, type: 2}
   maxHarvest: 2
   harvestValue: 3
   xpHarvest: 66
   energyHarvest: 5
   matureRegrowPrefabs:
-  - {fileID: 7785928225697737879, guid: 32f5c91201438c04fbecc0f6c54a4747, type: 3}
-  - {fileID: 9163095398680468706, guid: 18a81299918fe154888fd74a17cf8358, type: 3}
   - {fileID: 1800831289374606, guid: 01b10a87a23a7a2479cc3549ddd75ea0, type: 3}
   - {fileID: 1800831289374606, guid: f1b5ade7bbd2abf418fbd52869b19f18, type: 3}
-  matureRegrowDaysPerStage: 01000000010000000100000001000000
+  matureRegrowDaysPerStage: 02000000
   useMatureRegrowAfterHarvestCount: 1
   needsWater: 1
+  growthSeasons: 0000000001000000
+  harvestSeasons: 0000000001000000
   description: "C\xE2y d\u01B0a leo \u0111\u1ED9t bi\u1EBFn"

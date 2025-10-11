@@ -20,7 +20,10 @@ MonoBehaviour:
   - {fileID: 1695800362253452, guid: d210f09f04067044ba970303e48b1fda, type: 3}
   - {fileID: 1339641720439656, guid: 6ba6aa73ee4189545a9ec4248f5583ce, type: 3}
   - {fileID: 1159973154153784, guid: a7dcc22d2f71d8a41833f1cc88a45fd4, type: 3}
-  daysPerStage: 010000000100000001000000
+  - {fileID: 1159973154153784, guid: a7dcc22d2f71d8a41833f1cc88a45fd4, type: 3}
+  - {fileID: 1159973154153784, guid: a7dcc22d2f71d8a41833f1cc88a45fd4, type: 3}
+  - {fileID: 1159973154153784, guid: a7dcc22d2f71d8a41833f1cc88a45fd4, type: 3}
+  daysPerStage: 0200000001000000010000000100000001000000
   harvestItem: {fileID: 11400000, guid: 66e53d6008e028a4a8d6eee9b1687f8a, type: 2}
   maxHarvest: 1
   harvestValue: 1
@@ -30,4 +33,6 @@ MonoBehaviour:
   matureRegrowDaysPerStage: 
   useMatureRegrowAfterHarvestCount: 1
   needsWater: 1
+  growthSeasons: 0100000002000000
+  harvestSeasons: 0100000002000000
   description: "B\xED H\u1ED3 L\xF4"
