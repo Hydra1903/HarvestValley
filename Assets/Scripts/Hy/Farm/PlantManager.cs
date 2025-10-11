@@ -186,14 +186,9 @@ public class PlantManager : MonoBehaviour
     // ===== Qua ngày =====
     public void AdvanceDay()
     {
-        //Cập nhật UI
-        //GameTime.Instance.NextDay();
-
-        // Thời tiết hiện tại
         bool isRainy = Weather.Instance != null && Weather.Instance.currentWeather == WeatherState.Rainy;
         var season = Season.Instance ? Season.Instance.currentSeason : SeasonState.Spring;
 
-        //tăng trưởng khi được tưới
         for (int x = 0; x < farmManager.gridWidth; x++)
         {
             for (int y = 0; y < farmManager.gridHeight; y++)
@@ -203,58 +198,61 @@ public class PlantManager : MonoBehaviour
                 var pd = inst?.plantData;
                 if (inst == null || pd == null) continue;
 
-                // các mốc stage
-                int lastIdx = GetLastStageIndexFor(inst);      // stage cuối = có quả
-                int preFruit = Mathf.Max(0, lastIdx - 1);       // stage ngay trước khi có quả
+                // --- Chỉ xử lý tại ô TÂM của plant ---
+                if (!TryGetPlantCenterFrom(x, y, out int cx, out int cy)) continue;
+                if (x != cx || y != cy) continue; // không phải tâm -> bỏ qua
 
-                bool canGrow = pd.CanGrowInSeason(season);    // mùa phát triển?
-                bool canHarvest = pd.CanHarvestInSeason(season); // mùa ra quả?
+                // Tính theo CHUỖI hiện hành (growth hay mature-regrow)
+                int lastIdx = GetLastStageIndexFor(inst);          // stage có quả
+                int preFruit = Mathf.Max(0, lastIdx - 1);          // ngay trước khi có quả
 
-                // 1) Nếu đang ở stage có quả (last) mà KHÔNG phải mùa ra quả -> lùi ngay về preFruit (KHÔNG cần tưới)
+                bool canGrow = pd.CanGrowInSeason(season);
+                bool canHarvest = pd.CanHarvestInSeason(season);
+
+                // 1) Nếu đang ở stage có quả (last) mà KHÔNG phải mùa ra quả -> lùi ngay về preFruit
                 if (inst.currentStage >= lastIdx && !canHarvest)
                 {
                     if (lastIdx > 0)
                     {
                         inst.currentStage = preFruit;
                         inst.daysInCurrentStage = 0;
-                        ReplacePlantMeshAtCenter(x, y, inst);
+                        ReplacePlantMeshAtCenter(cx, cy, inst); // nhớ dùng tọa độ TÂM
                     }
-                    continue; // sang ô tiếp theo
+                    continue;
                 }
 
-                // 2) Tăng trưởng: chỉ tăng tới preFruit (last-1) khi ĐƯỢC TƯỚI + ĐÚNG MÙA PHÁT TRIỂN
-                if (inst.currentStage < preFruit)
+                // 2) Nếu chưa tới last -> xét điều kiện tăng trưởng theo từng nhánh mùa
+                if (inst.currentStage < lastIdx)
                 {
-                    bool watered = isRainy || soilManager.IsTileWatered(x, y);
-                    if (watered && canGrow)
+                    bool watered = isRainy || soilManager.IsTileWatered(cx, cy);
+
+                    // a) Stage < preFruit: cần "mùa phát triển"
+                    bool seasonOkForThisStage =
+                        (inst.currentStage < preFruit && canGrow)
+                        // b) Stage == preFruit: cần "mùa ra quả"
+                        || (inst.currentStage == preFruit && canHarvest);
+
+                    if (watered && seasonOkForThisStage)
                     {
                         inst.daysInCurrentStage++;
-                        int need = GetRequiredDaysForCurrentStage(inst);
+                        int need = GetRequiredDaysForCurrentStage(inst); // phải có entry cho preFruit
                         if (inst.daysInCurrentStage >= need)
                         {
                             inst.currentStage++;
                             inst.daysInCurrentStage = 0;
-                            ReplacePlantMeshAtCenter(x, y, inst);
+                            ReplacePlantMeshAtCenter(cx, cy, inst); // cập nhật mesh đúng TÂM
                         }
                     }
-                    // dưới preFruit chắc chắn chưa có quả
+
+                    // không tăng khi sai mùa hoặc không tưới
                     continue;
                 }
-
-                // 3) Ở preFruit (last-1): nếu là mùa ra quả -> nhảy lên last (có quả).
-                if (inst.currentStage == preFruit && canHarvest && lastIdx > preFruit)
-                {
-                    inst.currentStage = lastIdx;
-                    inst.daysInCurrentStage = 0;
-                    ReplacePlantMeshAtCenter(x, y, inst);
-                }
-                // nếu không phải mùa ra quả -> đứng yên tại preFruit
             }
         }
 
-        soilManager.ResetDailyWater();      // 1) Xóa trạng thái tưới hôm trước
-        if (isRainy) soilManager.WaterAllAreas();  // 2) Mưa hôm nay -> tưới toàn bộ
-        soilManager.WaterBySprinklers();    // 3) Máy tưới hoạt động trong ngày
+        soilManager.ResetDailyWater();
+        if (isRainy) soilManager.WaterAllAreas();
+        soilManager.WaterBySprinklers();
     }
 
     // ===== PLANTING =====
