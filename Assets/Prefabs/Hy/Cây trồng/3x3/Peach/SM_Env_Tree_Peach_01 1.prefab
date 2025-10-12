@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 23727812203580356}
   - component: {fileID: 64513793050881380}
   - component: {fileID: 64273142190292636}
+  - component: {fileID: -3303465270279159264}
   m_Layer: 0
   m_Name: SM_Env_Tree_Peach_01 1
   m_TagString: Untagged
@@ -132,3 +133,15 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 43624520651777086, guid: 4a202ec91f79e5c4c84ab91085990f52, type: 2}
+--- !u!114 &-3303465270279159264
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1279607818152092}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 94e2926d7bdb7df4888452b3841d3e15, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

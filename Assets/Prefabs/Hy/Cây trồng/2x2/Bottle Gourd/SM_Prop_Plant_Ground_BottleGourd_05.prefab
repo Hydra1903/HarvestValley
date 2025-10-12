@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 33949165408197002}
   - component: {fileID: 23107982327518536}
   - component: {fileID: -6754722954453528714}
+  - component: {fileID: -647067330816655416}
   m_Layer: 0
   m_Name: SM_Prop_Plant_Ground_BottleGourd_05
   m_TagString: Untagged
@@ -100,6 +101,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 94e2926d7bdb7df4888452b3841d3e15, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!64 &-647067330816655416
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1159973154153784}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 4300000, guid: b648d713697ceb54ab61b269966a9e1c, type: 3}
 --- !u!1001 &4733200391890539450
 PrefabInstance:
   m_ObjectHideFlags: 0

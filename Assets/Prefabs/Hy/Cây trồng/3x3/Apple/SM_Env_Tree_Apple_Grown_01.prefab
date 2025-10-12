@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 5545834093839472804}
   - component: {fileID: 9176190187609250574}
   - component: {fileID: 5892440896255696162}
+  - component: {fileID: -5503871919646647807}
   m_Layer: 0
   m_Name: SM_Env_Tree_Apple_Grown_01
   m_TagString: Untagged
@@ -155,3 +156,15 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 43653317351880698, guid: f18f1f7f75fb51e4daaa85176d45dfab, type: 2}
+--- !u!114 &-5503871919646647807
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6945169433020722739}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 94e2926d7bdb7df4888452b3841d3e15, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
