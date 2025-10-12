@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 64925326572019372}
   - component: {fileID: 64901281309416604}
   - component: {fileID: 64882439594824100}
+  - component: {fileID: 8545118429109853782}
   m_Layer: 0
   m_Name: SM_Env_Tree_Cherry_01 2
   m_TagString: Untagged
@@ -178,3 +179,15 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 43592290179296074, guid: 127335e65ae7eed4e99e880733107975, type: 2}
+--- !u!114 &8545118429109853782
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1268094566149260}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 94e2926d7bdb7df4888452b3841d3e15, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

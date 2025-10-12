@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 7161363664507406148}
   - component: {fileID: 8563292030889080349}
   - component: {fileID: 2932638639575007675}
+  - component: {fileID: 6760159902191128069}
   m_Layer: 0
   m_Name: SM_Env_Tree_Apple_01 (2)
   m_TagString: Untagged
@@ -155,3 +156,15 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 43489940030362202, guid: 98c1e1f7e262f2e47bbe18afb2b68e5c, type: 2}
+--- !u!114 &6760159902191128069
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1737948369569898209}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 94e2926d7bdb7df4888452b3841d3e15, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

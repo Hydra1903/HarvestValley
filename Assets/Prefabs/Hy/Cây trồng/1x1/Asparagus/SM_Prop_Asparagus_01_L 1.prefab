@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 23431048607019964}
   - component: {fileID: 64869452256611354}
   - component: {fileID: -1570950635905186672}
+  - component: {fileID: 2943276174835577277}
   m_Layer: 8
   m_Name: SM_Prop_Asparagus_01_L 1
   m_TagString: Untagged
@@ -103,7 +104,7 @@ MeshCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 5
@@ -111,6 +112,18 @@ MeshCollider:
   m_CookingOptions: 30
   m_Mesh: {fileID: 43873025623834542, guid: c22a4f05170e7844c86eaf71e0cdc7f2, type: 2}
 --- !u!114 &-1570950635905186672
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1323926329857942}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 94e2926d7bdb7df4888452b3841d3e15, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &2943276174835577277
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

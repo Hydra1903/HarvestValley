@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 23730455990321952}
   - component: {fileID: 64893090625760670}
   - component: {fileID: 64809617709439560}
+  - component: {fileID: 445899868379533349}
   m_Layer: 0
   m_Name: SM_Env_Tree_Lemon_01 1
   m_TagString: Untagged
@@ -132,3 +133,15 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 43714574525747970, guid: db021e55dc0788543b23555a04099959, type: 2}
+--- !u!114 &445899868379533349
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1850301125167232}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 94e2926d7bdb7df4888452b3841d3e15, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

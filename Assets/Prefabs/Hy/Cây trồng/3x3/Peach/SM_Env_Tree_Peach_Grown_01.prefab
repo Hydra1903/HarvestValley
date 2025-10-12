@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 23103968603688008}
   - component: {fileID: 64515855187810532}
   - component: {fileID: 64578562509177104}
+  - component: {fileID: 730352440447742793}
   m_Layer: 0
   m_Name: SM_Env_Tree_Peach_Grown_01
   m_TagString: Untagged
@@ -132,3 +133,15 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 43748403099938064, guid: 46cadce828c62fa4590a4a4c4675f782, type: 2}
+--- !u!114 &730352440447742793
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1738070637598736}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 94e2926d7bdb7df4888452b3841d3e15, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
