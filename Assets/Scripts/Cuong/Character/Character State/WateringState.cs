@@ -25,5 +25,9 @@ public class WateringState : ICharacterState
         characterStateMachine.animator.speed = 1f;
         CameraSwitcher.Instance.StartCoroutine(CameraSwitcher.Instance.SwitchToMainView());
         UIManager.Instance.HideUI("ActionBar");
+        if (CharacterStateMachine.Instance.mainUIScreen.actionBar.value >= 1f)
+        {
+            characterStateMachine.soilManager.TryWaterAt(characterStateMachine.farmInput.gridPos);
+        }
     }
 }
