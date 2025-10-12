@@ -1,4 +1,5 @@
 
+using UnityEditor.EditorTools;
 using UnityEngine;
 
 public class HoeState : ICharacterState
@@ -9,7 +10,7 @@ public class HoeState : ICharacterState
         if (CharacterSelection.Instance.currentCharacter == ECharacter.Rin)
         {
             characterStateMachine.animator.speed = 1.2f;
-        }      
+        }
         UIManager.Instance.ShowUI("ActionBar");
         CameraSwitcher.Instance.SwitchToActionView();
         CharacterStateMachine.Instance.mainUIScreen.ResetBar();
@@ -26,5 +27,9 @@ public class HoeState : ICharacterState
         characterStateMachine.animator.speed = 1f;
         CameraSwitcher.Instance.StartCoroutine(CameraSwitcher.Instance.SwitchToMainView());
         UIManager.Instance.HideUI("ActionBar");
+        if (CharacterStateMachine.Instance.mainUIScreen.actionBar.value >= 1f)
+        {
+            characterStateMachine.soilManager.TryDigOrFlatten(characterStateMachine.farmInput.gridPos, characterStateMachine.farmInput.tool);
+        }          
     }
 }

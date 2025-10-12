@@ -104,7 +104,11 @@ public class PlantInstance
     public bool needsWater = false;
     public int currentStage = 0;
     public int daysInCurrentStage = 0;
-    public int daysUntilNextHarvest = 0; 
+    public int daysUntilNextHarvest = 0;
+
+    public int totalDay;
+    [HideInInspector]
+    public int remainingDays = 0;
 
     public PlantInstance(PlantData data)
     {
