@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using NUnit.Framework.Interfaces;
+using UnityEngine;
 
 public class Inventory : MonoBehaviour
 {
@@ -23,7 +24,8 @@ public class Inventory : MonoBehaviour
         }
     }
     public bool AddItem(ItemData data, int amount)
-    {       
+    {
+        int amountShow = amount; 
         for (int r = 0; r < rows; r++)
         {
             for (int c = 0; c < columns; c++)
@@ -34,7 +36,11 @@ public class Inventory : MonoBehaviour
                     int canAdd = Mathf.Min(amount, data.maxStack - slot.item.quantity);
                     slot.item.quantity += canAdd;
                     amount -= canAdd;
-                    if (amount <= 0) return true;
+                    if (amount <= 0)
+                    {
+                        ItemAdded.Instance.ShowItemAdded(data.icon, amountShow.ToString());
+                        return true;
+                    }
                 }
             }
         }// THÊM VÀO CÙNG KIỂU ITEM
@@ -49,7 +55,11 @@ public class Inventory : MonoBehaviour
                     int add = Mathf.Min(amount, data.maxStack);
                     slot.item = new InventoryItem(data, add);
                     amount -= add;
-                    if (amount <= 0) return true;
+                    if (amount <= 0)
+                    {
+                        ItemAdded.Instance.ShowItemAdded(data.icon, amountShow.ToString());
+                        return true;
+                    }
                 }
             }
         }// TẠO Ô MỚI THÊM VÀO

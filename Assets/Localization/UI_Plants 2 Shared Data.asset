@@ -1,0 +1,376 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b11a58205ec3474ca216360e9fa74a8, type: 3}
+  m_Name: UI_Plants 2 Shared Data
+  m_EditorClassIdentifier: 
+  m_TableCollectionName: UI_Plants 2
+  m_TableCollectionNameGuidString: 6359b5df405c8594ea8c50e930b94ee5
+  m_Entries:
+  - m_Id: 1429467746304
+    m_Key: TEXT_Apple Tree
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1535671717888
+    m_Key: TEXT_Apricot Tree
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1626214158336
+    m_Key: TEXT_Asparagus Plant
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1691456557056
+    m_Key: TEXT_Beetroot Plant
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1781361463296
+    m_Key: TEXT_Bell Pepper Plant
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1878157611008
+    m_Key: TEXT_Bottle Gourd Plant
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1967739555840
+    m_Key: TEXT_Cabbage Plant
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2033099395072
+    m_Key: TEXT_Carrot Plant
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2131762008064
+    m_Key: TEXT_Cauliflower Plant
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2256349614080
+    m_Key: TEXT_Cherry Tree
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2659510308864
+    m_Key: TEXT_Chilli Plant
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2784789975040
+    m_Key: TEXT_Corn Plant
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2858894938112
+    m_Key: TEXT_Delicata Squash Plant
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3031599599616
+    m_Key: TEXT_Eggplant Plant
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3104630820864
+    m_Key: TEXT_Green Bean Plant
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3195756269568
+    m_Key: TEXT_Lemon Tree
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3265507545088
+    m_Key: TEXT_Onion Plant
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3364174352384
+    m_Key: TEXT_Orange Tree
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3424748490752
+    m_Key: TEXT_Peach Tree
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3637097713664
+    m_Key: TEXT_Pear Tree
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3697378250752
+    m_Key: TEXT_Plum Tree
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3782312906752
+    m_Key: TEXT_Potato Plant
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3865330765824
+    m_Key: TEXT_Pumpkin Plant
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3978568585216
+    m_Key: TEXT_Striped Pumpkin Plant
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4071778603008
+    m_Key: TEXT_Tomato Plant
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4136685457408
+    m_Key: TEXT_Watermelon Plant
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4246915960832
+    m_Key: TEXT_White Pumpkin Plant
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4567964766208
+    m_Key: TEXT_Plant Specie (1)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5304597794816
+    m_Key: TEXT_Plant Specie (2)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5351922126848
+    m_Key: TEXT_Plant Specie (3)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5384595755008
+    m_Key: TEXT_Plant Specie (4)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5424219344896
+    m_Key: TEXT_Plant Specie (5)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5679153336320
+    m_Key: TEXT_Tree Specie (10)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6327898918912
+    m_Key: TEXT_Growth Time (2)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7059578474496
+    m_Key: TEXT_Growth Time (3)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7299056455680
+    m_Key: TEXT_Growth Time (4)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7358829481984
+    m_Key: TEXT_Growth Time (6)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7434415034368
+    m_Key: TEXT_Growth Time (7)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7569022832640
+    m_Key: TEXT_Growth Time (8)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7644675493888
+    m_Key: TEXT_Growth Time (13)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7702498168832
+    m_Key: TEXT_Growth Time (15)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7811218722816
+    m_Key: TEXT_Harvest Time (1)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8401692839936
+    m_Key: TEXT_Harvest Time (2)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8494680559616
+    m_Key: TEXT_Harvest Time (4)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8549177151488
+    m_Key: TEXT_Harvest Time (5)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8704039243776
+    m_Key: TEXT_Growth Stages
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8914236788736
+    m_Key: TEXT_Day (0)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9034298740736
+    m_Key: TEXT_Day (1)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9035204710400
+    m_Key: TEXT_Day (2)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9036077125632
+    m_Key: TEXT_Day (3)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9215576559616
+    m_Key: TEXT_Day (4)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9251035205632
+    m_Key: TEXT_Day (5)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9289517944832
+    m_Key: TEXT_Day (6)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9321818279936
+    m_Key: TEXT_Day (7)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9467503235072
+    m_Key: TEXT_Day (8)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9484334977024
+    m_Key: TEXT_Day (10)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9500394967040
+    m_Key: TEXT_Day (13)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9633463455744
+    m_Key: TEXT_Day (14)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9595953795072
+    m_Key: TEXT_Day (15)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9807191527424
+    m_Key: TEXT_Day (16)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9612269637632
+    m_Key: TEXT_Day (18)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9834077016064
+    m_Key: TEXT_Day (20)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9852150272000
+    m_Key: TEXT_Day (21)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10288227864576
+    m_Key: TEXT_Cucumber Plant
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27021265260544
+    m_Key: TEXT_Growth Time (10)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30831853359104
+    m_Key: TEXT_Harvest Time (6)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 32306574839808
+    m_Key: TEXT_Growing Season XH
+    m_Metadata:
+      m_Items: []
+  - m_Id: 33560692707328
+    m_Key: TEXT_Growing Season XT
+    m_Metadata:
+      m_Items: []
+  - m_Id: 34029888524288
+    m_Key: TEXT_Growing Season XD
+    m_Metadata:
+      m_Items: []
+  - m_Id: 34356742246400
+    m_Key: TEXT_Growing Season H
+    m_Metadata:
+      m_Items: []
+  - m_Id: 34570047770624
+    m_Key: TEXT_Growing Season XTD
+    m_Metadata:
+      m_Items: []
+  - m_Id: 35852095508480
+    m_Key: TEXT_Growing Season HT
+    m_Metadata:
+      m_Items: []
+  - m_Id: 36386575667200
+    m_Key: TEXT_Growing Season X
+    m_Metadata:
+      m_Items: []
+  - m_Id: 36540930248704
+    m_Key: TEXT_Fruit Season HT
+    m_Metadata:
+      m_Items: []
+  - m_Id: 36971085484032
+    m_Key: TEXT_Fruit Season XD
+    m_Metadata:
+      m_Items: []
+  - m_Id: 37793886294016
+    m_Key: TEXT_Fruit Season TD
+    m_Metadata:
+      m_Items: []
+  - m_Id: 38386499506176
+    m_Key: TEXT_Fruit Season XT
+    m_Metadata:
+      m_Items: []
+  - m_Id: 38910611345408
+    m_Key: TEXT_Plant Information
+    m_Metadata:
+      m_Items: []
+  - m_Id: 39092665110528
+    m_Key: BTN_Plants
+    m_Metadata:
+      m_Items: []
+  - m_Id: 39492516499456
+    m_Key: TEXT_Rate Plus XP 12
+    m_Metadata:
+      m_Items: []
+  - m_Id: 39863011954688
+    m_Key: TEXT_Rate Plus XP 14
+    m_Metadata:
+      m_Items: []
+  - m_Id: 39864324771840
+    m_Key: TEXT_Rate Plus XP 16
+    m_Metadata:
+      m_Items: []
+  - m_Id: 39865549508608
+    m_Key: TEXT_Rate Plus XP 18
+    m_Metadata:
+      m_Items: []
+  - m_Id: 39866702942208
+    m_Key: TEXT_Rate Plus XP 20
+    m_Metadata:
+      m_Items: []
+  - m_Id: 39868200308736
+    m_Key: TEXT_Rate Plus XP 22
+    m_Metadata:
+      m_Items: []
+  - m_Id: 39869794144256
+    m_Key: TEXT_Rate Plus XP 24
+    m_Metadata:
+      m_Items: []
+  - m_Id: 40599678537728
+    m_Key: TEXT_Rate Plus XP 10
+    m_Metadata:
+      m_Items: []
+  m_Metadata:
+    m_Items: []
+  m_KeyGenerator:
+    rid: 204903029091860480
+  references:
+    version: 2
+    RefIds:
+    - rid: 204903029091860480
+      type: {class: DistributedUIDGenerator, ns: UnityEngine.Localization.Tables, asm: Unity.Localization}
+      data:
+        m_CustomEpoch: 1760110363748
