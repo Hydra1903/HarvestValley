@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlantManager : MonoBehaviour
 {
     [Header("Ghost cây")]
-    public Material ghostMaterial;
-    private SimpleGhostManager simpleGhostManager;
+    public Material[] ghostMaterial;
+    private GhostManager ghostManager;
 
     private FarmManager farmManager;
     private SoilManager soilManager;
@@ -18,8 +19,8 @@ public class PlantManager : MonoBehaviour
         farmManager = f; soilManager = s;
 
         var ghostManagerObj = new GameObject($"SimpleGhostManager_{farmManager.gridId}");
-        simpleGhostManager = ghostManagerObj.AddComponent<SimpleGhostManager>();
-        simpleGhostManager.Initialize(ghostMaterial);
+        ghostManager = ghostManagerObj.AddComponent<GhostManager>();
+        ghostManager.Initialize(ghostMaterial);
     }
 
     // ===== SEED =====
@@ -62,11 +63,12 @@ public class PlantManager : MonoBehaviour
             0.45f,
             (start.y + offset) * farmManager.cellSize
         );
-        simpleGhostManager.ShowGhost(pd, ghostPos);
+        Quaternion rot = ghostManager != null ? ghostManager.CurrentRotation : Quaternion.identity;
+        ghostManager.ShowGhost(pd, ghostPos);
         return true;
     }
 
-    public void HideGhost() => simpleGhostManager?.HideGhost();
+    public void HideGhost() => ghostManager?.HideGhost();
 
     // ===== Trồng =====
     public bool TryPlant(Vector2Int gridPos, InventoryItem seedItem)
@@ -306,7 +308,8 @@ public class PlantManager : MonoBehaviour
                 stagePrefab.transform.position.y,
                 (startPos.y + (size * 0.5f)) * farmManager.cellSize
             );
-            farmManager.Tiles[centerX, centerY].plantObject = Instantiate(stagePrefab, plantPos, RandomizeRotation());
+            Quaternion rot = ghostManager != null ? ghostManager.CurrentRotation : Quaternion.identity;
+            farmManager.Tiles[centerX, centerY].plantObject = Instantiate(stagePrefab, plantPos, rot);
             var clickable = farmManager.Tiles[centerX, centerY].plantObject.GetComponentInChildren<PlantClickable>();
             if (clickable != null)
                 clickable.Init(farmManager, centerX, centerY);
@@ -463,13 +466,6 @@ public class PlantManager : MonoBehaviour
                 if (farmManager.Tiles[cx, cy].state != SoilState.Dug) return false;
             }
         return true;
-    }
-
-    //Random xoay 
-    private Quaternion RandomizeRotation()
-    {
-        float y = Random.Range(0f, 360f);
-        return Quaternion.Euler(0f, y, 0f);
     }
 
     public void ClearPlants()
