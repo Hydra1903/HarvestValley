@@ -1,19 +1,41 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
 public class PlantInfo : MonoBehaviour
 {
+    public static PlantInfo Instance;
     public TextMeshProUGUI namePlant;
     public TextMeshProUGUI remainingTime;
     public TextMeshProUGUI watered;
     public GameObject[] icon;
-    public void SetInfo(PlantType type, string name, string remainingTime, string watered)
+    void Awake()
+    {
+        if (Instance == null)
+            Instance = this;
+        else
+            Destroy(gameObject);
+    }
+    public void SetInfo(PlantType type, string name, int remainingTime, bool watered)
     {
         namePlant.text = name;
-        this.remainingTime.text = remainingTime;
-        this.watered.text = watered;
-        for(int i = 0; i < icon.Length; i++)
+        if (remainingTime == 0)
+        {
+            this.remainingTime.text = "Có thể thu hoạch";
+        }
+        else
+        {
+            this.remainingTime.text = "Thời gian: Còn " + remainingTime.ToString() + " ngày"; 
+        }
+        if (watered)
+        {
+            this.watered.text = "Đã tưới";
+        }
+        else
+        {
+            this.watered.text = "Chưa tưới";
+        }
+        for (int i = 0; i < icon.Length; i++)
         {
             icon[i].SetActive(false);
         }

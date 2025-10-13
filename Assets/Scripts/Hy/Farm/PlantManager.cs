@@ -211,6 +211,7 @@ public class PlantManager : MonoBehaviour
                 bool canGrow = pd.CanGrowInSeason(season);
                 bool canHarvest = pd.CanHarvestInSeason(season);
 
+                
                 // 1) Nếu đang ở stage có quả (last) mà KHÔNG phải mùa ra quả -> lùi ngay về preFruit
                 if (inst.currentStage >= lastIdx && !canHarvest)
                 {
@@ -251,7 +252,7 @@ public class PlantManager : MonoBehaviour
                 }
             }
         }
-
+        
         soilManager.ResetDailyWater();
         if (isRainy) soilManager.WaterAllAreas();
         soilManager.WaterBySprinklers();

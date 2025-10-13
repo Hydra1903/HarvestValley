@@ -38,21 +38,26 @@ public class HotBarUI : MonoBehaviour
 
     void Update()
     {
-        float scroll = Input.mouseScrollDelta.y;
-        if (scroll < 0)
+        if (CharacterStateMachine.Instance.currentState == CharacterStateMachine.Instance.idleState ||
+            CharacterStateMachine.Instance.currentState == CharacterStateMachine.Instance.walkState ||
+            CharacterStateMachine.Instance.currentState == CharacterStateMachine.Instance.runState)
         {
-            valueScroll++;
-            if (valueScroll > maxValue) valueScroll = minValue;
-            UpdateCurrentItem(valueScroll);
-            UpdateFrameHighlight(valueScroll);
-        }
-        else if (scroll > 0)
-        {
-            valueScroll--;
-            if (valueScroll < minValue) valueScroll = maxValue;
-            UpdateCurrentItem(valueScroll);
-            UpdateFrameHighlight(valueScroll);
-        }
+            float scroll = Input.mouseScrollDelta.y;
+            if (scroll < 0)
+            {
+                valueScroll++;
+                if (valueScroll > maxValue) valueScroll = minValue;
+                UpdateCurrentItem(valueScroll);
+                UpdateFrameHighlight(valueScroll);
+            }
+            else if (scroll > 0)
+            {
+                valueScroll--;
+                if (valueScroll < minValue) valueScroll = maxValue;
+                UpdateCurrentItem(valueScroll);
+                UpdateFrameHighlight(valueScroll);
+            }
+        }    
     }
 
     public void UpdateFrameHighlight(int index)

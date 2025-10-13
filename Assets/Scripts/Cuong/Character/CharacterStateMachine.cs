@@ -36,6 +36,9 @@ public class CharacterStateMachine : MonoBehaviour
     float xRotation = 0f;
 
     public MainUIScreen mainUIScreen;
+
+    public SoilManager soilManager;
+    public FarmInput farmInput;
     public void ChangeState(ICharacterState newState)
     {
         if (currentState != null)
@@ -95,5 +98,5 @@ public class CharacterStateMachine : MonoBehaviour
     public void ExitState()
     {
         ChangeState(idleState);
-    }
+    }  
 }

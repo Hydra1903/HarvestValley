@@ -687,6 +687,14 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8281367509031771363, guid: 0fd345ced813e554b9e8e2416bc658e5, type: 3}
+      propertyPath: farmInput
+      value: 
+      objectReference: {fileID: 615630012}
+    - target: {fileID: 8281367509031771363, guid: 0fd345ced813e554b9e8e2416bc658e5, type: 3}
+      propertyPath: soilManager
+      value: 
+      objectReference: {fileID: 615630010}
+    - target: {fileID: 8281367509031771363, guid: 0fd345ced813e554b9e8e2416bc658e5, type: 3}
       propertyPath: mainUIScreen
       value: 
       objectReference: {fileID: 1475575047}
@@ -2200,6 +2208,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb748e0a6381e3f478ea9deca47229d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &615630010 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 165884684276418433, guid: 04ff1e5a8c0e93b4ea05031cac0e69bc, type: 3}
+  m_PrefabInstance: {fileID: 2048946528284567934}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3eec9d3027576d64b8943a737644362c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &615630012 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8402363989092370248, guid: 04ff1e5a8c0e93b4ea05031cac0e69bc, type: 3}
+  m_PrefabInstance: {fileID: 2048946528284567934}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 343e19afba84aff44862bcb00a3eec7e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &644661930
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2208,6 +2238,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1614517643538761808, guid: 435a41237fed0bd43b2e65541818b748, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_IntArgument
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 3004592804992282810, guid: 435a41237fed0bd43b2e65541818b748, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -2315,6 +2349,18 @@ PrefabInstance:
     - target: {fileID: 6879981005792353545, guid: 435a41237fed0bd43b2e65541818b748, type: 3}
       propertyPath: m_Name
       value: CANVAS UI
+      objectReference: {fileID: 0}
+    - target: {fileID: 7828570161391369239, guid: 435a41237fed0bd43b2e65541818b748, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8762143112502121644, guid: 435a41237fed0bd43b2e65541818b748, type: 3}
+      propertyPath: mp
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 8762143112502121644, guid: 435a41237fed0bd43b2e65541818b748, type: 3}
+      propertyPath: maxMana
+      value: 100
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
