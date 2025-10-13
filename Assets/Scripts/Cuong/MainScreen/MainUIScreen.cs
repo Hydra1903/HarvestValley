@@ -85,7 +85,7 @@ public class MainUIScreen : MonoBehaviour
 
         UpdateStamina();
 
-        if (Input.GetKey(KeyCode.Z))
+        if (Input.GetKey(KeyCode.E))
         {
             frame.fillAmount += Time.deltaTime;
             if (frame.fillAmount >= 1)
@@ -93,7 +93,7 @@ public class MainUIScreen : MonoBehaviour
                 CharacterStateMachine.Instance.ExitState();
             }
         }
-        if (Input.GetKeyUp(KeyCode.Z))
+        if (Input.GetKeyUp(KeyCode.E))
         {
             frame.fillAmount = 0;
         }
@@ -322,7 +322,7 @@ public class MainUIScreen : MonoBehaviour
     {
         if (staminaBar.value > 0 && CharacterStateMachine.Instance.currentState == CharacterStateMachine.Instance.runState)
         {
-            staminaBar.value -= 0.4f * Time.deltaTime;
+            staminaBar.value -= 0.04f * Time.deltaTime;
         }
         else
         {

@@ -11,7 +11,7 @@ public class UIStateMachine : MonoBehaviour
     {
         if (Instance == null) Instance = this;
     }
-    private IUIState currentState;
+    public IUIState currentState;
 
     [HideInInspector] public MainScreenState mainScreenState = new MainScreenState();
     [HideInInspector] public InventoryState inventoryState = new InventoryState();
@@ -41,6 +41,8 @@ public class UIStateMachine : MonoBehaviour
     public ScrollRect scrollViewDisplay;
     public ScrollRect scrollViewSound;
     public ScrollRect scrollViewControl;
+
+    public float inputCooldown = 1f;
 
     public void ChangeState(IUIState newState)
     {

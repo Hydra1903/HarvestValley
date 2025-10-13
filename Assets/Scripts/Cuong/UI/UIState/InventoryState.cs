@@ -22,10 +22,16 @@ public class InventoryState : IUIState
         UIManager.Instance.ShowUI("Panel");
         ResetUI();
         UIStateMachine.Instance.inventoryUI1.UpdateAllSlots();
+        UIStateMachine.Instance.inputCooldown = 1f;
     }
-    public void Update()
+    public void Update() 
     {
-        if (Input.GetKeyDown(KeyCode.E))
+        if (UIStateMachine.Instance.inputCooldown > 0)
+        {
+            UIStateMachine.Instance.inputCooldown -= Time.deltaTime;
+            return;
+        }
+        if (Input.GetKeyDown(KeyCode.Q))
         {
             UIStateMachine.Instance.ChangeState(UIStateMachine.Instance.mainScreenState);
         }

@@ -1,29 +1,10 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Builder : MonoBehaviour
 {
     public int currentlevelBarn = 1;
-    public int currentlevelHome;
-
-    private bool isCropland2Unlocked;
-    private bool isCropland3Unlocked;
-    private bool isGrasslandUnlocked;
-    private bool isPen1Unlocked;
-    private bool isPen2Unlocked;
-
-    public GameObject DebrisCropland2;
-    public GameObject DebrisCropland3;
-    public GameObject DebrisGrassland;
-    public GameObject DebrisPen1;
-    public GameObject DebrisPen2;
-    public GameObject DebrisGreenhouse1;
-    public GameObject DebrisGreenhouse2;
     public GameObject[] BuildingBarn;
-    public GameObject[] BuildingHome;
-    public GameObject[] BuildingPen1;
-    public GameObject[] BuildingPen2;
-
-    public int[] priceBuilding;
+    public int[] priceBuildingBarn;
     void Start()
     {
         
@@ -47,18 +28,37 @@ public class Builder : MonoBehaviour
     }
     public void UpgradeBuildingBarn1to2()
     {       
-        if (Gold.Instance.gold >= priceBuilding[1])
+        if (Gold.Instance.gold >= priceBuildingBarn[0])
         {
             currentlevelBarn++;
+            Gold.Instance.gold -= priceBuildingBarn[0];
             LoadBuildingBarn();
-            Notification.Instance.ShowNotification("�? n�ng c?p th�nh c�ng!");
+            Notification.Instance.ShowNotification("Đã nâng cấp thành công!");
+        }
+        else
+        {
+            Notification.Instance.ShowNotification("Không đủ vàng!");
+        }
+    }
+    public void UpgradeBuildingBarn2to3()
+    {
+        if (Gold.Instance.gold >= priceBuildingBarn[0] && currentlevelBarn == 2)
+        {
+            currentlevelBarn++;
+            Gold.Instance.gold -= priceBuildingBarn[1];
+            LoadBuildingBarn();
+            Notification.Instance.ShowNotification("Đã nâng cấp thành công!");
+        }
+        else
+        {
+            Notification.Instance.ShowNotification("Không đủ vàng!");
         }
     }
     public void HideAllBarn()
     {
         for (int i = 0; i < BuildingBarn.Length; i++)
         {
-            BuildingBarn[0].SetActive(false);
+            BuildingBarn[i].SetActive(false);
         }
     }
     #endregion

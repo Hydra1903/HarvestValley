@@ -20,10 +20,16 @@ public class MainScreenState : IUIState
         hotBar.UpdateData();
         hotBarUI.UpdateAllSlots();
         hotBarUI.UpdateCurrentItem(hotBarUI.currentHighlightIndex);
+        UIStateMachine.Instance.inputCooldown = 1f;
     }
     public void Update()
     {
-        if (Input.GetKeyDown(KeyCode.E))
+        if (UIStateMachine.Instance.inputCooldown > 0)
+        {
+            UIStateMachine.Instance.inputCooldown -= Time.deltaTime;
+            return;
+        }
+        if (Input.GetKeyDown(KeyCode.Q))
         {
             UIStateMachine.Instance.ChangeState(UIStateMachine.Instance.inventoryState);
         }
@@ -42,27 +48,7 @@ public class MainScreenState : IUIState
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             UIStateMachine.Instance.ChangeState(UIStateMachine.Instance.pauseState);
-        }
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            UIStateMachine.Instance.ChangeState(UIStateMachine.Instance.seedShopState);
-        }
-        if (Input.GetKeyDown(KeyCode.T))
-        {
-            UIStateMachine.Instance.ChangeState(UIStateMachine.Instance.barnState);
-        }
-        if (Input.GetKeyDown(KeyCode.Y))
-        {
-            UIStateMachine.Instance.ChangeState(UIStateMachine.Instance.farmStallState);
-        }
-        if (Input.GetKeyDown(KeyCode.U))
-        {
-            UIStateMachine.Instance.ChangeState(UIStateMachine.Instance.merchantState);
-        }
-        if (Input.GetKeyDown(KeyCode.I))
-        {
-            UIStateMachine.Instance.ChangeState(UIStateMachine.Instance.builderState);
-        }
+        }      
         if (Input.GetKeyDown(KeyCode.M))
         {
             UIStateMachine.Instance.ChangeState(UIStateMachine.Instance.mapState);
