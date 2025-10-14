@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 71849a011fc748e4788f3888d3873774, type: 3}
+  m_Name: Potato
+  m_EditorClassIdentifier: 
+  plantName: Potato
+  plantType: 23
+  size: 1
+  growthPrefabs:
+  - {fileID: 1347292578903898, guid: 1a2d38aa77d007e48a2f55bc43d218ea, type: 3}
+  - {fileID: 1640550028191666, guid: f5d7b75e522fe4d44835f7cea7d32a55, type: 3}
+  - {fileID: 1819358590325638, guid: eef202cc2612c294c9176c2615da6962, type: 3}
+  daysPerStage: 0100000001000000
+  harvestItem: {fileID: 11400000, guid: 16f3c5436d71362468e6bbe03cbc2fcf, type: 2}
+  maxHarvest: 1
+  harvestValue: 2
+  xpHarvest: 32
+  energyHarvest: 5
+  matureRegrowPrefabs: []
+  matureRegrowDaysPerStage: 
+  useMatureRegrowAfterHarvestCount: 1
+  needsWater: 1
+  growthSeasons: 0000000003000000
+  harvestSeasons: 0000000003000000
+  description: "M\xF4 t\u1EA3 v\u1EC1 lo\u1EA1i c\xE2y n\xE0y..."

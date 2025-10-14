@@ -1,0 +1,44 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 173b5b8c536e4e04bba43aa81ba3567b, type: 3}
+  m_Name: Plant Database
+  m_EditorClassIdentifier: 
+  allPlants:
+  - {fileID: 11400000, guid: fdfe96b8a71472d418888d7fb5e94cfb, type: 2}
+  - {fileID: 11400000, guid: e80ef2306c7c5264eab7a622b9b7e13b, type: 2}
+  - {fileID: 11400000, guid: d0bbdca06c4fde240b5d56cf9073b13f, type: 2}
+  - {fileID: 11400000, guid: a8e22acee26407346ac741d57983a1c4, type: 2}
+  - {fileID: 11400000, guid: f4e497457e113464d95ad3d19d3a27f3, type: 2}
+  - {fileID: 11400000, guid: 942c53b72a1314b49be010e87283644d, type: 2}
+  - {fileID: 11400000, guid: 3a4c310e9cdd3444e9c3c72087cef782, type: 2}
+  - {fileID: 11400000, guid: c782144ec409c004d9a54b5786be4f91, type: 2}
+  - {fileID: 11400000, guid: 0bbf156bba730d94b8d47ac56a5c76fe, type: 2}
+  - {fileID: 11400000, guid: 5318dc6aa639ea3458ba2308e4364634, type: 2}
+  - {fileID: 11400000, guid: 41fb922adf669d04bbca15b9b718faa1, type: 2}
+  - {fileID: 11400000, guid: 5fd7867bc4713bc4a8acb97510891354, type: 2}
+  - {fileID: 11400000, guid: 7d00d7e8fbb47624d9c600a53df65ced, type: 2}
+  - {fileID: 11400000, guid: dfb63c25f15c2d540a817bade098250c, type: 2}
+  - {fileID: 11400000, guid: 4b2c263d701b7cc4cbec1d4366ba82fb, type: 2}
+  - {fileID: 11400000, guid: ede2e6e25384d004a8e47f5c790875b9, type: 2}
+  - {fileID: 11400000, guid: 326d63b2ac4bfdd47857363efb3a1f32, type: 2}
+  - {fileID: 11400000, guid: 3fa17e7a9f5574f44bb48cbe7998355c, type: 2}
+  - {fileID: 11400000, guid: a0395d68bcce08c42a8a397809c3b63a, type: 2}
+  - {fileID: 11400000, guid: b33bc4e820fdc5749955a72efb9dd685, type: 2}
+  - {fileID: 11400000, guid: dd3ded3dcd20e6040904ab43b00eb5d9, type: 2}
+  - {fileID: 11400000, guid: 44055ac89e4dfbd4190e8dd85af48179, type: 2}
+  - {fileID: 11400000, guid: c7b78708365e8074e915db9439b2d7c0, type: 2}
+  - {fileID: 11400000, guid: e30783cbc39565c4a9f4979db1dbc2ba, type: 2}
+  - {fileID: 11400000, guid: aa0df623dad4f5843b8aa5c0c814b329, type: 2}
+  - {fileID: 11400000, guid: 482edc0396fadee4cb6a2a5ed6baf4b5, type: 2}
+  - {fileID: 11400000, guid: 5a180f7cac5e25b47a8ab22c01bc7631, type: 2}
+  - {fileID: 11400000, guid: 99cd01fde9abb2e41b236f8b320418fb, type: 2}
+  defaultPlant: {fileID: 0}

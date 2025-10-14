@@ -1,0 +1,65 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9620f8c34305754d8cc9a7e49e852d9, type: 3}
+  m_Name: UI_Merchant_en
+  m_EditorClassIdentifier: 
+  m_LocaleId:
+    m_Code: en
+  m_SharedData: {fileID: 11400000, guid: ecc3ae1cf1e58ca45b6343e14b4c85b6, type: 2}
+  m_Metadata:
+    m_Items: []
+  m_TableData:
+  - m_Id: 47260028928
+    m_Localized: Merchant
+    m_Metadata:
+      m_Items: []
+  - m_Id: 103757303808
+    m_Localized: The merchant buys farm produce at a higher price than the farm stall,
+      but only in limited quantities
+    m_Metadata:
+      m_Items: []
+  - m_Id: 630788378624
+    m_Localized: The merchant buys animal products and is the only one who sells
+      seeds for perennial crops
+    m_Metadata:
+      m_Items: []
+  - m_Id: 957566603264
+    m_Localized: Appears randomly during the month
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1213469478912
+    m_Localized: Sell Produce
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1489916055552
+    m_Localized: Buy Seeds
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1655972745216
+    m_Localized: 'Sell Price:'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1886713991168
+    m_Localized: 'Farm Stall Price:'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2443793059840
+    m_Localized: Buy
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2492136607744
+    m_Localized: Sell
+    m_Metadata:
+      m_Items: []
+  references:
+    version: 2
+    RefIds: []

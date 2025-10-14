@@ -2,50 +2,62 @@
 using TMPro;
 using UnityEngine.UI;
 using System.Globalization;
+using UnityEngine.Localization.Settings;
 
-public enum FarmStallState
+public enum EFarmStallState
 {
-    NotForSale,   
+    NothingToSell,   
     Selling,     
     ReadyToCollect  
 }
 public class FarmStallUI : MonoBehaviour
 {
+    public static FarmStallUI Instance;
     public FarmStall farmStall;
     public TextMeshProUGUI totalAmountText;
     public TextMeshProUGUI statusText;
+    public string status;
     public Button buttonSell;
     public Button buttonCollect;
     public GameObject prevent;
-    public FarmStallState currentState = FarmStallState.NotForSale;
+    public EFarmStallState currentState = EFarmStallState.NothingToSell;
 
     public TextMeshProUGUI[] priceTexts;
     public ReceiveItem[] receiveItems;
     public ReceiveItemUI[] receiveItemsUI;
 
+    public GameObject[] highlightSeason;
+    public GameObject[] arrowIncrease;
+    public GameObject[] arrowDecrease;
+    public ScrollRect scrollViewFarmStall;
+    void Awake()
+    {
+        if (Instance == null) Instance = this;
+    }
     public void Start()
     {
         UpdatePrice();
+        UpdateUI();
     }
     public void Sell()
     {
-        currentState = FarmStallState.Selling;
+        currentState = EFarmStallState.Selling;
         Notification.Instance.ShowNotification("Quay trở lại vào ngày mai!");
         UpdateUI();
     }
     public void Collect()
     {
-        currentState = FarmStallState.NotForSale;
+        currentState = EFarmStallState.NothingToSell;
         Gold.Instance.AddGold(farmStall.totalAmount);
         farmStall.totalAmount = 0;
         UpdateReceiveDataItem();
         UpdateUI();
     }
-    public void UpdateUI()
+    public async void UpdateUI()
     {
         totalAmountText.text = farmStall.totalAmount.ToString("N0", new CultureInfo("de-DE"));
 
-        if (farmStall.totalAmount > 0 && currentState == FarmStallState.NotForSale)
+        if (farmStall.totalAmount > 0 && currentState == EFarmStallState.NothingToSell)
         {
             buttonSell.interactable = true;
         }
@@ -53,25 +65,32 @@ public class FarmStallUI : MonoBehaviour
         {
             buttonSell.interactable = false;
         }
-
         switch (currentState)
         {
-            case FarmStallState.NotForSale:
+            case EFarmStallState.NothingToSell:
                 buttonCollect.interactable = false;
                 prevent.SetActive(false);
-                statusText.text = "Chưa có gì để bán!";
+                status = await LocalizationSettings.StringDatabase.GetLocalizedStringAsync("UI_Farm Stall", "TEXT_Nothing To Sell").Task;
+                statusText.text = status;
                 break;
-            case FarmStallState.Selling:
-                buttonCollect.interactable = true;
+            case EFarmStallState.Selling:
                 prevent.SetActive(true);
-                statusText.text = "Đang bán!";
+                status = await LocalizationSettings.StringDatabase.GetLocalizedStringAsync("UI_Farm Stall", "TEXT_Selling").Task;
+                statusText.text = status;
                 break;
-            case FarmStallState.ReadyToCollect:
-                statusText.text = "Có thể nhận!";
+            case EFarmStallState.ReadyToCollect:
+                status = await LocalizationSettings.StringDatabase.GetLocalizedStringAsync("UI_Farm Stall", "TEXT_Ready To Collect").Task;
+                statusText.text = status;
                 break;
         }
     }
 
+    public void CanCollect()
+    {
+        buttonCollect.interactable = true;
+        currentState = EFarmStallState.ReadyToCollect;
+        UpdateUI();
+    }
     public void UpdateReceiveDataItem()
     {
         for (int i = 0; i < receiveItems.Length; i++)
@@ -83,6 +102,20 @@ public class FarmStallUI : MonoBehaviour
             }
         }
     }
+    public void ReturnItem()
+    {
+        if (currentState == EFarmStallState.NothingToSell)
+        {
+            for (int i = 0; i < receiveItems.Length; i++)
+            {
+                if (receiveItems[i] != null && receiveItemsUI[i] != null)
+                {
+                    receiveItems[i].ReturnItem();
+                    receiveItemsUI[i].UpdateAllSlots();
+                }
+            }
+        }
+    }
 
     public void UpdatePrice()
     {
@@ -90,8 +123,87 @@ public class FarmStallUI : MonoBehaviour
         {
             if (priceTexts[i] != null)
             {
-                priceTexts[i].text = farmStall.sellPriceSpring[i].ToString();
+                switch (Season.Instance.currentSeason)
+                {
+                    case SeasonState.Spring:
+                        priceTexts[i].text = farmStall.sellPriceSpring[i].ToString();
+                        break;
+                    case SeasonState.Summer:
+                        priceTexts[i].text = farmStall.sellPriceSummer[i].ToString();
+                        break;
+                    case SeasonState.Fall:
+                        priceTexts[i].text = farmStall.sellPriceFall[i].ToString();
+                        break;
+                    case SeasonState.Winter:
+                        priceTexts[i].text = farmStall.sellPriceWinter[i].ToString();
+                        break;
+                }
             }
         }
     }
+
+    public void SetCurrentSeasonInFarmStall()
+    {
+        for (int i = 0; i < highlightSeason.Length; i++)
+            highlightSeason[i].SetActive(false);
+
+        switch (Season.Instance.currentSeason)
+        {
+            case SeasonState.Spring:
+                highlightSeason[0].SetActive(true);
+                break;
+            case SeasonState.Summer:
+                highlightSeason[1].SetActive(true);
+                break;
+            case SeasonState.Fall:
+                highlightSeason[2].SetActive(true);
+                break;
+            case SeasonState.Winter:
+                highlightSeason[3].SetActive(true);
+                break;
+        }
+    }
+    public void UpdateArrow()
+    {
+        for (int i = 0; i < arrowIncrease.Length; i++)
+        {
+            arrowIncrease[i].SetActive(false);
+            arrowDecrease[i].SetActive(false);
+            switch (Season.Instance.currentSeason)
+            {
+                case SeasonState.Spring:
+                    if (!farmStall.canGrowInSpring[i])
+                    { arrowIncrease[i].SetActive(true); }
+                    else
+                    { arrowDecrease[i].SetActive(true); }
+                    break;
+                case SeasonState.Summer:
+                    if (!farmStall.canGrowInSummer[i])
+                    { arrowIncrease[i].SetActive(true); }
+                    else
+                    { arrowDecrease[i].SetActive(true); }
+                    break;
+                case SeasonState.Fall:
+                    if (!farmStall.canGrowInFall[i])
+                    { arrowIncrease[i].SetActive(true); }
+                    else
+                    { arrowDecrease[i].SetActive(true); }
+                    break;
+                case SeasonState.Winter:
+                    if (!farmStall.canGrowInWinter[i])
+                    { arrowIncrease[i].SetActive(true); }
+                    else
+                    { arrowDecrease[i].SetActive(true); }
+                    break;
+            }
+        }
+    }
+    public void ResetUI()
+    {
+        scrollViewFarmStall.verticalNormalizedPosition = 1f;
+        UpdatePrice();
+        SetCurrentSeasonInFarmStall();
+        UpdateArrow();
+    }
+
 }

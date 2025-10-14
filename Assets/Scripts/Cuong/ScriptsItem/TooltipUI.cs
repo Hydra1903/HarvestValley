@@ -2,6 +2,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Collections;
+using Unity.VisualScripting;
+using UnityEngine.InputSystem;
 
 public class TooltipUI : MonoBehaviour
 {
@@ -22,6 +24,7 @@ public class TooltipUI : MonoBehaviour
     public RectTransform canvasRectTransform;
     public Vector2 deviation;
 
+    Coroutine currentRoutine;
     private void Awake()
     {
         if (Instance == null) Instance = this;
@@ -45,7 +48,6 @@ public class TooltipUI : MonoBehaviour
 
     public void Show(string name, string season, string description, string type, Sprite icon, ItemType itemType)
     {
-        tooltipPanel.SetActive(true);
         nameItemText.text = name;
         seasonText.text = season;
         descriptionText.text = description;
@@ -66,11 +68,20 @@ public class TooltipUI : MonoBehaviour
                 iconType.sprite = animalProduct;
                 break;
         }
-
+        if (currentRoutine != null)
+            StopCoroutine(currentRoutine);
+        currentRoutine = StartCoroutine(ShowDelay());
     }
-
+    IEnumerator ShowDelay()
+    {
+        yield return new WaitForSeconds(0.7f);
+        tooltipPanel.SetActive(true);
+        currentRoutine = null;
+    }
     public void Hide()
     {
+        if (currentRoutine != null)
+            StopCoroutine(currentRoutine);
         tooltipPanel.SetActive(false);
     }
 }

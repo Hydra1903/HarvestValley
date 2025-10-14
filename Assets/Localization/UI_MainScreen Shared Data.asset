@@ -1,0 +1,72 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b11a58205ec3474ca216360e9fa74a8, type: 3}
+  m_Name: UI_MainScreen Shared Data
+  m_EditorClassIdentifier: 
+  m_TableCollectionName: UI_MainScreen
+  m_TableCollectionNameGuidString: 85285cc2367a1184ba25b514e3b8f75d
+  m_Entries:
+  - m_Id: 438378876928
+    m_Key: TEXT_Spring
+    m_Metadata:
+      m_Items: []
+  - m_Id: 571384451072
+    m_Key: TEXT_Summer
+    m_Metadata:
+      m_Items: []
+  - m_Id: 688183234560
+    m_Key: TEXT_Fall
+    m_Metadata:
+      m_Items: []
+  - m_Id: 769619841024
+    m_Key: TEXT_Winter
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1819126976512
+    m_Key: TEXT_Clear
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1996512481280
+    m_Key: TEXT_Rain
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2116301803520
+    m_Key: TEXT_Storm
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2409827586048
+    m_Key: TEXT_Snowfall
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3297572999168
+    m_Key: TEXT_Day
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9294559498240
+    m_Key: TEXT_None
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9974032551936
+    m_Key: TEXT_Cancel
+    m_Metadata:
+      m_Items: []
+  m_Metadata:
+    m_Items: []
+  m_KeyGenerator:
+    rid: 204902886355501056
+  references:
+    version: 2
+    RefIds:
+    - rid: 204902886355501056
+      type: {class: DistributedUIDGenerator, ns: UnityEngine.Localization.Tables, asm: Unity.Localization}
+      data:
+        m_CustomEpoch: 1759565867267

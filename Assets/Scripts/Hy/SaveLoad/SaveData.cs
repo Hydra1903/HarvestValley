@@ -20,6 +20,14 @@ public class PlantSave
     public int daysInStage;   //ngày của trạng thái
     public int centerX;
     public int centerY;
+    public int harvestCount; //số lần thu hoạch
+}
+
+[Serializable]
+public class SprinklerSave
+{
+    public int gridX, gridY;
+    public int halfRange;
 }
 
 [Serializable]
@@ -32,6 +40,8 @@ public class FarmGridSave
     public Vector3 origin;
     public List<AreaSave> areas = new();
     public List<PlantSave> plants = new();
+    public List<SprinklerSave> sprinklers = new();  
+    public List<Vector2Int> wateredCenters = new();
 }
 
 [Serializable]

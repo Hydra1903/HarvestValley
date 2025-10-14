@@ -1,0 +1,374 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9620f8c34305754d8cc9a7e49e852d9, type: 3}
+  m_Name: UI_Plants 2_en
+  m_EditorClassIdentifier: 
+  m_LocaleId:
+    m_Code: en
+  m_SharedData: {fileID: 11400000, guid: 6359b5df405c8594ea8c50e930b94ee5, type: 2}
+  m_Metadata:
+    m_Items: []
+  m_TableData:
+  - m_Id: 1535671717888
+    m_Localized: Apricot Tree
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1429467746304
+    m_Localized: Apple Tree
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1626214158336
+    m_Localized: Asparagus Plant
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1691456557056
+    m_Localized: Beetroot Plant
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1781361463296
+    m_Localized: Bell Pepper Plant
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1878157611008
+    m_Localized: Bottle Gourd Plant
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1967739555840
+    m_Localized: Cabbage Plant
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2033099395072
+    m_Localized: Carrot Plant
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2131762008064
+    m_Localized: Cauliflower Plant
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2256349614080
+    m_Localized: Cherry Tree
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2659510308864
+    m_Localized: Chilli Plant
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2784789975040
+    m_Localized: Corn Plant
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2858894938112
+    m_Localized: Delicata Squash Plant
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3031599599616
+    m_Localized: Eggplant Plant
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3104630820864
+    m_Localized: Green Bean Plant
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3195756269568
+    m_Localized: Lemon Tree
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3265507545088
+    m_Localized: Onion Plant
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3364174352384
+    m_Localized: Orange Tree
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3424748490752
+    m_Localized: Peach Tree
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3637097713664
+    m_Localized: Pear Tree
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3697378250752
+    m_Localized: Plum Tree
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3782312906752
+    m_Localized: Potato Plant
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3865330765824
+    m_Localized: Pumpkin Plant
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3978568585216
+    m_Localized: Striped Pumpkin Plant
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4071778603008
+    m_Localized: Tomato Plant
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4136685457408
+    m_Localized: Watermelon Plant
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4246915960832
+    m_Localized: White Pumpkin Plant
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4567964766208
+    m_Localized: Short-term crop (harvest once)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5304597794816
+    m_Localized: Short-term crop (harvest twice)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5351922126848
+    m_Localized: Short-term crop (harvest 3 times)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5384595755008
+    m_Localized: Short-term crop (harvest 4 times)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5424219344896
+    m_Localized: Short-term crop (harvest 5 times)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5679153336320
+    m_Localized: Perennial crop (harvest 10 times)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6327898918912
+    m_Localized: 'Growth time: <color=#09822D>2 days</color>'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7059578474496
+    m_Localized: 'Growth time: <color=#09822D>3 days</color>'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7299056455680
+    m_Localized: 'Growth time: <color=#09822D>4 days</color>'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7358829481984
+    m_Localized: 'Growth time: <color=#09822D>6 days</color>'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7434415034368
+    m_Localized: 'Growth time: <color=#09822D>7 days</color>'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7569022832640
+    m_Localized: 'Growth time: <color=#09822D>8 days</color>'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7644675493888
+    m_Localized: 'Growth time: <color=#09822D>13 days</color>'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7702498168832
+    m_Localized: 'Growth time: <color=#09822D>15 days</color>'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7811218722816
+    m_Localized: 'Harvest time: <color=#09822D>1 days</color>'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8401692839936
+    m_Localized: 'Harvest time: <color=#09822D>2 days</color>'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8494680559616
+    m_Localized: 'Harvest time: <color=#09822D>4 days</color>'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8549177151488
+    m_Localized: 'Harvest time: <color=#09822D>5 days</color>'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8704039243776
+    m_Localized: Growth stages
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8914236788736
+    m_Localized: Day 0
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9034298740736
+    m_Localized: Day 1
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9035204710400
+    m_Localized: Day 2
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9036077125632
+    m_Localized: Day 3
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9215576559616
+    m_Localized: Day 4
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9251035205632
+    m_Localized: Day 5
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9289517944832
+    m_Localized: Day 6
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9321818279936
+    m_Localized: Day 7
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9467503235072
+    m_Localized: Day 8
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9484334977024
+    m_Localized: Day 10
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9500394967040
+    m_Localized: Day 13
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9633463455744
+    m_Localized: Day 14
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9595953795072
+    m_Localized: Day 15
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9807191527424
+    m_Localized: Day 16
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9612269637632
+    m_Localized: Day 18
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9834077016064
+    m_Localized: Day 20
+    m_Metadata:
+      m_Items: []
+  - m_Id: 9852150272000
+    m_Localized: Day 21
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10288227864576
+    m_Localized: Cucumber Plant
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27021265260544
+    m_Localized: 'Growth time: <color=#09822D>10 days</color>'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 30831853359104
+    m_Localized: 'Harvest time: <color=#09822D>6 days</color>'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 32306574839808
+    m_Localized: 'Growing season: <color=#358D55>Spring</color> <color=#E09628>Sum</color>'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 33560692707328
+    m_Localized: 'Growing season: <color=#358D55>Spring</color> <color=#F33A38>Fall</color>'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 34029888524288
+    m_Localized: 'Growing season: <color=#358D55>Spring</color> <color=#33A9B0>Winter</color>'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 34356742246400
+    m_Localized: 'Growing season: <color=#E09628>Sum</color>'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 34570047770624
+    m_Localized: 'Growing season: <color=#358D55>Spring</color> <color=#F33A38>Fall</color>
+      <color=#33A9B0>Winter</color>'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 35852095508480
+    m_Localized: 'Growing season: <color=#E09628>Sum</color> <color=#F33A38>Fall</color>
+      <color=#33A9B0>Winter</color>'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 36386575667200
+    m_Localized: 'Growing season: <color=#358D55>Spring</color>'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 36540930248704
+    m_Localized: 'Fruit season: <color=#E09628>Sum</color> <color=#F33A38>Fall</color>
+      <color=#33A9B0>Winter</color>'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 36971085484032
+    m_Localized: 'Fruit season: <color=#358D55>Spring</color> <color=#33A9B0>Winter</color>'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 37793886294016
+    m_Localized: 'Fruit season: <color=#F33A38>Fall</color> <color=#33A9B0>Winter</color>'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 38386499506176
+    m_Localized: 'Fruit season: <color=#358D55>Spring</color> <color=#F33A38>Fall</color>'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 38910611345408
+    m_Localized: Plant Information
+    m_Metadata:
+      m_Items: []
+  - m_Id: 39092665110528
+    m_Localized: Plants
+    m_Metadata:
+      m_Items: []
+  - m_Id: 39492516499456
+    m_Localized: Rate 12% + 5
+    m_Metadata:
+      m_Items: []
+  - m_Id: 39863011954688
+    m_Localized: Rate 14% + 5
+    m_Metadata:
+      m_Items: []
+  - m_Id: 39864324771840
+    m_Localized: Rate 16% + 5
+    m_Metadata:
+      m_Items: []
+  - m_Id: 39865549508608
+    m_Localized: Rate 18% + 5
+    m_Metadata:
+      m_Items: []
+  - m_Id: 39866702942208
+    m_Localized: Rate 20% + 5
+    m_Metadata:
+      m_Items: []
+  - m_Id: 39868200308736
+    m_Localized: Rate 22% + 5
+    m_Metadata:
+      m_Items: []
+  - m_Id: 39869794144256
+    m_Localized: Rate 24% + 5
+    m_Metadata:
+      m_Items: []
+  - m_Id: 40599678537728
+    m_Localized: Rate 10% + 5
+    m_Metadata:
+      m_Items: []
+  references:
+    version: 2
+    RefIds: []

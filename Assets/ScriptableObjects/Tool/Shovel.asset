@@ -13,9 +13,11 @@ MonoBehaviour:
   m_Name: Shovel
   m_EditorClassIdentifier: 
   id: 
+  plantType: 29
   itemName: Shovel
   icon: {fileID: 21300000, guid: c6e1577cf0ebecd4aa86a1ecb0171802, type: 3}
-  maxStack: 0
+  maxStack: 99
   itemType: 2
+  toolType: 2
   description: "< C\xF4ng c\u1EE5 \u0111\xE0o h\u1ED1 \u0111\u1EA5t >"
   season: "Kh\xF4ng"
