@@ -53,13 +53,22 @@ public class CharacterStateMachine : MonoBehaviour
     void Start()
     {
         currentState = idleState;
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
     void Update()
     {
-        horizontal = Input.GetAxis("Horizontal");
-        vertical = Input.GetAxis("Vertical");
-        mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
-        mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;      
+        if (UIStateMachine.Instance.currentState == UIStateMachine.Instance.mainScreenState)
+        {
+            horizontal = Input.GetAxis("Horizontal");
+            vertical = Input.GetAxis("Vertical");
+            mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
+            mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
+        }
+        else
+        {
+            horizontal = 0; vertical = 0; mouseX = 0; mouseY = 0;
+        }
 
         if (currentState != null)
             currentState.Update(this);

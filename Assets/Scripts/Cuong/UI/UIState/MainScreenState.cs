@@ -21,6 +21,9 @@ public class MainScreenState : IUIState
         hotBarUI.UpdateAllSlots();
         hotBarUI.UpdateCurrentItem(hotBarUI.currentHighlightIndex);
         UIStateMachine.Instance.inputCooldown = 1f;
+
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
     public void Update()
     {
@@ -65,7 +68,10 @@ public class MainScreenState : IUIState
         {
             currentCalendarState = CalendarState.Off;
         }   
-        UIManager.Instance.HideUI("MainScreen");    
+        UIManager.Instance.HideUI("MainScreen");
+
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
     }
     public void ChangeCalendarState()
     {

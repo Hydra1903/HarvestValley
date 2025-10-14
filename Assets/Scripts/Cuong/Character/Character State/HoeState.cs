@@ -30,6 +30,6 @@ public class HoeState : ICharacterState
         if (CharacterStateMachine.Instance.mainUIScreen.actionBar.value >= 1f)
         {
             characterStateMachine.soilManager.TryDigOrFlatten(characterStateMachine.farmInput.gridPos, characterStateMachine.farmInput.tool);
-        }          
+        }
     }
 }
