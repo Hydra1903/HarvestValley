@@ -48,6 +48,15 @@ public class InteractionPromptManager : MonoBehaviour
             case ETriggerCanvas.Builder:
                 UIStateMachine.Instance.ChangeState(UIStateMachine.Instance.builderState);
                 break;
+            case ETriggerCanvas.AnimalBarn1:
+                UIStateMachine.Instance.ChangeState(UIStateMachine.Instance.animalBarn1State);
+                break;
+            case ETriggerCanvas.AnimalBarn2:
+                UIStateMachine.Instance.ChangeState(UIStateMachine.Instance.animalBarn2State);
+                break;
+            case ETriggerCanvas.SellAnimal:
+                UIStateMachine.Instance.ChangeState(UIStateMachine.Instance.sellAnimalState);
+                break;
         }
     }
 }

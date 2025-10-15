@@ -7,6 +7,9 @@ public enum ETriggerCanvas
     SeedShop,
     Builder,
     Merchant,
+    SellAnimal,
+    AnimalBarn1,
+    AnimalBarn2
 }
 public class TriggerCanvas : MonoBehaviour
 {

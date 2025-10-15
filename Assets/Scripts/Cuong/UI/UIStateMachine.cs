@@ -23,6 +23,9 @@ public class UIStateMachine : MonoBehaviour
     [HideInInspector] public MerchantState merchantState = new MerchantState();
     [HideInInspector] public BuilderState builderState = new BuilderState();
     [HideInInspector] public MapState mapState = new MapState();
+    [HideInInspector] public SellAnimalState sellAnimalState = new SellAnimalState();
+    [HideInInspector] public AnimalBarn1State animalBarn1State = new AnimalBarn1State();
+    [HideInInspector] public AnimalBarn2State animalBarn2State = new AnimalBarn2State();
     public Button btnInventory;
     public Button btnAchievement;
     public Button btnUnlock;

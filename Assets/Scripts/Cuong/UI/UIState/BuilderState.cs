@@ -7,6 +7,8 @@ public class BuilderState : IUIState
         UIManager.Instance.ShowUI("Builder");
         UIManager.Instance.ShowUI("Panel");
         UIStateMachine.Instance.inputCooldown = 1f;
+        BuilderUI.Instance.ResetUI();
+        BuilderUI.Instance.UpdateUI();
     }
     public void Update()
     {
