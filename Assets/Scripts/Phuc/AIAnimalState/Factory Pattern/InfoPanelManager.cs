@@ -15,7 +15,6 @@ public class InfoPanelManager : MonoBehaviour
             return;
         }
         instance = this;
-        DontDestroyOnLoad(gameObject);
     }
 
 

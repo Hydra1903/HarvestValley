@@ -7,9 +7,6 @@ using UnityEngine.UI;
 public class AnimalPen : MonoBehaviour
 {
     public int penId;
-    public CinemachineInputAxisController playerAxisController;
-    public FirstCameraTesting firstCameraTesting;
-
     [Header("SpawnPoint and Random WP")]
     public Transform spawnPointType1;
     public Transform spawnPointType2;
@@ -47,17 +44,6 @@ public class AnimalPen : MonoBehaviour
         {
             penInfoPanel.SetActive(false);
             inventoryPanels.SetActive(false);
-
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
-            if (playerAxisController != null)
-            {
-                playerAxisController.enabled = true;
-            }
-            if (firstCameraTesting != null)
-            {
-                firstCameraTesting.allowMouseLook = true;
-            }
         }
         if (sharedInfoPanel != null)
         {
@@ -198,13 +184,6 @@ public class AnimalPen : MonoBehaviour
     {
         if (penInfoPanel != null)
         {
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
-            if (playerAxisController != null)
-                playerAxisController.enabled = false;
-            if (firstCameraTesting != null)
-                firstCameraTesting.allowMouseLook = false;
-
             penInfoPanel.SetActive(show);
             inventoryPanels.SetActive(show);
 
@@ -212,17 +191,6 @@ public class AnimalPen : MonoBehaviour
             {
                 UpdateAnimalCountUI();
                 UpdateAnimalCells();
-            }
-            else
-            {
-                Cursor.lockState = CursorLockMode.Locked;
-                Cursor.visible = false;
-
-                if (playerAxisController != null)
-                    playerAxisController.enabled = true;
-
-                if (firstCameraTesting != null)
-                    firstCameraTesting.allowMouseLook = true;
             }
         }
     }
@@ -283,22 +251,5 @@ public class AnimalPen : MonoBehaviour
     {
         animals.Remove(animal);
         listUI.Refresh(animals);
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.CompareTag("Player"))
-        {
-            penInfoPanel.SetActive(false);
-            inventoryPanels.SetActive(false);
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
-
-            if (playerAxisController != null)
-                playerAxisController.enabled = true;
-
-            if (firstCameraTesting != null)
-                firstCameraTesting.allowMouseLook = true;
-        }
     }
 }

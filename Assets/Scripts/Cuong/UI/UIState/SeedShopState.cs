@@ -10,10 +10,16 @@ public class SeedShopState : IUIState
         SeedShopUI.Instance.ResetUI();
         UIStateMachine.Instance.inventoryUI2.UpdateAllSlots();
         UIStateMachine.Instance.inventoryUI2.UpdateGoldUI();
+        UIStateMachine.Instance.inputCooldown = 1f;
     }
     public void Update()
     {
-        if (Input.GetKeyDown(KeyCode.R))
+        if (UIStateMachine.Instance.inputCooldown > 0)
+        {
+            UIStateMachine.Instance.inputCooldown -= Time.deltaTime;
+            return;
+        }
+        if (Input.GetKeyDown(KeyCode.E))
         {
             UIStateMachine.Instance.ChangeState(UIStateMachine.Instance.mainScreenState);
         }

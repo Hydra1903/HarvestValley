@@ -10,6 +10,7 @@ public class UIView : MonoBehaviour
         gameObject.SetActive(true);
         if (animator != null)
             animator.Play("On");
+        UISounds.Instance.PlaySound_OpenUI();
     }
 
     public void Hide()
@@ -18,6 +19,7 @@ public class UIView : MonoBehaviour
             animator.Play("Off");
         else
             gameObject.SetActive(false);
+        UISounds.Instance.PlaySound_CloseUI();
     }
     public void OnHideAnimationEnd()
     {

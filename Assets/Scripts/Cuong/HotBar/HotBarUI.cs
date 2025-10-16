@@ -4,6 +4,11 @@ using UnityEngine;
 
 public class HotBarUI : MonoBehaviour
 {
+    public static HotBarUI Instance;
+    void Awake()
+    {
+        if (Instance == null) Instance = this;
+    }
     public HotBar hotbar;
     public Transform slotsParent;
 
@@ -71,6 +76,7 @@ public class HotBarUI : MonoBehaviour
     public void UpdateCurrentItem(int index)
     {
         currentItem = hotbar.slots[index].item;
+        ChangeMode.Instance.CheckCurrentItemHoe();
     }
 
     public void UseItem()
