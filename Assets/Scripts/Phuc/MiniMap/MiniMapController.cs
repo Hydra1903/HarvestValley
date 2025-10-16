@@ -77,9 +77,8 @@ public class MiniMapController : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.M))
-        {
-            fullMapPanel.SetActive(!fullMapPanel.activeSelf);
+        fullMapPanel.SetActive(false);
+        fullMapPanel.SetActive(!fullMapPanel.activeSelf);
 
             if (fullMapPanel.activeSelf)
             {
@@ -89,7 +88,7 @@ public class MiniMapController : MonoBehaviour
             {
                 SetMinimapMode(MinimapMode.Mini);
             }
-        }
+        
 
         if (currentMiniMapMode == MinimapMode.Fullscreen && fullMapPanel.activeSelf)
         {
@@ -156,8 +155,8 @@ public class MiniMapController : MonoBehaviour
                 scrollViewRectTransform.pivot = Vector2.one;
                 scrollViewRectTransform.anchoredPosition = scrollViewDefaultPosition;
                 currentMiniMapMode = MinimapMode.Mini;
-                Cursor.lockState = CursorLockMode.Locked;
-                Cursor.visible = false;
+                //Cursor.lockState = CursorLockMode.Locked;
+                //Cursor.visible = false;
                 break;
 
             case MinimapMode.Fullscreen:

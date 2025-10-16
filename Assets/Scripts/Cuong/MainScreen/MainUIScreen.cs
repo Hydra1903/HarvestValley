@@ -126,6 +126,8 @@ public class MainUIScreen : MonoBehaviour
         backgroundLevelUp.SetActive(true);
         panelLevelUp[levelManager.currentLevel - 2].SetActive(true);
         StartCoroutine(Hide(panelLevelUp[levelManager.currentLevel - 2]));
+
+        UISounds.Instance.PlaySound_LevelUp();
     }
 
     IEnumerator Hide(GameObject currentPanelLevelUp)

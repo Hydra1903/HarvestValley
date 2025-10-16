@@ -9,7 +9,10 @@ public enum ETriggerCanvas
     Merchant,
     SellAnimal,
     AnimalBarn1,
-    AnimalBarn2
+    AnimalBarn2,
+    PenDoor,
+    HouseDoor,
+    BarnDoor
 }
 public class TriggerCanvas : MonoBehaviour
 {

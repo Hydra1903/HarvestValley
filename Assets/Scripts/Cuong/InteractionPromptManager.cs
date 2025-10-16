@@ -57,6 +57,15 @@ public class InteractionPromptManager : MonoBehaviour
             case ETriggerCanvas.SellAnimal:
                 UIStateMachine.Instance.ChangeState(UIStateMachine.Instance.sellAnimalState);
                 break;
+            case ETriggerCanvas.PenDoor:
+                SoundEffects.Instance.PlaySound_PenDoor();
+                break;
+            case ETriggerCanvas.HouseDoor:
+                SoundEffects.Instance.PlaySound_HouseDoor();
+;                break;
+            case ETriggerCanvas.BarnDoor:
+                SoundEffects.Instance.PlaySound_BarnDoor();
+                ; break;
         }
     }
 }
