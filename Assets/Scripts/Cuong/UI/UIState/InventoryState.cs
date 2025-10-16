@@ -23,6 +23,8 @@ public class InventoryState : IUIState
         ResetUI();
         UIStateMachine.Instance.inventoryUI1.UpdateAllSlots();
         UIStateMachine.Instance.inputCooldown = 1f;
+        AchivementsUI.Instance.LoadAchievementsUI();
+        AchivementsUI.Instance.LoadStatistics();
     }
     public void Update() 
     {
