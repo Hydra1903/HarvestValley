@@ -181,7 +181,6 @@ public class PlantManager : MonoBehaviour
         RemovePlantAtCenter(cx, cy);
         int idx = _plantSaves.FindIndex(p => p.centerX == cx && p.centerY == cy);
         if (idx >= 0) _plantSaves.RemoveAt(idx);
-        CharacterStateMachine.Instance.ChangeState(CharacterStateMachine.Instance.harvestLowState);
         return true;
     }
 
@@ -221,6 +220,8 @@ public class PlantManager : MonoBehaviour
                         inst.daysInCurrentStage = 0;
                         ReplacePlantMeshAtCenter(cx, cy, inst); // nhớ dùng tọa độ TÂM
                     }
+                    int rd = GetRemainingDaysConditioned(inst, cx, cy);   // hàm bạn đã thêm trước đó
+                    inst.remainingDays = (rd >= 0) ? rd : GetRemainingDays(inst);
                     continue;
                 }
 
@@ -246,6 +247,8 @@ public class PlantManager : MonoBehaviour
                             ReplacePlantMeshAtCenter(cx, cy, inst); // cập nhật mesh đúng TÂM
                         }
                     }
+                    int rd = GetRemainingDaysConditioned(inst, cx, cy);   // hàm bạn đã thêm trước đó
+                    inst.remainingDays = (rd >= 0) ? rd : GetRemainingDays(inst);
 
                     // không tăng khi sai mùa hoặc không tưới
                     continue;
@@ -332,7 +335,7 @@ public class PlantManager : MonoBehaviour
 
     // ===== Tile / Prefab helpers =====
 
-    private bool TryGetPlantCenterFrom(int x, int y, out int cx, out int cy)
+    public bool TryGetPlantCenterFrom(int x, int y, out int cx, out int cy)
     {
         cx = cy = -1;
         var inst = farmManager.Tiles[x, y].plantInstance;
@@ -486,7 +489,7 @@ public class PlantManager : MonoBehaviour
     {
         var pd = farmManager.plantDatabase ? farmManager.plantDatabase.GetPlantData(p.type) : null;
         if (pd == null) return;
-
+            
         int size = p.size;
         int startX = p.centerX - (size / 2);
         int startY = p.centerY - (size / 2);
@@ -520,5 +523,67 @@ public class PlantManager : MonoBehaviour
         }
 
         _plantSaves.Add(p);
+    }
+
+
+    // Tính số ngày còn lại 
+    public int GetRemainingDaysConditioned(PlantInstance inst, int cx, int cy)
+    {
+        if (inst == null || inst.plantData == null) return 0;
+
+        var pd = inst.plantData;
+        bool useMature = UseMatureChain(inst);
+        int lastStage = GetLastStageIndexFor(inst);
+        int preFruit = Mathf.Max(0, lastStage - 1);
+
+        var season = Season.Instance ? Season.Instance.currentSeason : SeasonState.Spring;
+        bool canGrow = pd.CanGrowInSeason(season);
+        bool canHarvest = pd.CanHarvestInSeason(season);
+
+        // Đang ở stage có quả nhưng sai mùa harvest -> AdvanceDay sẽ lùi; coi như sai mùa
+        if (inst.currentStage >= lastStage && !canHarvest) return -1;
+        if (inst.currentStage >= lastStage) return 0;
+
+        bool seasonOkNow =
+            (inst.currentStage < preFruit && canGrow) ||
+            (inst.currentStage == preFruit && canHarvest);
+        if (!seasonOkNow) return -1;
+
+        bool isRainy = Weather.Instance &&
+                       (Weather.Instance.currentWeather == WeatherState.Rainy ||
+                        Weather.Instance.currentWeather == WeatherState.Stormy);
+        bool wateredToday = isRainy || (soilManager != null && soilManager.IsTileWatered(cx, cy));
+        if (pd.needsWater && !wateredToday) return -2;
+
+        int remaining = 0;
+        int needNow = GetRequiredDaysForCurrentStage(inst);
+        remaining += Mathf.Max(0, needNow - inst.daysInCurrentStage);
+
+        for (int s = inst.currentStage + 1; s < lastStage; s++)
+        {
+            bool seasonOkNext =
+                (s < preFruit && canGrow) ||
+                (s == preFruit && canHarvest);
+            if (!seasonOkNext) return -1;
+
+            remaining += pd.GetRequiredDaysForStage(useMature, s);
+        }
+
+        return remaining;
+    }
+
+    public int GetRemainingDays(PlantInstance inst)
+    {
+        if (inst == null || inst.plantData == null) return 0;
+        bool useMature = UseMatureChain(inst);
+        int lastStage = GetLastStageIndexFor(inst);   // stage có quả
+        if (inst.currentStage >= lastStage) return 0;
+
+        int remaining = 0;
+        int needNow = GetRequiredDaysForCurrentStage(inst);
+        remaining += Mathf.Max(0, needNow - inst.daysInCurrentStage);
+        for (int s = inst.currentStage + 1; s < lastStage; s++)
+            remaining += inst.plantData.GetRequiredDaysForStage(useMature, s);
+        return remaining;
     }
 }

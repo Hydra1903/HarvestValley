@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 23215322340779266}
   - component: {fileID: -4818444351582872754}
   - component: {fileID: 8507524695705548609}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: SM_Prop_Plant_Eggplant_02
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -137,6 +137,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Prop_Eggplant_01_S (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 1905425275923596, guid: ec6063f8c19c41d42862b2266ba1e7bb, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 4220079716864490, guid: ec6063f8c19c41d42862b2266ba1e7bb, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.7142857
@@ -210,6 +214,10 @@ PrefabInstance:
     - target: {fileID: 1905425275923596, guid: ec6063f8c19c41d42862b2266ba1e7bb, type: 3}
       propertyPath: m_Name
       value: SM_Prop_Eggplant_01_S
+      objectReference: {fileID: 0}
+    - target: {fileID: 1905425275923596, guid: ec6063f8c19c41d42862b2266ba1e7bb, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 4220079716864490, guid: ec6063f8c19c41d42862b2266ba1e7bb, type: 3}
       propertyPath: m_LocalScale.x

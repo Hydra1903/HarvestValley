@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 23107982327518536}
   - component: {fileID: -6754722954453528714}
   - component: {fileID: -236425172721842069}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: SM_Prop_Plant_Ground_BottleGourd_06
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -134,6 +134,10 @@ PrefabInstance:
     - target: {fileID: 1929641757197542, guid: 9cc80f03660c09e4f9497c828003a454, type: 3}
       propertyPath: m_Name
       value: SM_Prop_Squash_Butternut_01_M
+      objectReference: {fileID: 0}
+    - target: {fileID: 1929641757197542, guid: 9cc80f03660c09e4f9497c828003a454, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 4146163686193908, guid: 9cc80f03660c09e4f9497c828003a454, type: 3}
       propertyPath: m_LocalPosition.x

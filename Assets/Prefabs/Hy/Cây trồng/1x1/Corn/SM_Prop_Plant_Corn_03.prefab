@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 23628689728554218}
   - component: {fileID: -4826023144578263909}
   - component: {fileID: 3180322559212823897}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: SM_Prop_Plant_Corn_03
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -137,6 +137,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Prop_Corn_02
       objectReference: {fileID: 0}
+    - target: {fileID: 1977253914815470, guid: 7f0ed5ecc23532d409e608672af587ae, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 4424353054792948, guid: 7f0ed5ecc23532d409e608672af587ae, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.6
@@ -211,6 +215,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Prop_Corn_02 (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 1977253914815470, guid: 7f0ed5ecc23532d409e608672af587ae, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 4424353054792948, guid: 7f0ed5ecc23532d409e608672af587ae, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.6
@@ -284,6 +292,10 @@ PrefabInstance:
     - target: {fileID: 1977253914815470, guid: 7f0ed5ecc23532d409e608672af587ae, type: 3}
       propertyPath: m_Name
       value: SM_Prop_Corn_02 (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1977253914815470, guid: 7f0ed5ecc23532d409e608672af587ae, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 4424353054792948, guid: 7f0ed5ecc23532d409e608672af587ae, type: 3}
       propertyPath: m_LocalScale.x

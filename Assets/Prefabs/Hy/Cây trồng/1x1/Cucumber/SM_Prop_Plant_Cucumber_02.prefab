@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 23215322340779266}
   - component: {fileID: -2500340559856234459}
   - component: {fileID: 6388956143401376417}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: SM_Prop_Plant_Cucumber_02
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -137,6 +137,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Prop_Cucumber_01_S (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 1529042462015276, guid: 26cff34ef99902d45a34ee406b3e6d84, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 4097538487905076, guid: 26cff34ef99902d45a34ee406b3e6d84, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.4615385
@@ -210,6 +214,10 @@ PrefabInstance:
     - target: {fileID: 1529042462015276, guid: 26cff34ef99902d45a34ee406b3e6d84, type: 3}
       propertyPath: m_Name
       value: SM_Prop_Cucumber_01_S
+      objectReference: {fileID: 0}
+    - target: {fileID: 1529042462015276, guid: 26cff34ef99902d45a34ee406b3e6d84, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 4097538487905076, guid: 26cff34ef99902d45a34ee406b3e6d84, type: 3}
       propertyPath: m_LocalScale.x

@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 64513793050881380}
   - component: {fileID: 64273142190292636}
   - component: {fileID: 1299890332620243436}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: SM_Env_Tree_Peach_01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -157,6 +157,10 @@ PrefabInstance:
     - target: {fileID: 1173105266871216, guid: a8f89044c17c9524faf55bde74ffd159, type: 3}
       propertyPath: m_Name
       value: SM_Prop_Pot_01 (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1173105266871216, guid: a8f89044c17c9524faf55bde74ffd159, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 4478608842801098, guid: a8f89044c17c9524faf55bde74ffd159, type: 3}
       propertyPath: m_LocalScale.x

@@ -23,5 +23,9 @@ public class HarvestLowState : ICharacterState
         //CameraSwitcher.Instance.StartCoroutine(CameraSwitcher.Instance.SwitchToMainView());
         characterStateMachine.animator.speed = 1f;
         UIManager.Instance.HideUI("ActionBar");
+        if (CharacterStateMachine.Instance.mainUIScreen.actionBar.value >= 1f)
+        {
+            characterStateMachine.plantManager.TryHarvest(characterStateMachine.farmInput.gridPos);
+        }
     }
 }

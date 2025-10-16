@@ -13,7 +13,8 @@ GameObject:
   - component: {fileID: 23494328461116312}
   - component: {fileID: -3754450276320518720}
   - component: {fileID: 654698550252236793}
-  m_Layer: 0
+  - component: {fileID: -6279247711857907694}
+  m_Layer: 8
   m_Name: SM_Prop_Plant_Potato_01_S
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -123,3 +124,21 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 4300000, guid: 4323fdf7bcd1dad4db5cf2b2a6833553, type: 3}
+--- !u!114 &-6279247711857907694
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1347292578903898}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  outlineMode: 1
+  outlineColor: {r: 1, g: 1, b: 1, a: 0}
+  outlineWidth: 0
+  precomputeOutline: 0
+  bakeKeys: []
+  bakeValues: []
