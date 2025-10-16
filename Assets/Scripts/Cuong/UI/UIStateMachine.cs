@@ -11,7 +11,7 @@ public class UIStateMachine : MonoBehaviour
     {
         if (Instance == null) Instance = this;
     }
-    private IUIState currentState;
+    public IUIState currentState;
 
     [HideInInspector] public MainScreenState mainScreenState = new MainScreenState();
     [HideInInspector] public InventoryState inventoryState = new InventoryState();
@@ -23,6 +23,9 @@ public class UIStateMachine : MonoBehaviour
     [HideInInspector] public MerchantState merchantState = new MerchantState();
     [HideInInspector] public BuilderState builderState = new BuilderState();
     [HideInInspector] public MapState mapState = new MapState();
+    [HideInInspector] public SellAnimalState sellAnimalState = new SellAnimalState();
+    [HideInInspector] public AnimalBarn1State animalBarn1State = new AnimalBarn1State();
+    [HideInInspector] public AnimalBarn2State animalBarn2State = new AnimalBarn2State();
     public Button btnInventory;
     public Button btnAchievement;
     public Button btnUnlock;
@@ -41,6 +44,8 @@ public class UIStateMachine : MonoBehaviour
     public ScrollRect scrollViewDisplay;
     public ScrollRect scrollViewSound;
     public ScrollRect scrollViewControl;
+
+    public float inputCooldown = 1f;
 
     public void ChangeState(IUIState newState)
     {

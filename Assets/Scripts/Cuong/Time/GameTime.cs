@@ -37,12 +37,13 @@ public class GameTime : MonoBehaviour
         if (minute >= 60)
         {
             minute = 0; hour++;
-            Weather.Instance.SetCurrentWeather();          
+            Weather.Instance.SetCurrentWeather();
         }
         if (hour >= 18)
         {
             currentTimeOfDay = TimeOfDay.Night;
             mainUIScreen.UpdateIconTimeOfDay();
+            MusicBackground.Instance.ChangeBackgroundMusic();
         }
         if (hour >= 24)
         {

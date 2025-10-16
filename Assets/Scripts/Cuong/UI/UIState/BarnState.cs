@@ -9,10 +9,16 @@ public class BarnState : IUIState
         UIManager.Instance.ShowUI("Panel");
         UIStateMachine.Instance.inventoryUI2.UpdateAllSlots();
         UIStateMachine.Instance.inventoryUI2.UpdateGoldUI();
+        UIStateMachine.Instance.inputCooldown = 1f;
     }
     public void Update()
     {
-        if (Input.GetKeyDown(KeyCode.T))
+        if (UIStateMachine.Instance.inputCooldown > 0)
+        {
+            UIStateMachine.Instance.inputCooldown -= Time.deltaTime;
+            return; 
+        }
+        if (Input.GetKeyDown(KeyCode.E))
         {
             UIStateMachine.Instance.ChangeState(UIStateMachine.Instance.mainScreenState);
         }

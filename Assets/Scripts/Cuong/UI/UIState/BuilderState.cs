@@ -6,10 +6,18 @@ public class BuilderState : IUIState
     {
         UIManager.Instance.ShowUI("Builder");
         UIManager.Instance.ShowUI("Panel");
+        UIStateMachine.Instance.inputCooldown = 1f;
+        BuilderUI.Instance.ResetUI();
+        BuilderUI.Instance.UpdateUI();
     }
     public void Update()
     {
-        if (Input.GetKeyDown(KeyCode.I))
+        if (UIStateMachine.Instance.inputCooldown > 0)
+        {
+            UIStateMachine.Instance.inputCooldown -= Time.deltaTime;
+            return;
+        }
+        if (Input.GetKeyDown(KeyCode.E))
         {
             UIStateMachine.Instance.ChangeState(UIStateMachine.Instance.mainScreenState);
         }

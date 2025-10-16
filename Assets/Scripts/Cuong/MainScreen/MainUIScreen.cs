@@ -85,7 +85,7 @@ public class MainUIScreen : MonoBehaviour
 
         UpdateStamina();
 
-        if (Input.GetKey(KeyCode.Z))
+        if (Input.GetKey(KeyCode.E))
         {
             frame.fillAmount += Time.deltaTime;
             if (frame.fillAmount >= 1)
@@ -93,7 +93,7 @@ public class MainUIScreen : MonoBehaviour
                 CharacterStateMachine.Instance.ExitState();
             }
         }
-        if (Input.GetKeyUp(KeyCode.Z))
+        if (Input.GetKeyUp(KeyCode.E))
         {
             frame.fillAmount = 0;
         }
@@ -126,6 +126,8 @@ public class MainUIScreen : MonoBehaviour
         backgroundLevelUp.SetActive(true);
         panelLevelUp[levelManager.currentLevel - 2].SetActive(true);
         StartCoroutine(Hide(panelLevelUp[levelManager.currentLevel - 2]));
+
+        UISounds.Instance.PlaySound_LevelUp();
     }
 
     IEnumerator Hide(GameObject currentPanelLevelUp)
@@ -322,7 +324,7 @@ public class MainUIScreen : MonoBehaviour
     {
         if (staminaBar.value > 0 && CharacterStateMachine.Instance.currentState == CharacterStateMachine.Instance.runState)
         {
-            staminaBar.value -= 0.4f * Time.deltaTime;
+            staminaBar.value -= 0.04f * Time.deltaTime;
         }
         else
         {

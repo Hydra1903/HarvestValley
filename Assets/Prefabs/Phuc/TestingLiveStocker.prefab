@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 4650856506177799949}
   - component: {fileID: 34809133938338351}
   - component: {fileID: 1589009244320547870}
+  - component: {fileID: 5374358997765310779}
   m_Layer: 0
   m_Name: TestingLiveStocker
   m_TagString: Untagged
@@ -161,3 +162,15 @@ MonoBehaviour:
   pen1Button: {fileID: 0}
   pen1: {fileID: 0}
   pen2: {fileID: 0}
+--- !u!114 &5374358997765310779
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8471958563643384614}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7de3a8f3100c85244933746f92862029, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

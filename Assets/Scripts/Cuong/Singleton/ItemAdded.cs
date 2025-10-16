@@ -22,6 +22,7 @@ public class ItemAdded : MonoBehaviour
         iconItem.sprite = icon;
         textAmount.text = "+"+amount;
         UIManager.Instance.ShowUI("ItemAdded");
+        UISounds.Instance.PlaySound_CollectItem();
     }
     IEnumerator HandleRoutine()
     {

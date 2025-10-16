@@ -5,14 +5,10 @@ using UnityEngine.UI;
 
 public class LiveStockSeller : MonoBehaviour
 {
-    public CinemachineInputAxisController playerAxisController;
-    public FirstCameraTesting firstCameraTesting;
-
     public GameObject buyCanvas;
     public GameObject confirmPanel;
     public GameObject selectPenPanel;
 
-    private bool playerInRange = false;
     private AnimalType selectedType = AnimalType.None;
     private AnimalPen selectedPen = null;
 
@@ -128,53 +124,5 @@ public class LiveStockSeller : MonoBehaviour
         buyCanvas.SetActive(false);
         selectPenPanel.SetActive(false);
         confirmPanel.SetActive(false);
-
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
-
-        if (playerAxisController != null)
-            playerAxisController.enabled = true;
-
-        firstCameraTesting.allowMouseLook = true;
-    }
-
-    void Update()
-    {
-        if (playerInRange && Input.GetKeyDown(KeyCode.E))
-        {
-            bool isActive = buyCanvas.activeSelf;
-            buyCanvas.SetActive(!isActive);
-
-            if (!isActive)
-            {
-                Cursor.lockState = CursorLockMode.None;
-                Cursor.visible = true;
-                if (playerAxisController != null)
-                    playerAxisController.enabled = false;
-
-                firstCameraTesting.allowMouseLook = false;
-            }
-            else
-            {
-                CloseAllUI();
-            }
-        }
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("Player"))
-            playerInRange = true;
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.CompareTag("Player"))
-        {
-            playerInRange = false;
-            CloseAllUI();
-            selectedType = AnimalType.None;
-            selectedPen = null;
-        }
-    }
+    }    
 }
