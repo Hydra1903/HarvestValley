@@ -27,6 +27,7 @@ public class WateringState : ICharacterState
         UIManager.Instance.HideUI("ActionBar");
         if (CharacterStateMachine.Instance.mainUIScreen.actionBar.value >= 1f)
         {
+            WaterCan.Instance.ConsumeWater();
             characterStateMachine.soilManager.TryWaterAt(characterStateMachine.farmInput.gridPos);
         }
     }

@@ -1,4 +1,6 @@
-﻿using UnityEditor.ShaderKeywordFilter;
+﻿using System;
+using System.Xml.Serialization;
+using UnityEditor.ShaderKeywordFilter;
 using UnityEngine;
 public class Builder : MonoBehaviour
 {
@@ -45,6 +47,74 @@ public class Builder : MonoBehaviour
     public bool isUnlockGreenhouse1;
     public bool isUnlockGreenhouse2;
 
+    public bool[] isBuilding;
+    public int[] constructionDays;
+    public int[] dayCounter;
+
+    public void SetIsBuilding(int index)
+    {
+        isBuilding[index] = true;
+    }
+    public void CheckCanBuild()
+    {
+        for (int i = 0; i < isBuilding.Length; i++)
+        {
+            if (isBuilding[i])
+            {
+                if(dayCounter[i] < constructionDays[i])
+                {
+                    dayCounter[i]++;
+                }
+                else if(dayCounter[i] == constructionDays[i])
+                {
+                    isBuilding[i] = false;
+                    ConstructionCompleted(i);
+                }
+            }
+        }
+    }
+    public void ConstructionCompleted(int index)
+    {
+        switch (index)
+        {
+            case 0:
+                UpgradeBuildingBarn_1to2();
+                break;
+            case 1:
+                UpgradeBuildingBarn_2to3();
+                break;
+            case 2:
+                UpdateBuildingHome_1to2();
+                break;
+            case 3:
+                UnlockFarmland2();
+                break;
+            case 4:
+                UnlockFarmland3();
+                break;
+            case 5:
+                UnlockGrassland();
+                break;
+            case 6:
+                UnlockBuildingPen1();
+                break;
+            case 7:
+                UpdateBuildingPen1_1to2();
+                break;
+            case 8:
+                UnlockBuildingPen2();
+                break;
+            case 9:
+                UpdateBuildingPen2_1to2();
+                break;
+            case 10:
+                UnlockBuildingGreenhouse1();
+                break;
+            case 11:
+                UnlockBuildingGreenhouse2();
+                break;
+        }
+    }
     void Start()
     {
         LoadAllBuilding();
@@ -62,11 +132,45 @@ public class Builder : MonoBehaviour
     #region ----- BUILDING BARN -----
     public void Barn2()
     {
-        builderUI.OnPanelConfirm(() => UpgradeBuildingBarn_1to2());
+        if (Gold.Instance.gold >= priceBuildingBarn[0] && LevelManager.Instance.currentLevel >= 10)
+        {
+            builderUI.OnPanelConfirm(() =>
+            {
+                SetIsBuilding(0);
+                builderUI.UpdateButton_UpdateBarnLv2();
+            });
+        }
+        else if (Gold.Instance.gold < priceBuildingBarn[0])
+        {
+            Notification.Instance.ShowNotification("Không đủ vàng!");
+        }
+        else if (LevelManager.Instance.currentLevel < 10)
+        {
+            Notification.Instance.ShowNotification("Chưa đạt cấp độ yêu cầu!");
+        }
     }
     public void Barn3()
     {
-        builderUI.OnPanelConfirm(() => UpgradeBuildingBarn_2to3());
+        if (Gold.Instance.gold >= priceBuildingBarn[1] && currentlevelBarn == 2 && LevelManager.Instance.currentLevel >= 20)
+        {
+            builderUI.OnPanelConfirm(() =>
+            {
+                SetIsBuilding(1);
+                builderUI.UpdateButton_UpdateBarnLv3();
+            });
+        }
+        else if (currentlevelBarn == 1)
+        {
+            Notification.Instance.ShowNotification("Chưa mở khóa kho lương thực cấp 2!");
+        }
+        else if (Gold.Instance.gold < priceBuildingBarn[1])
+        {
+            Notification.Instance.ShowNotification("Không đủ vàng!");
+        }
+        else if (LevelManager.Instance.currentLevel < 20)
+        {
+            Notification.Instance.ShowNotification("Chưa đạt cấp độ yêu cầu!");
+        }
     }
     public void LoadBuildingBarn()
     {
@@ -84,49 +188,21 @@ public class Builder : MonoBehaviour
         }
         else if (currentlevelBarn == 3)
         {
+            builderUI.UpdateButton_UpdateBarnLv2();
             builderUI.UpdateButton_UpdateBarnLv3();
         }
     }
     public void UpgradeBuildingBarn_1to2()
-    {       
-        if (Gold.Instance.gold >= priceBuildingBarn[0] && LevelManager.Instance.currentLevel >= 10)
-        {
-            currentlevelBarn = 2;
-            Gold.Instance.gold -= priceBuildingBarn[0];
-            LoadBuildingBarn();
-            Notification.Instance.ShowNotification("Đã nâng cấp thành công!");
-        }
-        else if (Gold.Instance.gold < priceBuildingBarn[0])
-        {
-            Notification.Instance.ShowNotification("Không đủ vàng!");
-        }
-        else if (LevelManager.Instance.currentLevel < 10)
-        {
-            Notification.Instance.ShowNotification("Chưa đạt cấp độ yêu cầu!");
-        }
+    {
+        currentlevelBarn = 2;
+        Gold.Instance.gold -= priceBuildingBarn[0];
+        LoadBuildingBarn();
     }
     public void UpgradeBuildingBarn_2to3()
     {
-        if (Gold.Instance.gold >= priceBuildingBarn[1] && currentlevelBarn == 2 && LevelManager.Instance.currentLevel >= 20)
-        {
-            currentlevelBarn = 3;
-            Gold.Instance.gold -= priceBuildingBarn[1];
-            LoadBuildingBarn();
-            builderUI.UpdateButton_UpdateBarnLv3();
-            Notification.Instance.ShowNotification("Đã nâng cấp thành công!");
-        }
-        else if (currentlevelBarn == 1)
-        {
-            Notification.Instance.ShowNotification("Chưa mở khóa kho lương thực cấp 2!");
-        }
-        else if (Gold.Instance.gold < priceBuildingBarn[1])
-        {
-            Notification.Instance.ShowNotification("Không đủ vàng!");
-        }
-        else if (LevelManager.Instance.currentLevel < 20)
-        {
-            Notification.Instance.ShowNotification("Chưa đạt cấp độ yêu cầu!");
-        }
+        currentlevelBarn = 3;
+        Gold.Instance.gold -= priceBuildingBarn[1];
+        LoadBuildingBarn();
     }
     public void HideAllBarn()
     {
@@ -140,7 +216,22 @@ public class Builder : MonoBehaviour
     #region ----- BUILDING HOME -----
     public void Home2()
     {
-        builderUI.OnPanelConfirm(() => UpdateBuildingHome_1to2());
+        if (Gold.Instance.gold >= priceBuildingHome[0] && currentlevelHome == 1 && LevelManager.Instance.currentLevel >= 15)
+        {
+            builderUI.OnPanelConfirm(() =>
+            {
+                SetIsBuilding(2);
+                builderUI.UpdateButton_UpdateHomeLv2();
+            });
+        }
+        else if (Gold.Instance.gold < priceBuildingHome[0])
+        {
+            Notification.Instance.ShowNotification("Không đủ vàng!");
+        }
+        else if (LevelManager.Instance.currentLevel < 15)
+        {
+            Notification.Instance.ShowNotification("Chưa đạt cấp độ yêu cầu!");
+        }
     }
     public void LoadBuildingHome()
     {
@@ -159,21 +250,9 @@ public class Builder : MonoBehaviour
     }
     public void UpdateBuildingHome_1to2()
     {
-        if (Gold.Instance.gold >= priceBuildingHome[0] && currentlevelHome == 1 && LevelManager.Instance.currentLevel >= 15)
-        {
-            currentlevelHome = 2;
-            Gold.Instance.gold -= priceBuildingHome[0];
-            LoadBuildingHome();
-            Notification.Instance.ShowNotification("Đã nâng cấp thành công!");
-        }
-        else if (Gold.Instance.gold < priceBuildingHome[0])
-        {
-            Notification.Instance.ShowNotification("Không đủ vàng!");
-        }
-        else if (LevelManager.Instance.currentLevel < 15)
-        {
-            Notification.Instance.ShowNotification("Chưa đạt cấp độ yêu cầu!");
-        }
+        currentlevelHome = 2;
+        Gold.Instance.gold -= priceBuildingHome[0];
+        LoadBuildingHome();
     }
     public void HideAllHome()
     {
@@ -187,15 +266,65 @@ public class Builder : MonoBehaviour
     #region ----- FARMLAND -----
     public void Farmland2()
     {
-        builderUI.OnPanelConfirm(() => UnlockFarmland2());
+
+        if (Gold.Instance.gold >= priceFarmland[0] && LevelManager.Instance.currentLevel >= 13)
+        {
+            builderUI.OnPanelConfirm(() =>
+            {
+                SetIsBuilding(3);
+                builderUI.UpdateButton_UnlockFarmland2();
+            });
+        }
+        else if (Gold.Instance.gold < priceFarmland[0])
+        {
+            Notification.Instance.ShowNotification("Không đủ vàng!");
+        }
+        else if (LevelManager.Instance.currentLevel < 15)
+        {
+            Notification.Instance.ShowNotification("Chưa đạt cấp độ yêu cầu!");
+        }
     }
     public void Farmland3()
     {
-        builderUI.OnPanelConfirm(() => UnlockFarmland3());
+        if (Gold.Instance.gold >= priceFarmland[1] && isUnlockFarmland2 && LevelManager.Instance.currentLevel >= 21)
+        {
+            builderUI.OnPanelConfirm(() =>
+            {
+                SetIsBuilding(4);
+                builderUI.UpdateButton_UnlockFarmland3();
+            });
+        }
+        else if (!isUnlockFarmland2)
+        {
+            Notification.Instance.ShowNotification("Chưa mở khóa khu đất trồng 2!");
+        }
+        else if (Gold.Instance.gold < priceFarmland[1])
+        {
+            Notification.Instance.ShowNotification("Không đủ vàng!");
+        }
+        else if (LevelManager.Instance.currentLevel < 21)
+        {
+            Notification.Instance.ShowNotification("Chưa đạt cấp độ yêu cầu!");
+        }
     }
     public void Grassland1()
     {
-        builderUI.OnPanelConfirm(() => UnlockGrassland());
+        if (Gold.Instance.gold >= priceGrassland && LevelManager.Instance.currentLevel >= 6)
+        {
+            builderUI.OnPanelConfirm(() =>
+            {
+                SetIsBuilding(5);
+                builderUI.UpdateButton_UnlockGrassland();
+            });
+        }
+        else if (Gold.Instance.gold < priceGrassland)
+        {
+            Notification.Instance.ShowNotification("Không đủ vàng!");
+        }
+        else if (LevelManager.Instance.currentLevel < 6)
+        {
+            Notification.Instance.ShowNotification("Chưa đạt cấp độ yêu cầu!");
+        }
     }
     public void LoadFarmland()
     {
@@ -214,43 +343,15 @@ public class Builder : MonoBehaviour
     }
     public void UnlockFarmland2()
     {
-        if (Gold.Instance.gold >= priceFarmland[0] && LevelManager.Instance.currentLevel >= 13)
-        {
-            Gold.Instance.gold -= priceFarmland[0];
-            isUnlockFarmland2 = true;
-            LoadFarmland();          
-            Notification.Instance.ShowNotification("Đã mở khóa thành công!");
-        }
-        else if (Gold.Instance.gold < priceFarmland[0])
-        {
-            Notification.Instance.ShowNotification("Không đủ vàng!");
-        }
-        else if (LevelManager.Instance.currentLevel < 15)
-        {
-            Notification.Instance.ShowNotification("Chưa đạt cấp độ yêu cầu!");
-        }
+        Gold.Instance.gold -= priceFarmland[0];
+        isUnlockFarmland2 = true;
+        LoadFarmland();
     }
     public void UnlockFarmland3()
     {
-        if (Gold.Instance.gold >= priceFarmland[1] && isUnlockFarmland2 && LevelManager.Instance.currentLevel >= 21)
-        {
-            Gold.Instance.gold -= priceFarmland[1];
-            isUnlockFarmland3 = true;
-            LoadFarmland();
-            Notification.Instance.ShowNotification("Đã mở khóa thành công!");
-        }
-        else if (!isUnlockFarmland2)
-        {
-            Notification.Instance.ShowNotification("Chưa mở khóa khu đất trồng 2!");
-        }
-        else if (Gold.Instance.gold < priceFarmland[1])
-        {
-            Notification.Instance.ShowNotification("Không đủ vàng!");
-        }
-        else if (LevelManager.Instance.currentLevel < 21)
-        {
-            Notification.Instance.ShowNotification("Chưa đạt cấp độ yêu cầu!");
-        }
+        Gold.Instance.gold -= priceFarmland[1];
+        isUnlockFarmland3 = true;
+        LoadFarmland();
     }
     public void LoadGrassland()
     {
@@ -263,14 +364,24 @@ public class Builder : MonoBehaviour
     }
     public void UnlockGrassland()
     {
-        if (Gold.Instance.gold >= priceGrassland && LevelManager.Instance.currentLevel >= 6)
+        Gold.Instance.gold -= priceGrassland;
+        isUnlockGrassland = true;
+        LoadGrassland();
+    }
+    #endregion
+
+    #region ----- BUILDING PEN -----
+    public void Pen1Lv1()
+    {
+        if (Gold.Instance.gold >= priceBuildingPen1[0] && LevelManager.Instance.currentLevel >= 6)
         {
-            Gold.Instance.gold -= priceGrassland;
-            isUnlockGrassland = true;
-            LoadGrassland();
-            Notification.Instance.ShowNotification("Đã mở khóa thành công!");
+            builderUI.OnPanelConfirm(() =>
+            {
+                SetIsBuilding(6);
+                builderUI.UpdateButton_UnlockPen1();
+            });
         }
-        else if (Gold.Instance.gold < priceGrassland)
+        else if (Gold.Instance.gold < priceBuildingPen1[0])
         {
             Notification.Instance.ShowNotification("Không đủ vàng!");
         }
@@ -279,24 +390,70 @@ public class Builder : MonoBehaviour
             Notification.Instance.ShowNotification("Chưa đạt cấp độ yêu cầu!");
         }
     }
-    #endregion
-
-    #region ----- BUILDING PEN -----
-    public void Pen1Lv1()
-    {
-        builderUI.OnPanelConfirm(() => UnlockBuildingPen1());
-    }
     public void Pen1Lv2()
     {
-        builderUI.OnPanelConfirm(() => UpdateBuildingPen1_1to2());
+        if (Gold.Instance.gold >= priceBuildingPen1[1] && LevelManager.Instance.currentLevel >= 18 && isUnlockPen1)
+        {
+            builderUI.OnPanelConfirm(() =>
+            {
+                SetIsBuilding(7);
+                builderUI.UpdateButton_UpdatePen1Lv2();
+            });
+        }
+        else if (!isUnlockPen1)
+        {
+            Notification.Instance.ShowNotification("Chưa mở khóa chuồng nuôi 1!");
+        }
+        else if (Gold.Instance.gold < priceBuildingPen1[1])
+        {
+            Notification.Instance.ShowNotification("Không đủ vàng!");
+        }
+        else if (LevelManager.Instance.currentLevel < 18)
+        {
+            Notification.Instance.ShowNotification("Chưa đạt cấp độ yêu cầu!");
+        }
     }
     public void Pen2Lv1()
     {
-        builderUI.OnPanelConfirm(() => UnlockBuildingPen2());
+        if (Gold.Instance.gold >= priceBuildingPen2[0] && LevelManager.Instance.currentLevel >= 11)
+        {
+            builderUI.OnPanelConfirm(() =>
+            {
+                SetIsBuilding(8);
+                builderUI.UpdateButton_UnlockPen2();
+            });
+        }
+        else if (Gold.Instance.gold < priceBuildingPen2[0])
+        {
+            Notification.Instance.ShowNotification("Không đủ vàng!");
+        }
+        else if (LevelManager.Instance.currentLevel < 11)
+        {
+            Notification.Instance.ShowNotification("Chưa đạt cấp độ yêu cầu!");
+        }
     }
     public void Pen2Lv2()
     {
-        builderUI.OnPanelConfirm(() => UpdateBuildingPen2_1to2());
+        if (Gold.Instance.gold >= priceBuildingPen2[1] && LevelManager.Instance.currentLevel >= 25 && isUnlockPen2)
+        {
+            builderUI.OnPanelConfirm(() =>
+            {
+                SetIsBuilding(9);
+                builderUI.UpdateButton_UpdatePen2Lv2();
+            });
+        }
+        else if (!isUnlockPen2)
+        {
+            Notification.Instance.ShowNotification("Chưa mở khóa chuồng nuôi 2!");
+        }
+        else if (Gold.Instance.gold < priceBuildingPen1[1])
+        {
+            Notification.Instance.ShowNotification("Không đủ vàng!");
+        }
+        else if (LevelManager.Instance.currentLevel < 25)
+        {
+            Notification.Instance.ShowNotification("Chưa đạt cấp độ yêu cầu!");
+        }
     }
     public void LoadBuildingPen()
     {
@@ -335,86 +492,29 @@ public class Builder : MonoBehaviour
     }
     public void UnlockBuildingPen1()
     {
-        if (Gold.Instance.gold >= priceBuildingPen1[0] && LevelManager.Instance.currentLevel >= 6)
-        {
-            Gold.Instance.gold -= priceBuildingPen1[0];
-            currentlevelPen1 = 1;
-            isUnlockPen1 = true;
-            LoadBuildingPen();
-            Notification.Instance.ShowNotification("Đã mở khóa thành công!");
-        }
-        else if (Gold.Instance.gold < priceBuildingPen1[0])
-        {
-            Notification.Instance.ShowNotification("Không đủ vàng!");
-        }
-        else if (LevelManager.Instance.currentLevel < 6)
-        {
-            Notification.Instance.ShowNotification("Chưa đạt cấp độ yêu cầu!");
-        }
+        Gold.Instance.gold -= priceBuildingPen1[0];
+        currentlevelPen1 = 1;
+        isUnlockPen1 = true;
+        LoadBuildingPen();
     }
     public void UnlockBuildingPen2()
     {
-        if (Gold.Instance.gold >= priceBuildingPen2[0] && LevelManager.Instance.currentLevel >= 11)
-        { 
-            Gold.Instance.gold -= priceBuildingPen2[0];
-            currentlevelPen2 = 1;
-            isUnlockPen2 = true;
-            LoadBuildingPen();
-            builderUI.UpdateButton_UnlockPen2();
-            Notification.Instance.ShowNotification("Đã mở khóa thành công!");
-        }
-        else if (Gold.Instance.gold < priceBuildingPen2[0])
-        {
-            Notification.Instance.ShowNotification("Không đủ vàng!");
-        }
-        else if (LevelManager.Instance.currentLevel < 11)
-        {
-            Notification.Instance.ShowNotification("Chưa đạt cấp độ yêu cầu!");
-        }
+        Gold.Instance.gold -= priceBuildingPen2[0];
+        currentlevelPen2 = 1;
+        isUnlockPen2 = true;
+        LoadBuildingPen();
     }
     public void UpdateBuildingPen1_1to2()
     {
-        if (Gold.Instance.gold >= priceBuildingPen1[1] && LevelManager.Instance.currentLevel >= 18 && isUnlockPen1)
-        {
-            currentlevelPen1 = 2;
-            Gold.Instance.gold -= priceBuildingPen1[1];
-            LoadBuildingPen();
-            Notification.Instance.ShowNotification("Đã nâng cấp thành công!");
-        }
-        else if (!isUnlockPen1)
-        {
-            Notification.Instance.ShowNotification("Chưa mở khóa chuồng nuôi 1!");
-        }
-        else if (Gold.Instance.gold < priceBuildingPen1[1])
-        {
-            Notification.Instance.ShowNotification("Không đủ vàng!");
-        }
-        else if (LevelManager.Instance.currentLevel < 18)
-        {
-            Notification.Instance.ShowNotification("Chưa đạt cấp độ yêu cầu!");
-        }
+        currentlevelPen1 = 2;
+        Gold.Instance.gold -= priceBuildingPen1[1];
+        LoadBuildingPen();
     }
     public void UpdateBuildingPen2_1to2()
     {
-        if (Gold.Instance.gold >= priceBuildingPen2[1] && LevelManager.Instance.currentLevel >= 25 && isUnlockPen2)
-        {
-            currentlevelPen2 = 2;
-            Gold.Instance.gold -= priceBuildingPen2[1];
-            LoadBuildingPen();
-            Notification.Instance.ShowNotification("Đã nâng cấp thành công!");
-        }
-        else if (!isUnlockPen2)
-        {
-            Notification.Instance.ShowNotification("Chưa mở khóa chuồng nuôi 2!");
-        }
-        else if (Gold.Instance.gold < priceBuildingPen1[1])
-        {
-            Notification.Instance.ShowNotification("Không đủ vàng!");
-        }
-        else if (LevelManager.Instance.currentLevel < 25)
-        {
-            Notification.Instance.ShowNotification("Chưa đạt cấp độ yêu cầu!");
-        }
+        currentlevelPen2 = 2;
+        Gold.Instance.gold -= priceBuildingPen2[1];
+        LoadBuildingPen();
     }
     public void HidePen()
     {
@@ -429,12 +529,42 @@ public class Builder : MonoBehaviour
     #region ----- BUILDING GREENHOUSE -----
     public void Greenhouse1()
     {
-        builderUI.OnPanelConfirm(() => UnlockBuildingGreenhouse1());
+        if (Gold.Instance.gold >= priceBuildingGreenhouse[0] && LevelManager.Instance.currentLevel >= 8)
+        {
+            builderUI.OnPanelConfirm(() =>
+            {
+                SetIsBuilding(10);
+                builderUI.UpdateButton_UnlockGreenhouse1();
+            });
+        }
+        else if (Gold.Instance.gold < priceBuildingGreenhouse[0])
+        {
+            Notification.Instance.ShowNotification("Không đủ vàng!");
+        }
+        else if (LevelManager.Instance.currentLevel < 8)
+        {
+            Notification.Instance.ShowNotification("Chưa đạt cấp độ yêu cầu!");
+        }
     }
 
     public void Greenhouse2()
     {
-        builderUI.OnPanelConfirm(() => UnlockBuildingGreenhouse2());
+        if (Gold.Instance.gold >= priceBuildingGreenhouse[1] && LevelManager.Instance.currentLevel >= 17)
+        {
+            builderUI.OnPanelConfirm(() =>
+            {
+                SetIsBuilding(11);
+                builderUI.UpdateButton_UnlockGreenhouse2();
+            });
+        }
+        else if (Gold.Instance.gold < priceBuildingGreenhouse[0])
+        {
+            Notification.Instance.ShowNotification("Không đủ vàng!");
+        }
+        else if (LevelManager.Instance.currentLevel < 17)
+        {
+            Notification.Instance.ShowNotification("Chưa đạt cấp độ yêu cầu!");
+        }
     }
     public void LoadBuildingGreenhouse()
     {
@@ -453,39 +583,15 @@ public class Builder : MonoBehaviour
     }
     public void UnlockBuildingGreenhouse1()
     {
-        if (Gold.Instance.gold >= priceBuildingGreenhouse[0] && LevelManager.Instance.currentLevel >= 8)
-        {
-            Gold.Instance.gold -= priceBuildingGreenhouse[0];
-            isUnlockGreenhouse1 = true;
-            LoadBuildingGreenhouse();
-            Notification.Instance.ShowNotification("Đã mở khóa thành công!");
-        }
-        else if (Gold.Instance.gold < priceBuildingGreenhouse[0])
-        {
-            Notification.Instance.ShowNotification("Không đủ vàng!");
-        }
-        else if (LevelManager.Instance.currentLevel < 8)
-        {
-            Notification.Instance.ShowNotification("Chưa đạt cấp độ yêu cầu!");
-        }
+        Gold.Instance.gold -= priceBuildingGreenhouse[0];
+        isUnlockGreenhouse1 = true;
+        LoadBuildingGreenhouse();
     }
     public void UnlockBuildingGreenhouse2()
     {
-        if (Gold.Instance.gold >= priceBuildingGreenhouse[1] && LevelManager.Instance.currentLevel >= 17)
-        {
-            Gold.Instance.gold -= priceBuildingGreenhouse[1];
-            isUnlockGreenhouse2 = true;
-            LoadBuildingGreenhouse();
-            Notification.Instance.ShowNotification("Đã mở khóa thành công!");
-        }
-        else if (Gold.Instance.gold < priceBuildingGreenhouse[0])
-        {
-            Notification.Instance.ShowNotification("Không đủ vàng!");
-        }
-        else if (LevelManager.Instance.currentLevel < 17)
-        {
-            Notification.Instance.ShowNotification("Chưa đạt cấp độ yêu cầu!");
-        }
+        Gold.Instance.gold -= priceBuildingGreenhouse[1];
+        isUnlockGreenhouse2 = true;
+        LoadBuildingGreenhouse();
     }
     #endregion
 }

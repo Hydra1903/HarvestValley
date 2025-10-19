@@ -5,6 +5,7 @@ public class WalkState : ICharacterState
     public void Enter(CharacterStateMachine characterStateMachine)
     {
         CharacterStateMachine.Instance.animator.Play("Walk");
+        CharacterSound.Instance.audioSourceCharacter.Play();
     }
     public void Update(CharacterStateMachine characterStateMachine)
     {
@@ -22,6 +23,6 @@ public class WalkState : ICharacterState
     }
     public void Exit(CharacterStateMachine characterStateMachine)
     {
-
+        CharacterSound.Instance.audioSourceCharacter.Stop();
     }
 }

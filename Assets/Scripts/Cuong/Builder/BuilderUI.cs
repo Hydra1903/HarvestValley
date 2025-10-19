@@ -37,7 +37,6 @@ public class BuilderUI : MonoBehaviour
     public TextMeshProUGUI textUnlockGreenhouse1;
     public TextMeshProUGUI textUnlockGreenhouse2;
 
-    //public TextMeshProUGUI confirm;
     public Button Yes;
     public Button No;
     public GameObject panelConfirm;
@@ -58,12 +57,69 @@ public class BuilderUI : MonoBehaviour
             onYes?.Invoke();
             panelConfirm.SetActive(false);
             UpdateUI();
+            Notification.Instance.ShowNotification("Đã nâng cấp thành công!");
         });
 
         No.onClick.AddListener(() =>
         {
             panelConfirm.SetActive(false);
         });
+    }
+    void Start()
+    {
+        LoadUI();
+    }
+    public void LoadUI()
+    {
+        if (Builder.Instance.isBuilding[0])
+        {
+            UpdateButton_UpdateBarnLv2();
+        }
+        if (Builder.Instance.isBuilding[1])
+        {
+            UpdateButton_UpdateBarnLv3();
+        }
+        if (Builder.Instance.isBuilding[2])
+        {
+            UpdateButton_UpdateHomeLv2();
+        }
+        if (Builder.Instance.isBuilding[3])
+        {
+            UpdateButton_UnlockFarmland2();
+        }
+        if (Builder.Instance.isBuilding[4])
+        {
+            UpdateButton_UnlockFarmland3();
+        }
+        if (Builder.Instance.isBuilding[5])
+        {
+            UpdateButton_UnlockGrassland();
+        }
+        if (Builder.Instance.isBuilding[6])
+        {
+            UpdateButton_UnlockPen1();
+        }
+        if (Builder.Instance.isBuilding[7])
+        {
+            UpdateButton_UpdatePen1Lv2();
+        }
+        if (Builder.Instance.isBuilding[8])
+        {
+            UpdateButton_UnlockPen2();
+        }
+        if (Builder.Instance.isBuilding[9])
+        {
+            UpdateButton_UpdatePen2Lv2();
+        }
+        if (Builder.Instance.isBuilding[10])
+        {
+            UpdateButton_UnlockGreenhouse1();
+        }
+        if (Builder.Instance.isBuilding[11])
+        {
+            UpdateButton_UnlockGreenhouse2();
+        }
+
     }
     public void UpdateUI()
     {

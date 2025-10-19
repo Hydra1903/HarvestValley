@@ -77,6 +77,7 @@ public class HotBarUI : MonoBehaviour
     {
         currentItem = hotbar.slots[index].item;
         ChangeMode.Instance.CheckCurrentItemHoe();
+        WaterCan.Instance.CheckCurrentItemWaterCan();
     }
 
     public void UseItem()

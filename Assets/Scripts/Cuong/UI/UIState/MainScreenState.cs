@@ -69,12 +69,14 @@ public class MainScreenState : IUIState
             currentCalendarState = CalendarState.Off;
         }   
         UIManager.Instance.HideUI("MainScreen");
-
+        UIManager.Instance.HideUI("ChangeMode");
+        UIManager.Instance.HideUI("WaterCan");
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
     }
     public void ChangeCalendarState()
     {
+
         if (currentCalendarState == CalendarState.Off)
         {
             UIManager.Instance.HideUI("Calendar");
