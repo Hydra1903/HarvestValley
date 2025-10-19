@@ -26,7 +26,7 @@ public class MiniMapController : MonoBehaviour
 
     [Header("Map Size and Dimension Size")]
     [SerializeField] Vector2 worldSize;
-    [SerializeField] Vector2 fullScreenDimensions = new Vector2(1000, 1000);
+    [SerializeField] Vector2 fullScreenDimensions;
 
     [Header("Zoom Map")]
     [SerializeField] float zoomSpeed = 0.1f;
@@ -68,8 +68,9 @@ public class MiniMapController : MonoBehaviour
         }
     }
 
-    private void Start()
+    private IEnumerator Start()
     {
+        yield return null;
         CalculateTransformationMatrix();
         defaultPosition = fullMapContent.anchoredPosition;
         defaultScale = fullMapContent.localScale;
@@ -90,16 +91,6 @@ public class MiniMapController : MonoBehaviour
                 SetMinimapMode(MinimapMode.Mini);
             }
         }
-
-        if (currentMiniMapMode == MinimapMode.Fullscreen && fullMapPanel.activeSelf)
-        {
-            float zoom = Input.GetAxis("Mouse ScrollWheel");
-            if (zoom != 0)
-            {
-                ZoomMap(zoom);
-            }
-        }
-
         UpdateMiniMapIcons();
         UpdateFullMapIcons();
         CenterMapOnIcon();
@@ -170,36 +161,6 @@ public class MiniMapController : MonoBehaviour
                 break;
         }
     }
-
-    private void ZoomMap(float zoom)
-    {
-        if (zoom == 0) return;
-
-        float currentScale = fullMapContent.localScale.x;
-        float zoomAmount = (zoom > 0 ? zoomSpeed : -zoomSpeed) * currentScale;
-        float newScale = currentScale + zoomAmount;
-        float clampedScale = Mathf.Clamp(newScale, minZoom, maxZoom);
-        if (Mathf.Approximately(clampedScale, minZoom))
-        {
-            fullMapContent.localScale = defaultScale;
-            fullMapContent.anchoredPosition = defaultPosition;
-            fullMapContent.pivot = new Vector2(0.5f, 0.5f);
-            return;
-        }
-        Vector2 localMousePos;
-        RectTransformUtility.ScreenPointToLocalPointInRectangle(
-            fullMapContent, Input.mousePosition, null, out localMousePos
-        );
-        Vector2 pivot = new Vector2(
-            (localMousePos.x / fullMapContent.rect.width) + 0.5f,
-            (localMousePos.y / fullMapContent.rect.height) + 0.5f
-        );
-
-        fullMapContent.pivot = pivot;
-        Vector2 offset = -localMousePos * (clampedScale - currentScale);
-        fullMapContent.anchoredPosition += offset;
-        fullMapContent.localScale = Vector3.one * clampedScale;
-    }
     private void CenterMapOnIcon()
     {
         if (followMiniIcon != null)
@@ -212,7 +173,7 @@ public class MiniMapController : MonoBehaviour
     private void UpdateMiniMapIcons()
     {
         float mapScale = miniMapContent.localScale.x;
-        float scaleFactor = 1f / mapScale; 
+        float scaleFactor = 1f / mapScale;
 
         Vector2 miniSize = miniMapContent.rect.size / 2.223f;
         foreach (var kvp in miniMapWorldObjectsLookup)
@@ -229,8 +190,8 @@ public class MiniMapController : MonoBehaviour
             pair.miniIcon.RectTransform.localScale = Vector3.one * scaleFactor;
             if (miniMapWorldObject.isPlayer && pair.miniIcon.ViewCone != null)
             {
-                float angle = -miniMapWorldObject.transform.eulerAngles.y;
-                pair.miniIcon.ViewCone.localRotation = Quaternion.Euler(0, 0, angle);
+                float angle = miniMapWorldObject.transform.eulerAngles.y + 180f;
+                pair.miniIcon.ViewCone.localRotation = Quaternion.Euler(0, 0, -angle);
             }
             if (pair.miniIcon.ViewCone != null)
             {
@@ -239,16 +200,13 @@ public class MiniMapController : MonoBehaviour
             }
         }
     }
-
     private void UpdateFullMapIcons()
     {
         Vector2 fullSize = fullMapContent.rect.size / 2.223f;
-
         foreach (var kvp in miniMapWorldObjectsLookup)
         {
             var miniMapWorldObject = kvp.Key;
             var pair = kvp.Value;
-
             var mapPosition = WorldToFullMapPosition(miniMapWorldObject.transform.position);
 
             mapPosition.x = Mathf.Clamp(mapPosition.x, -fullSize.x, fullSize.x);
@@ -257,11 +215,10 @@ public class MiniMapController : MonoBehaviour
             pair.fullIcon.RectTransform.anchoredPosition = mapPosition;
             pair.fullIcon.RectTransform.localScale = Vector3.one;
             pair.fullIcon.IconRectTransform.localRotation = Quaternion.identity;
-
             if (miniMapWorldObject.isPlayer && pair.fullIcon.ViewCone != null)
             {
-                float angle = -miniMapWorldObject.transform.eulerAngles.y;
-                pair.fullIcon.ViewCone.localRotation = Quaternion.Euler(0, 0, angle);
+                float angle = miniMapWorldObject.transform.eulerAngles.y + 180f;
+                pair.fullIcon.ViewCone.localRotation = Quaternion.Euler(0, 0, -angle);
             }
             if (pair.fullIcon.ViewCone != null)
             {
@@ -270,32 +227,65 @@ public class MiniMapController : MonoBehaviour
             }
         }
     }
-
-
     private Vector2 WorldToMiniMapPosition(Vector3 worldPos)
     {
-        var pos = new Vector2(worldPos.x, worldPos.z);
-        return miniMapMatrix.MultiplyPoint3x4(pos);
-    }
+        float worldMinX = -100f;
+        float worldMaxX = 80f;
+        float worldMinZ = -25f;
+        float worldMaxZ = 135f;
 
+        Vector2 miniMapSize = miniMapContent.rect.size;
+
+        float normalizedX = Mathf.InverseLerp(worldMinX, worldMaxX, worldPos.x);
+        float normalizedZ = Mathf.InverseLerp(worldMinZ, worldMaxZ, worldPos.z);
+
+        float mapX = Mathf.Lerp(miniMapSize.x / 2.2f, -miniMapSize.x / 2.2f, normalizedX);
+        float mapY = Mathf.Lerp(miniMapSize.y / 2.287f, -miniMapSize.y / 2.4f, normalizedZ);
+
+        return new Vector2(mapX, mapY);
+    }
+    
     private Vector2 WorldToFullMapPosition(Vector3 worldPos)
     {
-        var pos = new Vector2(worldPos.x, worldPos.z);
-        return fullMapMatrix.MultiplyPoint3x4(pos);
-    }
+         float worldMinX = -100f;
+        float worldMaxX = 80f;
+        float worldMinZ = -30f;
+        float worldMaxZ = 135f;
 
+        Vector2 fullMapSize = fullMapContent.rect.size;
+
+        float normalizedX = Mathf.InverseLerp(worldMinX, worldMaxX, worldPos.x);
+        float normalizedZ = Mathf.InverseLerp(worldMinZ, worldMaxZ, worldPos.z);
+
+        float mapX = Mathf.Lerp(fullMapSize.x / 2.2f, -fullMapSize.x / 2.2f, normalizedX);
+        float mapY = Mathf.Lerp(fullMapSize.y / 2.287f, -fullMapSize.y / 2.4f, normalizedZ);
+
+        return new Vector2(mapX, mapY);
+    }
     private void CalculateTransformationMatrix()
     {
-        // matrix cho minimap
-        var miniSize = miniMapContent.rect.size;
-        var miniTranslation = -miniSize / 2;
-        var miniScale = miniSize / worldSize;
-        miniMapMatrix = Matrix4x4.TRS(miniTranslation + miniSize / 2, Quaternion.identity, miniScale);
+        float worldMinX = -100;
+        float worldMaxX = 100;
+        float worldMinZ = -100;
+        float worldMaxZ = 100;
 
-        // matrix cho fullmap
+        float worldWidth = worldMaxX - worldMinX;
+        float worldHeight = worldMaxZ - worldMinZ;
+
+        worldSize = new Vector2(worldWidth, worldHeight);
+        Vector2 worldCenter = new Vector2((worldMaxX + worldMinX) / 2f, (worldMaxZ + worldMinZ) / 2f);
+
+        // Mini map
+        var miniSize = miniMapContent.rect.size;
+        var miniScale = new Vector3(miniSize.x / worldWidth, miniSize.y / worldHeight, 1);
+        var miniTranslation = -worldCenter * miniScale + (Vector2)miniSize / 2f;
+        miniMapMatrix = Matrix4x4.TRS(miniTranslation, Quaternion.identity, miniScale);
+
+        // Full map
         var fullSize = fullMapContent.rect.size;
-        var fullTranslation = -fullSize / 2;
-        var fullScale = fullSize / worldSize;
-        fullMapMatrix = Matrix4x4.TRS(fullTranslation + fullSize / 2, Quaternion.identity, fullScale);
+        var fullScale = new Vector3(fullSize.x / worldWidth, fullSize.y / worldHeight, 1);
+        var fullTranslation = -worldCenter * fullScale + (Vector2)fullSize / 2f;
+        fullMapMatrix = Matrix4x4.TRS(fullTranslation, Quaternion.identity, fullScale);
     }
+
 }
