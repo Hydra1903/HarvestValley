@@ -17,7 +17,7 @@ public class FarmInput : MonoBehaviour
     public SoilManager soilManager;
     public PlantManager plantManager;
     public FarmManager farmManager;
-
+    public FarmGridDemo farmGrid;
 
     private Camera cam;
 
@@ -25,6 +25,7 @@ public class FarmInput : MonoBehaviour
     public Vector2Int gridPos;
     [HideInInspector]
     public InventoryItem tool;
+
 
     private void Awake()
     {
@@ -45,6 +46,8 @@ public class FarmInput : MonoBehaviour
         // === Ray trung tâm để thu hoạch cây ===
         Ray centerRay = cam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
         Debug.DrawRay(centerRay.origin, centerRay.direction * harvestClickDistance, Color.red);
+
+
 
         if (Physics.Raycast(centerRay, out var hitPlant, harvestClickDistance, plantMask))
         {
@@ -131,7 +134,6 @@ public class FarmInput : MonoBehaviour
             }
         }
 
-
         // Seed
         if (item != null && item.itemData != null && item.itemData.itemType == ItemType.Seed && item.quantity > 0)
         {
@@ -170,11 +172,12 @@ public class FarmInput : MonoBehaviour
         }
 
         // Hoe/Shovel
-        if (item.itemData.toolType == ToolType.Hoe || item.itemData.toolType == ToolType.Shovel)
+        if (item.itemData.toolType == ToolType.Hoe)
         {
             soilManager.HideGhosts();
             plantManager.HideGhost();
             soilManager.HandleToolHover(gridPos, item);
+            farmGrid.SetActiveGrid(true);
             if (Input.GetMouseButtonDown(0))
             {
                 if (CharacterStateMachine.Instance.currentState != CharacterStateMachine.Instance.hoeState && Mp.Instance.mp >= 10)
@@ -185,18 +188,19 @@ public class FarmInput : MonoBehaviour
                 {
                     Notification.Instance.ShowNotification("Hết năng lượng!");
                 }
-                //soilManager.TryDigOrFlatten(gridPos, tool);
             }
             return;
         }
+        else
+        {
+            farmGrid.SetActiveGrid(false);
+        }
 
-        // Watering
-        if (item.itemData.toolType == ToolType.Watering)
+            // Watering
+            if (item.itemData.toolType == ToolType.Watering)
         {
             soilManager.HideGhosts();
             plantManager.HideGhost();
-            //if (CharacterStateMachine.Instance.currentState == CharacterStateMachine.Instance.idleState)
-            //{
                 if (Input.GetMouseButtonDown(0))
                 {
 

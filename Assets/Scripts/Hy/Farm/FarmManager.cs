@@ -29,7 +29,6 @@ public class FarmManager : MonoBehaviour
     {
         if (!hotbarUI) hotbarUI = FindFirstObjectByType<HotBarUI>();
         if (!plantDatabase) plantDatabase = FindFirstObjectByType<PlantDatabase>();
-      
     }
 
     private void Start()

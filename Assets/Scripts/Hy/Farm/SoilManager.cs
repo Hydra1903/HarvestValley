@@ -13,11 +13,11 @@ public class SoilManager : MonoBehaviour
     public GameObject sprinklerPrefab; //máy tưới
 
     [Header("Ghost")]
-    public GameObject ghostPlotPrefab;
+    public GameObject ghostFurrowPrefab;
     public GameObject ghostHolePrefab;
     public GameObject ghostSprinklerPrefab;
 
-    private GameObject ghostPlotInstance;
+    private GameObject ghostFurrowInstance;
     private GameObject ghostHoleInstance;
     private GameObject ghostSprinklerInstance;
 
@@ -30,21 +30,34 @@ public class SoilManager : MonoBehaviour
     [SerializeField] private Material ghostRed;
     [SerializeField] private Material ghostBlack;
 
+    [SerializeField] private int useMPDigHole;
+    [SerializeField] private int useMPDigFurrow;
+    [SerializeField] private int useMPFlatten;
+
     private FarmManager farm;
+    public GridFarm gridFarm;
+    public HoeMode hoeMode = HoeMode.DigFurrow5x5;
+
 
     private readonly List<AreaSave> _areaSaves = new();
     private readonly List<GameObject> _areaObjects = new();
     private readonly HashSet<int> _wateredAreaIdx = new();
     private readonly List<Sprinkler> _sprinklers = new();
 
+    private void OnValidate()
+    {
+        if (!farm) farm = GetComponent<FarmManager>();
+        if (!gridFarm) gridFarm = GetComponentInChildren<GridFarm>(true);
+    }
+
     public void Initialize(FarmManager f)
     {
         farm = f;
 
-        if (ghostPlotPrefab)
+        if (ghostFurrowPrefab)
         {
-            ghostPlotInstance = Instantiate(ghostPlotPrefab, Vector3.zero, Quaternion.identity);
-            ghostPlotInstance.SetActive(false);
+            ghostFurrowInstance = Instantiate(ghostFurrowPrefab, Vector3.zero, Quaternion.identity);
+            ghostFurrowInstance.SetActive(false);
         }
         if (ghostHolePrefab)
         {
@@ -56,25 +69,77 @@ public class SoilManager : MonoBehaviour
     // ===== Hover / Ghost =====
     public void HandleToolHover(Vector2Int gridPos, InventoryItem currentItem)
     {
-        var info = GetToolInfo((currentItem?.itemData?.toolType) ?? ToolType.None);
-        var start = farm.CalculateStartPosition(gridPos, info.size);
+        // Không phải Hoe → ẩn ghost
+        if (currentItem?.itemData?.toolType != ToolType.Hoe)
+        {
+            HideGhosts();
+            return;
+        }
 
-        bool canPlace = CanPlaceSoil(start.x, start.y, info.size);
+        // === FLATTEN: chỉ hiện ghost đỏ khi trúng vùng đã đào ===
+        if (hoeMode == HoeMode.Flatten)
+        {
+            // mặc định ẩn
+            HideGhosts();
 
-        // LUÔN hiện ghost, chỉ đổi material nếu không hợp lệ
-        ShowGhost(start, info, canPlace);
+            // chỉ khi trúng luống/hố hiện có mới hiện ghost đỏ
+            if (TryFindAreaContaining(gridPos.x, gridPos.y, out int idx))
+            {
+                var a = _areaSaves[idx];
+                var start = new Vector2Int(a.startX, a.startY);
+                int size = a.size;
+
+                // HIỆN ghost đỏ đúng vùng
+                ShowGhostForceRed(start, size);
+            }
+            return;
+        }
+
+        // === DIG-MODES (5x5 / 3x3) ===
+        int sizeDig = GetSizeByHoeMode();                     // 5 hoặc 3
+        var startDig = farm.CalculateStartPosition(gridPos, sizeDig);
+        bool canPlace = CanPlaceSoil(startDig.x, startDig.y, sizeDig);
+
+        // ghost xanh/đen khi hợp lệ, đỏ khi không hợp lệ
+        ShowGhostNormal(startDig, sizeDig, canPlace);
     }
 
+
+    // Ghost thường cho chế độ Đào: hợp lệ -> allowed, không hợp lệ -> đỏ
+    private void ShowGhostNormal(Vector2Int startPos, int size, bool canPlace)
+    {
+        var info = new ToolInfo
+        {
+            size = size,
+            offsetY = (size == 5 ? 0.26f : 0.47f),
+            offsetX = (size == 5 ? 5f : 1.5f),
+            offsetZ = (size == 5 ? -0.2f : 1.5f)
+        };
+        ShowGhost(startPos, info, canPlace, forceRed: false);
+    }
+
+    // Ghost đỏ bắt buộc cho Flatten khi trúng vùng
+    private void ShowGhostForceRed(Vector2Int startPos, int size)
+    {
+        var info = new ToolInfo
+        {
+            size = size,
+            offsetY = (size == 5 ? 0.26f : 0.47f),
+            offsetX = (size == 5 ? 5f : 1.5f),
+            offsetZ = (size == 5 ? -0.2f : 1.5f)
+        };
+        ShowGhost(startPos, info, valid: true, forceRed: true);
+    }
     public void HideGhosts()
     {
-        if (ghostPlotInstance) ghostPlotInstance.SetActive(false);
+        if (ghostFurrowInstance) ghostFurrowInstance.SetActive(false);
         if (ghostHoleInstance) ghostHoleInstance.SetActive(false);
         if (ghostSprinklerInstance) ghostSprinklerInstance.SetActive(false);
     }
 
-    private void ShowGhost(Vector2Int startPos, ToolInfo info, bool valid)
+    private void ShowGhost(Vector2Int startPos, ToolInfo info, bool valid, bool forceRed = false)
     {
-        var ghost = info.size == 5 ? ghostPlotInstance : ghostHoleInstance;
+        var ghost = info.size == 5 ? ghostFurrowInstance : ghostHoleInstance;
         if (!ghost) return;
 
         Vector3 ghostPos = farm.origin + new Vector3(
@@ -84,15 +149,16 @@ public class SoilManager : MonoBehaviour
         );
 
         ghost.transform.position = ghostPos;
-        ApplyGhostMaterial(ghost, valid);
+        ApplyGhostMaterial(ghost, valid, forceRed);
         ghost.SetActive(true);
     }
 
-    //Áp Material cho ghost
-    private void ApplyGhostMaterial(GameObject go, bool valid)
+    private void ApplyGhostMaterial(GameObject go, bool valid, bool forceRed = false)
     {
-        var mat = valid ? ghostRed : ghostBlack;
-        if (mat == null) return;
+        // valid (đào hợp lệ) -> dùng ghostBlack (allowed)
+        // invalid hoặc forceRed (Flatten highlight) -> dùng ghostRed
+        var mat = (forceRed || !valid) ? ghostRed : ghostBlack;
+        if (!go || mat == null) return;
 
         var renderers = go.GetComponentsInChildren<Renderer>(true);
         for (int i = 0; i < renderers.Length; i++)
@@ -100,36 +166,75 @@ public class SoilManager : MonoBehaviour
     }
 
     // ===== Click: Đào hoặc Hủy =====
-    public void TryDigOrFlatten(Vector2Int gridPos, InventoryItem currentItem)
+
+    public void HoeAt(Vector2Int gridPos, InventoryItem item)
     {
-        var info = GetToolInfo((currentItem?.itemData?.toolType) ?? ToolType.None);
-        var start = farm.CalculateStartPosition(gridPos, info.size);
-        var expectedType = (info.size == 5) ? SoilType.Plot : SoilType.Hole;
-        int cost = (info.size == 5) ? 10 : 6;
+        if (item?.itemData?.toolType != ToolType.Hoe) return;
+
+        switch (hoeMode)
+        {
+            case HoeMode.DigFurrow5x5:
+                Dig(gridPos, 5, useMPDigFurrow);
+                Debug.LogWarning("Furrow");
+                break;
+
+            case HoeMode.DigHole3x3:
+                Dig(gridPos, 3, useMPDigHole);
+                Debug.LogWarning("Hole");
+                break;
+
+            case HoeMode.Flatten:
+                Flatten(gridPos);
+                break;
+
+            default:
+                Debug.LogWarning("Chưa chọn chế độ hoe hợp lệ!");
+                break;
+        }
+    }
+
+    private void Dig(Vector2Int gridPos, int size, int mpCost)
+    {
+        var start = farm.CalculateStartPosition(gridPos, size);
+
+        if (!CanPlaceSoil(start.x, start.y, size))
+        {
+            Notification.Instance?.ShowNotification("Khu vực này đã được đào!");
+            return;
+        }
+
+        if (Mp.Instance.mp < mpCost)
+        {
+            Notification.Instance?.ShowNotification("Hết năng lượng!");
+            return;
+        }
+
+        PlaceArea(start.x, start.y, size);
+        Mp.Instance.UseMp(mpCost);
+        FindAnyObjectByType<FarmGridDemo>()?.UpdateGridColors();
+    }
+
+    public void Flatten(Vector2Int gridPos)
+    {
+
+        int cost = useMPFlatten;
 
         // chỉ kiểm tra đủ NL
         if (Mp.Instance != null && Mp.Instance.mp < cost)
-        { Notification.Instance?.ShowNotification("Hết năng lượng!"); return; }
-
-        // Hủy nếu đang đúng loại
-        if (TryFindAreaContaining(gridPos.x, gridPos.y, out int idx))
-        {
-            var a = _areaSaves[idx];
-            if (a.soilType == expectedType)
-            {
-                if (FlattenAreaAt(gridPos)) // thành công mới trừ NL
-                {
-                    if (cost > 0) Mp.Instance?.UseMp(cost);
-                }
-                return;
-            }
+        { 
+            Notification.Instance?.ShowNotification("Hết năng lượng!");
+            return; 
         }
 
-        // Đặt mới
-        if (CanPlaceSoil(start.x, start.y, info.size))
+        if (FlattenAreaAt(gridPos))
         {
-            PlaceArea(start.x, start.y, info.size);
-            if (cost > 0) Mp.Instance?.UseMp(cost);
+            Mp.Instance?.UseMp(cost);
+            FindAnyObjectByType<FarmGridDemo>()?.UpdateGridColors();
+            HideGhosts();
+        }
+        else
+        {
+            Notification.Instance?.ShowNotification("Không có khu đất nào để hủy!");
         }
     }
 
@@ -191,6 +296,7 @@ public class SoilManager : MonoBehaviour
         var prefab = (size == 5) ? dugSoilPrefab : holePrefab;
         var go = prefab ? Instantiate(prefab, pos, (size == 3 ? RandomizeRotation() : Quaternion.identity)) : null;
         _areaObjects.Add(go);
+        FindAnyObjectByType<FarmGridDemo>()?.UpdateGridColors();
     }
 
     //Xóa đất
@@ -257,7 +363,6 @@ public class SoilManager : MonoBehaviour
         return false;
     }
 
-    // ===== Util =====
     private Quaternion RandomizeRotation()
     {
         float y = Random.Range(0f, 360f);
@@ -268,20 +373,6 @@ public class SoilManager : MonoBehaviour
     {
         public int size;
         public float offsetY, offsetX, offsetZ;
-    }
-
-    private ToolInfo GetToolInfo(ToolType tool)
-    {
-        var info = new ToolInfo();
-        if (tool == ToolType.Hoe) //Hoe 5x5
-        {
-            info.size = 5; info.offsetY = 0.26f; info.offsetX = 5f; info.offsetZ = -0.2f;
-        }
-        else // Shovel 3x3
-        {
-            info.size = 3; info.offsetY = 0.47f; info.offsetX = 1.5f; info.offsetZ = 1.5f;
-        }
-        return info;
     }
 
     // ====== Watering ======
@@ -622,4 +713,22 @@ public class SoilManager : MonoBehaviour
     {
         ResetDailyWater();
     }
+
+    public int GetSizeByHoeMode()
+    {
+        switch (hoeMode)
+        {
+            case HoeMode.DigFurrow5x5: return 5;
+            case HoeMode.DigHole3x3: return 3;
+            case HoeMode.Flatten: return 5; 
+        }
+        return 5;
+    }
+
+    public void SetHoeMode(HoeMode mode)
+    {
+        hoeMode = mode;
+        if (hoeMode == HoeMode.Flatten) HideGhosts();
+    }
+
 }
