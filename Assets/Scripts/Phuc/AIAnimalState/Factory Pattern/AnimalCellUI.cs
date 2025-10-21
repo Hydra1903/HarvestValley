@@ -11,8 +11,10 @@ public class AnimalCellUI : MonoBehaviour
     private GameObject linkedAnimal;
     private AnimalPen linkedPen;
     private AnimalData animalData;
-    private int cellIndex = -1; // <-- thêm
+    private int cellIndex = -1; 
     public TMP_Text indexText;
+    private AnimalPenUIManager uiManager;
+
     private void Awake()
     {
         Clear();
@@ -23,8 +25,8 @@ public class AnimalCellUI : MonoBehaviour
         linkedAnimal = animal;
         linkedPen = pen;
         animalData = data;
-        cellIndex = index; // <-- gán index t? AnimalPen
-
+        cellIndex = index;
+        uiManager = pen.GetComponent<AnimalPenUIManager>();
         if (data != null)
         {
             icon.sprite = data.icon;
@@ -42,13 +44,10 @@ public class AnimalCellUI : MonoBehaviour
 
     private void SellAnimal()
     {
-        if (linkedAnimal != null && linkedPen != null)
+        if (linkedAnimal != null && uiManager != null)
         {
-            // l?y index c?a cell trong m?ng cells
-            int cellIndex = System.Array.IndexOf(linkedPen.cells, this);
             string animalName = animalData != null ? animalData.animalName : "Animal";
-
-            linkedPen.ShowConfirmSell(cellIndex, animalName);
+            uiManager.ShowConfirmSell(cellIndex);
         }
     }
 

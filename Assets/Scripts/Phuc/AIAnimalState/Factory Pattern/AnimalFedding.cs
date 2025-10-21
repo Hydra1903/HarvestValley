@@ -7,52 +7,66 @@ public class AnimalFedding : MonoBehaviour
     public AnimalType animalType;
     public Barn barn;
 
-    [Header("Feeding Delay")]
-    public float eatDelaySeconds = 30f;
-    private bool canHarvest = false;
-    public int daysFed = 0;
+    [Header("Feeding Settings")]
+    public float eatDelaySeconds = 5f;   
+    public int requiredFeedDays = 3;   
+    public int requiredGoatDays = 5;  
 
-    // Sheep
+    private bool canHarvest = false;
+    private int daysFed = 0;
+
     private bool sheepAteToday = false;
 
-    // Goat
     private int mealsToday = 0;
+    private bool hasEaten = false;
     private bool ateAtMorning = false;
     private bool ateAtEvening = false;
-    private int lastKnownDay = -1;
+
     private bool isWaitingToEat = false;
+    private float eatTimer = 0f;
+
+   
     private void Start()
     {
-        lastKnownDay = GameTime.Instance.day;
+        ResetDailyEatFlags();
     }
 
     private void Update()
     {
-        int hour = GameTime.Instance.hour;
-        int currentDay = GameTime.Instance.day;
-
-        if (currentDay != lastKnownDay)
+        eatTimer += Time.deltaTime;
+        if (eatTimer >= eatDelaySeconds)
         {
             HandleNextDay();
-            lastKnownDay = currentDay;
+            eatTimer = 0f;
         }
+
         if (animalType == AnimalType.Goat)
         {
-            if (hour >= 7 && !ateAtMorning && !isWaitingToEat)
-            {
-                StartCoroutine(DelayedEatGoat(true, "sáng"));
-            }
-            if (hour >= 19 && !ateAtEvening && !isWaitingToEat)
-            {
-                StartCoroutine(DelayedEatGoat(false, "chiều"));
-            }
+            HandleGoatFeeding();
         }
         else if (animalType == AnimalType.Sheep)
         {
-            if (!sheepAteToday && !isWaitingToEat)
-            {
-                StartCoroutine(DelayedEatSheep());
-            }
+            HandleSheepFeeding();
+        }
+    }
+
+    private void HandleSheepFeeding()
+    {
+        if (!sheepAteToday && !isWaitingToEat)
+        {
+            StartCoroutine(DelayedEatSheep());
+        }
+    }
+
+    private void HandleGoatFeeding()
+    {
+        if (!ateAtMorning && !isWaitingToEat && mealsToday == 0)
+        {
+            StartCoroutine(DelayedEatGoat(true, "sáng"));
+        }
+        if (!ateAtEvening && !isWaitingToEat && mealsToday == 1 && eatTimer > eatDelaySeconds / 2f)
+        {
+            StartCoroutine(DelayedEatGoat(false, "chiều"));
         }
     }
 
@@ -64,7 +78,7 @@ public class AnimalFedding : MonoBehaviour
             {
                 daysFed++;
                 Notification.Instance.ShowNotification($"[Sheep] Ăn đủ hôm nay → DaysFed = {daysFed}");
-                if (daysFed >= 3)
+                if (daysFed >= requiredFeedDays)
                 {
                     canHarvest = true;
                     Notification.Instance.ShowNotification("[Sheep] Có thể thu hoạch!");
@@ -74,6 +88,7 @@ public class AnimalFedding : MonoBehaviour
             {
                 Notification.Instance.ShowNotification("[Sheep] Hôm nay không ăn, giữ nguyên trạng thái.");
             }
+
             sheepAteToday = false;
         }
         else if (animalType == AnimalType.Goat)
@@ -82,7 +97,7 @@ public class AnimalFedding : MonoBehaviour
             {
                 daysFed++;
                 Notification.Instance.ShowNotification($"[Goat] Ăn đủ 2 bữa hôm nay → DaysFed = {daysFed}");
-                if (daysFed >= 5)
+                if (daysFed >= requiredGoatDays)
                 {
                     canHarvest = true;
                     Notification.Instance.ShowNotification("[Goat] Có thể thu hoạch!");
@@ -103,7 +118,7 @@ public class AnimalFedding : MonoBehaviour
     private IEnumerator DelayedEatSheep()
     {
         isWaitingToEat = true;
-        yield return new WaitForSeconds(eatDelaySeconds);
+        yield return new WaitForSeconds(eatDelaySeconds / 2f);
         TryEatSheep();
         isWaitingToEat = false;
     }
@@ -111,10 +126,11 @@ public class AnimalFedding : MonoBehaviour
     private IEnumerator DelayedEatGoat(bool isMorningMeal, string mealTime)
     {
         isWaitingToEat = true;
-        yield return new WaitForSeconds(eatDelaySeconds);
-        TryEatGoatMeal(ref isMorningMeal);
+        yield return new WaitForSeconds(eatDelaySeconds / 4f);
+        TryEatGoatMeal(isMorningMeal);
         isWaitingToEat = false;
     }
+
     private void TryEatSheep()
     {
         if (HasHay())
@@ -129,13 +145,16 @@ public class AnimalFedding : MonoBehaviour
             Notification.Instance.ShowNotification("[Sheep] Không có Hay Bale để ăn.");
         }
     }
-    private void TryEatGoatMeal(ref bool mealFlag)
+
+    private void TryEatGoatMeal(bool isMorningMeal)
     {
         if (HasHay())
         {
             ConsumeHay();
             mealsToday++;
-            mealFlag = true;
+            if (isMorningMeal) ateAtMorning = true;
+            else ateAtEvening = true;
+
             Notification.Instance.ShowNotification($"[Goat] Ăn cỏ, mealsToday = {mealsToday}");
             GetComponentInParent<AnimalPen>()?.UpdateAnimalFeedStatusUI();
         }
@@ -165,6 +184,7 @@ public class AnimalFedding : MonoBehaviour
         }
         return false;
     }
+
     void ConsumeHay()
     {
         if (barn == null || barn.slots == null) return;
@@ -193,20 +213,15 @@ public class AnimalFedding : MonoBehaviour
     }
 
     public bool CanHarvest() => canHarvest;
+    public int GetDaysFed() => daysFed;
 
     public void ResetHarvest()
     {
         canHarvest = false;
         daysFed = 0;
-        sheepAteToday = false;
-        mealsToday = 0;
-        ateAtMorning = false;
-        ateAtEvening = false;
-        isWaitingToEat = false;
+        ResetDailyEatFlags();
     }
-    public bool HasEatenToday() => animalType == AnimalType.Sheep ? sheepAteToday : mealsToday > 0;
-    public int GetMealsToday() => mealsToday;
-    public int GetDaysFed() => daysFed;
+
     public void ResetDailyEatFlags()
     {
         sheepAteToday = false;
@@ -214,5 +229,15 @@ public class AnimalFedding : MonoBehaviour
         ateAtMorning = false;
         ateAtEvening = false;
         isWaitingToEat = false;
+        eatTimer = 0f;
+    }
+    public bool HasEatenToday()
+    {
+        return hasEaten;
+    }
+
+    public int GetMealsToday()
+    {
+        return mealsToday;
     }
 }

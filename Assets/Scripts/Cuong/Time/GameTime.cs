@@ -13,7 +13,6 @@ public class GameTime : MonoBehaviour
     public int year = 1;
     public int hour = 6;
     public int minute = 0;
-
     public float timeSpeed = 60f;
     private float timer;
 

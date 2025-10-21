@@ -2,21 +2,27 @@ using UnityEngine;
 
 public class PenTouchCollider : MonoBehaviour
 {
-    public AnimalPen pen;
+    [SerializeField] private AnimalPenUIManager uiManager;
+
+    private void Awake()
+    {
+        if (uiManager == null)
+            uiManager = GetComponentInParent<AnimalPenUIManager>();
+    }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player"))
+        if (other.CompareTag("Player") && uiManager != null)
         {
-            pen.ShowPenInfo(true);
+            uiManager.ShowPenInfo(true);
         }
     }
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.CompareTag("Player"))
+        if (other.CompareTag("Player") && uiManager != null)
         {
-            pen.ShowPenInfo(false);
+            uiManager.ShowPenInfo(false);
         }
     }
 }

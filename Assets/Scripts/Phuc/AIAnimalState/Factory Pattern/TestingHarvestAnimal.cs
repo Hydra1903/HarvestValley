@@ -11,14 +11,15 @@ public class TestingHarvestAnimal : MonoBehaviour
     [Header("Setting")]
     public float interactDistance = 3f;
 
-
     public enum AnimalType { Sheep_Black, Sheep_White, Sheep_Cream, Goat }
     public AnimalType animalType;
 
-    private int previousDay = -1;
     private AnimalFedding feeding;
     private Inventory playerInventory;
     private bool canHarvest = false;
+
+    private int lastFedTotalHours = -1;
+
     private void Start()
     {
         feeding = GetComponent<AnimalFedding>();
@@ -28,22 +29,17 @@ public class TestingHarvestAnimal : MonoBehaviour
             if (foundBarn != null)
             {
                 feeding.barn = foundBarn;
-                Debug.Log($"[Auto] Assign Barn cho {gameObject.name}  trong scene.");
+                Debug.Log($"[Auto] Assign Barn cho {gameObject.name} trong scene.");
             }
             else
             {
                 Debug.LogWarning($"Cant Found Barn for Assign {gameObject.name}!");
             }
         }
+
         if (GameTime.Instance != null)
-            previousDay = GameTime.Instance.day;
-    }
-private void HandleNextDay()
-{
-        Debug.Log($"{gameObject.name} sang ngày m?i: {GameTime.Instance.day}");
-        if (feeding != null && feeding.CanHarvest())
         {
-            canHarvest = true;
+            lastFedTotalHours = GetTotalHoursFromGameTime();
         }
     }
 
@@ -51,10 +47,10 @@ private void HandleNextDay()
     {
         if (GameTime.Instance == null) return;
 
-        if (GameTime.Instance.day != previousDay)
+        int currentTotalHours = GetTotalHoursFromGameTime();
+        if (currentTotalHours - lastFedTotalHours >= 24 && GameTime.Instance.hour >= 7)
         {
-            previousDay = GameTime.Instance.day;
-            HandleNextDay(); 
+            HandleNextFeedingTime();
         }
 
         GameObject player = GameObject.FindGameObjectWithTag("Player");
@@ -64,6 +60,23 @@ private void HandleNextDay()
         if (distance <= interactDistance && Input.GetKeyDown(KeyCode.E))
         {
             TryHarvest(player);
+        }
+    }
+
+    private int GetTotalHoursFromGameTime()
+    {
+        var time = GameTime.Instance;
+        return (time.year * 12 * 30 * 24) + (time.month * 30 * 24) + (time.day * 24) + time.hour;
+    }
+
+    private void HandleNextFeedingTime()
+    {
+        Debug.Log($"{gameObject.name} ð? ði?u ki?n ãn l?i lúc {GameTime.Instance.hour}h.");
+        if (feeding != null)
+        {
+            feeding.ResetHarvest();
+            canHarvest = feeding.CanHarvest();
+            lastFedTotalHours = GetTotalHoursFromGameTime();
         }
     }
 
@@ -82,7 +95,7 @@ private void HandleNextDay()
 
             if (itemToGive != null && playerInventory.AddItem(itemToGive, GetHarvestAmount()))
             {
-                Notification.Instance.ShowNotification($"+1 {itemToGive.itemName} from {animalType}");
+                Notification.Instance.ShowNotification($"+{GetHarvestAmount()} {itemToGive.itemName} t? {animalType}");
                 feeding.ResetHarvest();
                 canHarvest = false;
 
@@ -91,17 +104,16 @@ private void HandleNextDay()
             }
             else
             {
-
                 Notification.Instance.ShowNotification("Inventory full ho?c không th? thêm item này.");
             }
         }
         else
         {
             int fedDays = feeding != null ? feeding.GetDaysFed() : 0;
-
             Notification.Instance.ShowNotification($"Chýa ð? ði?u ki?n thu ho?ch. Ngày ð? ãn: {fedDays}");
         }
     }
+
     private ItemData GetItemDataByType()
     {
         switch (animalType)
@@ -118,8 +130,8 @@ private void HandleNextDay()
     {
         switch (animalType)
         {
-            case AnimalType.Goat: return 1;   // dê cho 1 s?a
-            default: return 3;                // c?u cho 3 lông
+            case AnimalType.Goat: return 1;
+            default: return 3;
         }
     }
 }

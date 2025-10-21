@@ -12,19 +12,14 @@ public static class AnimalFactory
         {
             case AnimalType.BlackGoat:
                 return  Resources.Load<GameObject>("Prefabs/BlackGoat");
-                break;
             case AnimalType.WhiteGoat:
                 return Resources.Load<GameObject>("Prefabs/WhiteGoat");
-                break;
             case AnimalType.WhiteSheep:
                 return Resources.Load<GameObject>("Prefabs/WhiteSheep");
-                break;
             case AnimalType.BlackSheep:
                 return Resources.Load<GameObject>("Prefabs/BlackSheep");
-                break;
             case AnimalType.CreamSheep:
                 return Resources.Load<GameObject>("Prefabs/CreamSheep");
-                break;
             default:
                 Debug.LogWarning("Invalid or unselected animal type.");
                 return null;

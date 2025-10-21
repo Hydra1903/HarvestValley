@@ -2,12 +2,10 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using System.Collections.Generic;
 
 public class LiveStockSeller : MonoBehaviour
 {
-    //public CinemachineInputAxisController playerAxisController;
-    //public FirstCameraTesting firstCameraTesting;
-
     public GameObject buyCanvas;
     public GameObject confirmPanel;
     public GameObject selectPenPanel;
@@ -31,6 +29,20 @@ public class LiveStockSeller : MonoBehaviour
     public AnimalPen pen1;
     public AnimalPen pen2;
 
+    [System.Serializable]
+    public class AnimalLevelRequirement
+    {
+        public AnimalType animalType;
+        public int requiredLevel;
+
+        [Header("UI Overlay (Optional)")]
+        public GameObject lockOverlay; 
+        public Button buyButton;
+    }
+
+    [Header("Animal Level Requirements")]
+    public List<AnimalLevelRequirement> animalLevelRequirements = new List<AnimalLevelRequirement>();
+
     private void Start()
     {
         buyCanvas.gameObject.SetActive(false);
@@ -48,6 +60,8 @@ public class LiveStockSeller : MonoBehaviour
         WhiteSheepButton.onClick.AddListener(() => ShowSelectPen(AnimalType.WhiteSheep));
         CreamSheepButton.onClick.AddListener(() => ShowSelectPen(AnimalType.CreamSheep));
         BlackSheepButton.onClick.AddListener(() => ShowSelectPen(AnimalType.BlackSheep));
+
+        UpdateAnimalButtons(); 
     }
 
     void ShowSelectPen(AnimalType type)
@@ -70,57 +84,103 @@ public class LiveStockSeller : MonoBehaviour
             Notification.Instance.ShowNotification("Chuồng Nuôi hoặc động vật chưa được chọn");
             return;
         }
-        if (!selectedPen.CanSpawnMore())
+
+        int requiredLevel = GetRequiredLevel(selectedType);
+        int currentLevel = LevelManager.Instance.currentLevel;
+
+        if (currentLevel < requiredLevel)
         {
-            Notification.Instance.ShowNotification("Chuồng Nuôi Đã Đầys!");
+            Notification.Instance.ShowNotification($"Cần đạt cấp độ {requiredLevel} để mua loại động vật này!");
             confirmPanel.SetActive(false);
             return;
         }
+
+        if (!selectedPen.CanSpawnMore())
+        {
+            Notification.Instance.ShowNotification("Chuồng Nuôi Đã Đầy!");
+            confirmPanel.SetActive(false);
+            return;
+        }
+
         GameObject prefab = AnimalFactory.GetPrefab(selectedType);
         if (prefab == null)
         {
             Debug.LogError("Không tìm thấy prefab");
             return;
         }
+
         GameObject obj = Instantiate(prefab, selectedPen.GetRandomSpawnPosition(), Quaternion.identity);
 
         SimpleAI ai = obj.GetComponent<SimpleAI>();
         if (ai != null)
-        {
             ai.wanderPoints = selectedPen.wanderPoints;
-        }
+
         AnimalFedding feeding = obj.GetComponent<AnimalFedding>();
         if (feeding != null)
-        {
             feeding.barn = selectedPen.barnReference;
-        }
+
         var info = obj.GetComponent<AnimalInfo>();
         var panel = InfoPanelManager.instance.GetPanel(selectedPen.penId);
         if (panel != null)
-        {
             info.InjectPanel(panel);
-        }
+
         AnimalData data = obj.GetComponent<AnimalInfo>()?.data;
         bool success = selectedPen.RegisterAnimal(obj, data);
         if (success)
         {
-            Notification.Instance.ShowNotification($"Đã Thêm động vật đã mua vào {selectedPen.name}");
+            Notification.Instance.ShowNotification($"Đã thêm động vật đã mua vào {selectedPen.name}");
         }
         else
         {
-            Notification.Instance.ShowNotification($"động vật đã chọn không được thêm vào {selectedPen.name} (loại không hợp lệ)");
+            Notification.Instance.ShowNotification($"Động vật đã chọn không được thêm vào {selectedPen.name}");
         }
+
         confirmPanel.SetActive(false);
         selectedType = AnimalType.None;
         selectedPen = null;
         CloseAllUI();
     }
+
+    int GetRequiredLevel(AnimalType type)
+    {
+        foreach (var req in animalLevelRequirements)
+        {
+            if (req.animalType == type)
+                return req.requiredLevel;
+        }
+        return 1;
+    }
+
+    void UpdateAnimalButtons()
+    {
+        int currentLevel = LevelManager.Instance.currentLevel;
+
+        foreach (var req in animalLevelRequirements)
+        {
+            bool unlocked = currentLevel >= req.requiredLevel;
+
+            if (req.buyButton != null)
+                req.buyButton.interactable = unlocked;
+
+            if (req.lockOverlay != null)
+                req.lockOverlay.SetActive(!unlocked);
+
+            if (req.lockOverlay != null)
+            {
+                Text overlayText = req.lockOverlay.GetComponentInChildren<Text>();
+                if (overlayText != null)
+                    overlayText.text = unlocked ? "" : $"Yêu cầu cấp {req.requiredLevel}";
+            }
+        }
+    }
+
     void BackToBuyMenu()
     {
         confirmPanel.SetActive(false);
         buyCanvas.SetActive(true);
         selectedPen = null;
         selectedType = AnimalType.None;
+        UpdateAnimalButtons();
     }
 
     void CloseAllUI()
@@ -128,14 +188,6 @@ public class LiveStockSeller : MonoBehaviour
         buyCanvas.SetActive(false);
         selectPenPanel.SetActive(false);
         confirmPanel.SetActive(false);
-
-        //Cursor.lockState = CursorLockMode.Locked;
-        //Cursor.visible = false;
-
-        //if (playerAxisController != null)
-        //    playerAxisController.enabled = true;
-
-        //firstCameraTesting.allowMouseLook = true;
     }
 
     void Update()
@@ -147,12 +199,7 @@ public class LiveStockSeller : MonoBehaviour
 
             if (!isActive)
             {
-                //Cursor.lockState = CursorLockMode.None;
-                //Cursor.visible = true;
-                //if (playerAxisController != null)
-                //    playerAxisController.enabled = false;
-
-                //firstCameraTesting.allowMouseLook = false;
+                UpdateAnimalButtons(); 
             }
             else
             {
