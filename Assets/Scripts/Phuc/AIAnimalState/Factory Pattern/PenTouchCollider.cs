@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class PenTouchCollider : MonoBehaviour
 {
-    [SerializeField] private AnimalPenUIManager uiManager;
+    private AnimalPenUIManager uiManager;
 
     private void Awake()
     {
