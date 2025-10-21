@@ -7,8 +7,8 @@ using UnityEngine.UI;
 public class AnimalPen : MonoBehaviour
 {
     public int penId;
-    public CinemachineInputAxisController playerAxisController;
-    public FirstCameraTesting firstCameraTesting;
+    //public CinemachineInputAxisController playerAxisController;
+    //public FirstCameraTesting firstCameraTesting;
 
     [Header("SpawnPoint and Random WP")]
     public Transform spawnPointType1;
@@ -48,16 +48,16 @@ public class AnimalPen : MonoBehaviour
             penInfoPanel.SetActive(false);
             inventoryPanels.SetActive(false);
 
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
-            if (playerAxisController != null)
-            {
-                playerAxisController.enabled = true;
-            }
-            if (firstCameraTesting != null)
-            {
-                firstCameraTesting.allowMouseLook = true;
-            }
+            //Cursor.lockState = CursorLockMode.Locked;
+            //Cursor.visible = false;
+            //if (playerAxisController != null)
+            //{
+            //    playerAxisController.enabled = true;
+            //}
+            //if (firstCameraTesting != null)
+            //{
+            //    firstCameraTesting.allowMouseLook = true;
+            //}
         }
         if (sharedInfoPanel != null)
         {
@@ -135,6 +135,7 @@ public class AnimalPen : MonoBehaviour
             cells[i].gameObject.SetActive(true);
             cells[i].Setup(animal, data, i, this);
             cells[i].SetIndexNumber(i + 1);
+            Debug.Log("AA");
         }
     }
 
@@ -198,12 +199,12 @@ public class AnimalPen : MonoBehaviour
     {
         if (penInfoPanel != null)
         {
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
-            if (playerAxisController != null)
-                playerAxisController.enabled = false;
-            if (firstCameraTesting != null)
-                firstCameraTesting.allowMouseLook = false;
+            //Cursor.lockState = CursorLockMode.None;
+            //Cursor.visible = true;
+            //if (playerAxisController != null)
+            //    playerAxisController.enabled = false;
+            //if (firstCameraTesting != null)
+            //    firstCameraTesting.allowMouseLook = false;
 
             penInfoPanel.SetActive(show);
             inventoryPanels.SetActive(show);
@@ -215,14 +216,14 @@ public class AnimalPen : MonoBehaviour
             }
             else
             {
-                Cursor.lockState = CursorLockMode.Locked;
-                Cursor.visible = false;
+                //Cursor.lockState = CursorLockMode.Locked;
+                //Cursor.visible = false;
 
-                if (playerAxisController != null)
-                    playerAxisController.enabled = true;
+                //if (playerAxisController != null)
+                //    playerAxisController.enabled = true;
 
-                if (firstCameraTesting != null)
-                    firstCameraTesting.allowMouseLook = true;
+                //if (firstCameraTesting != null)
+                //    firstCameraTesting.allowMouseLook = true;
             }
         }
     }
@@ -291,14 +292,14 @@ public class AnimalPen : MonoBehaviour
         {
             penInfoPanel.SetActive(false);
             inventoryPanels.SetActive(false);
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
+            //Cursor.lockState = CursorLockMode.Locked;
+            //Cursor.visible = false;
 
-            if (playerAxisController != null)
-                playerAxisController.enabled = true;
+            //if (playerAxisController != null)
+            //    playerAxisController.enabled = true;
 
-            if (firstCameraTesting != null)
-                firstCameraTesting.allowMouseLook = true;
+            //if (firstCameraTesting != null)
+            //    firstCameraTesting.allowMouseLook = true;
         }
     }
 }

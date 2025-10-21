@@ -5,8 +5,8 @@ using UnityEngine.UI;
 
 public class LiveStockSeller : MonoBehaviour
 {
-    public CinemachineInputAxisController playerAxisController;
-    public FirstCameraTesting firstCameraTesting;
+    //public CinemachineInputAxisController playerAxisController;
+    //public FirstCameraTesting firstCameraTesting;
 
     public GameObject buyCanvas;
     public GameObject confirmPanel;
@@ -129,13 +129,13 @@ public class LiveStockSeller : MonoBehaviour
         selectPenPanel.SetActive(false);
         confirmPanel.SetActive(false);
 
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        //Cursor.lockState = CursorLockMode.Locked;
+        //Cursor.visible = false;
 
-        if (playerAxisController != null)
-            playerAxisController.enabled = true;
+        //if (playerAxisController != null)
+        //    playerAxisController.enabled = true;
 
-        firstCameraTesting.allowMouseLook = true;
+        //firstCameraTesting.allowMouseLook = true;
     }
 
     void Update()
@@ -147,12 +147,12 @@ public class LiveStockSeller : MonoBehaviour
 
             if (!isActive)
             {
-                Cursor.lockState = CursorLockMode.None;
-                Cursor.visible = true;
-                if (playerAxisController != null)
-                    playerAxisController.enabled = false;
+                //Cursor.lockState = CursorLockMode.None;
+                //Cursor.visible = true;
+                //if (playerAxisController != null)
+                //    playerAxisController.enabled = false;
 
-                firstCameraTesting.allowMouseLook = false;
+                //firstCameraTesting.allowMouseLook = false;
             }
             else
             {
