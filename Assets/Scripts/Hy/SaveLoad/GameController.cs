@@ -9,4 +9,9 @@ public class GameController : MonoBehaviour
 
     [ContextMenu("Load Game")]
     public void LoadGame() => SaveManager.Load("slot1", farms);
+
+    private void Awake()
+    {
+        SaveManager.Load("slot1", farms);
+    }
 }

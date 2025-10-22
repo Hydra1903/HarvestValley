@@ -3,7 +3,7 @@ public class DigHoleState : ICharacterState
     public void Enter(CharacterStateMachine characterStateMachine)
     {
         characterStateMachine.animator.Play("DigHole");
-        if (CharacterSelection.Instance.currentCharacter == ECharacter.Rin)
+        if (CharacterSelection.currentCharacter == ECharacter.Rin)
         {
             characterStateMachine.animator.speed = 1.2f;
         }

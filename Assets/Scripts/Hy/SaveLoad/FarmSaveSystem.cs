@@ -23,7 +23,7 @@ public class FarmSaveSystem : MonoBehaviour
             areas = new List<AreaSave>(soilManager.GetAreas()),
             plants = new List<PlantSave>(GetPlants()),
             sprinklers = soilManager.GetSprinklerSaves(),
-            wateredCenters = soilManager.GetWateredCenters(),
+            wateredCenters = soilManager.GetWateredCenters(),        
         };
     }
 

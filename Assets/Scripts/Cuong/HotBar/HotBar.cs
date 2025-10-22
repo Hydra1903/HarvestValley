@@ -12,6 +12,10 @@ public class HotBar : MonoBehaviour
             slots[i] = new InventorySlot();
         }
     }
+    public void Start()
+    {
+        UpdateData();
+    }
     public void UpdateData()
     {
         for (int i = 0; i < 8; i++)

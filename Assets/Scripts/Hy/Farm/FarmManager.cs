@@ -22,7 +22,7 @@ public class FarmManager : MonoBehaviour
     public PlantManager plantManager;
     public FarmInput farmInputManager;
 
-    public FarmGridSave BuildSave() => _save.BuildSave();
+    //public FarmGridSave BuildSave() => _save.BuildSave();
     public void LoadFromSave(FarmGridSave s) => _save.LoadFromSave(s);
 
     private void Awake()
