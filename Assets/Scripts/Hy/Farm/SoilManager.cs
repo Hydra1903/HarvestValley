@@ -8,9 +8,9 @@ public class SoilManager : MonoBehaviour
     public LayerMask gridMask;
 
     [Header("Prefabs đất")]
-    public GameObject dugSoilPrefab;  // luống 5x5
-    public GameObject holePrefab;     // hố 3x3
-    public GameObject sprinklerPrefab; //máy tưới
+    public GameObject dugSoilPrefab;  
+    public GameObject holePrefab;     
+    public GameObject sprinklerPrefab; 
 
     [Header("Ghost")]
     public GameObject ghostFurrowPrefab;
@@ -22,10 +22,10 @@ public class SoilManager : MonoBehaviour
     private GameObject ghostSprinklerInstance;
 
     [Header("Watering")]
-    [SerializeField] private string waterChildName = "WaterOverlay"; // tên child trong prefab luống/hố bật
-    [SerializeField] private string holeChildName = "Hole"; // tên child tắt
-    [SerializeField] private int waterCost = 3; // năng lượng cho mỗi lần tưới (tuỳ bạn)
-    [SerializeField] private int sprinkerRange = 7; // năng lượng cho mỗi lần tưới (tuỳ bạn)
+    [SerializeField] private string waterChildName; // tên child trong prefab luống/hố bật
+    [SerializeField] private string soilChildName; 
+    [SerializeField] private int waterCost = 3; 
+    [SerializeField] private int sprinkerRange = 7; 
 
     [SerializeField] private Material ghostRed;
     [SerializeField] private Material ghostBlack;
@@ -35,8 +35,7 @@ public class SoilManager : MonoBehaviour
     [SerializeField] private int useMPFlatten;
 
     private FarmManager farm;
-    public GridFarm gridFarm;
-    public HoeMode hoeMode = HoeMode.DigFurrow5x5;
+    [SerializeField] private HoeMode hoeMode = HoeMode.DigFurrow5x5;
 
 
     private readonly List<AreaSave> _areaSaves = new();
@@ -47,7 +46,6 @@ public class SoilManager : MonoBehaviour
     private void OnValidate()
     {
         if (!farm) farm = GetComponent<FarmManager>();
-        if (!gridFarm) gridFarm = GetComponentInChildren<GridFarm>(true);
     }
 
     public void Initialize(FarmManager f)
@@ -211,7 +209,7 @@ public class SoilManager : MonoBehaviour
 
         PlaceArea(start.x, start.y, size);
         Mp.Instance.UseMp(mpCost);
-        FindAnyObjectByType<FarmGridDemo>()?.UpdateGridColors();
+        FindAnyObjectByType<FarmGrid>()?.UpdateGridColors();
     }
 
     public void Flatten(Vector2Int gridPos)
@@ -229,7 +227,7 @@ public class SoilManager : MonoBehaviour
         if (FlattenAreaAt(gridPos))
         {
             Mp.Instance?.UseMp(cost);
-            FindAnyObjectByType<FarmGridDemo>()?.UpdateGridColors();
+            FindAnyObjectByType<FarmGrid>()?.UpdateGridColors();
             HideGhosts();
         }
         else
@@ -283,7 +281,7 @@ public class SoilManager : MonoBehaviour
         };
         _areaSaves.Add(a);
 
-        float yOffset = (size == 5) ? 0.235f : 0.45f;
+        float yOffset = (size == 5) ? 0.3f : 0.45f;
         float offsetX = (size == 5) ? 5f : 1.5f;
         float offsetZ = (size == 5) ? -0.2f : 1.5f;
 
@@ -296,9 +294,8 @@ public class SoilManager : MonoBehaviour
         var prefab = (size == 5) ? dugSoilPrefab : holePrefab;
         var go = prefab ? Instantiate(prefab, pos, (size == 3 ? RandomizeRotation() : Quaternion.identity)) : null;
         _areaObjects.Add(go);
-        FindAnyObjectByType<FarmGridDemo>()?.UpdateGridColors();
+        FindAnyObjectByType<FarmGrid>()?.UpdateGridColors();
     }
-
     //Xóa đất
     public bool FlattenAreaAt(Vector2Int gridPos)
     {
@@ -417,7 +414,7 @@ public class SoilManager : MonoBehaviour
         var areaObj = _areaObjects[areaIndex];
         if (!areaObj) return;
 
-        var child = FindChildRecursive(areaObj.transform, holeChildName);
+        var child = FindChildRecursive(areaObj.transform, soilChildName);
         if (child) child.gameObject.SetActive(enable);
     }
 
@@ -605,6 +602,56 @@ public class SoilManager : MonoBehaviour
         return true;
     }
 
+    public bool CanStartHoeAt(Vector2Int gridPos, InventoryItem item)
+    {
+        if (item?.itemData?.toolType != ToolType.Hoe) return false;
+
+        switch (hoeMode)
+        {
+            case HoeMode.DigFurrow5x5:
+                {
+                    int size = 5;
+                    var start = farm.CalculateStartPosition(gridPos, size);
+                    if (!CanPlaceSoil(start.x, start.y, size)) return false;
+                    return Mp.Instance == null || Mp.Instance.mp >= useMPDigFurrow;
+                }
+            case HoeMode.DigHole3x3:
+                {
+                    int size = 3;
+                    var start = farm.CalculateStartPosition(gridPos, size);
+                    if (!CanPlaceSoil(start.x, start.y, size)) return false;
+                    return Mp.Instance == null || Mp.Instance.mp >= useMPDigHole;
+                }
+            case HoeMode.Flatten:
+                {
+                    // Phải trúng 1 vùng đã đào
+                    if (!TryFindAreaContaining(gridPos.x, gridPos.y, out int idx)) return false;
+
+                    // Không có cây trong vùng
+                    var a = _areaSaves[idx];
+                    for (int dx = 0; dx < a.size; dx++)
+                        for (int dy = 0; dy < a.size; dy++)
+                            if (farm.Tiles[a.startX + dx, a.startY + dy].plantInstance != null)
+                                return false;
+
+                    return Mp.Instance == null || Mp.Instance.mp >= useMPFlatten;
+                }
+        }
+        return false;
+    }
+
+    public bool CanStartWaterAt(Vector2Int gridPos)
+    {
+        if (!TryFindAreaContaining(gridPos.x, gridPos.y, out int idx)) return false;
+
+        if (waterCost > 0 && (Mp.Instance == null || Mp.Instance.mp < waterCost)) return false;
+
+        if (_wateredAreaIdx.Contains(idx)) return false;
+
+        return true;
+    }
+
+
     // ===== Save =====
     public List<AreaSave> GetAreas() => _areaSaves;
   
@@ -729,6 +776,10 @@ public class SoilManager : MonoBehaviour
     {
         hoeMode = mode;
         if (hoeMode == HoeMode.Flatten) HideGhosts();
+    }
+    public bool HasSprinklerAt(int gx, int gy)
+    {
+        return IsSprinklerAt(gx, gy);
     }
 
 }

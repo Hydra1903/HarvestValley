@@ -134,6 +134,7 @@ public class PlantManager : MonoBehaviour
         if (!IsMature(inst)) { Debug.Log("Chưa chín."); return false; }
 
         int cost = Mathf.Max(0, inst.plantData.energyHarvest);
+
         // chỉ kiểm tra đủ NL
         if (Mp.Instance != null && Mp.Instance.mp < cost)
         { Notification.Instance?.ShowNotification("Hết năng lượng!"); return false; }
@@ -273,6 +274,9 @@ public class PlantManager : MonoBehaviour
                 if (!farmManager.IsInGrid(cx, cy)) return false;
 
                 var t = farmManager.Tiles[cx, cy];
+
+                if (soilManager != null && soilManager.HasSprinklerAt(cx, cy)) return false;
+
                 if (t.state != SoilState.Dug || t.plantInstance != null) return false;
 
                 bool isHole = (t.soilType == SoilType.Hole);
@@ -331,6 +335,21 @@ public class PlantManager : MonoBehaviour
         });
 
         Debug.Log($"Đã trồng {plantData.plantName} tại ({startPos.x},{startPos.y}) size {size}");
+    }
+
+    public bool CanStartHarvest(Vector2Int gridPos)
+    {
+        int x = gridPos.x, y = gridPos.y;
+        if (!farmManager.IsInGrid(x, y)) return false;
+        var t = farmManager.Tiles[x, y];
+
+        if (t.plantInstance == null) 
+        { 
+            Notification.Instance?.ShowNotification("Không phải mùa thu hoạch."); 
+            return false; 
+        }
+
+        return true;
     }
 
     // ===== Tile / Prefab helpers =====

@@ -3,7 +3,7 @@ using UnityEngine;
 
 [ExecuteAlways]
 [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
-public class FarmGridDemo : MonoBehaviour
+public class FarmGrid : MonoBehaviour
 {
     [Header("References")]
     public FarmManager farm;             // Kéo FarmManager vào (hoặc để tự tìm ở parent)

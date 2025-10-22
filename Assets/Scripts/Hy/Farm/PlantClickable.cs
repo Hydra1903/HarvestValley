@@ -19,9 +19,8 @@ public class PlantClickable : MonoBehaviour
             o.OutlineMode = Outline.Mode.OutlineAll;
             o.OutlineColor = Color.red;
             o.OutlineWidth = 7f;
-            // ép reset material props một nhịp
             o.enabled = false;
-            o.enabled = true;  // OnEnable() sẽ re-append materials
+            o.enabled = true;  
         }
     }
 }
