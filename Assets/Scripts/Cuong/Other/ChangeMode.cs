@@ -5,6 +5,11 @@ public enum EModeHoe
     Mode2,
     Mode3
 }
+public enum EChangeModeState
+{
+    On,
+    Off
+}
 public class ChangeMode : MonoBehaviour
 {
     public static ChangeMode Instance;
@@ -15,6 +20,7 @@ public class ChangeMode : MonoBehaviour
     public GameObject[] highlight;
     public ItemData hoe;
     public EModeHoe currentModeHoe;
+    public EChangeModeState currentState = EChangeModeState.Off;
     void Start()
     {
     }
@@ -40,18 +46,15 @@ public class ChangeMode : MonoBehaviour
             currentModeHoe = EModeHoe.Mode3;
         }
     }
-    public void CheckCurrentItemHoe()
+    public void CheckCurrentState()
     {
-        if (HotBarUI.Instance.currentItem != null)
+        if (currentState == EChangeModeState.On)
         {
-            if (HotBarUI.Instance.currentItem.itemData == hoe)
-            {
-                UIManager.Instance.ShowUI("ChangeMode");
-            }
-            else
-            {
-                UIManager.Instance.HideUI("ChangeMode");
-            }
+            UIManager.Instance.ShowUI("ChangeMode");
+        }
+        else if (currentState == EChangeModeState.Off)
+        {
+            UIManager.Instance.HideUI("ChangeMode");
         }
     }
     public void HideHightlight()

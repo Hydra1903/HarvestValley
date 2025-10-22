@@ -6,8 +6,8 @@ public class RunState : ICharacterState
     public void Enter(CharacterStateMachine characterStateMachine)
     {
         characterStateMachine.animator.Play("Run");
-        CharacterSound.Instance.audioSourceCharacter.Play();
         CharacterSound.Instance.audioSourceCharacter.pitch = 1.2f;
+        CharacterSound.Instance.audioSourceCharacter.Play();      
     }
     public void Update(CharacterStateMachine characterStateMachine)
     {

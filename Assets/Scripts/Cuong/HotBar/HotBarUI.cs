@@ -76,10 +76,63 @@ public class HotBarUI : MonoBehaviour
     public void UpdateCurrentItem(int index)
     {
         currentItem = hotbar.slots[index].item;
-        ChangeMode.Instance.CheckCurrentItemHoe();
-        WaterCan.Instance.CheckCurrentItemWaterCan();
-    }
+        if (currentItem != null)
+        {
+            if (currentItem.itemData == WaterCan.Instance.waterCan)
+            {
+                if (WaterCan.Instance.currentState == EWaterCanState.Off)
+                {
+                    WaterCan.Instance.currentState = EWaterCanState.On;
+                    WaterCan.Instance.CheckCurrentState();
+                }
+            }
+            else
+            {
+                if (WaterCan.Instance.currentState == EWaterCanState.On)
+                {
+                    WaterCan.Instance.currentState = EWaterCanState.Off;
+                    WaterCan.Instance.CheckCurrentState();
+                }
+            }
+        }
+        else
+        {
+            if (WaterCan.Instance.currentState == EWaterCanState.On)
+            {
+                WaterCan.Instance.currentState = EWaterCanState.Off;
+                WaterCan.Instance.CheckCurrentState();
+            }
+        }
 
+        if (currentItem != null)
+        {
+            if (currentItem.itemData == ChangeMode.Instance.hoe)
+            {
+                if (ChangeMode.Instance.currentState == EChangeModeState.Off)
+                {
+                    ChangeMode.Instance.currentState = EChangeModeState.On;
+                    ChangeMode.Instance.CheckCurrentState();
+                }
+            }
+            else
+            {
+                if (ChangeMode.Instance.currentState == EChangeModeState.On)
+                {
+                    ChangeMode.Instance.currentState = EChangeModeState.Off;
+                    ChangeMode.Instance.CheckCurrentState();
+                }
+            }
+        }
+        else
+        {
+            if (ChangeMode.Instance.currentState == EChangeModeState.On)
+            {
+                ChangeMode.Instance.currentState = EChangeModeState.Off;
+                ChangeMode.Instance.CheckCurrentState();
+            }
+        }
+
+    }
     public void UseItem()
     {
         hotbar.UseAndRemoveItem(valueScroll, 1);

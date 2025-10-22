@@ -5,7 +5,10 @@ public class FootstepSound : MonoBehaviour
     public CharacterSound characterSound;
     public float rayDistance = 1.5f;
     private string currentGroundTag;
-
+    private void Start()
+    {
+        characterSound.audioSourceCharacter.Stop();
+    }
     void Update()
     {
         DetectGround();
@@ -16,17 +19,17 @@ public class FootstepSound : MonoBehaviour
         RaycastHit hit;
         if (Physics.Raycast(transform.position, Vector3.down, out hit, rayDistance))
         {
-            if (hit.collider.CompareTag(currentGroundTag)) return;
+            if (!string.IsNullOrEmpty(currentGroundTag) && hit.collider.CompareTag(currentGroundTag))
+                return;
             currentGroundTag = hit.collider.tag;
-            Debug.Log(hit.collider.tag);
+            //Debug.Log(hit.collider.tag);
             PlayFootstep();
         }
     }
 
     public void PlayFootstep()
     {
-        AudioClip clip = null;
-
+        AudioClip clip;
         switch (currentGroundTag)
         {
             case "Sound_Dirt":
@@ -40,6 +43,10 @@ public class FootstepSound : MonoBehaviour
                 break;
         }
         characterSound.audioSourceCharacter.clip = clip;
-        characterSound.audioSourceCharacter.Play();
+        if (CharacterStateMachine.Instance.currentState == CharacterStateMachine.Instance.walkState ||
+            CharacterStateMachine.Instance.currentState == CharacterStateMachine.Instance.runState)
+        {
+            characterSound.audioSourceCharacter.Play();
+        }   
     }
 }

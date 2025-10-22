@@ -1,7 +1,11 @@
 ﻿using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-
+public enum EWaterCanState
+{
+    On,
+    Off
+}
 public class WaterCan : MonoBehaviour
 {
     public static WaterCan Instance;
@@ -14,30 +18,36 @@ public class WaterCan : MonoBehaviour
     public int currentWater;
     public Slider sliderWaterCan;
     public TextMeshProUGUI textCurrentWaterCan;
+    public EWaterCanState currentState = EWaterCanState.Off;
     void Start()
     {
         sliderWaterCan.value = (float)currentWater / maxWater;
         textCurrentWaterCan.text = currentWater.ToString();
     }
-    public void CheckCurrentItemWaterCan()
+    public void CheckCurrentState()
     {
-        if (HotBarUI.Instance.currentItem != null)
+        if (currentState == EWaterCanState.On)
         {
-            if (HotBarUI.Instance.currentItem.itemData == waterCan)
-            {
-                UIManager.Instance.ShowUI("WaterCan");
-            }
-            else
-            {
-                UIManager.Instance.HideUI("WaterCan");
-            }
+            UIManager.Instance.ShowUI("WaterCan");
+        }
+        else if(currentState == EWaterCanState.Off)
+        {
+            UIManager.Instance.HideUI("WaterCan");
         }
     }
     public void FillTheWaterCan()
     {
-        currentWater = maxWater;
-        sliderWaterCan.value = 1;
-        textCurrentWaterCan.text = "100";
+        if (currentWater < maxWater)
+        {
+            currentWater = maxWater;
+            sliderWaterCan.value = 1;
+            textCurrentWaterCan.text = "100";
+        }
+        else
+        {
+            Notification.Instance.ShowNotification("Đã đầy nước!");
+        }
+
     }
     public bool CheckCurrentWater()
     {
