@@ -21,7 +21,7 @@ public class CharacterSelection : MonoBehaviour
     public GameObject[] Character;
     public int currentLocation = 0;
     public TextMeshProUGUI pages;
-    public static ECharacter currentCharacter;
+    public static ECharacter currentCharacter = ECharacter.Rin;
     public void ChangeCharacter(int index)
     {
         currentLocation += index;
