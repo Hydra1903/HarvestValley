@@ -29,12 +29,14 @@ public class BarnSlotUI : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
         {
             iconImage.enabled = false;
             quantityText.text = "";
+            Barn.Instance.saveLocation[row * 7 + column] = false;
         }
         else
         {
             iconImage.enabled = true;
             iconImage.sprite = slot.item.itemData.icon;
             quantityText.text = slot.item.quantity > 0 ? slot.item.quantity.ToString() : "";
+            Barn.Instance.saveLocation[row * 7 + column] = true;
         }
     }
 

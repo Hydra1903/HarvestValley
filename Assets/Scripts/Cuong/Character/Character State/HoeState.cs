@@ -7,7 +7,7 @@ public class HoeState : ICharacterState
     public void Enter(CharacterStateMachine characterStateMachine)
     {
         characterStateMachine.animator.Play("Hoe");
-        if (CharacterSelection.Instance.currentCharacter == ECharacter.Rin)
+        if (CharacterSelection.currentCharacter == ECharacter.Rin)
         {
             characterStateMachine.animator.speed = 1.2f;
         }

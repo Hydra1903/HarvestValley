@@ -3,12 +3,22 @@ using TMPro;
 
 public class Barn : MonoBehaviour
 {
+    public static Barn Instance;
     public int rows = 5;
     public int columns = 7;
     public InventorySlot[,] slots;
     public int limitCapacity = 1000;
+
+    public ItemData[] saveItemData = new ItemData[35];
+    public int[] saveQuantity = new int[35];
+    public bool[] saveLocation = new bool[35];
     void Awake()
     {
+        if (Instance == null)
+            Instance = this;
+        else
+            Destroy(gameObject);
+
         slots = new InventorySlot[rows, columns];
 
         for (int r = 0; r < rows; r++)
@@ -16,6 +26,34 @@ public class Barn : MonoBehaviour
             for (int c = 0; c < columns; c++)
             {
                 slots[r, c] = new InventorySlot();
+            }
+        }
+    }
+    public void SaveItem()
+    {
+        saveItemData = new ItemData[35];
+        for (int r = 0; r < rows; r++)
+        {
+            for (int c = 0; c < columns; c++)
+            {
+                if (slots[r, c].item != null)
+                {
+                    saveItemData[r * 7 + c] = slots[r, c].item.itemData;
+                    saveQuantity[r * 7 + c] = slots[r, c].item.quantity;
+                }
+            }
+        }
+    }
+    public void LoadItem()
+    {
+        for (int r = 0; r < rows; r++)
+        {
+            for (int c = 0; c < columns; c++)
+            {
+                if (saveItemData[r * 7 + c] != null)
+                {
+                    AddItem3(saveItemData[r * 7 + c], saveQuantity[r * 7 + c]);
+                }
             }
         }
     }
@@ -68,6 +106,28 @@ public class Barn : MonoBehaviour
                     slot.item = new InventoryItem(data, add);
                     amount -= add;
                     if (amount <= 0) return true;
+                }
+            }
+        }// TẠO Ô MỚI THÊM VÀO
+
+        return false;
+    }
+    public bool AddItem3(ItemData data, int amount)
+    {
+        for (int r = 0; r < rows; r++)
+        {
+            for (int c = 0; c < columns; c++)
+            {
+                var slot = slots[r, c];
+                if (slot.IsEmpty && saveLocation[r * 7 + c])
+                {
+                    int add = Mathf.Min(amount, data.maxStack);
+                    slot.item = new InventoryItem(data, add);
+                    amount -= add;
+                    if (amount <= 0)
+                    {
+                        return true;
+                    }
                 }
             }
         }// TẠO Ô MỚI THÊM VÀO

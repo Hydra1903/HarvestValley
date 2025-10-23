@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class HotBar : MonoBehaviour
 {
@@ -11,6 +11,10 @@ public class HotBar : MonoBehaviour
         {
             slots[i] = new InventorySlot();
         }
+    }
+    public void Start()
+    {
+        UpdateData();
     }
     public void UpdateData()
     {

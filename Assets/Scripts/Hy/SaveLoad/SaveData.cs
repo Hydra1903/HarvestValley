@@ -48,4 +48,72 @@ public class FarmGridSave
 public class GameSave
 {
     public List<FarmGridSave> grids = new();
+
+    #region ----- Building -----
+    public bool[] isBuilding;
+    public int[] dayCounter;
+
+    public int currentlevelBarn;
+    public int currentlevelHome;
+    public bool isUnlockFarmland2;
+    public bool isUnlockFarmland3;
+    public bool isUnlockGrassland;
+    public int currentlevelPen1;
+    public int currentlevelPen2;
+    public bool isUnlockPen1;
+    public bool isUnlockPen2;
+    public bool isUnlockGreenhouse1;
+    public bool isUnlockGreenhouse2;
+    #endregion
+
+    #region ----- Achivements -----
+    public bool[] isAchivementComplete;
+    public bool[] isReward;
+
+    public int plantedSeedsCount;
+    public int harvestedCropsCount;
+    public int typesOfCropsPlantedCount;
+    public int timesWateredCount;
+    public int greenhouseCropsHarvestedCount;
+    public int animalProductsCollectedCount;
+    public int farmProductsSoldCount;
+    public int perennialHarvestsCount;
+    public int buildingsUpgradedOrUnlockedCount;
+    public int staminaUsedCount;
+    public int totalMoneyEarnedCount;
+    #endregion
+
+    #region ----- Character -----
+    public ECharacter currentCharacter;
+
+    public int currentLevel;
+    public int xp;
+    public int gold;
+    public int mp;
+    #endregion
+
+    #region ----- Time -----
+    public int day;
+    public int month;
+    public int year;
+    #endregion
+
+    #region ----- Weather -----
+    public List<WeatherSchedule> listWeatherOfMonth = new List<WeatherSchedule>();
+    #endregion
+
+    #region ----- Season -----
+    public SeasonState currentSeason;
+    #endregion
+
+    #region ----- Inventory -----
+    public ItemData[] itemDataInventory;
+    public int[] quantityInventory;
+    public bool[] locationInventory;
+    #endregion
+    #region ----- Barn -----
+    public ItemData[] itemDataBarn;
+    public int[] quantityBarn;
+    public bool[] locationBarn;
+    #endregion
 }

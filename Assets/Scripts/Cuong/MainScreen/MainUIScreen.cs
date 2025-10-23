@@ -336,7 +336,7 @@ public class MainUIScreen : MonoBehaviour
     #region ----- ACTION UI -----
     public void ActionTime(float timeAnimation)
     {
-        if (CharacterSelection.Instance.currentCharacter == ECharacter.Rin)
+        if (CharacterSelection.currentCharacter == ECharacter.Rin)
         {
             actionBar.value += Time.deltaTime * 1f / (timeAnimation * 0.8f);
         }

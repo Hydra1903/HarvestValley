@@ -29,6 +29,10 @@ public class GameTime : MonoBehaviour
     }
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Z))
+        {
+            NextDay();
+        }
         timer += Time.deltaTime * timeSpeed;
         if (timer >= 60)
         {
@@ -72,6 +76,7 @@ public class GameTime : MonoBehaviour
             mainUIScreen.UpdateWeatherTimeline();
         }
         FarmStallUI.Instance.CanCollect();
+        Builder.Instance.CheckCanBuild();
     }
     public void PauseGame()
     {

@@ -62,10 +62,16 @@ public class InteractionPromptManager : MonoBehaviour
                 break;
             case ETriggerCanvas.HouseDoor:
                 SoundEffects.Instance.PlaySound_HouseDoor();
-;                break;
+;               break;
             case ETriggerCanvas.BarnDoor:
                 SoundEffects.Instance.PlaySound_BarnDoor();
-                ; break;
+                break;
+            case ETriggerCanvas.GreenhouseDoor:
+                SoundEffects.Instance.PlaySound_GreenhouseDoor();
+                break;
+            case ETriggerCanvas.WaterWell:
+                WaterCan.Instance.FillTheWaterCan();
+                break;
         }
     }
 }

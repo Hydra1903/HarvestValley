@@ -121,6 +121,7 @@ public class AnimalPen : MonoBehaviour
             cells[i].gameObject.SetActive(true);
             cells[i].Setup(animal, data, i, this);
             cells[i].SetIndexNumber(i + 1);
+            Debug.Log("AA");
         }
     }
 

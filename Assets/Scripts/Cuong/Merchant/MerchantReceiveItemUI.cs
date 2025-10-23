@@ -18,7 +18,7 @@ public class MerchantReceiveItemUI : MonoBehaviour
     public Merchant merchant;
 
     public bool isLimitReached;
-    private void Start()
+    void Awake()
     {
         if (slotsParent.childCount != 2)
         {
@@ -29,8 +29,9 @@ public class MerchantReceiveItemUI : MonoBehaviour
             MerchantSlotUI slotUI = slotsParent.GetChild(i).GetComponentInChildren<MerchantSlotUI>();
             slotUI?.SetSlot(i, receiveItem, this);
         }
-
-
+    }
+    private void Start()
+    {
         capacityText.text = capacity.ToString() + "/" + merchant.salesLimit[receiveItem.locationDataItem].ToString();
     }
 

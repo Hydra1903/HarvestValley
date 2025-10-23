@@ -126,6 +126,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6517686061769116561, guid: f32fc89859f16ec49bc857008a5ed9c5, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: b5e456e409f9ba94980f62021235e5f4, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects:
     - {fileID: 6517686061308155073, guid: f32fc89859f16ec49bc857008a5ed9c5, type: 3}
@@ -294,7 +298,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   animalType: 0
   barn: {fileID: 0}
-  feedInterval: 5
+  eatDelaySeconds: 30
+  daysFed: 0
 --- !u!114 &526876901278666837
 MonoBehaviour:
   m_ObjectHideFlags: 0

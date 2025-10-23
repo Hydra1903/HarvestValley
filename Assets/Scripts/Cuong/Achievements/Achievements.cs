@@ -2,9 +2,9 @@
 using UnityEditor.Localization.Plugins.XLIFF.V12;
 using UnityEngine;
 
-public class Achievements : MonoBehaviour
+public class Achivements : MonoBehaviour
 {
-    public static Achievements Instance;
+    public static Achivements Instance;
     void Awake()
     {
         if (Instance == null) Instance = this;
@@ -24,7 +24,7 @@ public class Achievements : MonoBehaviour
     public int staminaUsedCount;
     public int totalMoneyEarnedCount;
 
-    public bool[] isAchivementComplete = new bool[36];
+    public bool[] isAchivementComplete;
     void Start()
     {
         
@@ -136,22 +136,22 @@ public class Achievements : MonoBehaviour
     public void AddFarmProductsSold(int count)
     {
         farmProductsSoldCount += count;
-        if (farmProductsSoldCount == 1 && !isAchivementComplete[15])
+        if (farmProductsSoldCount >= 1 && !isAchivementComplete[15])
         {
             isAchivementComplete[15] = true;
             CompleteAchivements.Instance.ShowCompleteAchivements("Phiên chợ đầu tiên");
         }
-        else if (farmProductsSoldCount == 100 && !isAchivementComplete[16])
+        if (farmProductsSoldCount >= 100 && !isAchivementComplete[16])
         {
             isAchivementComplete[16] = true;
             CompleteAchivements.Instance.ShowCompleteAchivements("Tiền về I");
         }
-        else if (farmProductsSoldCount == 1000 && !isAchivementComplete[17])
+        if (farmProductsSoldCount >= 1000 && !isAchivementComplete[17])
         {
             isAchivementComplete[17] = true;
             CompleteAchivements.Instance.ShowCompleteAchivements("Tiền về II");
         }
-        else if (farmProductsSoldCount == 10000 && !isAchivementComplete[18])
+        if (farmProductsSoldCount >= 10000 && !isAchivementComplete[18])
         {
             isAchivementComplete[18] = true;
             CompleteAchivements.Instance.ShowCompleteAchivements("Tiền về III");
@@ -235,17 +235,17 @@ public class Achievements : MonoBehaviour
     public void AddStaminaUsedCount(int count)
     {
         staminaUsedCount += count;
-        if (staminaUsedCount == 1000 && !isAchivementComplete[30])
+        if (staminaUsedCount >= 1000 && !isAchivementComplete[30])
         {
             isAchivementComplete[30] = true;
             CompleteAchivements.Instance.ShowCompleteAchivements("Thể dục thể thao I");
         }
-        else if (staminaUsedCount == 5000 && !isAchivementComplete[31])
+        if (staminaUsedCount >= 5000 && !isAchivementComplete[31])
         {
             isAchivementComplete[31] = true;
             CompleteAchivements.Instance.ShowCompleteAchivements("Thể dục thể thao II");
         }
-        else if (staminaUsedCount == 10000 && !isAchivementComplete[32])
+        if (staminaUsedCount >= 10000 && !isAchivementComplete[32])
         {
             isAchivementComplete[32] = true;
             CompleteAchivements.Instance.ShowCompleteAchivements("Thể dục thể thao III");
@@ -254,17 +254,17 @@ public class Achievements : MonoBehaviour
     public void AddTotalMoneyEarnedCount(int count)
     {
         totalMoneyEarnedCount += count;
-        if (totalMoneyEarnedCount == 10000 && !isAchivementComplete[33])
+        if (totalMoneyEarnedCount >= 10000 && !isAchivementComplete[33])
         {
             isAchivementComplete[33] = true;
             CompleteAchivements.Instance.ShowCompleteAchivements("Đại gia I");
         }
-        else if (totalMoneyEarnedCount == 100000 && !isAchivementComplete[34])
+        if (totalMoneyEarnedCount >= 100000 && !isAchivementComplete[34])
         {
             isAchivementComplete[34] = true;
             CompleteAchivements.Instance.ShowCompleteAchivements("Đại gia II");
         }
-        else if (totalMoneyEarnedCount == 500000 && !isAchivementComplete[35])
+        if (totalMoneyEarnedCount >= 500000 && !isAchivementComplete[35])
         {
             isAchivementComplete[35] = true;
             CompleteAchivements.Instance.ShowCompleteAchivements("Đại gia III");

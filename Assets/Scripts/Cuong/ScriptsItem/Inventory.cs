@@ -7,6 +7,10 @@ public class Inventory : MonoBehaviour
     public int columns = 8;
     public static Inventory Instance;
     public InventorySlot[,] slots;
+
+    public ItemData[] saveItemData = new ItemData[32];
+    public int[] saveQuantity = new int[32];
+    public bool[] saveLocation = new bool[32];
     void Awake()
     {
         if (Instance == null)
@@ -20,6 +24,34 @@ public class Inventory : MonoBehaviour
             for (int c = 0; c < columns; c++)
             {
                 slots[r, c] = new InventorySlot();
+            }
+        }
+    }
+    public void SaveItem()
+    {
+        saveItemData = new ItemData[32];
+        for (int r = 0; r < rows; r++)
+        {
+            for (int c = 0; c < columns; c++)
+            {
+                if (slots[r, c].item != null)
+                {
+                    saveItemData[r * 8 + c] = slots[r, c].item.itemData;
+                    saveQuantity[r * 8 + c] = slots[r, c].item.quantity;
+                }            
+            }
+        }
+    }
+    public void LoadItem()
+    {
+        for (int r = 0; r < rows; r++)
+        {
+            for (int c = 0; c < columns; c++)
+            {
+                if (saveItemData[r * 8 + c] != null)
+                {
+                    AddItem3(saveItemData[r * 8 + c], saveQuantity[r * 8 + c]);
+                }              
             }
         }
     }
@@ -85,14 +117,35 @@ public class Inventory : MonoBehaviour
 
         return false;
     }
+    public bool AddItem3(ItemData data, int amount)
+    {
+        for (int r = 0; r < rows; r++)
+        {
+            for (int c = 0; c < columns; c++)
+            {
+                var slot = slots[r, c];
+                if (slot.IsEmpty && saveLocation[r * 8 + c])
+                {
+                    int add = Mathf.Min(amount, data.maxStack);
+                    slot.item = new InventoryItem(data, add);
+                    amount -= add;
+                    if (amount <= 0)
+                    {
+                        return true;
+                    }
+                }
+            }
+        }// TẠO Ô MỚI THÊM VÀO
 
+        return false;
+    }
     public void ShowArray()
     {
         for (int r = 0; r < rows; r++)
         {
             for (int c = 0; c < columns; c++)
             {
-                Debug.Log(slots[r,c].item);
+                Debug.Log(r + "-" + c + slots[r,c].item.itemData.itemName + " / " + slots[r, c].item.quantity);
             }
         }
     }
