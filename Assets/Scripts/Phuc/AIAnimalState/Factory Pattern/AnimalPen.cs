@@ -78,7 +78,7 @@ public class AnimalPen : MonoBehaviour
 
             if (feeding.animalType == AnimalFedding.AnimalType.Sheep)
             {
-                if (!feeding.HasEatenToday())
+                if (feeding.GetMealsToday() < 1)
                     return false;
             }
             else if (feeding.animalType == AnimalFedding.AnimalType.Goat)
@@ -130,4 +130,5 @@ public class AnimalPen : MonoBehaviour
     //        InfoPanelManager.instance?.HidePanel(penId);
     //    }
     //}
+
 }

@@ -43,19 +43,18 @@ public class InfoPanelUI : MonoBehaviour
             switch (feeding.animalType)
             {
                 case AnimalFedding.AnimalType.Sheep:
-                    feedText.text = feeding.HasEatenToday()
-                        ? "Feeding Quality: Have Eat today"
-                        : "Feeding Quality: Havent Eat Today";
+                    feedText.text = feeding.GetMealsToday() >= 1
+                        ? "Feeding Quality: Have Eaten Today"
+                        : "Feeding Quality: Haven't Eaten Today";
                     break;
 
                 case AnimalFedding.AnimalType.Goat:
                     int meals = feeding.GetMealsToday();
                     feedText.text = $"Feeding Quality: {meals}/2";
-
                     break;
 
                 default:
-                    feedText.text = "Feeding Quality: Unknow";
+                    feedText.text = "Feeding Quality: Unknown";
                     feedText.color = Color.gray;
                     break;
             }
@@ -64,6 +63,7 @@ public class InfoPanelUI : MonoBehaviour
         {
             feedText.text = "T?nh tr?ng ãn: -";
         }
+
         gameObject.SetActive(true);
     }
 
