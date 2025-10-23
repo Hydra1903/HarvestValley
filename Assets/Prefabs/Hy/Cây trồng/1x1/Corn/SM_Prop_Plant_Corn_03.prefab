@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: -4826023144578263909}
   - component: {fileID: 3180322559212823897}
   - component: {fileID: -6190730265999844641}
+  - component: {fileID: 1063979493557048535}
   m_Layer: 8
   m_Name: SM_Prop_Plant_Corn_03
   m_TagString: Untagged
@@ -140,6 +141,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   myOutlineColor: {r: 0.98490566, g: 0.4772739, b: 0.04274108, a: 1}
   defaultWidth: 0
+--- !u!114 &1063979493557048535
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1388164955493668}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  outlineMode: 1
+  outlineColor: {r: 1, g: 1, b: 1, a: 0}
+  outlineWidth: 0
+  precomputeOutline: 0
+  bakeKeys: []
+  bakeValues: []
 --- !u!1001 &1253523565173379419
 PrefabInstance:
   m_ObjectHideFlags: 0

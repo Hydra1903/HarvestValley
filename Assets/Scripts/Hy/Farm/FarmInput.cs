@@ -49,7 +49,7 @@ public class FarmInput : MonoBehaviour
         Ray centerRay = cam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
         Debug.DrawRay(centerRay.origin, centerRay.direction * harvestClickDistance, Color.red);
 
-
+        bool hitPlantForHarvest = false;
 
         if (Physics.Raycast(centerRay, out var hitPlant, harvestClickDistance, plantMask))
         {
@@ -57,10 +57,37 @@ public class FarmInput : MonoBehaviour
             var outline = hitPlant.collider.GetComponentInParent<Outline>();
 
             SetOutline(outline);
+            hitPlantForHarvest = true;
+
+            if (clickable != null)
+            {
+                int x = clickable.centerX;
+                int y = clickable.centerY;
+
+                if (farmManager.IsInGrid(x, y))
+                {
+                    var currentPlant = farmManager.Tiles[x, y].plantInstance;
+                    if (currentPlant != null && PlantInfo.Instance != null)
+                    {
+                        bool wateredStr = soilManager != null && soilManager.IsTileWatered(x, y);
+                        if (plantManager.TryGetPlantCenterFrom(x, y, out int cx, out int cy))
+                        {
+                            int rd = plantManager.GetRemainingDaysConditioned(currentPlant, cx, cy);
+                            currentPlant.remainingDays = (rd >= 0) ? rd : plantManager.GetRemainingDays(currentPlant);
+                        }
+                        PlantInfo.Instance.SetInfo(
+                            currentPlant.plantData.plantType,
+                            currentPlant.plantData.plantName,
+                            currentPlant.remainingDays,
+                            wateredStr
+                        );
+                        UIManager.Instance.ShowUI("PlantInfo");
+                    }
+                }
+            }
 
             if (clickable && Input.GetMouseButtonDown(0))
             {
-                // chỉ cần tool nếu bạn bật requireHarvestTool
                 if (!requireHarvestTool || IsHoldingHarvest(farmManager))
                 {
                     if (!player || Vector3.Distance(player.position, hitPlant.point) <= harvestClickDistance)
@@ -85,7 +112,7 @@ public class FarmInput : MonoBehaviour
             UIManager.Instance.HideUI("PlantInfo");
         }
 
-        // === Ray chuột để trúng mặt đất ===
+        // === Ray chuột để trúng mặt đất (cho các tool khác) ===
         Ray mouseRay = cam.ScreenPointToRay(Input.mousePosition);
         Debug.DrawRay(mouseRay.origin, mouseRay.direction * 1000f, Color.green);
 
@@ -94,49 +121,14 @@ public class FarmInput : MonoBehaviour
             soilManager.HideGhosts();
             plantManager.HideGhost();
             farmGrid.SetActiveGrid(false);
-            UIManager.Instance.HideUI("PlantInfo");
+            if (!hitPlantForHarvest)
+                UIManager.Instance.HideUI("PlantInfo");
             return;
         }
-
-        // 2) Nếu trúng grid đất
-        //var hitGrid = hit.collider.GetComponentInParent<FarmManager>();
-        //if (hitGrid != farmManager || !farmManager.IsWorldPointInsideThisGrid(hit.point))
-        //{
-        //    soilManager.HideGhosts();
-        //    plantManager.HideGhost();
-        //    farmGrid.SetActiveGrid(false);
-        //    UIManager.Instance.HideUI("PlantInfo");
-        //    return;
-        //}
-
 
         gridPos = farmManager.WorldToGrid(hit.point);
         int tx = gridPos.x;
         int ty = gridPos.y;
-        if (farmManager.IsInGrid(tx, ty))
-        {
-            var currentPlant = farmManager.Tiles[tx, ty].plantInstance;
-            if (currentPlant != null && PlantInfo.Instance != null)
-            {
-                bool wateredStr = soilManager != null && soilManager.IsTileWatered(tx, ty) ? true : false;
-                if (plantManager.TryGetPlantCenterFrom(tx, ty, out int cx, out int cy))
-                {
-                    int rd = plantManager.GetRemainingDaysConditioned(currentPlant, cx, cy);
-                    currentPlant.remainingDays = (rd >= 0) ? rd : plantManager.GetRemainingDays(currentPlant);
-                }
-                PlantInfo.Instance.SetInfo(
-                    currentPlant.plantData.plantType,
-                    currentPlant.plantData.plantName,
-                    currentPlant.remainingDays,
-                    wateredStr
-                );
-                UIManager.Instance.ShowUI("PlantInfo");
-            }
-            else
-            {
-                UIManager.Instance.HideUI("PlantInfo");
-            }
-        }
 
         // Seed
         if (item != null && item.itemData != null && item.itemData.itemType == ItemType.Seed && item.quantity > 0)
@@ -194,7 +186,6 @@ public class FarmInput : MonoBehaviour
 
             if (Input.GetMouseButtonDown(0))
             {
-
                 if (!soilManager.CanStartHoeAt(gridPos, item))
                 {
                     Notification.Instance?.ShowNotification("Không thể dùng cuốc tại đây!");

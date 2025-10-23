@@ -13,7 +13,8 @@ GameObject:
   - component: {fileID: 23245546027521342}
   - component: {fileID: 64191623345654702}
   - component: {fileID: -834959514844375924}
-  - component: {fileID: -3745768766857159161}
+  - component: {fileID: 3186837617219120345}
+  - component: {fileID: -6446657704358463278}
   m_Layer: 8
   m_Name: SM_Prop_Onion_01_M
   m_TagString: Untagged
@@ -30,7 +31,7 @@ Transform:
   m_GameObject: {fileID: 1844472924765640}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0, y: 0.41, z: 0}
+  m_LocalPosition: {x: -0, y: 0.5, z: 0}
   m_LocalScale: {x: 1.3, y: 1.3, z: 1.3}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -123,7 +124,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 94e2926d7bdb7df4888452b3841d3e15, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &-3745768766857159161
+--- !u!114 &3186837617219120345
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -137,3 +138,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   myOutlineColor: {r: 0.98490566, g: 0.4772739, b: 0.04274108, a: 1}
   defaultWidth: 0
+--- !u!114 &-6446657704358463278
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1844472924765640}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  outlineMode: 1
+  outlineColor: {r: 1, g: 1, b: 1, a: 0}
+  outlineWidth: 0
+  precomputeOutline: 0
+  bakeKeys: []
+  bakeValues: []

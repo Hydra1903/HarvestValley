@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 518419260740837040}
   - component: {fileID: 6493886755581074610}
   - component: {fileID: 1156541605970205261}
+  - component: {fileID: 1240181901124644062}
   - component: {fileID: 2920354176300841976}
   m_Layer: 8
   m_Name: SM_Prop_Plant_Bell Peper_03
@@ -124,6 +125,24 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 4300000, guid: f3cf0741e9dc7eb42a42fb99ae124c72, type: 3}
+--- !u!114 &1240181901124644062
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5660135240558580776}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  outlineMode: 1
+  outlineColor: {r: 1, g: 1, b: 1, a: 0}
+  outlineWidth: 0
+  precomputeOutline: 0
+  bakeKeys: []
+  bakeValues: []
 --- !u!114 &2920354176300841976
 MonoBehaviour:
   m_ObjectHideFlags: 0

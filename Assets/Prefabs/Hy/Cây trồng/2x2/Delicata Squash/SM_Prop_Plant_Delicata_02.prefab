@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: -8118416487127980755}
   - component: {fileID: -8155731661095738407}
   - component: {fileID: 1639136236484737817}
+  - component: {fileID: -7988400148790386921}
   m_Layer: 0
   m_Name: SM_Prop_Plant_Delicata_02
   m_TagString: Untagged
@@ -33,8 +34,7 @@ Transform:
   m_LocalPosition: {x: -0, y: 0.35, z: 0}
   m_LocalScale: {x: 1.5, y: 1.5, z: 1.5}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 8527903231134350534}
+  m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &33226223873334920
@@ -138,77 +138,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   myOutlineColor: {r: 0.98490566, g: 0.4772739, b: 0.04274108, a: 1}
   defaultWidth: 0
---- !u!1001 &8527179591097769918
-PrefabInstance:
+--- !u!114 &-7988400148790386921
+MonoBehaviour:
   m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 4261506125843600}
-    m_Modifications:
-    - target: {fileID: 1367656447055654, guid: b7d35ecf5fba1734fbf7a04bbab7ee22, type: 3}
-      propertyPath: m_Name
-      value: SM_Prop_Squash_Delicata_01_S
-      objectReference: {fileID: 0}
-    - target: {fileID: 4383095427752824, guid: b7d35ecf5fba1734fbf7a04bbab7ee22, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4383095427752824, guid: b7d35ecf5fba1734fbf7a04bbab7ee22, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4383095427752824, guid: b7d35ecf5fba1734fbf7a04bbab7ee22, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4383095427752824, guid: b7d35ecf5fba1734fbf7a04bbab7ee22, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -0.15195084
-      objectReference: {fileID: 0}
-    - target: {fileID: 4383095427752824, guid: b7d35ecf5fba1734fbf7a04bbab7ee22, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0.0069305897
-      objectReference: {fileID: 0}
-    - target: {fileID: 4383095427752824, guid: b7d35ecf5fba1734fbf7a04bbab7ee22, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0.048596703
-      objectReference: {fileID: 0}
-    - target: {fileID: 4383095427752824, guid: b7d35ecf5fba1734fbf7a04bbab7ee22, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: -0.28909713
-      objectReference: {fileID: 0}
-    - target: {fileID: 4383095427752824, guid: b7d35ecf5fba1734fbf7a04bbab7ee22, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0.6843222
-      objectReference: {fileID: 0}
-    - target: {fileID: 4383095427752824, guid: b7d35ecf5fba1734fbf7a04bbab7ee22, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: -0.5738073
-      objectReference: {fileID: 0}
-    - target: {fileID: 4383095427752824, guid: b7d35ecf5fba1734fbf7a04bbab7ee22, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0.34477702
-      objectReference: {fileID: 0}
-    - target: {fileID: 4383095427752824, guid: b7d35ecf5fba1734fbf7a04bbab7ee22, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4383095427752824, guid: b7d35ecf5fba1734fbf7a04bbab7ee22, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 126.52
-      objectReference: {fileID: 0}
-    - target: {fileID: 4383095427752824, guid: b7d35ecf5fba1734fbf7a04bbab7ee22, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 259.96
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: b7d35ecf5fba1734fbf7a04bbab7ee22, type: 3}
---- !u!4 &8527903231134350534 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 4383095427752824, guid: b7d35ecf5fba1734fbf7a04bbab7ee22, type: 3}
-  m_PrefabInstance: {fileID: 8527179591097769918}
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1515436524733090}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  outlineMode: 1
+  outlineColor: {r: 1, g: 1, b: 1, a: 0}
+  outlineWidth: 0
+  precomputeOutline: 0
+  bakeKeys: []
+  bakeValues: []

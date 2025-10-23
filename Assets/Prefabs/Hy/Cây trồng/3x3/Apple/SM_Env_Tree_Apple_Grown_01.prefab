@@ -15,8 +15,8 @@ GameObject:
   - component: {fileID: 9176190187609250574}
   - component: {fileID: 5892440896255696162}
   - component: {fileID: -5503871919646647807}
-  - component: {fileID: -8278264869943256951}
   - component: {fileID: 7168632870706490085}
+  - component: {fileID: 7151832919703166541}
   m_Layer: 8
   m_Name: SM_Env_Tree_Apple_Grown_01
   m_TagString: Untagged
@@ -33,7 +33,7 @@ Transform:
   m_GameObject: {fileID: 6945169433020722739}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 15.353693, y: 0.4, z: 33.048523}
+  m_LocalPosition: {x: 15.353693, y: 0.5, z: 33.048523}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -170,24 +170,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 94e2926d7bdb7df4888452b3841d3e15, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &-8278264869943256951
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6945169433020722739}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  outlineMode: 0
-  outlineColor: {r: 1, g: 1, b: 1, a: 1}
-  outlineWidth: 2
-  precomputeOutline: 0
-  bakeKeys: []
-  bakeValues: []
 --- !u!114 &7168632870706490085
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -202,3 +184,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   myOutlineColor: {r: 0.9843137, g: 0.47843137, b: 0.043137256, a: 1}
   defaultWidth: 0
+--- !u!114 &7151832919703166541
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6945169433020722739}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  outlineMode: 1
+  outlineColor: {r: 1, g: 1, b: 1, a: 0}
+  outlineWidth: 0
+  precomputeOutline: 0
+  bakeKeys: []
+  bakeValues: []

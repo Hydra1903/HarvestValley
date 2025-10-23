@@ -218,6 +218,7 @@ public class PlantManager : MonoBehaviour
                     if (lastIdx > 0)
                     {
                         inst.currentStage = preFruit;
+                        inst.currentStage = 
                         inst.daysInCurrentStage = 0;
                         ReplacePlantMeshAtCenter(cx, cy, inst); // nhớ dùng tọa độ TÂM
                     }

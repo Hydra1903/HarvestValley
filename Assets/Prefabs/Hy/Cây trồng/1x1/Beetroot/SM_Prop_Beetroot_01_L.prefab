@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 23219652311272570}
   - component: {fileID: 64796702080834542}
   - component: {fileID: 2030479519034386596}
+  - component: {fileID: 1599914092994548382}
   - component: {fileID: -1462854331810458258}
   m_Layer: 8
   m_Name: SM_Prop_Beetroot_01_L
@@ -30,7 +31,7 @@ Transform:
   m_GameObject: {fileID: 1659519851599370}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0, y: 0.52, z: 0}
+  m_LocalPosition: {x: -0, y: 0.58, z: 0}
   m_LocalScale: {x: 1.3, y: 1.3, z: 1.3}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -123,6 +124,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 94e2926d7bdb7df4888452b3841d3e15, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1599914092994548382
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1659519851599370}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  outlineMode: 1
+  outlineColor: {r: 1, g: 1, b: 1, a: 0}
+  outlineWidth: 0
+  precomputeOutline: 0
+  bakeKeys: []
+  bakeValues: []
 --- !u!114 &-1462854331810458258
 MonoBehaviour:
   m_ObjectHideFlags: 0

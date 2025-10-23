@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: -5131688624132553173}
   - component: {fileID: 2301421127502719917}
   - component: {fileID: -6528084544530535649}
+  - component: {fileID: 6724245164124636610}
   m_Layer: 0
   m_Name: SM_Prop_Plant_Pumpkin_04
   m_TagString: Untagged
@@ -30,11 +31,10 @@ Transform:
   m_GameObject: {fileID: 1047847068747314}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0, y: 0.35, z: 0}
+  m_LocalPosition: {x: -0, y: 0.45, z: 0}
   m_LocalScale: {x: 1.5, y: 1.5, z: 1.5}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 3996065411796324429}
+  m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &33231745248831744
@@ -138,65 +138,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   myOutlineColor: {r: 0.98490566, g: 0.4772739, b: 0.04274108, a: 1}
   defaultWidth: 0
---- !u!1001 &3997816567504654289
-PrefabInstance:
+--- !u!114 &6724245164124636610
+MonoBehaviour:
   m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 4825295564669358}
-    m_Modifications:
-    - target: {fileID: 1282951659646498, guid: 86b77c0193ffed147be0f5a7437c4775, type: 3}
-      propertyPath: m_Name
-      value: SM_Prop_Pumpkin_01_S
-      objectReference: {fileID: 0}
-    - target: {fileID: 4495548544524188, guid: 86b77c0193ffed147be0f5a7437c4775, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0.207
-      objectReference: {fileID: 0}
-    - target: {fileID: 4495548544524188, guid: 86b77c0193ffed147be0f5a7437c4775, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4495548544524188, guid: 86b77c0193ffed147be0f5a7437c4775, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -0.151
-      objectReference: {fileID: 0}
-    - target: {fileID: 4495548544524188, guid: 86b77c0193ffed147be0f5a7437c4775, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 0.57513195
-      objectReference: {fileID: 0}
-    - target: {fileID: 4495548544524188, guid: 86b77c0193ffed147be0f5a7437c4775, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4495548544524188, guid: 86b77c0193ffed147be0f5a7437c4775, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0.8180607
-      objectReference: {fileID: 0}
-    - target: {fileID: 4495548544524188, guid: 86b77c0193ffed147be0f5a7437c4775, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4495548544524188, guid: 86b77c0193ffed147be0f5a7437c4775, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4495548544524188, guid: 86b77c0193ffed147be0f5a7437c4775, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 109.782
-      objectReference: {fileID: 0}
-    - target: {fileID: 4495548544524188, guid: 86b77c0193ffed147be0f5a7437c4775, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 86b77c0193ffed147be0f5a7437c4775, type: 3}
---- !u!4 &3996065411796324429 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 4495548544524188, guid: 86b77c0193ffed147be0f5a7437c4775, type: 3}
-  m_PrefabInstance: {fileID: 3997816567504654289}
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1047847068747314}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  outlineMode: 1
+  outlineColor: {r: 1, g: 1, b: 1, a: 0}
+  outlineWidth: 0
+  precomputeOutline: 0
+  bakeKeys: []
+  bakeValues: []

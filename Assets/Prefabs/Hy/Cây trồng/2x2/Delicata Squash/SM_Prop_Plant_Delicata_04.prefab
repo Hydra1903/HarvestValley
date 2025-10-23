@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 341460600975795892}
   - component: {fileID: -3454140543835475757}
   - component: {fileID: 9193955313911178693}
+  - component: {fileID: 4530569307536637760}
   m_Layer: 0
   m_Name: SM_Prop_Plant_Delicata_04
   m_TagString: Untagged
@@ -30,11 +31,10 @@ Transform:
   m_GameObject: {fileID: 1302423569103364}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0, y: 0.3, z: 0}
+  m_LocalPosition: {x: -0, y: 0.45, z: 0}
   m_LocalScale: {x: 1.5, y: 1.5, z: 1.5}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 7307143029989208289}
+  m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &33351734111060030
@@ -138,65 +138,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   myOutlineColor: {r: 0.98490566, g: 0.4772739, b: 0.04274108, a: 1}
   defaultWidth: 0
---- !u!1001 &7307017518882132889
-PrefabInstance:
+--- !u!114 &4530569307536637760
+MonoBehaviour:
   m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 4085792489587808}
-    m_Modifications:
-    - target: {fileID: 1367656447055654, guid: b7d35ecf5fba1734fbf7a04bbab7ee22, type: 3}
-      propertyPath: m_Name
-      value: SM_Prop_Squash_Delicata_01_S
-      objectReference: {fileID: 0}
-    - target: {fileID: 4383095427752824, guid: b7d35ecf5fba1734fbf7a04bbab7ee22, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0.291
-      objectReference: {fileID: 0}
-    - target: {fileID: 4383095427752824, guid: b7d35ecf5fba1734fbf7a04bbab7ee22, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -0.001
-      objectReference: {fileID: 0}
-    - target: {fileID: 4383095427752824, guid: b7d35ecf5fba1734fbf7a04bbab7ee22, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0.352
-      objectReference: {fileID: 0}
-    - target: {fileID: 4383095427752824, guid: b7d35ecf5fba1734fbf7a04bbab7ee22, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 0.2264027
-      objectReference: {fileID: 0}
-    - target: {fileID: 4383095427752824, guid: b7d35ecf5fba1734fbf7a04bbab7ee22, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0.6408461
-      objectReference: {fileID: 0}
-    - target: {fileID: 4383095427752824, guid: b7d35ecf5fba1734fbf7a04bbab7ee22, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: -0.69672024
-      objectReference: {fileID: 0}
-    - target: {fileID: 4383095427752824, guid: b7d35ecf5fba1734fbf7a04bbab7ee22, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0.22943197
-      objectReference: {fileID: 0}
-    - target: {fileID: 4383095427752824, guid: b7d35ecf5fba1734fbf7a04bbab7ee22, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: -1.692
-      objectReference: {fileID: 0}
-    - target: {fileID: 4383095427752824, guid: b7d35ecf5fba1734fbf7a04bbab7ee22, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: -142.425
-      objectReference: {fileID: 0}
-    - target: {fileID: 4383095427752824, guid: b7d35ecf5fba1734fbf7a04bbab7ee22, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: -85.791
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: b7d35ecf5fba1734fbf7a04bbab7ee22, type: 3}
---- !u!4 &7307143029989208289 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 4383095427752824, guid: b7d35ecf5fba1734fbf7a04bbab7ee22, type: 3}
-  m_PrefabInstance: {fileID: 7307017518882132889}
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1302423569103364}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  outlineMode: 1
+  outlineColor: {r: 1, g: 1, b: 1, a: 0}
+  outlineWidth: 0
+  precomputeOutline: 0
+  bakeKeys: []
+  bakeValues: []
