@@ -1,4 +1,4 @@
-
+﻿
 using UnityEditor.EditorTools;
 using UnityEngine;
 
@@ -29,7 +29,7 @@ public class HoeState : ICharacterState
         UIManager.Instance.HideUI("ActionBar");
         if (CharacterStateMachine.Instance.mainUIScreen.actionBar.value >= 1f)
         {
-            characterStateMachine.soilManager.TryDigOrFlatten(characterStateMachine.farmInput.gridPos, characterStateMachine.farmInput.tool);
+              characterStateMachine.soilManager.HoeAt(characterStateMachine.farmInput.gridPos, characterStateMachine.farmInput.tool);
         }
     }
 }
