@@ -12,6 +12,7 @@ public class SoundEffects : MonoBehaviour
     public AudioClip houseDoor;
     public AudioClip penDoor;
     public AudioClip barnDoor;
+    public AudioClip greenhouseDoor;
     void Start()
     {
         
@@ -34,6 +35,11 @@ public class SoundEffects : MonoBehaviour
     public void PlaySound_BarnDoor()
     {
         audioSourceSoundEffects.clip = barnDoor;
+        audioSourceSoundEffects.Play();
+    }
+    public void PlaySound_GreenhouseDoor()
+    {
+        audioSourceSoundEffects.clip = greenhouseDoor;
         audioSourceSoundEffects.Play();
     }
 

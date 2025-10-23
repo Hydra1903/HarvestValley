@@ -5,7 +5,7 @@ public class WateringState : ICharacterState
     public void Enter(CharacterStateMachine characterStateMachine)
     {
         characterStateMachine.animator.Play("Watering");
-        if (CharacterSelection.Instance.currentCharacter == ECharacter.Rin)
+        if (CharacterSelection.currentCharacter == ECharacter.Rin)
         {
             characterStateMachine.animator.speed = 1.2f;
         }
@@ -27,6 +27,7 @@ public class WateringState : ICharacterState
         UIManager.Instance.HideUI("ActionBar");
         if (CharacterStateMachine.Instance.mainUIScreen.actionBar.value >= 1f)
         {
+            WaterCan.Instance.ConsumeWater();
             characterStateMachine.soilManager.TryWaterAt(characterStateMachine.farmInput.gridPos);
         }
     }

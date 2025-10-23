@@ -28,8 +28,11 @@ public class HotBarSlotUI : MonoBehaviour
         }
         else
         {
-            iconImage.enabled = true;
-            iconImage.sprite = slot.item.itemData.icon;
+            iconImage.enabled = true;           
+            if (slot.item.itemData != null)
+            {
+                iconImage.sprite = slot.item.itemData.icon;
+            }
             quantityText.text = slot.item.quantity > 0 ? slot.item.quantity.ToString() : "";
         }
     }

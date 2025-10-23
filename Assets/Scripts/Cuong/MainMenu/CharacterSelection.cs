@@ -16,13 +16,12 @@ public class CharacterSelection : MonoBehaviour
     void Awake()
     {
         if (Instance == null) Instance = this;
-        DontDestroyOnLoad(this);
     }
     public GameObject[] InforCharacter;
     public GameObject[] Character;
     public int currentLocation = 0;
     public TextMeshProUGUI pages;
-    public ECharacter currentCharacter;
+    public static ECharacter currentCharacter;
     public void ChangeCharacter(int index)
     {
         currentLocation += index;
@@ -65,5 +64,9 @@ public class CharacterSelection : MonoBehaviour
                 currentCharacter = ECharacter.Leon;
                 break;
         }
+    }
+    private void Update()
+    {
+        Debug.Log(currentCharacter);
     }
 }

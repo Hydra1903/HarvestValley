@@ -42,7 +42,7 @@ public class FarmStall : MonoBehaviour
                     break;
             }
         }
-        if (CharacterSelection.Instance.currentCharacter == ECharacter.Kai)
+        if (CharacterSelection.currentCharacter == ECharacter.Kai)
         {
             totalAmount = (int)(totalAmount * 1.08f);
         }

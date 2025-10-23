@@ -24,7 +24,7 @@ public class SeedShopItemUI : MonoBehaviour
     }
     public void CalculatePrice()
     {
-        if (CharacterSelection.Instance.currentCharacter == ECharacter.May)
+        if (CharacterSelection.currentCharacter == ECharacter.May)
         {
             totalPrice = (int)Math.Round((float)shop.amount[itemIndex] * shop.price[itemIndex] * 0.9f, MidpointRounding.AwayFromZero);
         }

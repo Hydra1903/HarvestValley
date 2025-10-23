@@ -20,7 +20,6 @@ public class MusicBackground : MonoBehaviour
     void Update()
     {
         PLayNextTrack();
-        Debug.Log(audioSourceMusic.isPlaying);
     }
     public void ChangeBackgroundMusic()
     {

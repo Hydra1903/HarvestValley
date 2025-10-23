@@ -12,7 +12,7 @@ public class InventorySlotUI : MonoBehaviour, IBeginDragHandler, IDragHandler, I
     public Inventory inventory;
     public InventoryUI inventoryUI;
 
-    public InventoryItem item;
+    //public InventoryItem item;
 
     public void SetSlot(int r, int c, Inventory inv, InventoryUI ui)
     {
@@ -31,12 +31,17 @@ public class InventorySlotUI : MonoBehaviour, IBeginDragHandler, IDragHandler, I
         {
             iconImage.enabled = false;
             quantityText.text = "";
+            Inventory.Instance.saveLocation[row * 8 + column] = false;
         }
         else
         {
             iconImage.enabled = true;
-            iconImage.sprite = slot.item.itemData.icon;
+            if (slot.item.itemData != null)
+            {
+                iconImage.sprite = slot.item.itemData.icon;
+            }           
             quantityText.text = slot.item.quantity > 0 ? slot.item.quantity.ToString() : "";
+            Inventory.Instance.saveLocation[row * 8 + column] = true;
         }
     }
 

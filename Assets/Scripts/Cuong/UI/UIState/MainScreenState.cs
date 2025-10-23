@@ -22,6 +22,8 @@ public class MainScreenState : IUIState
         hotBarUI.UpdateCurrentItem(hotBarUI.currentHighlightIndex);
         UIStateMachine.Instance.inputCooldown = 1f;
 
+        MusicBackground.Instance.audioSourceMusic.volume *= 2f;
+
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
@@ -69,12 +71,25 @@ public class MainScreenState : IUIState
             currentCalendarState = CalendarState.Off;
         }   
         UIManager.Instance.HideUI("MainScreen");
+        if (WaterCan.Instance.currentState == EWaterCanState.On)
+        {
+            WaterCan.Instance.currentState = EWaterCanState.Off;
+            UIManager.Instance.HideUI("WaterCan");
+        }
+        if (ChangeMode.Instance.currentState == EChangeModeState.On)
+        {
+            ChangeMode.Instance.currentState = EChangeModeState.Off;
+            UIManager.Instance.HideUI("ChangeMode");
+        }
+
+        MusicBackground.Instance.audioSourceMusic.volume /= 2f;
 
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
     }
     public void ChangeCalendarState()
     {
+
         if (currentCalendarState == CalendarState.Off)
         {
             UIManager.Instance.HideUI("Calendar");

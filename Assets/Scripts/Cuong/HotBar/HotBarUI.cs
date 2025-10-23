@@ -5,7 +5,7 @@ using UnityEngine;
 public class HotBarUI : MonoBehaviour
 {
     public static HotBarUI Instance;
-    void Awake()
+    public void Awake()
     {
         if (Instance == null) Instance = this;
     }
@@ -22,7 +22,7 @@ public class HotBarUI : MonoBehaviour
     public InventoryItem currentItem;
 
     private void Start()
-    {
+    {       
         if (slotsParent.childCount != 8)
         {
             return;
@@ -32,6 +32,8 @@ public class HotBarUI : MonoBehaviour
             HotBarSlotUI slotUI = slotsParent.GetChild(i).GetComponentInChildren<HotBarSlotUI>();
             slotUI?.SetSlot(i, hotbar, this);
         }
+        UpdateAllSlots();
+        UpdateCurrentItem(valueScroll);
     }
     public void UpdateAllSlots()
     {
@@ -76,9 +78,78 @@ public class HotBarUI : MonoBehaviour
     public void UpdateCurrentItem(int index)
     {
         currentItem = hotbar.slots[index].item;
-        ChangeMode.Instance.CheckCurrentItemHoe();
-    }
+        if (currentItem != null)
+        {
+            if (currentItem.itemData == WaterCan.Instance.waterCan)
+            {
+                if (WaterCan.Instance.currentState == EWaterCanState.Off)
+                {
+                    WaterCan.Instance.currentState = EWaterCanState.On;
+                    WaterCan.Instance.CheckCurrentState();
+                }
+            }
+            else
+            {
+                if (WaterCan.Instance.currentState == EWaterCanState.On)
+                {
+                    WaterCan.Instance.currentState = EWaterCanState.Off;
+                    WaterCan.Instance.CheckCurrentState();
+                }
+            }
+        }
+        else
+        {
+            if (WaterCan.Instance.currentState == EWaterCanState.On)
+            {
+                WaterCan.Instance.currentState = EWaterCanState.Off;
+                WaterCan.Instance.CheckCurrentState();
+            }
+        }
 
+        if (currentItem != null)
+        {
+            if (currentItem.itemData == ChangeMode.Instance.hoe)
+            {
+                if (ChangeMode.Instance.currentState == EChangeModeState.Off)
+                {
+                    ChangeMode.Instance.currentState = EChangeModeState.On;
+                    ChangeMode.Instance.CheckCurrentState();
+                }
+            }
+            else
+            {
+                if (ChangeMode.Instance.currentState == EChangeModeState.On)
+                {
+                    ChangeMode.Instance.currentState = EChangeModeState.Off;
+                    ChangeMode.Instance.CheckCurrentState();
+                }
+            }
+        }
+        else
+        {
+            if (ChangeMode.Instance.currentState == EChangeModeState.On)
+            {
+                ChangeMode.Instance.currentState = EChangeModeState.Off;
+                ChangeMode.Instance.CheckCurrentState();
+            }
+        }
+        if (currentItem == null)
+        {
+            if (ChangeInteract.Instance.currentState == EChangeInteractState.Off)
+            {
+                ChangeInteract.Instance.currentState = EChangeInteractState.On;
+                ChangeInteract.Instance.CheckCurrentState();
+            }
+        }
+        else
+        {
+            if (ChangeInteract.Instance.currentState == EChangeInteractState.On)
+            {
+                ChangeInteract.Instance.currentState = EChangeInteractState.Off;
+                ChangeInteract.Instance.CheckCurrentState();
+            }
+        }
+    }
     public void UseItem()
     {
         hotbar.UseAndRemoveItem(valueScroll, 1);
