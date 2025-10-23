@@ -26,25 +26,28 @@ public class ChangeMode : MonoBehaviour
     }
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Alpha1))
+        if (currentState == EChangeModeState.On)
         {
-            HideHightlight();
-            highlight[0].SetActive(true);
-            currentModeHoe = EModeHoe.Mode1;
+            if (Input.GetKeyDown(KeyCode.Alpha1))
+            {
+                HideHightlight();
+                highlight[0].SetActive(true);
+                currentModeHoe = EModeHoe.Mode1;
 
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha2))
-        {
-            HideHightlight();
-            highlight[1].SetActive(true);
-            currentModeHoe = EModeHoe.Mode2;
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha3))
-        {
-            HideHightlight();
-            highlight[2].SetActive(true);
-            currentModeHoe = EModeHoe.Mode3;
-        }
+            }
+            if (Input.GetKeyDown(KeyCode.Alpha2))
+            {
+                HideHightlight();
+                highlight[1].SetActive(true);
+                currentModeHoe = EModeHoe.Mode2;
+            }
+            if (Input.GetKeyDown(KeyCode.Alpha3))
+            {
+                HideHightlight();
+                highlight[2].SetActive(true);
+                currentModeHoe = EModeHoe.Mode3;
+            }
+        }     
     }
     public void CheckCurrentState()
     {

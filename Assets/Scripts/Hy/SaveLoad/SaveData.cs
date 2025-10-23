@@ -107,6 +107,13 @@ public class GameSave
     #endregion
 
     #region ----- Inventory -----
-    public List<InventorySlot> slots = new List<InventorySlot>();
+    public ItemData[] itemDataInventory;
+    public int[] quantityInventory;
+    public bool[] locationInventory;
+    #endregion
+    #region ----- Barn -----
+    public ItemData[] itemDataBarn;
+    public int[] quantityBarn;
+    public bool[] locationBarn;
     #endregion
 }

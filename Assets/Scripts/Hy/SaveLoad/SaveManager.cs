@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
+using NUnit.Framework.Interfaces;
 
 public static class SaveManager
 {
     static string PathFor(string slot) =>
         System.IO.Path.Combine(Application.persistentDataPath, $"farm_{slot}.json");
-
     // SaveManager.cs
     public static void Save(string slot, IEnumerable<FarmManager> farms)
     {
@@ -70,17 +70,24 @@ public static class SaveManager
         #endregion
 
         #region ----- Save Inventory -----
-        game.slots.Clear();
-        for (int r = 0; r < 4; r++)
-        {
-            for (int c = 0; c < 8; c++)
-            {
-                game.slots.Add(Inventory.Instance.slots[r,c]);
-            }
-        }
+        game.itemDataInventory = new ItemData[32];
+        Inventory.Instance.SaveItem();
+        game.itemDataInventory = Inventory.Instance.saveItemData;
+        game.quantityInventory = Inventory.Instance.saveQuantity;
+        game.locationInventory = Inventory.Instance.saveLocation;
         #endregion
 
-        File.WriteAllText(PathFor(slot), JsonUtility.ToJson(game, true));      
+        #region ----- Save Barn -----
+        game.itemDataBarn = new ItemData[35];
+        Barn.Instance.SaveItem();
+        game.itemDataBarn = Barn.Instance.saveItemData;
+        game.quantityBarn = Barn.Instance.saveQuantity;
+        game.locationBarn = Barn.Instance.saveLocation;
+        #endregion
+
+        File.WriteAllText(PathFor(slot), JsonUtility.ToJson(game, true));
+        Debug.Log(" Đường dẫn file JSON: " + game);
+        Debug.Log(" Đường dẫn file JSON: " + PathFor(slot));
     }
 
     public static bool Load(string slot, IEnumerable<FarmManager> farms)
@@ -151,14 +158,17 @@ public static class SaveManager
         #endregion
 
         #region ----- Load Inventory -----
-        for (int r = 0; r < 4; r++)
-        {
-            for (int c = 0; c < 8; c++)
-            {
-                int index = r * 8 + c;
-                Inventory.Instance.slots[r, c] = game.slots[index];
-            }
-        }
+        Inventory.Instance.saveItemData = game.itemDataInventory;
+        Inventory.Instance.saveQuantity = game.quantityInventory;
+        Inventory.Instance.saveLocation = game.locationInventory;
+        Inventory.Instance.LoadItem();
+        #endregion
+
+        #region ----- Load Barn -----
+        Barn.Instance.saveItemData = game.itemDataBarn;
+        Barn.Instance.saveQuantity = game.quantityBarn;
+        Barn.Instance.saveLocation = game.locationBarn;
+        Barn.Instance.LoadItem();
         #endregion
         return true;     
     }
