@@ -21,7 +21,7 @@ public class Cells : MonoBehaviour
 
     public bool HasGrass() => currentGrass > 0;
 
-    private void UpdateUI()
+    public void UpdateUI()
     {
         if (quantityText != null)
             quantityText.text = currentGrass.ToString();

@@ -14,148 +14,105 @@ public class AnimalFedding : MonoBehaviour
     private bool canHarvest = false;
     private int daysFed = 0;
 
-    private bool sheepAteToday = false;
-    private int mealsToday = 0;
-    private bool ateAtMorning = false;
-    private bool ateAtEvening = false;
-
+    private bool hasEatenToday = false;
     private bool isWaitingToEat = false;
-    private bool justHarvested = false; 
-    private int lastDayChecked = -1;
+    private bool missedMealYesterday = false;
+
+    private float elapsedGameHours = 0f;
+    private float lastRecordedHour = 0f;
 
     private void Start()
     {
         ResetDailyEatFlags();
 
         if (GameTime.Instance != null)
-            lastDayChecked = GameTime.Instance.day;
+            lastRecordedHour = GetAbsoluteGameHours();
     }
 
     private void Update()
     {
-        if (GameTime.Instance != null && GameTime.Instance.day != lastDayChecked)
+        if (GameTime.Instance == null) return;
+
+        float currentHour = GetAbsoluteGameHours();
+        float delta = currentHour - lastRecordedHour;
+        if (delta < 0) delta += 24f * 31f;
+
+        elapsedGameHours += delta;
+        lastRecordedHour = currentHour;
+
+        if (elapsedGameHours >= 24f)
         {
             HandleNextDay();
-            lastDayChecked = GameTime.Instance.day;
+            elapsedGameHours = 0f;
         }
 
-        if (justHarvested) return; 
+        if (canHarvest) return;
 
-        if (animalType == AnimalType.Goat)
-            HandleGoatFeeding();
-        else
-            HandleSheepFeeding();
-    }
-
-    private void HandleSheepFeeding()
-    {
-        if (!sheepAteToday && !isWaitingToEat)
-            StartCoroutine(DelayedEatSheep());
-    }
-
-    private void HandleGoatFeeding()
-    {
-        if (!ateAtMorning && !isWaitingToEat && mealsToday == 0)
-            StartCoroutine(DelayedEatGoat(true, "sáng"));
-        else if (!ateAtEvening && !isWaitingToEat && mealsToday == 1 && GameTime.Instance.hour >= 12)
-            StartCoroutine(DelayedEatGoat(false, "chiều"));
+        if (!hasEatenToday && !isWaitingToEat)
+        {
+            StartCoroutine(DelayedEat());
+        }
     }
 
     private void HandleNextDay()
     {
-        if (justHarvested)
-        {
-            justHarvested = false; 
-        }
+        bool fedEnoughYesterday = hasEatenToday;
 
-        if (animalType == AnimalType.Sheep)
+        if (fedEnoughYesterday)
         {
-            if (sheepAteToday)
+            daysFed++;
+
+            string type = animalType == AnimalType.Sheep ? "Sheep" : "Goat";
+            Notification.Instance.ShowNotification($"[{type}] Ăn đủ hôm qua → DaysFed = {daysFed}");
+
+            int requiredDays = (animalType == AnimalType.Sheep) ? requiredFeedDays : requiredGoatDays;
+
+            if (daysFed >= requiredDays)
             {
-                daysFed++;
-                Notification.Instance.ShowNotification($"[Sheep] Ăn đủ hôm nay → DaysFed = {daysFed}");
-                if (daysFed >= requiredFeedDays)
-                {
-                    canHarvest = true;
-                    Notification.Instance.ShowNotification("[Sheep] Có thể thu hoạch!");
-                }
+                canHarvest = true;
+                Notification.Instance.ShowNotification($"[{type}] Có thể thu hoạch!");
             }
-            else
-                Notification.Instance.ShowNotification("[Sheep] Hôm nay không ăn.");
-
-            sheepAteToday = false;
         }
-        else if (animalType == AnimalType.Goat)
+        else
         {
-            if (mealsToday >= 2)
-            {
-                daysFed++;
-                Notification.Instance.ShowNotification($"[Goat] Ăn đủ 2 bữa → DaysFed = {daysFed}");
-                if (daysFed >= requiredGoatDays)
-                {
-                    canHarvest = true;
-                    Notification.Instance.ShowNotification("[Goat] Có thể thu hoạch!");
-                }
-            }
-            else
-                Notification.Instance.ShowNotification("[Goat] Ăn chưa đủ.");
-
-            mealsToday = 0;
-            ateAtMorning = false;
-            ateAtEvening = false;
+            string type = animalType == AnimalType.Sheep ? "Sheep" : "Goat";
+            Notification.Instance.ShowNotification($"[{type}] Hôm qua không ăn.");
         }
 
-        isWaitingToEat = false;
+        missedMealYesterday = !fedEnoughYesterday;
+        ResetDailyEatFlags();
     }
 
-    private IEnumerator DelayedEatSheep()
+    private IEnumerator DelayedEat()
     {
         isWaitingToEat = true;
-        yield return new WaitForSeconds(1f);
-        if (!justHarvested) 
-            TryEatSheep();
+        yield return new WaitForSeconds(5f);
+        TryEat();
         isWaitingToEat = false;
     }
 
-    private IEnumerator DelayedEatGoat(bool isMorningMeal, string mealTime)
+    private void TryEat()
     {
-        isWaitingToEat = true;
-        yield return new WaitForSeconds(1f);
-        if (!justHarvested)
-            TryEatGoatMeal(isMorningMeal);
-        isWaitingToEat = false;
-    }
+        if (hasEatenToday) return; // chặn ăn 2 lần
 
-    private void TryEatSheep()
-    {
         if (HasHay())
         {
             ConsumeHay();
-            sheepAteToday = true;
-            Notification.Instance.ShowNotification("[Sheep] Đã ăn cỏ hôm nay.");
+            hasEatenToday = true;
+            missedMealYesterday = false;
+
+            string type = animalType == AnimalType.Sheep ? "Sheep" : "Goat";
+            Notification.Instance.ShowNotification($"[{type}] Ăn cỏ hôm nay.");
             GetComponentInParent<AnimalPen>()?.UpdateAnimalFeedStatusUI();
         }
         else
-            Notification.Instance.ShowNotification("[Sheep] Không có Hay Bale để ăn.");
-    }
-
-    private void TryEatGoatMeal(bool isMorningMeal)
-    {
-        if (HasHay())
         {
-            ConsumeHay();
-            mealsToday++;
-            if (isMorningMeal) ateAtMorning = true;
-            else ateAtEvening = true;
-
-            Notification.Instance.ShowNotification($"[Goat] Ăn cỏ, mealsToday = {mealsToday}");
-            GetComponentInParent<AnimalPen>()?.UpdateAnimalFeedStatusUI();
+            string type = animalType == AnimalType.Sheep ? "Sheep" : "Goat";
+            Notification.Instance.ShowNotification($"[{type}] Không có Hay Bale để ăn.");
         }
-        else
-            Notification.Instance.ShowNotification("[Goat] Không có Hay Bale để ăn.");
     }
 
-    bool HasHay()
+    private bool HasHay()
     {
         if (barn == null || barn.slots == null) return false;
 
@@ -168,15 +125,13 @@ public class AnimalFedding : MonoBehaviour
                     slot.item.itemData != null &&
                     slot.item.itemData.itemName == "Hay Bale" &&
                     slot.item.quantity > 0)
-                {
                     return true;
-                }
             }
         }
         return false;
     }
 
-    void ConsumeHay()
+    private void ConsumeHay()
     {
         if (barn == null || barn.slots == null) return;
 
@@ -191,37 +146,23 @@ public class AnimalFedding : MonoBehaviour
                     slot.item.quantity > 0)
                 {
                     slot.item.quantity--;
-                    if (slot.item.quantity == 0)
+                    if (slot.item.quantity <= 0)
                         slot.item = null;
 
-                    var barnUI = barn.GetComponent<BarnUI>();
-                    barnUI?.UpdateAllSlots();
+                    barn.GetComponent<BarnUI>()?.UpdateAllSlots();
                     return;
                 }
             }
         }
     }
 
-    public bool HasEatenToday()
+    private float GetAbsoluteGameHours()
     {
-        if (animalType == AnimalType.Sheep)
-            return sheepAteToday;
-        else
-            return (ateAtMorning || ateAtEvening);
+        var t = GameTime.Instance;
+        return (t.day * 24f) + t.hour;
     }
 
-    public int GetMealsToday()
-    {
-        int meals = 0;
-        if (animalType == AnimalType.Sheep && sheepAteToday) meals = 1;
-        else if (animalType == AnimalType.Goat)
-        {
-            if (ateAtMorning) meals++;
-            if (ateAtEvening) meals++;
-        }
-        return meals;
-    }
-
+    public int GetMealsToday() => hasEatenToday ? 1 : 0;
     public bool CanHarvest() => canHarvest;
     public int GetDaysFed() => daysFed;
 
@@ -229,17 +170,13 @@ public class AnimalFedding : MonoBehaviour
     {
         canHarvest = false;
         daysFed = 0;
-        justHarvested = true; 
-        StopAllCoroutines(); 
+        missedMealYesterday = false;
         ResetDailyEatFlags();
     }
 
     public void ResetDailyEatFlags()
     {
-        sheepAteToday = false;
-        mealsToday = 0;
-        ateAtMorning = false;
-        ateAtEvening = false;
+        hasEatenToday = false;
         isWaitingToEat = false;
     }
 }

@@ -5,7 +5,14 @@ public class GettingHayhleCell : MonoBehaviour
 {
     [Header("Feed Cells (the grass cells for this pen)")]
     public List<Cells> feedCells = new List<Cells>();
-
+    public void UpdateAllCellUI()
+    {
+        for (int i = 0; i < feedCells.Count; i++)
+        {
+            var cell = feedCells[i];
+            cell.UpdateUI(); // m?i cell có TMP riêng ð? hi?n th? s? c?
+        }
+    }
     public bool ConsumeGrass(int amount = 1)
     {
         foreach (var cell in feedCells)
