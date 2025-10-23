@@ -37,6 +37,7 @@ public class CharacterStateMachine : MonoBehaviour
 
     public MainUIScreen mainUIScreen;
 
+    public PlantManager plantManager;
     public SoilManager soilManager;
     public FarmInput farmInput;
     public void ChangeState(ICharacterState newState)

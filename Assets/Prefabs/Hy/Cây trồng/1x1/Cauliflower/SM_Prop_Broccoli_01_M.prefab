@@ -13,7 +13,9 @@ GameObject:
   - component: {fileID: 23800111897180024}
   - component: {fileID: -2050696613640924507}
   - component: {fileID: -2695868204241506767}
-  m_Layer: 0
+  - component: {fileID: -7581007618966721669}
+  - component: {fileID: 2403569728548071896}
+  m_Layer: 8
   m_Name: SM_Prop_Broccoli_01_M
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -29,7 +31,7 @@ Transform:
   m_GameObject: {fileID: 1928558604182438}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0, y: 0.32, z: 0}
+  m_LocalPosition: {x: -0, y: 0.44, z: 0}
   m_LocalScale: {x: 1.3, y: 1.3, z: 1.3}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -122,3 +124,35 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 4300000, guid: 7d3afd6f2b692f545b6a53235ed0c605, type: 3}
+--- !u!114 &-7581007618966721669
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1928558604182438}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 452ee2c95a7510344a9f356fa3caa924, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  myOutlineColor: {r: 0.98490566, g: 0.4772739, b: 0.04274108, a: 1}
+  defaultWidth: 0
+--- !u!114 &2403569728548071896
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1928558604182438}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  outlineMode: 1
+  outlineColor: {r: 1, g: 1, b: 1, a: 0}
+  outlineWidth: 0
+  precomputeOutline: 0
+  bakeKeys: []
+  bakeValues: []

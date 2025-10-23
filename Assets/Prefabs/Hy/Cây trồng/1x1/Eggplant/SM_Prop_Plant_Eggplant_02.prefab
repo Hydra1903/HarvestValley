@@ -11,9 +11,11 @@ GameObject:
   - component: {fileID: 4453267722021120}
   - component: {fileID: 33837430210448862}
   - component: {fileID: 23215322340779266}
-  - component: {fileID: -4818444351582872754}
   - component: {fileID: 8507524695705548609}
-  m_Layer: 0
+  - component: {fileID: -4818444351582872754}
+  - component: {fileID: 5918969673546790965}
+  - component: {fileID: 887034413380532829}
+  m_Layer: 8
   m_Name: SM_Prop_Plant_Eggplant_02
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -91,18 +93,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &-4818444351582872754
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1147994195056072}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 94e2926d7bdb7df4888452b3841d3e15, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!64 &8507524695705548609
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -125,6 +115,50 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 4300000, guid: 039c2a17c79559c479b4acc4478f97e6, type: 3}
+--- !u!114 &-4818444351582872754
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1147994195056072}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 94e2926d7bdb7df4888452b3841d3e15, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &5918969673546790965
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1147994195056072}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 452ee2c95a7510344a9f356fa3caa924, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  myOutlineColor: {r: 0.98490566, g: 0.4772739, b: 0.04274108, a: 1}
+  defaultWidth: 0
+--- !u!114 &887034413380532829
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1147994195056072}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  outlineMode: 1
+  outlineColor: {r: 1, g: 1, b: 1, a: 0}
+  outlineWidth: 0
+  precomputeOutline: 0
+  bakeKeys: []
+  bakeValues: []
 --- !u!1001 &2813813880786278189
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -136,6 +170,10 @@ PrefabInstance:
     - target: {fileID: 1905425275923596, guid: ec6063f8c19c41d42862b2266ba1e7bb, type: 3}
       propertyPath: m_Name
       value: SM_Prop_Eggplant_01_S (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1905425275923596, guid: ec6063f8c19c41d42862b2266ba1e7bb, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 4220079716864490, guid: ec6063f8c19c41d42862b2266ba1e7bb, type: 3}
       propertyPath: m_LocalScale.x
@@ -210,6 +248,10 @@ PrefabInstance:
     - target: {fileID: 1905425275923596, guid: ec6063f8c19c41d42862b2266ba1e7bb, type: 3}
       propertyPath: m_Name
       value: SM_Prop_Eggplant_01_S
+      objectReference: {fileID: 0}
+    - target: {fileID: 1905425275923596, guid: ec6063f8c19c41d42862b2266ba1e7bb, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 4220079716864490, guid: ec6063f8c19c41d42862b2266ba1e7bb, type: 3}
       propertyPath: m_LocalScale.x
