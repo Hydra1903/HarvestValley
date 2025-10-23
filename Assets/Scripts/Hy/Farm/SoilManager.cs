@@ -86,19 +86,15 @@ public class SoilManager : MonoBehaviour
                 var a = _areaSaves[idx];
                 var start = new Vector2Int(a.startX, a.startY);
                 int size = a.size;
-
-                // HIỆN ghost đỏ đúng vùng
                 ShowGhostForceRed(start, size);
             }
             return;
         }
 
-        // === DIG-MODES (5x5 / 3x3) ===
-        int sizeDig = GetSizeByHoeMode();                     // 5 hoặc 3
+        int sizeDig = GetSizeByHoeMode();        
         var startDig = farm.CalculateStartPosition(gridPos, sizeDig);
         bool canPlace = CanPlaceSoil(startDig.x, startDig.y, sizeDig);
 
-        // ghost xanh/đen khi hợp lệ, đỏ khi không hợp lệ
         ShowGhostNormal(startDig, sizeDig, canPlace);
     }
 
@@ -109,7 +105,7 @@ public class SoilManager : MonoBehaviour
         var info = new ToolInfo
         {
             size = size,
-            offsetY = (size == 5 ? 0.26f : 0.47f),
+            offsetY = (size == 5 ? 0.305f : 0.47f),
             offsetX = (size == 5 ? 5f : 1.5f),
             offsetZ = (size == 5 ? -0.2f : 1.5f)
         };
@@ -122,7 +118,7 @@ public class SoilManager : MonoBehaviour
         var info = new ToolInfo
         {
             size = size,
-            offsetY = (size == 5 ? 0.26f : 0.47f),
+            offsetY = (size == 5 ? 0.305f : 0.47f),
             offsetX = (size == 5 ? 5f : 1.5f),
             offsetZ = (size == 5 ? -0.2f : 1.5f)
         };

@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 23241266811813708}
   - component: {fileID: -3486311442678804765}
   - component: {fileID: -4423980766125569619}
+  - component: {fileID: 6206193980915451891}
   m_Layer: 8
   m_Name: SM_Prop_Plant_Corn_02
   m_TagString: Untagged
@@ -122,3 +123,17 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 4300000, guid: f87bba4954ce6484eb1f059e27e91885, type: 3}
+--- !u!114 &6206193980915451891
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1765584645647972}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 452ee2c95a7510344a9f356fa3caa924, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  myOutlineColor: {r: 0.98490566, g: 0.4772739, b: 0.04274108, a: 1}
+  defaultWidth: 0

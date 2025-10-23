@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 23366381348797308}
   - component: {fileID: 4771801935901721626}
   - component: {fileID: -198790893614619635}
+  - component: {fileID: -6029872282331286850}
   m_Layer: 8
   m_Name: SM_Prop_Plant_Chilli_01
   m_TagString: Untagged
@@ -123,3 +124,17 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 4300000, guid: 472e6f42396124543a8e84ec9b1f6feb, type: 3}
+--- !u!114 &-6029872282331286850
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1708558889204626}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 452ee2c95a7510344a9f356fa3caa924, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  myOutlineColor: {r: 0.98490566, g: 0.4772739, b: 0.04274108, a: 1}
+  defaultWidth: 0

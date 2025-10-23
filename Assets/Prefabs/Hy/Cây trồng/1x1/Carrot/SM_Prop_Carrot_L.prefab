@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 23265015238076216}
   - component: {fileID: 4439463077085753435}
   - component: {fileID: 9136797096263983282}
+  - component: {fileID: 7708348891574449909}
   m_Layer: 8
   m_Name: SM_Prop_Carrot_L
   m_TagString: Untagged
@@ -123,3 +124,17 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 4300000, guid: 362859ccf53dbbb4c9fed71458c873db, type: 3}
+--- !u!114 &7708348891574449909
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1879033853735152}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 452ee2c95a7510344a9f356fa3caa924, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  myOutlineColor: {r: 0.98490566, g: 0.4772739, b: 0.04274108, a: 1}
+  defaultWidth: 0

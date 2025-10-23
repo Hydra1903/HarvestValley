@@ -6,44 +6,68 @@ using UnityEngine;
 public class FarmGrid : MonoBehaviour
 {
     [Header("References")]
-    public FarmManager farm;             // Kéo FarmManager vào (hoặc để tự tìm ở parent)
+    public FarmManager farm;
 
     [Header("Colors")]
-    public Color normalColor = new Color(0f, 1f, 0f, 0.65f); // Xanh viền
-    public Color dugColor = new Color(1f, 0f, 0f, 0.85f); // Đỏ viền
+    public Color normalColor = new Color(0f, 1f, 0f, 0.65f);
+    public Color dugColor = new Color(1f, 0f, 0f, 0.85f);
 
     [Header("Visual")]
     [Tooltip("Nâng lưới lên khỏi mặt đất để tránh z-fighting")]
     public float yOffset = 0.15f;
 
+    [Header("Line Width")]
+    [Tooltip("Độ dày của đường viền lưới (đơn vị: Unity units)")]
+    [Range(0.01f, 0.5f)]
+    public float lineWidth = 0.05f;
+
     private MeshFilter _mf;
     private MeshRenderer _mr;
     private Mesh _mesh;
 
-    // bộ đếm để tính nhanh
-    private int _W, _H;                 // gridWidth, gridHeight
-    private int _hSegments;             // số segment ngang  = (H+1)*W
-    private int _vSegments;             // số segment dọc    = (W+1)*H
-    private int _baseVtxVertical;       // offset vertex phần dọc = _hSegments * 2
+    private int _W, _H;
+    private int _hSegments;
+    private int _vSegments;
+    private int _baseVtxVertical;
 
-    // ----------------------------------------------------------------------
+    private float _lastLineWidth;
 
     private void Start()
     {
         gameObject.SetActive(false);
     }
+
     private void OnEnable()
     {
         if (!farm) farm = GetComponentInParent<FarmManager>();
         EnsureComponents();
-        GenerateMesh();                 // tạo lưới một lần
-        UpdateGridColors();             // tô màu theo trạng thái hiện tại
+        GenerateMesh();
+        UpdateGridColors();
+        _lastLineWidth = lineWidth;
+    }
+
+    private void Update()
+    {
+        // Kiểm tra nếu lineWidth thay đổi trong Editor
+        if (Mathf.Abs(_lastLineWidth - lineWidth) > 0.001f)
+        {
+            _lastLineWidth = lineWidth;
+            GenerateMesh();
+            UpdateGridColors();
+        }
     }
 
     private void OnValidate()
     {
         if (!farm) farm = GetComponentInParent<FarmManager>();
         EnsureComponents();
+
+        // Tự động cập nhật mesh khi thay đổi lineWidth trong Inspector
+        if (_mesh != null && Application.isPlaying)
+        {
+            GenerateMesh();
+            UpdateGridColors();
+        }
     }
 
     private void EnsureComponents()
@@ -51,12 +75,11 @@ public class FarmGrid : MonoBehaviour
         _mf = GetComponent<MeshFilter>() ?? gameObject.AddComponent<MeshFilter>();
         _mr = GetComponent<MeshRenderer>() ?? gameObject.AddComponent<MeshRenderer>();
 
-        // Dùng shader hỗ trợ Vertex Color để mesh.colors có tác dụng
         if (_mr.sharedMaterial == null || _mr.sharedMaterial.shader == null)
         {
             var mat = new Material(Shader.Find("Sprites/Default"));
-            mat.color = Color.white;            // để nhìn đúng màu theo vertex color
-            mat.renderQueue = 3000;             // vẽ sau mặt đất
+            mat.color = Color.white;
+            mat.renderQueue = 3000;
             _mr.sharedMaterial = mat;
         }
 
@@ -64,11 +87,6 @@ public class FarmGrid : MonoBehaviour
         _mr.receiveShadows = false;
     }
 
-    // ----------------------------------------------------------------------
-    // PUBLIC API
-    // ----------------------------------------------------------------------
-
-    /// <summary>Tạo lại lưới (gọi khi đổi gridWidth/gridHeight/cellSize)</summary>
     public void GenerateMesh()
     {
         if (farm == null) return;
@@ -86,9 +104,9 @@ public class FarmGrid : MonoBehaviour
         var colors = new List<Color>();
 
         float c = farm.cellSize;
+        float halfWidth = lineWidth * 0.5f;
 
-        // ------- TẠO SEGMENT NGANG: (H+1) hàng, mỗi hàng có W segment -------
-        // Mỗi segment là 2 vertex (a->b). Ta tạo riêng từng segment để có thể tô màu riêng.
+        // ===== TẠO SEGMENT NGANG (với độ dày) =====
         for (int y = 0; y <= _H; y++)
         {
             for (int x = 0; x < _W; x++)
@@ -96,15 +114,15 @@ public class FarmGrid : MonoBehaviour
                 Vector3 a = new Vector3(x * c, 0f, y * c);
                 Vector3 b = new Vector3((x + 1) * c, 0f, y * c);
 
-                int i0 = verts.Count;
-                verts.Add(a); verts.Add(b);
-                colors.Add(normalColor); colors.Add(normalColor);
-                indices.Add(i0); indices.Add(i0 + 1);
+                // Tạo quad với độ dày
+                CreateLineQuad(verts, indices, colors, a, b, halfWidth, normalColor);
             }
         }
         _hSegments = (_H + 1) * _W;
 
-        // ------- TẠO SEGMENT DỌC: (W+1) cột, mỗi cột có H segment -------
+        // ===== TẠO SEGMENT DỌC (với độ dày) =====
+        _baseVtxVertical = verts.Count;
+
         for (int x = 0; x <= _W; x++)
         {
             for (int y = 0; y < _H; y++)
@@ -112,37 +130,67 @@ public class FarmGrid : MonoBehaviour
                 Vector3 a = new Vector3(x * c, 0f, y * c);
                 Vector3 b = new Vector3(x * c, 0f, (y + 1) * c);
 
-                int i0 = verts.Count;
-                verts.Add(a); verts.Add(b);
-                colors.Add(normalColor); colors.Add(normalColor);
-                indices.Add(i0); indices.Add(i0 + 1);
+                // Tạo quad với độ dày
+                CreateLineQuad(verts, indices, colors, a, b, halfWidth, normalColor);
             }
         }
         _vSegments = (_W + 1) * _H;
-        _baseVtxVertical = _hSegments * 2; // mỗi segment có 2 vertex
 
         _mesh.SetVertices(verts);
-        _mesh.SetIndices(indices, MeshTopology.Lines, 0);
+        _mesh.SetIndices(indices, MeshTopology.Triangles, 0);
         _mesh.SetColors(colors);
+        _mesh.RecalculateNormals();
+        _mesh.RecalculateBounds();
 
         _mf.sharedMesh = _mesh;
-        transform.position = farm.origin + Vector3.up * yOffset;   // đồng bộ vị trí
+        transform.position = farm.origin + Vector3.up * yOffset;
     }
 
-    /// <summary>
-    /// Tô đỏ viền tại các ô đã đào (Dug) / có soilType khác None. Gọi hàm này sau Place/Flatten.
-    /// </summary>
+    // Tạo một quad (hình chữ nhật) để mô phỏng đường có độ dày
+    private void CreateLineQuad(List<Vector3> verts, List<int> indices, List<Color> colors,
+                                Vector3 start, Vector3 end, float halfWidth, Color col)
+    {
+        // Tính vector vuông góc với đường
+        Vector3 dir = (end - start).normalized;
+        Vector3 perpendicular = new Vector3(-dir.z, 0f, dir.x) * halfWidth;
+
+        int baseIdx = verts.Count;
+
+        // 4 đỉnh của quad
+        verts.Add(start - perpendicular); // 0
+        verts.Add(start + perpendicular); // 1
+        verts.Add(end + perpendicular);   // 2
+        verts.Add(end - perpendicular);   // 3
+
+        // Màu cho 4 đỉnh
+        colors.Add(col);
+        colors.Add(col);
+        colors.Add(col);
+        colors.Add(col);
+
+        // 2 tam giác tạo thành quad
+        indices.Add(baseIdx + 0);
+        indices.Add(baseIdx + 1);
+        indices.Add(baseIdx + 2);
+
+        indices.Add(baseIdx + 0);
+        indices.Add(baseIdx + 2);
+        indices.Add(baseIdx + 3);
+    }
+
     public void UpdateGridColors()
     {
         if (farm == null || farm.Tiles == null || _mesh == null) return;
 
-        // reset tất cả về màu xanh
         var cols = _mesh.colors;
         if (cols == null || cols.Length != _mesh.vertexCount)
             cols = new Color[_mesh.vertexCount];
-        for (int i = 0; i < cols.Length; i++) cols[i] = normalColor;
 
-        // tô đỏ từng ô đã đào
+        // Reset tất cả về màu xanh
+        for (int i = 0; i < cols.Length; i++)
+            cols[i] = normalColor;
+
+        // Tô đỏ từng ô đã đào
         for (int x = 0; x < _W; x++)
         {
             for (int y = 0; y < _H; y++)
@@ -158,69 +206,68 @@ public class FarmGrid : MonoBehaviour
         _mesh.colors = cols;
     }
 
-    // ----------------------------------------------------------------------
-    // INDEXING: ánh xạ (x,y) -> index cặp vertex của 1 cạnh
-    // Layout vertex:
-    //  [0 .. hSegments*2-1]  : tất cả cạnh ngang (mỗi cạnh 2 vertex)
-    //  [baseVtxVertical .. ] : tất cả cạnh dọc
-    // ----------------------------------------------------------------------
-
-    private int HorEdgeVertexIndex(int x, int y)   // cạnh ngang (x..x+1, y), 0 <= x < W, 0 <= y <= H
+    private int HorEdgeVertexIndex(int x, int y)
     {
-        // mỗi hàng ngang có W segment, mỗi segment = 2 vertex
-        return (y * _W + x) * 2;
+        // Mỗi segment ngang có 4 vertices (quad)
+        return (y * _W + x) * 4;
     }
 
-    private int VerEdgeVertexIndex(int x, int y)   // cạnh dọc (x, y..y+1), 0 <= x <= W, 0 <= y < H
+    private int VerEdgeVertexIndex(int x, int y)
     {
-        // mỗi cột dọc có H segment, offset tổng cho phần dọc = _baseVtxVertical
-        return _baseVtxVertical + (x * _H + y) * 2;
+        // Mỗi segment dọc có 4 vertices (quad)
+        return _baseVtxVertical + (x * _H + y) * 4;
     }
 
     private void PaintCellEdgesRed(Color[] cols, int x, int y)
     {
-        // BỐN CẠNH VIỀN CỦA Ô (x,y)
-        // 1) Ngang trên  : (x..x+1, y)
+        // 1) Ngang trên: (x..x+1, y)
         if (y >= 0 && y <= _H && x >= 0 && x < _W)
         {
-            int i = HorEdgeVertexIndex(x, y);
-            cols[i] = dugColor; cols[i + 1] = dugColor;
+            int idx = HorEdgeVertexIndex(x, y);
+            for (int i = 0; i < 4; i++)
+                cols[idx + i] = dugColor;
         }
 
-        // 2) Ngang dưới  : (x..x+1, y+1)
+        // 2) Ngang dưới: (x..x+1, y+1)
         if (y + 1 >= 0 && y + 1 <= _H && x >= 0 && x < _W)
         {
-            int i = HorEdgeVertexIndex(x, y + 1);
-            cols[i] = dugColor; cols[i + 1] = dugColor;
+            int idx = HorEdgeVertexIndex(x, y + 1);
+            for (int i = 0; i < 4; i++)
+                cols[idx + i] = dugColor;
         }
 
-        // 3) Dọc trái    : (x, y..y+1)
+        // 3) Dọc trái: (x, y..y+1)
         if (x >= 0 && x <= _W && y >= 0 && y < _H)
         {
-            int i = VerEdgeVertexIndex(x, y);
-            cols[i] = dugColor; cols[i + 1] = dugColor;
+            int idx = VerEdgeVertexIndex(x, y);
+            for (int i = 0; i < 4; i++)
+                cols[idx + i] = dugColor;
         }
 
-        // 4) Dọc phải    : (x+1, y..y+1)
+        // 4) Dọc phải: (x+1, y..y+1)
         if (x + 1 >= 0 && x + 1 <= _W && y >= 0 && y < _H)
         {
-            int i = VerEdgeVertexIndex(x + 1, y);
-            cols[i] = dugColor; cols[i + 1] = dugColor;
+            int idx = VerEdgeVertexIndex(x + 1, y);
+            for (int i = 0; i < 4; i++)
+                cols[idx + i] = dugColor;
         }
     }
 
-    // ----------------------------------------------------------------------
-    // Tiện ích
-    // ----------------------------------------------------------------------
-
-    /// <summary>Gọi khi đổi origin/yOffset để căn lại vị trí</summary>
     public void SyncPosition() => transform.position = farm.origin + Vector3.up * yOffset;
+
     public void SetActiveGrid(bool active)
     {
-
         if (gameObject.activeSelf != active)
         {
             gameObject.SetActive(active);
         }
     }
-}
+
+    // Hàm tiện ích để thay đổi độ dày từ code
+    public void SetLineWidth(float width)
+    {
+        lineWidth = Mathf.Clamp(width, 0.01f, 0.5f);
+        GenerateMesh();
+        UpdateGridColors();
+    }
+}   

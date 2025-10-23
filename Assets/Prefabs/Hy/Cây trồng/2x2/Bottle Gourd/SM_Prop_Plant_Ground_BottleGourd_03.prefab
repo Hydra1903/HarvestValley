@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 23915727690881060}
   - component: {fileID: 6039331717941181429}
   - component: {fileID: 1839542905324532677}
+  - component: {fileID: 2801506224526965343}
   m_Layer: 8
   m_Name: SM_Prop_Plant_Ground_BottleGourd_03
   m_TagString: Untagged
@@ -122,3 +123,17 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 4300000, guid: beddbbe7493318d448738fa4f39b70e1, type: 3}
+--- !u!114 &2801506224526965343
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1339641720439656}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 452ee2c95a7510344a9f356fa3caa924, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  myOutlineColor: {r: 0.98490566, g: 0.4772739, b: 0.04274108, a: 1}
+  defaultWidth: 0
