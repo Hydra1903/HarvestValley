@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+ï»¿using System.Collections.Generic;
 using UnityEngine;
 
 public class AnimalPen : MonoBehaviour
@@ -7,6 +7,7 @@ public class AnimalPen : MonoBehaviour
     public int penId;
     public Barn barnReference;
     public AnimalPenUIManager uiManager;
+    public InfoPanelUI penInfoPanel;
     [Header("Spawn Settings")]
     public Transform spawnPointType1;
     public Transform spawnPointType2;
@@ -47,12 +48,14 @@ public class AnimalPen : MonoBehaviour
         }
         else if (!allowedTags.Contains(tag))
         {
-            Notification.Instance.ShowNotification($"Chu?ng {penId} ch? nh?n {string.Join(",", allowedTags)}!");
             Destroy(animal);
             return false;
         }
 
         spawnedAnimals.Add((animal, data));
+        var info = animal.GetComponent<AnimalInfo>();
+        if (info != null && penInfoPanel != null)
+            info.InjectPanel(penInfoPanel);
         return true;
     }
 
@@ -101,7 +104,6 @@ public class AnimalPen : MonoBehaviour
             Destroy(animal);
 
         spawnedAnimals.RemoveAt(cellIndex);
-        Notification.Instance.ShowNotification($"Chu?ng {penId} ð? bán 1 ð?ng v?t!");
 
         if (spawnedAnimals.Count == 0)
             allowedTags.Clear();
@@ -121,14 +123,4 @@ public class AnimalPen : MonoBehaviour
     public int SpawnedAnimalCount => spawnedAnimals.Count;
     public int MaxAnimals => maxAnimals;
     public List<(GameObject, AnimalData)> GetSpawnedAnimals() => spawnedAnimals;
-
-    //private void OnTriggerExit(Collider other)
-    //{
-    //    if (other.CompareTag("Player"))
-    //    {
-    //        // Ðóng panel UI khi ngý?i chõi r?i chu?ng (UIManager s? nghe s? ki?n này n?u c?n)
-    //        InfoPanelManager.instance?.HidePanel(penId);
-    //    }
-    //}
-
 }

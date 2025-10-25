@@ -1,14 +1,17 @@
-﻿using Unity.Cinemachine;
+﻿using System.Collections.Generic;
+using TMPro;
+using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
-using System.Collections.Generic;
 
 public class LiveStockSeller : MonoBehaviour
 {
     public GameObject buyCanvas;
     public GameObject confirmPanel;
     public GameObject selectPenPanel;
+    public TMP_Text pen1CountText;
+    public TMP_Text pen2CountText;
 
     private bool playerInRange = false;
     private AnimalType selectedType = AnimalType.None;
@@ -68,6 +71,7 @@ public class LiveStockSeller : MonoBehaviour
     {
         selectedType = type;
         selectPenPanel.SetActive(true);
+        UpdatePenCountsUI();
     }
 
     void SelectPen(AnimalPen pen)
@@ -81,7 +85,6 @@ public class LiveStockSeller : MonoBehaviour
     {
         if (selectedPen == null || selectedType == AnimalType.None)
         {
-            Notification.Instance.ShowNotification("Chuồng Nuôi hoặc động vật chưa được chọn");
             return;
         }
 
@@ -90,7 +93,6 @@ public class LiveStockSeller : MonoBehaviour
 
         if (currentLevel < requiredLevel)
         {
-            Notification.Instance.ShowNotification($"Cần đạt cấp độ {requiredLevel} để mua loại động vật này!");
             confirmPanel.SetActive(false);
             return;
         }
@@ -105,7 +107,6 @@ public class LiveStockSeller : MonoBehaviour
         GameObject prefab = AnimalFactory.GetPrefab(selectedType);
         if (prefab == null)
         {
-            Debug.LogError("Không tìm thấy prefab");
             return;
         }
 
@@ -164,16 +165,20 @@ public class LiveStockSeller : MonoBehaviour
 
             if (req.lockOverlay != null)
                 req.lockOverlay.SetActive(!unlocked);
-
-            if (req.lockOverlay != null)
-            {
-                Text overlayText = req.lockOverlay.GetComponentInChildren<Text>();
-                if (overlayText != null)
-                    overlayText.text = unlocked ? "" : $"Yêu cầu cấp {req.requiredLevel}";
-            }
         }
     }
+    void UpdatePenCountsUI()
+    {
+        if (pen1 != null && pen1CountText != null)
+        {
+            pen1CountText.text = $"{pen1.SpawnedAnimalCount} / {pen1.MaxAnimals}";
+        }
 
+        if (pen2 != null && pen2CountText != null)
+        {
+            pen2CountText.text = $"{pen2.SpawnedAnimalCount} / {pen2.MaxAnimals}";
+        }
+    }
     void BackToBuyMenu()
     {
         confirmPanel.SetActive(false);

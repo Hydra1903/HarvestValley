@@ -29,10 +29,10 @@ public class MiniMapController : MonoBehaviour
     [SerializeField] Vector2 fullScreenDimensions;
 
     [Header("Zoom Map")]
-    [SerializeField] float zoomSpeed = 0.1f;
-    [SerializeField] float maxZoom = 10f;
-    [SerializeField] float minZoom = 1f;
-    [SerializeField] bool scaleFullmapIconsWithZoom = false;
+    //[SerializeField] float zoomSpeed = 0.1f;
+    //[SerializeField] float maxZoom = 10f;
+    //[SerializeField] float minZoom = 1f;
+    //[SerializeField] bool scaleFullmapIconsWithZoom = false;
     private Vector3 defaultPosition; 
     private Vector3 defaultScale;
 
@@ -133,7 +133,7 @@ public class MiniMapController : MonoBehaviour
     private Vector2 halfVector2 = new Vector2(0.5f, 0.5f);
     public void SetMinimapMode(MinimapMode mode)
     {
-        const float defaultScaleWhenFullScreen = 1.3f;
+        //const float defaultScaleWhenFullScreen = 1.3f;
 
         if (mode == currentMiniMapMode)
             return;

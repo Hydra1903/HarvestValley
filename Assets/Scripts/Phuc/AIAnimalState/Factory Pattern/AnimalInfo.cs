@@ -2,8 +2,6 @@
 
 public class AnimalInfo : MonoBehaviour
 {
-    //public AnimalData animalData;
-
     public InfoPanelUI infoPanel;
     private bool isPlayerNearby = false;
     public AnimalData data;

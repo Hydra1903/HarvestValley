@@ -12,7 +12,7 @@ public class AnimalFedding : MonoBehaviour
     public int requiredGoatDays = 5;
 
     private bool canHarvest = false;
-    private int daysFed = 0;
+    public int daysFed = 0;
 
     private bool hasEatenToday = false;
     private bool isWaitingToEat = false;
@@ -63,20 +63,19 @@ public class AnimalFedding : MonoBehaviour
             daysFed++;
 
             string type = animalType == AnimalType.Sheep ? "Sheep" : "Goat";
-            Notification.Instance.ShowNotification($"[{type}] Ăn đủ hôm qua → DaysFed = {daysFed}");
+            //Notification.Instance.ShowNotification($"[{type}] Ăn đủ hôm qua, Số ngày ăn = {daysFed}");
 
             int requiredDays = (animalType == AnimalType.Sheep) ? requiredFeedDays : requiredGoatDays;
 
             if (daysFed >= requiredDays)
             {
                 canHarvest = true;
-                Notification.Instance.ShowNotification($"[{type}] Có thể thu hoạch!");
             }
         }
         else
         {
             string type = animalType == AnimalType.Sheep ? "Sheep" : "Goat";
-            Notification.Instance.ShowNotification($"[{type}] Hôm qua không ăn.");
+            //Notification.Instance.ShowNotification($"[{type}] Hôm qua không ăn.");
         }
 
         missedMealYesterday = !fedEnoughYesterday;
@@ -86,14 +85,14 @@ public class AnimalFedding : MonoBehaviour
     private IEnumerator DelayedEat()
     {
         isWaitingToEat = true;
-        yield return new WaitForSeconds(5f);
+        yield return new WaitForSeconds(60f);
         TryEat();
         isWaitingToEat = false;
     }
 
     private void TryEat()
     {
-        if (hasEatenToday) return; // chặn ăn 2 lần
+        if (hasEatenToday) return;
 
         if (HasHay())
         {
@@ -102,13 +101,13 @@ public class AnimalFedding : MonoBehaviour
             missedMealYesterday = false;
 
             string type = animalType == AnimalType.Sheep ? "Sheep" : "Goat";
-            Notification.Instance.ShowNotification($"[{type}] Ăn cỏ hôm nay.");
+            //Notification.Instance.ShowNotification($"[{type}] Ăn cỏ hôm nay.");
             GetComponentInParent<AnimalPen>()?.UpdateAnimalFeedStatusUI();
         }
         else
         {
             string type = animalType == AnimalType.Sheep ? "Sheep" : "Goat";
-            Notification.Instance.ShowNotification($"[{type}] Không có Hay Bale để ăn.");
+            Notification.Instance.ShowNotification($"[{type}] Không còn cỏ khô để ăn.");
         }
     }
 
@@ -123,7 +122,7 @@ public class AnimalFedding : MonoBehaviour
                 var slot = barn.slots[r, c];
                 if (slot != null && slot.item != null &&
                     slot.item.itemData != null &&
-                    slot.item.itemData.itemName == "Hay Bale" &&
+                    slot.item.itemData.itemName == "Cỏ khô" &&
                     slot.item.quantity > 0)
                     return true;
             }
@@ -142,7 +141,7 @@ public class AnimalFedding : MonoBehaviour
                 var slot = barn.slots[r, c];
                 if (slot != null && slot.item != null &&
                     slot.item.itemData != null &&
-                    slot.item.itemData.itemName == "Hay Bale" &&
+                    slot.item.itemData.itemName == "Cỏ khô" &&
                     slot.item.quantity > 0)
                 {
                     slot.item.quantity--;

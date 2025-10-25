@@ -4,11 +4,11 @@ using UnityEngine.EventSystems;
 public class BarnDropHandler : MonoBehaviour, IDropHandler
 {
     [Header("References")]
-    public Barn barn;                    // nếu có chứa vật phẩm chung
-    public BarnUI barnUI;                // UI tổng
-    public DragItem dragItem;            // item đang kéo
-    public ItemData hayBaleData;         // item Cỏ khô
-    public GettingHayhleCell hayFeedSystem; // hệ thống cell
+    public Barn barn;                    
+    public BarnUI barnUI;               
+    public DragItem dragItem;            
+    public ItemData hayBaleData;        
+    public GettingHayhleCell hayFeedSystem; 
 
     public void OnDrop(PointerEventData eventData)
     {
@@ -20,7 +20,7 @@ public class BarnDropHandler : MonoBehaviour, IDropHandler
         // chỉ chấp nhận Hay Bale
         if (dragged.itemData != hayBaleData)
         {
-            Notification.Instance.ShowNotification("Chỉ có cỏ khô mới được thêm vào Chuồng Nuôi");
+            Notification.Instance.ShowNotification("Chỉ có khô mới được thêm vào");
             return;
         }
 
@@ -44,7 +44,7 @@ public class BarnDropHandler : MonoBehaviour, IDropHandler
                     hayFeedSystem.AddGrassToCell(i, addAmount);
             }
 
-            Notification.Instance.ShowNotification($"Đã thêm {dragged.quantity} cỏ khô vào chuồng!");
+            Notification.Instance.ShowNotification($"Đã thêm {dragged.quantity}");
         }
         else if (barn != null)
         {
@@ -52,7 +52,7 @@ public class BarnDropHandler : MonoBehaviour, IDropHandler
             bool added = barn.AddItem(dragged.itemData, dragged.quantity);
             if (!added)
             {
-                Notification.Instance.ShowNotification("Chuồng đã đầy không thể thêm!");
+                Notification.Instance.ShowNotification("Chuồng đã đầy!");
                 return;
             }
         }

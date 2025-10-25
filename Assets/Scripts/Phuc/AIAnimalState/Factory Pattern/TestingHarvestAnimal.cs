@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class TestingHarvestAnimal : MonoBehaviour
 {
@@ -27,7 +27,6 @@ public class TestingHarvestAnimal : MonoBehaviour
             if (foundBarn != null)
             {
                 feeding.barn = foundBarn;
-                Debug.Log($"[Auto] Assign Barn cho {gameObject.name} trong scene.");
             }
         }
     }
@@ -65,7 +64,7 @@ public class TestingHarvestAnimal : MonoBehaviour
         }
         else
         {
-            Notification.Instance.ShowNotification($"Ch�a �? �i?u ki?n thu ho?ch. �? �n {feeding.GetDaysFed()} ng�y.");
+            Notification.Instance.ShowNotification($"Chưa đủ điều kiện để thu hoạch, đã ăn được {feeding.GetDaysFed()} ngày.");
         }
     }
 

@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -41,6 +41,18 @@ public class AnimalPenUIManager : MonoBehaviour
         UpdateAnimalCount();
         UpdateAnimalCells();
         UpdateFeedStatus();
+
+        var animals = pen.GetSpawnedAnimals();
+        foreach (var (animal, data) in animals)
+        {
+            var info = animal.GetComponent<AnimalInfo>();
+            if (info != null && pen.penInfoPanel != null &&
+                pen.penInfoPanel.IsShowingOwner(info))
+            {
+                pen.penInfoPanel.RefreshUI(info);
+                break;
+            }
+        }
     }
 
     public void UpdateAnimalCount()
@@ -73,7 +85,7 @@ public class AnimalPenUIManager : MonoBehaviour
     public void UpdateFeedStatus()
     {
         bool allGood = pen.AreAllAnimalsFed();
-        string text = allGood ? "Good" : "Bad";
+        string text = allGood ? "Tốt" : "Xấu";
         Color color = allGood ? Color.green : Color.red;
 
         if (penQualityText != null)
