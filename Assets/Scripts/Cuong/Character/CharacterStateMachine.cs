@@ -8,6 +8,7 @@ public class CharacterStateMachine : MonoBehaviour
     {
         if (Instance == null) Instance = this;
     }
+    public ECharacter currentCharacter;
     [HideInInspector] public ICharacterState currentState;
     public Animator animator;
     public Transform transformCharacter;

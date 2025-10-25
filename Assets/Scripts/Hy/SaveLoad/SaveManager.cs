@@ -6,12 +6,26 @@ using NUnit.Framework.Interfaces;
 
 public static class SaveManager
 {
+    public static GameSave game = new GameSave();
     static string PathFor(string slot) =>
         System.IO.Path.Combine(Application.persistentDataPath, $"farm_{slot}.json");
-    // SaveManager.cs
+    public static void CreateFarm(string slot, string nameFarm, ECharacter currentCharacter)
+    {
+        game = new GameSave();
+        game.hasFarm = true;
+        game.nameFarm = nameFarm;
+        game.currentCharacter = currentCharacter;
+        File.WriteAllText(PathFor(slot), JsonUtility.ToJson(game, true));
+    }
+    public static void DeleteFarm(string slot)
+    {
+        game.hasFarm = false;
+        game.nameFarm = null;
+        File.WriteAllText(PathFor(slot), JsonUtility.ToJson(game, true));
+    }
+    //SaveManager.cs
     public static void Save(string slot, IEnumerable<FarmManager> farms)
     {
-        var game = new GameSave();
         //foreach (var f in farms) game.grids.Add(f.BuildSave());
 
         #region ----- Save Building -----
@@ -47,7 +61,7 @@ public static class SaveManager
         #endregion
 
         #region ----- Save Character -----
-        game.currentCharacter = CharacterSelection.currentCharacter;
+        game.currentCharacter = CharacterStateMachine.Instance.currentCharacter;
 
         game.currentLevel = LevelManager.Instance.currentLevel;
         game.xp = Xp.Instance.xp;   
@@ -85,6 +99,7 @@ public static class SaveManager
         game.locationBarn = Barn.Instance.saveLocation;
         #endregion
 
+        game.currentCharacter = ECharacter.Rin;
         File.WriteAllText(PathFor(slot), JsonUtility.ToJson(game, true));
         Debug.Log(" Đường dẫn file JSON: " + game);
         Debug.Log(" Đường dẫn file JSON: " + PathFor(slot));
@@ -95,7 +110,7 @@ public static class SaveManager
         var path = PathFor(slot);
         if (!File.Exists(path)) return false;
 
-        var game = JsonUtility.FromJson<GameSave>(File.ReadAllText(path));
+        game = JsonUtility.FromJson<GameSave>(File.ReadAllText(path));
         var dict = new Dictionary<string, FarmGridSave>();
         foreach (var s in game.grids) dict[s.gridId] = s;
 
@@ -135,7 +150,7 @@ public static class SaveManager
         #endregion
 
         #region ----- Load Character -----
-        CharacterSelection.currentCharacter = game.currentCharacter;
+        CharacterStateMachine.Instance.currentCharacter = game.currentCharacter;
 
         LevelManager.Instance.currentLevel = game.currentLevel;
         Xp.Instance.xp = game.xp;
@@ -170,6 +185,22 @@ public static class SaveManager
         Barn.Instance.saveLocation = game.locationBarn;
         Barn.Instance.LoadItem();
         #endregion
+
+        #region ----- Load Character -----
+        CharacterStateMachine.Instance.currentCharacter = game.currentCharacter;
+        #endregion
+
+        #region ----- Load NameFarm -----
+        MainUIScreen.Instance.textNameFarm.text = game.nameFarm;
+        #endregion
         return true;     
     }
+    public static bool IsHasFarm()
+    {
+        var path = PathFor("slot1");
+        if (!File.Exists(path)) return false;
+        game = JsonUtility.FromJson<GameSave>(File.ReadAllText(path));
+        return game.hasFarm;
+    }
+
 }

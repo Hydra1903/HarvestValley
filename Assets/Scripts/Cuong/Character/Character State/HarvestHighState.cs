@@ -3,7 +3,7 @@ public class HarvestHighState : ICharacterState
     public void Enter(CharacterStateMachine characterStateMachine)
     {
         characterStateMachine.animator.Play("HarvestHigh");
-        if (CharacterSelection.currentCharacter == ECharacter.Rin)
+        if (CharacterStateMachine.Instance.currentCharacter == ECharacter.Rin)
         {
             characterStateMachine.animator.speed = 1.2f;
         }

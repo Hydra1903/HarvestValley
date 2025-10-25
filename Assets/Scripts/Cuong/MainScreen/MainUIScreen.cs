@@ -10,6 +10,11 @@ using System.Threading.Tasks;
 
 public class MainUIScreen : MonoBehaviour
 {
+    public static MainUIScreen Instance;
+    void Awake()
+    {
+        if (Instance == null) Instance = this;
+    }
     [Header("--- FPS UI ---")]
     public TextMeshProUGUI textFPS;
     private float deltaTime = 0.0f;
@@ -71,6 +76,10 @@ public class MainUIScreen : MonoBehaviour
     [Header("--- Action UI ---")]
     public Slider actionBar;
     public Image frame;
+
+    [Header("--- NameFarm UI ---")]
+    public TextMeshProUGUI textNameFarm;
+
     void Start()
     {
         UpdateXpUI();
@@ -336,7 +345,7 @@ public class MainUIScreen : MonoBehaviour
     #region ----- ACTION UI -----
     public void ActionTime(float timeAnimation)
     {
-        if (CharacterSelection.currentCharacter == ECharacter.Rin)
+        if (CharacterStateMachine.Instance.currentCharacter == ECharacter.Rin)
         {
             actionBar.value += Time.deltaTime * 1f / (timeAnimation * 0.8f);
         }

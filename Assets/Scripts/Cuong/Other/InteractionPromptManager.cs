@@ -72,6 +72,9 @@ public class InteractionPromptManager : MonoBehaviour
             case ETriggerCanvas.WaterWell:
                 WaterCan.Instance.FillTheWaterCan();
                 break;
+            case ETriggerCanvas.Bed:
+                UIStateMachine.Instance.ChangeState(UIStateMachine.Instance.sleepState);
+                break;
         }
     }
 }

@@ -9,13 +9,15 @@ public class GameTime : MonoBehaviour
 {
     public static GameTime Instance;
     public int day = 1;
-    public int month = 1;
-    public int year = 1;
+    public int month = 0;
+    public int year = 0;
     public int hour = 6;
     public int minute = 0;
 
     public float timeSpeed = 60f;
     private float timer;
+
+    public bool isPaused;
 
     //public bool canHarvestToday = false;
     public TimeOfDay currentTimeOfDay;
@@ -29,42 +31,41 @@ public class GameTime : MonoBehaviour
     }
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Z))
+        if (!isPaused)
         {
-            NextDay();
+            timer += Time.deltaTime * timeSpeed;
+            if (timer >= 60)
+            {
+                minute++; timer = 0;
+            }
+            if (minute >= 60)
+            {
+                minute = 0; hour++;
+                Weather.Instance.SetCurrentWeather();
+            }
+            if (hour >= 18)
+            {
+                currentTimeOfDay = TimeOfDay.Night;
+                mainUIScreen.UpdateIconTimeOfDay();
+                MusicBackground.Instance.ChangeBackgroundMusic();
+            }
+            if (hour >= 24)
+            {
+                NextDay();
+            }
+            if (day > 30)
+            {
+                day = 1; month++;
+                Season.Instance.ChangeOfSeasons();
+                Weather.Instance.SetListWeatherOfMonth();
+                mainUIScreen.UpdateWeatherTimeline();
+            }
+            if (month >= 4)
+            {
+                month = 0; year++;
+            }
+            mainUIScreen.UpdateTime();
         }
-        timer += Time.deltaTime * timeSpeed;
-        if (timer >= 60)
-        {
-            minute++; timer = 0;
-        }
-        if (minute >= 60)
-        {
-            minute = 0; hour++;
-            Weather.Instance.SetCurrentWeather();
-        }
-        if (hour >= 18)
-        {
-            currentTimeOfDay = TimeOfDay.Night;
-            mainUIScreen.UpdateIconTimeOfDay();
-            MusicBackground.Instance.ChangeBackgroundMusic();
-        }
-        if (hour >= 24)
-        {
-            NextDay();
-        }
-        if (day > 30)
-        {
-            day = 1; month++;
-            Season.Instance.ChangeOfSeasons();
-            Weather.Instance.SetListWeatherOfMonth();
-            mainUIScreen.UpdateWeatherTimeline();
-        }
-        if (month > 4)
-        {
-            month = 1; year++;
-        }
-        mainUIScreen.UpdateTime();
     }
     public void NextDay()
     {
@@ -80,10 +81,10 @@ public class GameTime : MonoBehaviour
     }
     public void PauseGame()
     {
-        Time.timeScale = 0f;
+        isPaused = true;
     }
     public void UnpauseGame()
     {
-        Time.timeScale = 1f;
+        isPaused = false;
     }
 }

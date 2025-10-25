@@ -47,6 +47,9 @@ public class FarmGridSave
 [Serializable]
 public class GameSave
 {
+    public bool hasFarm;
+    public string nameFarm;
+
     public List<FarmGridSave> grids = new();
 
     #region ----- Building -----
@@ -116,4 +119,5 @@ public class GameSave
     public int[] quantityBarn;
     public bool[] locationBarn;
     #endregion
+
 }

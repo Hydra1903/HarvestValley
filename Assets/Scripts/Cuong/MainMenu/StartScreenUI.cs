@@ -1,11 +1,15 @@
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class StartScreenUI : MonoBehaviour
 {
     public Button buttonNewGame;
     public Button buttonBack;
     public Button buttonSetting;
+    public TMP_InputField nameFarm;
+    public GameObject confirmBoard;
+    public GameStartManager gameStartManager;
     void Start()
     {
         buttonNewGame.onClick.AddListener(() => MainMenuStateMachine.Instance.ChangeState(MainMenuStateMachine.Instance.characterSelectionState));
@@ -19,5 +23,16 @@ public class StartScreenUI : MonoBehaviour
     public void SwitchRight()
     {
         CharacterSelection.Instance.ChangeCharacter(1);
+    }
+    public void ConpleteCreateNewFarm()
+    {
+        if (SaveManager.IsHasFarm())
+        {
+            confirmBoard.SetActive(true);
+        }
+        else
+        {
+            gameStartManager.CreateNewFarm();
+        }
     }
 }
