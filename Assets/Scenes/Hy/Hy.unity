@@ -3504,6 +3504,9 @@ MonoBehaviour:
   priceBuildingGreenhouse: 8813000050460000
   isUnlockGreenhouse1: 0
   isUnlockGreenhouse2: 0
+  isBuilding: 
+  constructionDays: 
+  dayCounter: 
 --- !u!114 &116310464
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6181,17 +6184,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6348e51cddb9c4b4a9b0a5787f6651e4, type: 3}
---- !u!114 &195083295 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 677667916317893643, guid: 435a41237fed0bd43b2e65541818b748, type: 3}
-  m_PrefabInstance: {fileID: 644661930}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: db502f250a185954dbb06651e207d8bc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &195740993
 GameObject:
   m_ObjectHideFlags: 0
@@ -15311,7 +15303,6 @@ MonoBehaviour:
   Character: []
   currentLocation: 0
   pages: {fileID: 0}
-  currentCharacter: 0
 --- !u!1 &527167144 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7667896734728062610, guid: 435a41237fed0bd43b2e65541818b748, type: 3}
@@ -26592,6 +26583,44 @@ MonoBehaviour:
   rows: 1
   columns: 1
   limitCapacity: 10
+  saveItemData:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  saveQuantity: 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+  saveLocation: 0000000000000000000000000000000000000000000000000000000000000000000000
 --- !u!114 &865307336
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -36132,6 +36161,7 @@ MonoBehaviour:
   - {fileID: 1465564378}
   hoe: {fileID: 11400000, guid: 018d6c8abe0be5647afe10f574b0a4c9, type: 2}
   currentModeHoe: 0
+  currentState: 1
 --- !u!4 &1255933023 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4069626525717530, guid: ca7f16bf3be62a243b83d706562c9a6d, type: 3}
@@ -41039,6 +41069,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   farms:
   - {fileID: 615630006}
+  inventoryUI: {fileID: 0}
 --- !u!4 &1421684929
 Transform:
   m_ObjectHideFlags: 0
@@ -52717,6 +52748,7 @@ MonoBehaviour:
   houseDoor: {fileID: 8300000, guid: 413705c74d533294a8b559bc4a79cba4, type: 3}
   penDoor: {fileID: 8300000, guid: e02596766b0479d4fb992c6a35ebfdc2, type: 3}
   barnDoor: {fileID: 8300000, guid: 413705c74d533294a8b559bc4a79cba4, type: 3}
+  greenhouseDoor: {fileID: 0}
 --- !u!1 &1842270687
 GameObject:
   m_ObjectHideFlags: 0
@@ -54628,6 +54660,44 @@ MonoBehaviour:
   rows: 1
   columns: 1
   limitCapacity: 10
+  saveItemData:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  saveQuantity: 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+  saveLocation: 0000000000000000000000000000000000000000000000000000000000000000000000
 --- !u!224 &1909485587
 RectTransform:
   m_ObjectHideFlags: 0
@@ -60937,7 +61007,7 @@ PrefabInstance:
     - target: {fileID: 438798438003480844, guid: 04ff1e5a8c0e93b4ea05031cac0e69bc, type: 3}
       propertyPath: hotbarUI
       value: 
-      objectReference: {fileID: 195083295}
+      objectReference: {fileID: 0}
     - target: {fileID: 705360918761144803, guid: 04ff1e5a8c0e93b4ea05031cac0e69bc, type: 3}
       propertyPath: m_Mesh
       value: 
@@ -60965,7 +61035,7 @@ PrefabInstance:
     - target: {fileID: 1653327620261290650, guid: 04ff1e5a8c0e93b4ea05031cac0e69bc, type: 3}
       propertyPath: hotbarUI
       value: 
-      objectReference: {fileID: 195083295}
+      objectReference: {fileID: 0}
     - target: {fileID: 1653327620261290650, guid: 04ff1e5a8c0e93b4ea05031cac0e69bc, type: 3}
       propertyPath: m_Enabled
       value: 1
@@ -60977,7 +61047,7 @@ PrefabInstance:
     - target: {fileID: 1874579124768739798, guid: 04ff1e5a8c0e93b4ea05031cac0e69bc, type: 3}
       propertyPath: hotbarUI
       value: 
-      objectReference: {fileID: 195083295}
+      objectReference: {fileID: 0}
     - target: {fileID: 1874579124768739798, guid: 04ff1e5a8c0e93b4ea05031cac0e69bc, type: 3}
       propertyPath: m_Enabled
       value: 1
@@ -61053,7 +61123,7 @@ PrefabInstance:
     - target: {fileID: 4643064038542394889, guid: 04ff1e5a8c0e93b4ea05031cac0e69bc, type: 3}
       propertyPath: hotbar
       value: 
-      objectReference: {fileID: 195083295}
+      objectReference: {fileID: 0}
     - target: {fileID: 4643064038542394889, guid: 04ff1e5a8c0e93b4ea05031cac0e69bc, type: 3}
       propertyPath: mainCamera
       value: 
