@@ -208,8 +208,7 @@ public class FarmInput : MonoBehaviour
             if (Input.GetMouseButtonDown(0))
             {
                 if (!soilManager.CanStartWaterAt(gridPos))
-                {
-                    Notification.Instance?.ShowNotification("Không thể tưới nước tại đây!");
+                {                   
                     return;
                 }
 

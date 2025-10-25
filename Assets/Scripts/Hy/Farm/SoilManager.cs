@@ -431,6 +431,8 @@ public class SoilManager : MonoBehaviour
             return false;
         }
 
+
+
         // bật overlay nước
         SetAreaWaterOverlay(idx, true);
         SetAreaHole(idx, false);
@@ -638,12 +640,27 @@ public class SoilManager : MonoBehaviour
 
     public bool CanStartWaterAt(Vector2Int gridPos)
     {
-        if (!TryFindAreaContaining(gridPos.x, gridPos.y, out int idx)) return false;
+        if (!TryFindAreaContaining(gridPos.x, gridPos.y, out int idx))
+        {
+            Notification.Instance?.ShowNotification("Không thể tưới nước tại đây!");
+            return false;
+        }    
+        if (waterCost > 0 && (Mp.Instance == null || Mp.Instance.mp < waterCost)) 
+        {
+            Notification.Instance?.ShowNotification("Không đủ năng lượng!");
+            return false;
+        }
 
-        if (waterCost > 0 && (Mp.Instance == null || Mp.Instance.mp < waterCost)) return false;
-
-        if (_wateredAreaIdx.Contains(idx)) return false;
-
+        if (_wateredAreaIdx.Contains(idx))
+        {
+            Notification.Instance?.ShowNotification("Đã được tưới!");
+            return false;
+        }
+        if (WaterCan.Instance.currentWater <= 0)
+        {
+            Notification.Instance?.ShowNotification("Hết nước!");
+            return false;
+        }
         return true;
     }
 
