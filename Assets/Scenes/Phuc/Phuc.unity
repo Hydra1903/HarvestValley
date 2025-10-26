@@ -3686,7 +3686,7 @@ PrefabInstance:
     - target: {fileID: 438798438003480844, guid: 04ff1e5a8c0e93b4ea05031cac0e69bc, type: 3}
       propertyPath: hotbarUI
       value: 
-      objectReference: {fileID: 2002038968}
+      objectReference: {fileID: 0}
     - target: {fileID: 705360918761144803, guid: 04ff1e5a8c0e93b4ea05031cac0e69bc, type: 3}
       propertyPath: m_Mesh
       value: 
@@ -3710,7 +3710,7 @@ PrefabInstance:
     - target: {fileID: 1653327620261290650, guid: 04ff1e5a8c0e93b4ea05031cac0e69bc, type: 3}
       propertyPath: hotbarUI
       value: 
-      objectReference: {fileID: 2002038968}
+      objectReference: {fileID: 0}
     - target: {fileID: 1676275782332936449, guid: 04ff1e5a8c0e93b4ea05031cac0e69bc, type: 3}
       propertyPath: m_Mesh
       value: 
@@ -3718,7 +3718,7 @@ PrefabInstance:
     - target: {fileID: 1874579124768739798, guid: 04ff1e5a8c0e93b4ea05031cac0e69bc, type: 3}
       propertyPath: hotbarUI
       value: 
-      objectReference: {fileID: 2002038968}
+      objectReference: {fileID: 0}
     - target: {fileID: 3679673725498865775, guid: 04ff1e5a8c0e93b4ea05031cac0e69bc, type: 3}
       propertyPath: m_IsActive
       value: 1
@@ -3786,7 +3786,7 @@ PrefabInstance:
     - target: {fileID: 4643064038542394889, guid: 04ff1e5a8c0e93b4ea05031cac0e69bc, type: 3}
       propertyPath: hotbar
       value: 
-      objectReference: {fileID: 2002038968}
+      objectReference: {fileID: 0}
     - target: {fileID: 4643064038542394889, guid: 04ff1e5a8c0e93b4ea05031cac0e69bc, type: 3}
       propertyPath: mainCamera
       value: 
@@ -8399,6 +8399,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 160199060852323496, guid: 435a41237fed0bd43b2e65541818b748, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 162940777696921721, guid: 435a41237fed0bd43b2e65541818b748, type: 3}
       propertyPath: m_IsActive
       value: 0
@@ -9369,6 +9373,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8092053072822292653, guid: 435a41237fed0bd43b2e65541818b748, type: 3}
       propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8092674451858955688, guid: 435a41237fed0bd43b2e65541818b748, type: 3}
+      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8117584088983495622, guid: 435a41237fed0bd43b2e65541818b748, type: 3}
@@ -16739,17 +16747,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1997397655}
   m_CullTransparentMesh: 1
---- !u!114 &2002038968 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 677667916317893643, guid: 435a41237fed0bd43b2e65541818b748, type: 3}
-  m_PrefabInstance: {fileID: 1230543344}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: db502f250a185954dbb06651e207d8bc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &2017356892
 GameObject:
   m_ObjectHideFlags: 0
