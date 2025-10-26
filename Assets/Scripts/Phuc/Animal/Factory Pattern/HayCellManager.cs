@@ -12,7 +12,7 @@ public class HayCellManager : MonoBehaviour
     private void Start()
     {
         hayCells.Clear();
-        HayCell[] cells = cellsParent.GetComponentsInChildren<HayCell>(true); // true = bao gồm inactive
+        HayCell[] cells = cellsParent.GetComponentsInChildren<HayCell>(true);
         foreach (var cell in cells)
         {
             cell.manager = this;

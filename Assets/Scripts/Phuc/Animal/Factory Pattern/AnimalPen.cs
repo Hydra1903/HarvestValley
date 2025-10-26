@@ -150,7 +150,7 @@ public class AnimalPen : MonoBehaviour
             allowedTags.Clear();
 
         uiManager?.RefreshUI();
-        SaveLoadSystem.SaveFarm(FindAnyObjectByType<PensManager>().allPens);
+        //SaveLoadSystem.SaveFarm(FindAnyObjectByType<PensManager>().allPens, FindAnyObjectByType<PensManager>().allHayManagers);
     }
     public void UpdateSavedAnimalData(GameObject animal)
     {

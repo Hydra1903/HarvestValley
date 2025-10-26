@@ -6,6 +6,8 @@ public class PensManager : MonoBehaviour
 {
     [Header("References")]
     public List<AnimalPen> allPens = new List<AnimalPen>();
+    public List<HayCellManager> allHayManagers= new List<HayCellManager>();
+    public ItemData hayBaleData;
     public Button saveButton;
     public Button loadButton;
 
@@ -21,19 +23,19 @@ public class PensManager : MonoBehaviour
 
     public void SaveFarm()
     {
-        SaveLoadSystem.SaveFarm(allPens);
+        SaveLoadSystem.SaveFarm(allPens/*, allHayManagers*/);
     }
 
     public void LoadFarm()
     {
-        SaveLoadSystem.LoadFarm(allPens);
+        SaveLoadSystem.LoadFarm(allPens/*, allHayManagers, hayBaleData*/);
 
         foreach (var pen in allPens)
             pen.uiManager?.RefreshUI();
     }
 
-    private void OnApplicationQuit()
-    {
-        SaveLoadSystem.SaveFarm(allPens);
-    }
+    //private void OnApplicationQuit()
+    //{
+    //    SaveLoadSystem.SaveFarm(allPens, allHayManagers);
+    //}
 }

@@ -28,7 +28,7 @@ public class HayCell : MonoBehaviour, IDropHandler
 
     [Header("Cell Info")]
     public InventoryItem item;
-    public int maxCapacity = 20; // Giới hạn mặc định
+    public int maxCapacity = 20;
     public bool isEmpty = true;
 
     [Header("References")]
