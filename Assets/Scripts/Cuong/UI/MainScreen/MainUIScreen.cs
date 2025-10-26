@@ -80,12 +80,22 @@ public class MainUIScreen : MonoBehaviour
     [Header("--- NameFarm UI ---")]
     public TextMeshProUGUI textNameFarm;
 
+    [Header("--- AvatarCharacter UI ---")]
+    public Sprite[] avatarCharacter;
+    public Image avatarUI;
+    public Image iconMap;
+
     void Start()
     {
         UpdateXpUI();
         UpdateMpUI();
         UpdateGold();
+        SetAvatarCharacter();
+        UpdateSeason();
+        UpdateCalendar();
+        UpdateWeather();
         InvokeRepeating(nameof(UpdateFPSDisplay), 0, 0.5f);
+        UpdateWeatherTimeline();
     }
     void Update()
     {
@@ -357,6 +367,33 @@ public class MainUIScreen : MonoBehaviour
     public void ResetBar()
     {
         actionBar.value = 0;       
+    }
+    #endregion
+
+    #region ----- AVATAR CHARACTER UI -----
+    public void SetAvatarCharacter()
+    {
+        switch (CharacterStateMachine.Instance.currentCharacter)
+        {
+            case ECharacter.Rin:
+                avatarUI.sprite = avatarCharacter[0];
+                break;
+            case ECharacter.May:
+                avatarUI.sprite = avatarCharacter[1];
+                break;
+            case ECharacter.Kai:
+                avatarUI.sprite = avatarCharacter[2];
+                break;
+            case ECharacter.Max:
+                avatarUI.sprite = avatarCharacter[3];
+                break;
+            case ECharacter.Hana:
+                avatarUI.sprite = avatarCharacter[4];
+                break;
+            case ECharacter.Leon:
+                avatarUI.sprite = avatarCharacter[5];
+                break;
+        }
     }
     #endregion
 }

@@ -21,7 +21,8 @@ public class GameStartManager : MonoBehaviour
         if (startScreenUI.nameFarm.text != "")
         {
             CharacterSelection.Instance.SelectCharacter();
-            SaveManager.CreateFarm("Slot1", startScreenUI.nameFarm.text, CharacterSelection.Instance.currentCharacter);
+            SaveManager.CreateFarm("Slot1", startScreenUI.nameFarm.text);
+            SaveManager.SaveCharacter("Slot1");
             Loading.Instance.ShowScene1to2Loading();
         }
         else

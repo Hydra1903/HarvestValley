@@ -51,7 +51,7 @@ public class FarmManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.N))
         {
             plantManager.AdvanceDay();
-            GameTime.Instance.NextDay();
+            UIStateMachine.Instance.ChangeState(UIStateMachine.Instance.mainScreenState);
         }
 
         if(Weather.Instance.currentWeather == WeatherState.Rainy || Weather.Instance.currentWeather == WeatherState.Stormy)

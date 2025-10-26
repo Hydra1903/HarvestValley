@@ -34,7 +34,7 @@ public class CharacterStateMachine : MonoBehaviour
     public float mouseSensitivity;
     public Transform characterBody;
     public Transform cameraCharacter;
-    float xRotation = 0f;
+    public float xRotation = 0f;
 
     public MainUIScreen mainUIScreen;
 

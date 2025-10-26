@@ -23,7 +23,7 @@ public class MainScreenState : IUIState
         UIStateMachine.Instance.inputCooldown = 1f;
 
         MusicBackground.Instance.audioSourceMusic.volume *= 2f;
-
+        MainUIScreen.Instance.UpdateGold();
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }

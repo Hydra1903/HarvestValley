@@ -9,12 +9,44 @@ public static class SaveManager
     public static GameSave game = new GameSave();
     static string PathFor(string slot) =>
         System.IO.Path.Combine(Application.persistentDataPath, $"farm_{slot}.json");
-    public static void CreateFarm(string slot, string nameFarm, ECharacter currentCharacter)
+    public static void CreateFarm(string slot, string nameFarm)
     {
         game = new GameSave();
         game.hasFarm = true;
         game.nameFarm = nameFarm;
-        game.currentCharacter = currentCharacter;
+        File.WriteAllText(PathFor(slot), JsonUtility.ToJson(game, true));
+    }
+    public static void SaveCharacter(string slot)
+    {
+        game.currentCharacter = CharacterSelection.Instance.currentCharacter;
+        switch (game.currentCharacter)
+        {
+            case ECharacter.Rin:
+                game.mp = 100;
+                break;
+            case ECharacter.May:
+                game.mp = 85;
+                break;
+            case ECharacter.Kai:
+                game.mp = 110;
+                break;
+            case ECharacter.Max:
+                game.mp = 100;
+                break;
+            case ECharacter.Hana:
+                game.mp = 90;
+                break;
+            case ECharacter.Leon:
+                game.mp = 130;
+                break;
+        }
+        File.WriteAllText(PathFor(slot), JsonUtility.ToJson(game, true));
+    }
+    public static void SaveListWeather(string slot)
+    {
+        #region ----- Save Weather -----
+        game.listWeatherOfMonth = Weather.Instance.listWeatherOfMonth;
+        #endregion
         File.WriteAllText(PathFor(slot), JsonUtility.ToJson(game, true));
     }
     public static void DeleteFarm(string slot)
@@ -60,9 +92,7 @@ public static class SaveManager
         game.totalMoneyEarnedCount = Achivements.Instance.totalMoneyEarnedCount;
         #endregion
 
-        #region ----- Save Character -----
-        game.currentCharacter = CharacterStateMachine.Instance.currentCharacter;
-
+        #region ----- Save Stats -----
         game.currentLevel = LevelManager.Instance.currentLevel;
         game.xp = Xp.Instance.xp;   
         game.gold = Gold.Instance.gold;
@@ -75,16 +105,11 @@ public static class SaveManager
         game.year = GameTime.Instance.year;
         #endregion
 
-        #region ----- Save Weather -----
-        game.listWeatherOfMonth = Weather.Instance.listWeatherOfMonth;
-        #endregion
-
         #region ----- Save Season -----
         game.currentSeason = Season.Instance.currentSeason;
         #endregion
 
         #region ----- Save Inventory -----
-        game.itemDataInventory = new ItemData[32];
         Inventory.Instance.SaveItem();
         game.itemDataInventory = Inventory.Instance.saveItemData;
         game.quantityInventory = Inventory.Instance.saveQuantity;
@@ -92,14 +117,11 @@ public static class SaveManager
         #endregion
 
         #region ----- Save Barn -----
-        game.itemDataBarn = new ItemData[35];
         Barn.Instance.SaveItem();
         game.itemDataBarn = Barn.Instance.saveItemData;
         game.quantityBarn = Barn.Instance.saveQuantity;
         game.locationBarn = Barn.Instance.saveLocation;
         #endregion
-
-        game.currentCharacter = ECharacter.Rin;
         File.WriteAllText(PathFor(slot), JsonUtility.ToJson(game, true));
         Debug.Log(" Đường dẫn file JSON: " + game);
         Debug.Log(" Đường dẫn file JSON: " + PathFor(slot));

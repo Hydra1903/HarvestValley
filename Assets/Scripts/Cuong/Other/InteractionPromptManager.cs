@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class InteractionPromptManager : MonoBehaviour
 {
@@ -73,7 +73,15 @@ public class InteractionPromptManager : MonoBehaviour
                 WaterCan.Instance.FillTheWaterCan();
                 break;
             case ETriggerCanvas.Bed:
-                UIStateMachine.Instance.ChangeState(UIStateMachine.Instance.sleepState);
+                if (GameTime.Instance.hour >= 6)
+                {
+                    UIStateMachine.Instance.ChangeState(UIStateMachine.Instance.sleepState);
+                    Mp.Instance.ResetMp(false);
+                }
+                else
+                {
+                    Notification.Instance.ShowNotification("Chưa đến giờ ngủ!");
+                }
                 break;
         }
     }

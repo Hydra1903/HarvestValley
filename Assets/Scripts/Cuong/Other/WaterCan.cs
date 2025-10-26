@@ -37,15 +37,29 @@ public class WaterCan : MonoBehaviour
     }
     public void FillTheWaterCan()
     {
-        if (currentWater < maxWater)
+        if (HotBarUI.Instance.currentItem != null)
         {
-            currentWater = maxWater;
-            sliderWaterCan.value = 1;
-            textCurrentWaterCan.text = "100";
+            if (HotBarUI.Instance.currentItem.itemData.itemName == "Watering Can")
+            {
+                if (currentWater < maxWater)
+                {
+                    currentWater = maxWater;
+                    sliderWaterCan.value = 1;
+                    textCurrentWaterCan.text = "100";
+                }
+                else
+                {
+                    Notification.Instance.ShowNotification("Đã đầy nước!");
+                }
+            }
+            else
+            {
+                Notification.Instance.ShowNotification("Chưa cầm bình nước tưới!");
+            }
         }
         else
         {
-            Notification.Instance.ShowNotification("Đã đầy nước!");
+            Notification.Instance.ShowNotification("Chưa cầm bình nước tưới!");
         }
 
     }

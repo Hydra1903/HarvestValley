@@ -9,7 +9,7 @@ public class AnimationEventSleeping : MonoBehaviour
     }
     public void NextDayAndSave()
     {
-        GameTime.Instance.NextDay();
+        GameTime.Instance.NextDay();       
         GameController.Instance.SaveGame();
     }
 }

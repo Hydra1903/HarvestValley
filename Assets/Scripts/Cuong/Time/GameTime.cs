@@ -16,6 +16,7 @@ public class GameTime : MonoBehaviour
 
     public float timeSpeed = 60f;
     private float timer;
+    private float timerPlusMp;
 
     public bool isPaused;
 
@@ -34,6 +35,15 @@ public class GameTime : MonoBehaviour
         if (!isPaused)
         {
             timer += Time.deltaTime * timeSpeed;
+            timerPlusMp += Time.deltaTime * timeSpeed;
+            if (timerPlusMp >= 1000)
+            {
+                if (Mp.Instance.mp != 100)
+                {
+                    Mp.Instance.PlusMp(1);
+                }
+                timerPlusMp = 0;
+            }
             if (timer >= 60)
             {
                 minute++; timer = 0;
@@ -51,14 +61,8 @@ public class GameTime : MonoBehaviour
             }
             if (hour >= 24)
             {
-                NextDay();
-            }
-            if (day > 30)
-            {
-                day = 1; month++;
-                Season.Instance.ChangeOfSeasons();
-                Weather.Instance.SetListWeatherOfMonth();
-                mainUIScreen.UpdateWeatherTimeline();
+                UIStateMachine.Instance.ChangeState(UIStateMachine.Instance.sleepState);
+                Mp.Instance.ResetMp(true);
             }
             if (month >= 4)
             {
@@ -72,12 +76,17 @@ public class GameTime : MonoBehaviour
         hour = 6; minute = 0; day++;
         currentTimeOfDay = TimeOfDay.Day;
         mainUIScreen.UpdateIconTimeOfDay();
-        if (day <= 30)
+        if (day > 30)
         {
-            mainUIScreen.UpdateWeatherTimeline();
+            day = 1; month++;
+            Season.Instance.ChangeOfSeasons();
+            Weather.Instance.SetListWeatherOfMonth();
+
         }
+        mainUIScreen.UpdateWeatherTimeline();
         FarmStallUI.Instance.CanCollect();
         Builder.Instance.CheckCanBuild();
+        SetLocationCharacter();
     }
     public void PauseGame()
     {
@@ -87,4 +96,13 @@ public class GameTime : MonoBehaviour
     {
         isPaused = false;
     }
+    public void SetLocationCharacter()
+    {
+        CharacterController controller = CharacterStateMachine.Instance.GetComponent<CharacterController>();
+        controller.enabled = false;
+        CharacterStateMachine.Instance.transform.position = new Vector3(-4.591611f, 0.79f, -4.98656f);
+        CharacterStateMachine.Instance.transform.eulerAngles = new Vector3(0f, 37.222f, 0f);
+        controller.enabled = true; 
+    }
+    //dsfd
 }

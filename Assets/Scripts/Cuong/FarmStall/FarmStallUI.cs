@@ -87,9 +87,12 @@ public class FarmStallUI : MonoBehaviour
 
     public void CanCollect()
     {
-        buttonCollect.interactable = true;
-        currentState = EFarmStallState.ReadyToCollect;
-        UpdateUI();
+        if (farmStall.totalAmount > 0)
+        {
+            buttonCollect.interactable = true;
+            currentState = EFarmStallState.ReadyToCollect;
+            UpdateUI();
+        }     
     }
     public void UpdateReceiveDataItem()
     {
