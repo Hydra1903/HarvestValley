@@ -19,5 +19,4 @@ public class HoeModeUI : MonoBehaviour
         if (ChangeInteract.Instance.currentModeHand == EModeHand.Mode1)  farmInput.SetHandMode(HandMode.Harvest);
         if (ChangeInteract.Instance.currentModeHand == EModeHand.Mode2) farmInput.SetHandMode(HandMode.Remove);
     }
-
 }
