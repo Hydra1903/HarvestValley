@@ -205,7 +205,7 @@ public class SoilManager : MonoBehaviour
 
         PlaceArea(start.x, start.y, size);
         Mp.Instance.UseMp(mpCost);
-        FindAnyObjectByType<FarmGrid>()?.UpdateGridColors();
+        FindAnyObjectByType<SoilGrid>()?.UpdateGridColors();
     }
 
     public void Flatten(Vector2Int gridPos)
@@ -223,7 +223,7 @@ public class SoilManager : MonoBehaviour
         if (FlattenAreaAt(gridPos))
         {
             Mp.Instance?.UseMp(cost);
-            FindAnyObjectByType<FarmGrid>()?.UpdateGridColors();
+            FindAnyObjectByType<SoilGrid>()?.UpdateGridColors();
             HideGhosts();
         }
         else
@@ -288,9 +288,9 @@ public class SoilManager : MonoBehaviour
         );
 
         var prefab = (size == 5) ? dugSoilPrefab : holePrefab;
-        var go = prefab ? Instantiate(prefab, pos, (size == 3 ? RandomizeRotation() : Quaternion.identity)) : null;
+        var go = prefab ? Instantiate(prefab, pos,  Quaternion.identity) : null;
         _areaObjects.Add(go);
-        FindAnyObjectByType<FarmGrid>()?.UpdateGridColors();
+        FindAnyObjectByType<SoilGrid>()?.UpdateGridColors();
     }
     //Xóa đất
     public bool FlattenAreaAt(Vector2Int gridPos)
@@ -354,12 +354,6 @@ public class SoilManager : MonoBehaviour
                 return true;
         }
         return false;
-    }
-
-    private Quaternion RandomizeRotation()
-    {
-        float y = Random.Range(0f, 360f);
-        return Quaternion.Euler(0f, y, 0f);
     }
 
     private struct ToolInfo
@@ -774,6 +768,7 @@ public class SoilManager : MonoBehaviour
         ResetDailyWater();
     }
 
+    //Lấy kích thước chế độ hoe
     public int GetSizeByHoeMode()
     {
         switch (hoeMode)
@@ -790,9 +785,30 @@ public class SoilManager : MonoBehaviour
         hoeMode = mode;
         if (hoeMode == HoeMode.Flatten) HideGhosts();
     }
+
+    //Có máy tưới tại vị trí hiện tại hay không
     public bool HasSprinklerAt(int gx, int gy)
     {
         return IsSprinklerAt(gx, gy);
+    }
+
+    //Lấy GameObject tại vị trí 
+    public GameObject GetAreaObjectAt(Vector2Int gridPos)
+    {
+        if (TryFindAreaContaining(gridPos.x, gridPos.y, out int idx))
+        {
+            if (idx >= 0 && idx < _areaObjects.Count)
+                return _areaObjects[idx];
+        }
+        return null;
+    }
+
+    //Lấy vị trí theo index
+    public GameObject GetAreaObjectByIndex(int index)
+    {
+        if (index >= 0 && index < _areaObjects.Count)
+            return _areaObjects[index];
+        return null;
     }
 
 }

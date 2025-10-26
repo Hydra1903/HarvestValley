@@ -11,6 +11,8 @@ GameObject:
   - component: {fileID: 6158246910437809743}
   - component: {fileID: 7615254522273450907}
   - component: {fileID: 7258780302032358471}
+  - component: {fileID: 6523105857062521177}
+  - component: {fileID: -5038520293185971688}
   m_Layer: 0
   m_Name: Hole
   m_TagString: Untagged
@@ -88,6 +90,38 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &6523105857062521177
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3019066388561133971}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  outlineMode: 2
+  outlineColor: {r: 1, g: 1, b: 1, a: 1}
+  outlineWidth: 0
+  precomputeOutline: 0
+  bakeKeys: []
+  bakeValues: []
+--- !u!114 &-5038520293185971688
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3019066388561133971}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2fcd5987502108e4a9f6ccea84651bb5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  outlineColor: {r: 0.9843137, g: 0.47843137, b: 0.043137256, a: 1}
+  defaultWidth: 0
 --- !u!1 &7848309558283304286
 GameObject:
   m_ObjectHideFlags: 0
