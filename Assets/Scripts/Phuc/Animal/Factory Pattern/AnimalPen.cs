@@ -6,8 +6,10 @@ public class AnimalPen : MonoBehaviour
     [Header("General Info")]
     public int penId;
     public Barn barnReference;
+    public HayCellManager penHayCellManager;
     public AnimalPenUIManager uiManager;
     public InfoPanelUI penInfoPanel;
+    public ItemData hayItemData;
     [Header("Spawn Settings")]
     public Transform spawnPointType1;
     public Transform spawnPointType2;
@@ -17,6 +19,17 @@ public class AnimalPen : MonoBehaviour
     private List<(GameObject animal, AnimalData data)> spawnedAnimals = new();
     private HashSet<string> allowedTags = new();
 
+    public List<AnimalPenSaveInfo> savedAnimals = new();
+    [System.Serializable]
+    public class AnimalPenSaveInfo
+    {
+        public string animalID;
+        public AnimalFedding.FeedingAnimalType animalType;
+        public string variant;
+        public int daysFed;
+        public bool canHarvest;
+    }
+    
     private void Start()
     {
         if (InfoPanelManager.instance != null)
@@ -53,9 +66,29 @@ public class AnimalPen : MonoBehaviour
         }
 
         spawnedAnimals.Add((animal, data));
-        var info = animal.GetComponent<AnimalInfo>();
-        if (info != null && penInfoPanel != null)
-            info.InjectPanel(penInfoPanel);
+
+        var feeding = animal.GetComponent<AnimalFedding>();
+        if (feeding != null)
+        {
+            feeding.barn = barnReference;
+            feeding.hayCellManager = penHayCellManager;
+            var info = new AnimalPenSaveInfo
+            {
+                animalID = animal.name,
+                animalType = feeding.animalTypes,
+                daysFed = feeding.daysFed,
+
+                canHarvest = feeding.CanHarvest(),
+                variant = animal.name.Contains("Black") ? "Black" :
+                          animal.name.Contains("Cream") ? "Cream" : "White"
+            };
+            savedAnimals.Add(info);
+        }
+
+        var infos = animal.GetComponent<AnimalInfo>();
+        if (infos != null && penInfoPanel != null)
+            infos.InjectPanel(penInfoPanel);
+
         return true;
     }
 
@@ -63,10 +96,16 @@ public class AnimalPen : MonoBehaviour
     {
         int index = spawnedAnimals.FindIndex(a => a.animal == animal);
         if (index >= 0)
+        {
+            if (index < savedAnimals.Count)
+                savedAnimals.RemoveAt(index);
             spawnedAnimals.RemoveAt(index);
+        }
 
         if (spawnedAnimals.Count == 0)
+        {
             allowedTags.Clear();
+        }
     }
     public bool AreAllAnimalsFed()
     {
@@ -79,18 +118,17 @@ public class AnimalPen : MonoBehaviour
             var feeding = animal.GetComponent<AnimalFedding>();
             if (feeding == null) continue;
 
-            if (feeding.animalType == AnimalFedding.AnimalType.Sheep)
+            if (feeding.animalTypes == AnimalFedding.FeedingAnimalType.Sheep)
             {
                 if (feeding.GetMealsToday() < 1)
                     return false;
             }
-            else if (feeding.animalType == AnimalFedding.AnimalType.Goat)
+            else if (feeding.animalTypes == AnimalFedding.FeedingAnimalType.Goat)
             {
-                if (feeding.GetMealsToday() < 2)
+                if (feeding.GetMealsToday() < 1)
                     return false;
             }
         }
-
         return true;
     }
 
@@ -103,19 +141,32 @@ public class AnimalPen : MonoBehaviour
         if (animal != null)
             Destroy(animal);
 
+        if (cellIndex < savedAnimals.Count)
+            savedAnimals.RemoveAt(cellIndex);
+
         spawnedAnimals.RemoveAt(cellIndex);
 
         if (spawnedAnimals.Count == 0)
             allowedTags.Clear();
 
         uiManager?.RefreshUI();
+        SaveLoadSystem.SaveFarm(FindAnyObjectByType<PensManager>().allPens);
+    }
+    public void UpdateSavedAnimalData(GameObject animal)
+    {
+        var feed = animal.GetComponent<AnimalFedding>();
+        if (feed == null) return;
+
+        int index = savedAnimals.FindIndex(a => a.animalID == animal.name);
+        if (index >= 0)
+        {
+            savedAnimals[index].daysFed = feed.GetDaysFed();
+            savedAnimals[index].canHarvest = feed.CanHarvest();
+        }
     }
     public void UpdateAnimalFeedStatusUI()
     {
-        if (uiManager != null)
-        {
-            uiManager.UpdateFeedStatus();
-        }
+        uiManager?.UpdateFeedStatus();
     }
     public bool HasAssignedType() => allowedTags.Count > 0;
     public bool IsAllowedTag(string tag) => allowedTags.Contains(tag);
@@ -123,4 +174,21 @@ public class AnimalPen : MonoBehaviour
     public int SpawnedAnimalCount => spawnedAnimals.Count;
     public int MaxAnimals => maxAnimals;
     public List<(GameObject, AnimalData)> GetSpawnedAnimals() => spawnedAnimals;
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            uiManager?.ShowPenInfo(true);
+            uiManager?.ShowInventory(true);
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            uiManager?.ShowPenInfo(false);
+            uiManager?.ShowInventory(false);
+        }
+    }
 }

@@ -1,17 +1,23 @@
-using System.Linq;
 using UnityEngine;
 
-public enum AnimalType { None, WhiteSheep, CreamSheep, BlackSheep, BlackGoat, WhiteGoat }
+public enum AnimalType
+{
+    None,
+    WhiteSheep,
+    CreamSheep,
+    BlackSheep,
+    WhiteGoat,
+    BlackGoat
+}
 
 public static class AnimalFactory
 {
     public static GameObject GetPrefab(AnimalType type)
     {
-       
         switch (type)
         {
             case AnimalType.BlackGoat:
-                return  Resources.Load<GameObject>("Prefabs/BlackGoat");
+                return Resources.Load<GameObject>("Prefabs/BlackGoat");
             case AnimalType.WhiteGoat:
                 return Resources.Load<GameObject>("Prefabs/WhiteGoat");
             case AnimalType.WhiteSheep:
@@ -21,9 +27,8 @@ public static class AnimalFactory
             case AnimalType.CreamSheep:
                 return Resources.Load<GameObject>("Prefabs/CreamSheep");
             default:
-                Debug.LogWarning("Invalid or unselected animal type.");
+                Debug.LogWarning("? Invalid or missing animal type prefab.");
                 return null;
         }
-      
     }
 }

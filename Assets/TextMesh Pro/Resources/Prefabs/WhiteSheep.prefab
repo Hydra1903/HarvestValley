@@ -209,7 +209,7 @@ MonoBehaviour:
   whiteWoolItem: {fileID: 11400000, guid: 3b4ad735a14805a4488ca02dce1d6455, type: 2}
   creamWoolItem: {fileID: 11400000, guid: 31ca392e1eb4358459d34718daefd804, type: 2}
   goatMilkItem: {fileID: 11400000, guid: daa27c99c0aed2242af1c6825203d38d, type: 2}
-  interactDistance: 2
+  interactDistance: 5
   animalType: 1
 --- !u!114 &-7439370241499361377
 MonoBehaviour:
@@ -223,10 +223,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87b258c48a3433e449b4716054f22f43, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animalType: 0
+  animalTypes: 0
+  hayCellManager: {fileID: 0}
   barn: {fileID: 0}
   requiredFeedDays: 3
   requiredGoatDays: 5
+  daysFed: 0
 --- !u!114 &6048373068123356673
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -129,11 +129,11 @@ public class LiveStockSeller : MonoBehaviour
         bool success = selectedPen.RegisterAnimal(obj, data);
         if (success)
         {
-            Notification.Instance.ShowNotification($"Đã thêm động vật đã mua vào {selectedPen.name}");
+            Notification.Instance.ShowNotification($"Đã mua động vật");
         }
         else
         {
-            Notification.Instance.ShowNotification($"Động vật đã chọn không được thêm vào {selectedPen.name}");
+            Notification.Instance.ShowNotification($"Động vật đã chọn không được phép thêm vào");
         }
 
         confirmPanel.SetActive(false);
