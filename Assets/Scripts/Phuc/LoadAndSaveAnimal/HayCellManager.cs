@@ -5,7 +5,7 @@ public class HayCellManager : MonoBehaviour
 {
     public Transform cellsParent;
     public DragItem dragItem;
-
+    public Sprite hayBaleIcon;
     [HideInInspector] public List<HayCell> hayCells = new List<HayCell>();
 
     private void Start()

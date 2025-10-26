@@ -6,7 +6,9 @@ public class AnimalPen : MonoBehaviour
     [Header("General Info")]
     public int penId;
     public Barn barnReference;
-    public HayCellManager penHayCellManager;
+    public HayCellManager penHayCellManager_Level1;
+    public HayCellManager penHayCellManager_Level2;
+
     public AnimalPenUIManager uiManager;
     public InfoPanelUI penInfoPanel;
     public ItemData hayItemData;
@@ -16,11 +18,15 @@ public class AnimalPen : MonoBehaviour
     public Transform[] wanderPoints;
     public int maxAnimals = 5;
 
+    [Range(1, 2)]
+    public int currentLevel = 1;
+
     private List<(GameObject animal, AnimalData data)> spawnedAnimals = new();
     private HashSet<string> allowedTags = new();
 
     public List<AnimalPenSaveInfo> savedAnimals = new();
     [System.Serializable]
+
     public class AnimalPenSaveInfo
     {
         public string animalID;
@@ -29,11 +35,19 @@ public class AnimalPen : MonoBehaviour
         public int daysFed;
         public bool canHarvest;
     }
-    
+    public HayCellManager penHayCellManager
+    {
+        get
+        {
+            // Ưu tiên cấp 1 nếu có, nếu không thì dùng cấp 2
+            return penHayCellManager_Level1 != null ? penHayCellManager_Level1 : penHayCellManager_Level2;
+        }
+    }
     private void Start()
     {
         if (InfoPanelManager.instance != null)
             InfoPanelManager.instance.RegisterPanel(penId, null);
+        UpdateActiveHayManager();
     }
 
     private void OnDestroy()
@@ -41,7 +55,20 @@ public class AnimalPen : MonoBehaviour
         if (InfoPanelManager.instance != null)
             InfoPanelManager.instance.UnregisterPanel(penId);
     }
+    public void SwitchLevel(int level)
+    {
+        currentLevel = Mathf.Clamp(level, 1, 2);
+        UpdateActiveHayManager();
+    }
+    private void UpdateActiveHayManager()
+    {
+        if (penHayCellManager_Level1 != null)
+            penHayCellManager_Level1.gameObject.SetActive(currentLevel == 1);
+        if (penHayCellManager_Level2 != null)
+            penHayCellManager_Level2.gameObject.SetActive(currentLevel == 2);
 
+        uiManager?.UpdateUIForLevel(currentLevel);
+    }
     public Vector3 GetRandomSpawnPosition()
     {
         Transform basePoint = Random.value < 0.5f ? spawnPointType1 : spawnPointType2;
@@ -71,13 +98,13 @@ public class AnimalPen : MonoBehaviour
         if (feeding != null)
         {
             feeding.barn = barnReference;
-            feeding.hayCellManager = penHayCellManager;
+            feeding.hayCellManager = currentLevel == 1 ? penHayCellManager_Level1 : penHayCellManager_Level2;
+
             var info = new AnimalPenSaveInfo
             {
                 animalID = animal.name,
                 animalType = feeding.animalTypes,
                 daysFed = feeding.daysFed,
-
                 canHarvest = feeding.CanHarvest(),
                 variant = animal.name.Contains("Black") ? "Black" :
                           animal.name.Contains("Cream") ? "Cream" : "White"
@@ -103,9 +130,7 @@ public class AnimalPen : MonoBehaviour
         }
 
         if (spawnedAnimals.Count == 0)
-        {
             allowedTags.Clear();
-        }
     }
     public bool AreAllAnimalsFed()
     {

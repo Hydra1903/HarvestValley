@@ -1,12 +1,14 @@
 ﻿using System.IO;
-using UnityEngine;
-using UnityEngine.UI;
 using TMPro;
+using UnityEditor.Overlays;
+using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 [System.Serializable]
 public class HayCellSaveData
 {
+    public string itemName;
     public int[] quantityPen1 = new int[2];
     public int[] quantityPen2 = new int[2];
 }
@@ -50,6 +52,8 @@ public class HayCell : MonoBehaviour, IDropHandler
 
         dragged.quantity -= addAmount;
         if (dragged.quantity <= 0) manager.dragItem.draggedItem = null;
+        itemIcon.sprite = manager.hayBaleIcon;
+        SaveLoadSystem.haybaler.itemName = "Hay Bale";
 
         UpdateUI();
         SaveHaybalePen();
@@ -79,6 +83,7 @@ public class HayCell : MonoBehaviour, IDropHandler
 
         string json = JsonUtility.ToJson(SaveLoadSystem.haybaler, true);
         File.WriteAllText(SaveLoadSystem.savePath, json);
+        Debug.Log($"✅ Farm saved to: {SaveLoadSystem.savePath}");
     }
 
     public void LoadHaybalePen()
@@ -98,7 +103,8 @@ public class HayCell : MonoBehaviour, IDropHandler
             quanlityCell1 = SaveLoadSystem.haybaler.quantityPen2[0];
             quanlityCell2 = SaveLoadSystem.haybaler.quantityPen2[1];
         }
-
+        if (SaveLoadSystem.haybaler.itemName == "Hay Bale" && manager != null)
+            itemIcon.sprite = manager.hayBaleIcon;
         UpdateUI();
     }
 }

@@ -17,6 +17,8 @@ public class AnimalPenUIManager : MonoBehaviour
     public GameObject inventoryPanel;
     public GameObject penInfoAnimal;
     public GameObject confirmSellPanel;
+    public GameObject panelLevel1;
+    public GameObject panelLevel2;
 
     [Header("Confirm Buttons")]
     public Button yesButton;
@@ -54,7 +56,11 @@ public class AnimalPenUIManager : MonoBehaviour
             }
         }
     }
-
+    public void UpdateUIForLevel(int currentLevel)
+    {
+         panelLevel1.SetActive(currentLevel == 1);
+         panelLevel2.SetActive(currentLevel == 2);
+    }
     public void UpdateAnimalCount()
     {
         string count = $"{pen.SpawnedAnimalCount} / {pen.MaxAnimals}";
