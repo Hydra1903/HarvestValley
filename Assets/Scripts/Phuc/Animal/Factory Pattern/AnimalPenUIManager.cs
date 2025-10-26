@@ -27,8 +27,45 @@ public class AnimalPenUIManager : MonoBehaviour
     [Header("Animal Cells")]
     public AnimalCellUI[] cells;
 
+    public GameObject[] SpritePen1;
+    public GameObject[] SpritePen2;
+    public GameObject[] receiveHayBalePen1;
+    public GameObject[] receiveHayBalePen2;
+    public TextMeshProUGUI textLevelPen1;
+    public TextMeshProUGUI textLevelPen2;
     private int pendingSellIndex = -1;
 
+    public void UpdateUIPen() 
+    {
+        if(Builder.Instance.currentlevelPen1 == 1) 
+        {
+            SpritePen1[0].SetActive(true);
+            receiveHayBalePen1[0].SetActive(true);
+            textLevelPen1.text ="Cấp 1";
+        }
+        else if (Builder.Instance.currentlevelPen1 == 2)
+        {
+            SpritePen1[0].SetActive(false);
+            receiveHayBalePen1[0].SetActive(false);
+            SpritePen1[1].SetActive(true);
+            receiveHayBalePen1[1].SetActive(true);
+            textLevelPen1.text = "Cấp 2";
+        }
+        if (Builder.Instance.currentlevelPen2 == 1)
+        {
+            SpritePen2[0].SetActive(true);
+            receiveHayBalePen2[0].SetActive(true);
+            textLevelPen2.text = "Cấp 1";
+        }
+        else if (Builder.Instance.currentlevelPen2 == 2)
+        {
+            SpritePen2[0].SetActive(false);
+            receiveHayBalePen2[0].SetActive(false);
+            SpritePen2[1].SetActive(true);
+            receiveHayBalePen2[1].SetActive(true);
+            textLevelPen2.text = "Cấp 2";
+        }
+    }
     private void Start()
     {
         if (pen == null)
@@ -36,6 +73,7 @@ public class AnimalPenUIManager : MonoBehaviour
 
         HideAllPanels();
         RefreshUI();
+        UpdateUIPen();
     }
 
     public void RefreshUI()
@@ -55,11 +93,6 @@ public class AnimalPenUIManager : MonoBehaviour
                 break;
             }
         }
-    }
-    public void UpdateUIForLevel(int currentLevel)
-    {
-         panelLevel1.SetActive(currentLevel == 1);
-         panelLevel2.SetActive(currentLevel == 2);
     }
     public void UpdateAnimalCount()
     {
