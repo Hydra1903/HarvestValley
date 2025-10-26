@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using System.Collections.Generic;
 
 public class HayCellManager : MonoBehaviour
 {
+    [Header("References")]
     public Transform cellsParent;
     public DragItem dragItem;
     public Sprite hayBaleIcon;
@@ -16,31 +17,34 @@ public class HayCellManager : MonoBehaviour
         {
             cell.manager = this;
             hayCells.Add(cell);
-            cell.UpdateUI();
         }
-    }
 
-    public void LoadAllCells()
-    {
-        foreach (var cell in hayCells)
-        {
-            cell.LoadHaybalePen();
-            cell.UpdateUI();
-        }
-    }
-
-    public void UpdateAllCellsUI()
-    {
-        foreach (var cell in hayCells)
-        {
-            cell.UpdateUI();
-        }
+        Debug.Log("HayCells count: " + hayCells.Count);
     }
 
     public bool HasHay()
     {
         foreach (var cell in hayCells)
-            if (!cell.isEmpty) return true;
+            if (cell != null && !cell.isEmpty) return true;
+        return false;
+    }
+
+    public bool ConsumeHay(int amount = 1)
+    {
+        foreach (var cell in hayCells)
+        {
+            if (cell != null && !cell.isEmpty)
+            {
+                cell.item.quantity -= amount;
+                if (cell.item.quantity <= 0)
+                {
+                    cell.item = null;
+                    cell.isEmpty = true;
+                }
+                cell.UpdateUI();
+                return true;
+            }
+        }
         return false;
     }
 
@@ -48,7 +52,16 @@ public class HayCellManager : MonoBehaviour
     {
         int total = 0;
         foreach (var cell in hayCells)
-            total += cell.cellIndex == 0 ? cell.quanlityCell1 : cell.quanlityCell2;
+            if (cell != null && cell.item != null)
+                total += cell.item.quantity;
         return total;
+    }
+
+    public void UpdateAllCells()
+    {
+        foreach (var cell in hayCells)
+        {
+            cell.UpdateUI();
+        }
     }
 }

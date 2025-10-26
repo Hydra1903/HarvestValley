@@ -1,16 +1,35 @@
+<<<<<<< HEAD
 ﻿using System.IO;
 using TMPro;
 using UnityEditor.Overlays;
+=======
+﻿using System;
+using System.Collections.Generic;
+using TMPro;
+>>>>>>> parent of a32a06d (update)
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-[System.Serializable]
+[Serializable]
 public class HayCellSaveData
 {
+<<<<<<< HEAD
     public string itemName;
     public int[] quantityPen1 = new int[2];
     public int[] quantityPen2 = new int[2];
+=======
+    public string itemName; // "Hay Bale"
+    public int quantity;
+    public int cellIndex;
+}
+
+[Serializable]
+public class HayCellManagerSaveData
+{
+    public int penId;
+    public List<HayCellSaveData> cells = new List<HayCellSaveData>();
+>>>>>>> parent of a32a06d (update)
 }
 
 public class HayCell : MonoBehaviour, IDropHandler
@@ -20,15 +39,13 @@ public class HayCell : MonoBehaviour, IDropHandler
     public TextMeshProUGUI quantityText;
 
     [Header("Cell Info")]
+    public InventoryItem item;
     public int maxCapacity = 20;
     public bool isEmpty = true;
 
     [Header("References")]
     public HayCellManager manager;
-    public int cellIndex; // 0 hoặc 1
-    public int quanlityCell1;
-    public int quanlityCell2;
-    public int locationPen; // 1 hoặc 2
+    public int cellIndex;
 
     private void Start()
     {
@@ -40,46 +57,69 @@ public class HayCell : MonoBehaviour, IDropHandler
         if (manager == null || manager.dragItem == null || manager.dragItem.draggedItem == null)
             return;
 
-        var dragged = manager.dragItem.draggedItem;
-        if (dragged.itemData.itemName != "Hay Bale") return;
+        InventoryItem dragged = manager.dragItem.draggedItem;
 
-        int canAdd = maxCapacity - (cellIndex == 0 ? quanlityCell1 : quanlityCell2);
+        if (dragged.itemData.itemName != "Hay Bale")
+            return;
+
+        int canAdd = maxCapacity - (item != null ? item.quantity : 0);
         int addAmount = Mathf.Min(canAdd, dragged.quantity);
+
         if (addAmount <= 0) return;
 
-        if (cellIndex == 0) quanlityCell1 += addAmount;
-        else quanlityCell2 += addAmount;
+        if (isEmpty)
+        {
+            item = new InventoryItem(dragged.itemData, addAmount);
+            isEmpty = false;
+        }
+        else
+        {
+            item.quantity += addAmount;
+        }
 
         dragged.quantity -= addAmount;
+<<<<<<< HEAD
         if (dragged.quantity <= 0) manager.dragItem.draggedItem = null;
         itemIcon.sprite = manager.hayBaleIcon;
         SaveLoadSystem.haybaler.itemName = "Hay Bale";
+=======
+        if (dragged.quantity <= 0)
+            manager.dragItem.draggedItem = null;
+>>>>>>> parent of a32a06d (update)
 
         UpdateUI();
-        SaveHaybalePen();
     }
 
     public void UpdateUI()
     {
-        itemIcon.gameObject.SetActive(true);
-        quantityText.gameObject.SetActive(true);
+        if (item == null || isEmpty)
+        {
+            itemIcon.color = new Color(1, 1, 1, 0);
+            quantityText.text = "";
+            return;
+        }
 
-        int qty = cellIndex == 0 ? quanlityCell1 : quanlityCell2;
-        quantityText.text = $"{qty}/{maxCapacity}";
+        itemIcon.sprite = item.itemData.icon;
+        itemIcon.color = Color.white;
+        quantityText.text = $"{item.quantity}/{maxCapacity}";
     }
 
-    public void SaveHaybalePen()
+    // Gán dữ liệu khi load
+    public void LoadCell(HayCellSaveData saveData, ItemData hayBaleData)
     {
-        if (locationPen == 1)
+        if (saveData.quantity <= 0)
         {
-            SaveLoadSystem.haybaler.quantityPen1[0] = quanlityCell1;
-            SaveLoadSystem.haybaler.quantityPen1[1] = quanlityCell2;
+            item = null;
+            isEmpty = true;
         }
-        else if (locationPen == 2)
+        else
         {
-            SaveLoadSystem.haybaler.quantityPen2[0] = quanlityCell1;
-            SaveLoadSystem.haybaler.quantityPen2[1] = quanlityCell2;
+            int qty = Mathf.Min(saveData.quantity, maxCapacity);
+            // Tạo InventoryItem mới từ ItemData đã có sẵn
+            item = new InventoryItem(hayBaleData, qty);
+            isEmpty = false;
         }
+<<<<<<< HEAD
 
         string json = JsonUtility.ToJson(SaveLoadSystem.haybaler, true);
         File.WriteAllText(SaveLoadSystem.savePath, json);
@@ -105,6 +145,18 @@ public class HayCell : MonoBehaviour, IDropHandler
         }
         if (SaveLoadSystem.haybaler.itemName == "Hay Bale" && manager != null)
             itemIcon.sprite = manager.hayBaleIcon;
+=======
+>>>>>>> parent of a32a06d (update)
         UpdateUI();
+    }
+
+    public HayCellSaveData GetSaveData()
+    {
+        return new HayCellSaveData
+        {
+            itemName = item != null ? item.itemData.itemName : "Hay Bale",
+            quantity = item != null ? item.quantity : 0,
+            cellIndex = cellIndex
+        };
     }
 }
