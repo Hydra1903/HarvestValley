@@ -127,61 +127,55 @@ public class AnimalFedding : MonoBehaviour
             return false;
         }
 
-        if (hayCellManager.hayCells == null || hayCellManager.hayCells.Count == 0)
-        {
-            Debug.LogWarning("hayCells list is null or empty!");
+        if (hayCellManager == null || hayCellManager.hayCells == null || hayCellManager.hayCells.Count == 0)
             return false;
-        }
 
         foreach (var cell in hayCellManager.hayCells)
         {
-            if (cell != null && cell.item != null && cell.item.quantity > 0)
-                return true;
+            int qty = cell.cellIndex == 0 ? cell.quanlityCell1 : cell.quanlityCell2;
+            if (qty > 0) return true;
         }
 
-        return false;
+        return false; ;
     }
 
     private void ConsumeHay(int amount = 1)
     {
         if (hayCellManager == null || hayCellManager.hayCells == null || hayCellManager.hayCells.Count == 0)
-        {
-            Debug.LogWarning("Cannot consume hay: HayCellManager or hayCells list is null/empty.");
             return;
-        }
 
         int remaining = amount;
         foreach (var cell in hayCellManager.hayCells)
         {
             if (cell == null) continue;
 
-            int cellQuantity = cell.item != null ? cell.item.quantity : 0;
+            int qty = cell.cellIndex == 0 ? cell.quanlityCell1 : cell.quanlityCell2;
 
-            if (cellQuantity > 0)
+            if (qty > 0)
             {
-                int deduct = Mathf.Min(remaining, cellQuantity);
+                int deduct = Mathf.Min(remaining, qty);
 
-                cell.item.quantity -= deduct;
+                if (cell.cellIndex == 0)
+                    cell.quanlityCell1 -= deduct;
+                else
+                    cell.quanlityCell2 -= deduct;
+
                 remaining -= deduct;
 
-                if (cell.item.quantity <= 0)
+                if ((cell.cellIndex == 0 && cell.quanlityCell1 <= 0) ||
+                    (cell.cellIndex == 1 && cell.quanlityCell2 <= 0))
                 {
-                    cell.item = null;
                     cell.isEmpty = true;
                 }
 
                 cell.UpdateUI();
 
-                Debug.Log($"Consumed {deduct} hay from {cell.name}, remaining to consume: {remaining}");
-
-                if (remaining <= 0) break; // đã trừ đủ
+                if (remaining <= 0) break;
             }
         }
+
         if (remaining > 0)
-        {
             Debug.LogWarning("Not enough hay to consume! Remaining: " + remaining);
-            // Có thể hiển thị Notification ở đây
-        }
     }
     private float GetAbsoluteGameHours()
     {

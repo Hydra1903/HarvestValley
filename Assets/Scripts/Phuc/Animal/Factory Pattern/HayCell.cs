@@ -1,23 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using TMPro;
+﻿using System.IO;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using TMPro;
+using UnityEngine.EventSystems;
 
-[Serializable]
+[System.Serializable]
 public class HayCellSaveData
 {
-    public string itemName; // "Hay Bale"
-    public int quantity;
-    public int cellIndex;
-}
-
-[Serializable]
-public class HayCellManagerSaveData
-{
-    public int penId;
-    public List<HayCellSaveData> cells = new List<HayCellSaveData>();
+    public int[] quantityPen1 = new int[2];
+    public int[] quantityPen2 = new int[2];
 }
 
 public class HayCell : MonoBehaviour, IDropHandler
@@ -27,13 +18,15 @@ public class HayCell : MonoBehaviour, IDropHandler
     public TextMeshProUGUI quantityText;
 
     [Header("Cell Info")]
-    public InventoryItem item;
     public int maxCapacity = 20;
     public bool isEmpty = true;
 
     [Header("References")]
     public HayCellManager manager;
-    public int cellIndex;
+    public int cellIndex; // 0 hoặc 1
+    public int quanlityCell1;
+    public int quanlityCell2;
+    public int locationPen; // 1 hoặc 2
 
     private void Start()
     {
@@ -45,72 +38,67 @@ public class HayCell : MonoBehaviour, IDropHandler
         if (manager == null || manager.dragItem == null || manager.dragItem.draggedItem == null)
             return;
 
-        InventoryItem dragged = manager.dragItem.draggedItem;
+        var dragged = manager.dragItem.draggedItem;
+        if (dragged.itemData.itemName != "Hay Bale") return;
 
-        if (dragged.itemData.itemName != "Hay Bale")
-            return;
-
-        int canAdd = maxCapacity - (item != null ? item.quantity : 0);
+        int canAdd = maxCapacity - (cellIndex == 0 ? quanlityCell1 : quanlityCell2);
         int addAmount = Mathf.Min(canAdd, dragged.quantity);
-
         if (addAmount <= 0) return;
 
-        if (isEmpty)
-        {
-            item = new InventoryItem(dragged.itemData, addAmount);
-            isEmpty = false;
-        }
-        else
-        {
-            item.quantity += addAmount;
-        }
+        if (cellIndex == 0) quanlityCell1 += addAmount;
+        else quanlityCell2 += addAmount;
 
         dragged.quantity -= addAmount;
-        if (dragged.quantity <= 0)
-            manager.dragItem.draggedItem = null;
+        if (dragged.quantity <= 0) manager.dragItem.draggedItem = null;
 
         UpdateUI();
+        SaveHaybalePen();
     }
 
     public void UpdateUI()
     {
-        if (item == null || isEmpty)
-        {
-            itemIcon.color = new Color(1, 1, 1, 0);
-            quantityText.text = "";
-            return;
-        }
+        itemIcon.gameObject.SetActive(true);
+        quantityText.gameObject.SetActive(true);
 
-        itemIcon.sprite = item.itemData.icon;
-        itemIcon.color = Color.white;
-        quantityText.text = $"{item.quantity}/{maxCapacity}";
+        int qty = cellIndex == 0 ? quanlityCell1 : quanlityCell2;
+        quantityText.text = $"{qty}/{maxCapacity}";
     }
 
-    // Gán dữ liệu khi load
-    public void LoadCell(HayCellSaveData saveData, ItemData hayBaleData)
+    public void SaveHaybalePen()
     {
-        if (saveData.quantity <= 0)
+        if (locationPen == 1)
         {
-            item = null;
-            isEmpty = true;
+            SaveLoadSystem.haybaler.quantityPen1[0] = quanlityCell1;
+            SaveLoadSystem.haybaler.quantityPen1[1] = quanlityCell2;
         }
-        else
+        else if (locationPen == 2)
         {
-            int qty = Mathf.Min(saveData.quantity, maxCapacity);
-            // Tạo InventoryItem mới từ ItemData đã có sẵn
-            item = new InventoryItem(hayBaleData, qty);
-            isEmpty = false;
+            SaveLoadSystem.haybaler.quantityPen2[0] = quanlityCell1;
+            SaveLoadSystem.haybaler.quantityPen2[1] = quanlityCell2;
         }
+
+        string json = JsonUtility.ToJson(SaveLoadSystem.haybaler, true);
+        File.WriteAllText(SaveLoadSystem.savePath, json);
+    }
+
+    public void LoadHaybalePen()
+    {
+        if (!File.Exists(SaveLoadSystem.savePath)) return;
+
+        string json = File.ReadAllText(SaveLoadSystem.savePath);
+        SaveLoadSystem.haybaler = JsonUtility.FromJson<HayCellSaveData>(json);
+
+        if (locationPen == 1)
+        {
+            quanlityCell1 = SaveLoadSystem.haybaler.quantityPen1[0];
+            quanlityCell2 = SaveLoadSystem.haybaler.quantityPen1[1];
+        }
+        else if (locationPen == 2)
+        {
+            quanlityCell1 = SaveLoadSystem.haybaler.quantityPen2[0];
+            quanlityCell2 = SaveLoadSystem.haybaler.quantityPen2[1];
+        }
+
         UpdateUI();
-    }
-
-    public HayCellSaveData GetSaveData()
-    {
-        return new HayCellSaveData
-        {
-            itemName = item != null ? item.itemData.itemName : "Hay Bale",
-            quantity = item != null ? item.quantity : 0,
-            cellIndex = cellIndex
-        };
     }
 }
