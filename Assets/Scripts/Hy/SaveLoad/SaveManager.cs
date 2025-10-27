@@ -10,10 +10,6 @@ public static class SaveManager
     static string PathFor(string slot) =>
         System.IO.Path.Combine(Application.persistentDataPath, $"farm_{slot}.json");
 
-    public static void Save(string slot, IEnumerable<FarmManager> farms)
-    {
-        var game = new GameSave();
-        foreach (var f in farms) game.grids.Add(f.BuildSave());
     public static void CreateFarm(string slot, string nameFarm)
     {
         game = new GameSave();
@@ -68,6 +64,8 @@ public static class SaveManager
     //SaveManager.cs
     public static void Save(string slot, IEnumerable<FarmManager> farms)
     {
+        var game = new GameSave();
+        foreach (var f in farms) game.grids.Add(f.BuildSave());
         //foreach (var f in farms) game.grids.Add(f.BuildSave());
 
         #region ----- Save Building -----
