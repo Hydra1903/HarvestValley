@@ -36,6 +36,7 @@ public class Season : MonoBehaviour
                 currentSeason = SeasonState.Spring;
                 break;
         }
+        FindAnyObjectByType<TreeSeasonMaterial>()?.ApplyCurrentSeason();
         mainUIScreen.UpdateSeason();
     }
 }

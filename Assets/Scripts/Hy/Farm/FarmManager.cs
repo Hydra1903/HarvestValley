@@ -5,6 +5,9 @@ public class FarmManager : MonoBehaviour
     [Header("Save/ID")]
     public string gridId = "";
 
+    [Header("Environment")]
+    public bool isGreenhouse = false;
+
     [Header("Kích thước")]
     public int gridWidth = 30;
     public int gridHeight = 20;
@@ -22,7 +25,7 @@ public class FarmManager : MonoBehaviour
     public PlantManager plantManager;
     public FarmInput farmInputManager;
 
-    //public FarmGridSave BuildSave() => _save.BuildSave();
+    public FarmGridSave BuildSave() => _save.BuildSave();
     public void LoadFromSave(FarmGridSave s) => _save.LoadFromSave(s);
 
     private void Awake()
@@ -42,19 +45,17 @@ public class FarmManager : MonoBehaviour
         _save.Initialize(this);
         _save.soilManager = soilManager;
         _save.plantManager = plantManager;
+
+        Vector3 testPoint = origin + new Vector3(5f, 0f, 5f); 
+        Debug.Log($"[{gridId}] Test point {testPoint} inside? {IsWorldPointInsideThisGrid(testPoint)}");
     }
+
 
     private void Update()
     {
         farmInputManager.HandleInput();
 
-        if (Input.GetKeyDown(KeyCode.N))
-        {
-            plantManager.AdvanceDay();
-            UIStateMachine.Instance.ChangeState(UIStateMachine.Instance.mainScreenState);
-        }
-
-        if(Weather.Instance.currentWeather == WeatherState.Rainy || Weather.Instance.currentWeather == WeatherState.Stormy)
+        if (Weather.Instance.currentWeather == WeatherState.Rainy || Weather.Instance.currentWeather == WeatherState.Stormy)
         {
             soilManager.WaterAllAreas();
         }
@@ -106,6 +107,12 @@ public class FarmManager : MonoBehaviour
         if (startY + size > gridHeight) startY = gridHeight - size;
 
         return new Vector2Int(startX, startY);
+    }
+
+    public bool TryWorldToGrid(Vector3 worldPos, out Vector2Int gridPos)
+    {
+        gridPos = WorldToGrid(worldPos); 
+        return IsInGrid(gridPos.x, gridPos.y); 
     }
 }
 

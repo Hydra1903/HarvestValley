@@ -9,6 +9,11 @@ public static class SaveManager
     public static GameSave game = new GameSave();
     static string PathFor(string slot) =>
         System.IO.Path.Combine(Application.persistentDataPath, $"farm_{slot}.json");
+
+    public static void Save(string slot, IEnumerable<FarmManager> farms)
+    {
+        var game = new GameSave();
+        foreach (var f in farms) game.grids.Add(f.BuildSave());
     public static void CreateFarm(string slot, string nameFarm)
     {
         game = new GameSave();
