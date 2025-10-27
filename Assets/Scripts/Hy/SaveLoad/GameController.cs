@@ -17,11 +17,6 @@ public class GameController : MonoBehaviour
     [ContextMenu("Load Game")]
     public void LoadGame() => SaveManager.Load("slot1", farms);
 
-    private void Awake()
-    {
-       // bool loaded = SaveManager.Load("slot1", farms);
-        Debug.Log("Load game");
-    }
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.N))
