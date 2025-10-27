@@ -7,11 +7,26 @@ public class Barn : MonoBehaviour
     public int rows = 5;
     public int columns = 7;
     public InventorySlot[,] slots;
-    public int limitCapacity = 1000;
+    public int limitCapacity;
 
     public ItemData[] saveItemData = new ItemData[35];
     public int[] saveQuantity = new int[35];
     public bool[] saveLocation = new bool[35];
+    private void Start()
+    {
+        switch(Builder.Instance.currentlevelBarn)
+        {
+            case 1:
+                limitCapacity = 500;
+                break;
+            case 2:
+                limitCapacity = 1000;
+                break;
+            case 3:
+                limitCapacity = 2500;
+                break;
+        }
+    }
     void Awake()
     {
         if (Instance == null)

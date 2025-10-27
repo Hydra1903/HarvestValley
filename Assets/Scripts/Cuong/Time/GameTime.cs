@@ -9,13 +9,16 @@ public class GameTime : MonoBehaviour
 {
     public static GameTime Instance;
     public int day = 1;
-    public int month = 1;
-    public int year = 1;
+    public int month = 0;
+    public int year = 0;
     public int hour = 6;
     public int minute = 0;
 
     public float timeSpeed = 60f;
     private float timer;
+    private float timerPlusMp;
+
+    public bool isPaused;
 
     //public bool canHarvestToday = false;
     public TimeOfDay currentTimeOfDay;
@@ -29,61 +32,77 @@ public class GameTime : MonoBehaviour
     }
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Z))
+        if (!isPaused)
         {
-            NextDay();
+            timer += Time.deltaTime * timeSpeed;
+            timerPlusMp += Time.deltaTime * timeSpeed;
+            if (timerPlusMp >= 1000)
+            {
+                if (Mp.Instance.mp != 100)
+                {
+                    Mp.Instance.PlusMp(1);
+                }
+                timerPlusMp = 0;
+            }
+            if (timer >= 60)
+            {
+                minute++; timer = 0;
+            }
+            if (minute >= 60)
+            {
+                minute = 0; hour++;
+                Weather.Instance.SetCurrentWeather();
+            }
+            if (hour >= 18)
+            {
+                currentTimeOfDay = TimeOfDay.Night;
+                mainUIScreen.UpdateIconTimeOfDay();
+                MusicBackground.Instance.ChangeBackgroundMusic();
+            }
+            if (hour >= 24)
+            {
+                UIStateMachine.Instance.ChangeState(UIStateMachine.Instance.sleepState);
+                Mp.Instance.ResetMp(true);
+            }
+            if (month >= 4)
+            {
+                month = 0; year++;
+            }
+            mainUIScreen.UpdateTime();
         }
-        timer += Time.deltaTime * timeSpeed;
-        if (timer >= 60)
-        {
-            minute++; timer = 0;
-        }
-        if (minute >= 60)
-        {
-            minute = 0; hour++;
-            Weather.Instance.SetCurrentWeather();
-        }
-        if (hour >= 18)
-        {
-            currentTimeOfDay = TimeOfDay.Night;
-            mainUIScreen.UpdateIconTimeOfDay();
-            MusicBackground.Instance.ChangeBackgroundMusic();
-        }
-        if (hour >= 24)
-        {
-            NextDay();
-        }
-        if (day > 30)
-        {
-            day = 1; month++;
-            Season.Instance.ChangeOfSeasons();
-            Weather.Instance.SetListWeatherOfMonth();
-            mainUIScreen.UpdateWeatherTimeline();
-        }
-        if (month > 4)
-        {
-            month = 1; year++;
-        }
-        mainUIScreen.UpdateTime();
     }
     public void NextDay()
     {
         hour = 6; minute = 0; day++;
         currentTimeOfDay = TimeOfDay.Day;
         mainUIScreen.UpdateIconTimeOfDay();
-        if (day <= 30)
+        MusicBackground.Instance.ChangeBackgroundMusic();
+        if (day > 30)
         {
-            mainUIScreen.UpdateWeatherTimeline();
+            day = 1; month++;
+            Season.Instance.ChangeOfSeasons();
+            Weather.Instance.SetListWeatherOfMonth();
+
         }
+        mainUIScreen.UpdateWeatherTimeline();
         FarmStallUI.Instance.CanCollect();
         Builder.Instance.CheckCanBuild();
+        MerchantRandom.Instance.RandomSpawnInDay();
     }
     public void PauseGame()
     {
-        Time.timeScale = 0f;
+        isPaused = true;
     }
     public void UnpauseGame()
     {
-        Time.timeScale = 1f;
+        isPaused = false;
+    }
+    public void SetLocationCharacter()
+    {
+        CharacterController controller = CharacterStateMachine.Instance.GetComponent<CharacterController>();
+        controller.enabled = false;
+        CharacterStateMachine.Instance.transform.position = new Vector3(-4.591611f, 0.79f, -4.98656f);
+        CharacterStateMachine.Instance.transform.eulerAngles = new Vector3(0f, 37.222f, 0f);
+        controller.enabled = true; 
     }
 }

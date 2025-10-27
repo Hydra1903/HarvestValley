@@ -47,55 +47,58 @@ public class FarmGridSave
 [Serializable]
 public class GameSave
 {
+    public bool hasFarm;
+    public string nameFarm;
+
     public List<FarmGridSave> grids = new();
 
     #region ----- Building -----
-    public bool[] isBuilding;
-    public int[] dayCounter;
+    public bool[] isBuilding = new bool[12];
+    public int[] dayCounter = new int[12];
 
-    public int currentlevelBarn;
-    public int currentlevelHome;
-    public bool isUnlockFarmland2;
-    public bool isUnlockFarmland3;
-    public bool isUnlockGrassland;
-    public int currentlevelPen1;
-    public int currentlevelPen2;
-    public bool isUnlockPen1;
-    public bool isUnlockPen2;
-    public bool isUnlockGreenhouse1;
-    public bool isUnlockGreenhouse2;
+    public int currentlevelBarn = 1;
+    public int currentlevelHome = 1;
+    public bool isUnlockFarmland2 = false;
+    public bool isUnlockFarmland3 = false;
+    public bool isUnlockGrassland = false;
+    public int currentlevelPen1 = 0;
+    public int currentlevelPen2 = 0;
+    public bool isUnlockPen1 = false;
+    public bool isUnlockPen2 = false;
+    public bool isUnlockGreenhouse1 = false;
+    public bool isUnlockGreenhouse2 = false;
     #endregion
 
     #region ----- Achivements -----
-    public bool[] isAchivementComplete;
-    public bool[] isReward;
+    public bool[] isAchivementComplete = new bool[36];
+    public bool[] isReward = new bool[36];
 
-    public int plantedSeedsCount;
-    public int harvestedCropsCount;
-    public int typesOfCropsPlantedCount;
-    public int timesWateredCount;
-    public int greenhouseCropsHarvestedCount;
-    public int animalProductsCollectedCount;
-    public int farmProductsSoldCount;
-    public int perennialHarvestsCount;
-    public int buildingsUpgradedOrUnlockedCount;
-    public int staminaUsedCount;
-    public int totalMoneyEarnedCount;
+    public int plantedSeedsCount = 0;
+    public int harvestedCropsCount = 0;
+    public int typesOfCropsPlantedCount = 0;
+    public int timesWateredCount = 0;
+    public int greenhouseCropsHarvestedCount = 0;
+    public int animalProductsCollectedCount = 0;
+    public int farmProductsSoldCount = 0;
+    public int perennialHarvestsCount = 0;
+    public int buildingsUpgradedOrUnlockedCount = 0;
+    public int staminaUsedCount = 0;
+    public int totalMoneyEarnedCount = 0;
     #endregion
 
     #region ----- Character -----
     public ECharacter currentCharacter;
 
-    public int currentLevel;
-    public int xp;
-    public int gold;
-    public int mp;
+    public int currentLevel = 1;
+    public int xp = 0;
+    public int gold = 0;
+    public int mp = 0;
     #endregion
 
     #region ----- Time -----
-    public int day;
-    public int month;
-    public int year;
+    public int day = 1;
+    public int month = 0;
+    public int year = 0;
     #endregion
 
     #region ----- Weather -----
@@ -103,17 +106,21 @@ public class GameSave
     #endregion
 
     #region ----- Season -----
-    public SeasonState currentSeason;
+    public SeasonState currentSeason = 0;
     #endregion
 
     #region ----- Inventory -----
-    public ItemData[] itemDataInventory;
-    public int[] quantityInventory;
-    public bool[] locationInventory;
+    public ItemData[] itemDataInventory = new ItemData[32];
+    public int[] quantityInventory = new int[32];
+    public bool[] locationInventory = new bool[32];
     #endregion
     #region ----- Barn -----
-    public ItemData[] itemDataBarn;
-    public int[] quantityBarn;
-    public bool[] locationBarn;
+    public ItemData[] itemDataBarn = new ItemData[35];
+    public int[] quantityBarn = new int[35];
+    public bool[] locationBarn = new bool[35];
+    #endregion
+
+    #region ----- Merchant -----
+    public bool isMerchantSpawned;
     #endregion
 }

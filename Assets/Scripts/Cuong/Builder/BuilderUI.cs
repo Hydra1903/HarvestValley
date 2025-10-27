@@ -58,6 +58,7 @@ public class BuilderUI : MonoBehaviour
             panelConfirm.SetActive(false);
             UpdateUI();
             Notification.Instance.ShowNotification("Đã nâng cấp thành công!");
+            UISounds.Instance.PlaySound_UpgradeBuilding();
         });
 
         No.onClick.AddListener(() =>

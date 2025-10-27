@@ -13,15 +13,11 @@ public class SoundEffects : MonoBehaviour
     public AudioClip penDoor;
     public AudioClip barnDoor;
     public AudioClip greenhouseDoor;
-    void Start()
-    {
-        
-    }
+    public AudioClip hoe;
+    public AudioClip watering;
+    public AudioClip harvest;
+    public AudioClip fillWater;
 
-    void Update()
-    {
-        
-    }
     public void PlaySound_HouseDoor()
     {
         audioSourceSoundEffects.clip = houseDoor;
@@ -42,5 +38,24 @@ public class SoundEffects : MonoBehaviour
         audioSourceSoundEffects.clip = greenhouseDoor;
         audioSourceSoundEffects.Play();
     }
-
+    public void PlaySound_Hoe()
+    {
+        audioSourceSoundEffects.clip = hoe;
+        audioSourceSoundEffects.Play();
+    }
+    public void PlaySound_Harvest()
+    {
+        audioSourceSoundEffects.clip = harvest;
+        audioSourceSoundEffects.Play();
+    }
+    public void PlaySound_Watering()
+    {
+        audioSourceSoundEffects.clip = watering;
+        audioSourceSoundEffects.Play();
+    }
+    public void PlaySound_FillWater()
+    {
+        audioSourceSoundEffects.clip = fillWater;
+        audioSourceSoundEffects.Play();
+    }
 }

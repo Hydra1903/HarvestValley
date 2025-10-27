@@ -5,13 +5,14 @@ public class WateringState : ICharacterState
     public void Enter(CharacterStateMachine characterStateMachine)
     {
         characterStateMachine.animator.Play("Watering");
-        if (CharacterSelection.currentCharacter == ECharacter.Rin)
+        if (CharacterStateMachine.Instance.currentCharacter == ECharacter.Rin)
         {
             characterStateMachine.animator.speed = 1.2f;
         }
         UIManager.Instance.ShowUI("ActionBar");
         CameraSwitcher.Instance.SwitchToActionView();
         CharacterStateMachine.Instance.mainUIScreen.ResetBar();
+        SoundEffects.Instance.PlaySound_Watering();
     }
     public void Update(CharacterStateMachine characterStateMachine)
     {
