@@ -86,7 +86,6 @@ public class GameTime : MonoBehaviour
         mainUIScreen.UpdateWeatherTimeline();
         FarmStallUI.Instance.CanCollect();
         Builder.Instance.CheckCanBuild();
-        SetLocationCharacter();
     }
     public void PauseGame()
     {
@@ -104,5 +103,4 @@ public class GameTime : MonoBehaviour
         CharacterStateMachine.Instance.transform.eulerAngles = new Vector3(0f, 37.222f, 0f);
         controller.enabled = true; 
     }
-    //dsfd
 }

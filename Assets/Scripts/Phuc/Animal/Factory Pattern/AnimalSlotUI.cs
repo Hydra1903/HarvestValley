@@ -1,23 +1,23 @@
-﻿using UnityEngine;
+﻿using TMPro;
+using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
 
 public class AnimalSlotUI : MonoBehaviour
 {
     [SerializeField] private Image icon;
-    //[SerializeField] private TMP_Text nameText;
-    private AnimalPen penRef;
     [SerializeField] private Button sellButton;
 
-    private AnimalInfo animalRef; // con vật được gán vào slot này
+    private AnimalPen penRef;
+    private AnimalInfo animalRef;
 
-    public void Setup(AnimalInfo animal)
+    public void Setup(AnimalInfo animal, AnimalPen pen)
     {
         animalRef = animal;
+        penRef = pen;
+
         if (animal != null && animal.data != null)
         {
             icon.sprite = animal.data.icon;
-            //nameText.text = animal.animalData.animalName;
         }
 
         sellButton.onClick.RemoveAllListeners();
@@ -28,7 +28,7 @@ public class AnimalSlotUI : MonoBehaviour
     {
         if (animalRef != null && penRef != null)
         {
-            penRef.RemoveAnimal(animalRef);
+            penRef.RemoveAnimal(animalRef.gameObject);
         }
     }
 }

@@ -7,14 +7,17 @@ public class InfoPanelManager : MonoBehaviour
 
     public Dictionary<int, InfoPanelUI> panels = new Dictionary<int, InfoPanelUI>();
 
-    private void Awake()
+    void Awake()
     {
-        if (instance != null && instance != this)
+        if (instance == null)
+        {
+            instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
         {
             Destroy(gameObject);
-            return;
         }
-        instance = this;
     }
 
 
