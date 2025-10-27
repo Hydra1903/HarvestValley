@@ -22,7 +22,8 @@ public class MainScreenState : IUIState
         hotBarUI.UpdateCurrentItem(hotBarUI.currentHighlightIndex);
         UIStateMachine.Instance.inputCooldown = 1f;
 
-        MusicBackground.Instance.audioSourceMusic.volume *= 2f;
+        MusicBackground.Instance.audioSourceMusicDay.volume *= 2f;
+        MusicBackground.Instance.audioSourceMusicNight.volume *= 2f;
         MainUIScreen.Instance.UpdateGold();
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
@@ -88,7 +89,8 @@ public class MainScreenState : IUIState
             ChangeInteract.Instance.CheckCurrentState();
         }
 
-        MusicBackground.Instance.audioSourceMusic.volume /= 2f;
+        MusicBackground.Instance.audioSourceMusicDay.volume /= 2f;
+        MusicBackground.Instance.audioSourceMusicNight.volume /= 2f;
 
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;

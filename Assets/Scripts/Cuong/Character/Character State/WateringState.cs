@@ -12,6 +12,7 @@ public class WateringState : ICharacterState
         UIManager.Instance.ShowUI("ActionBar");
         CameraSwitcher.Instance.SwitchToActionView();
         CharacterStateMachine.Instance.mainUIScreen.ResetBar();
+        SoundEffects.Instance.PlaySound_Watering();
     }
     public void Update(CharacterStateMachine characterStateMachine)
     {

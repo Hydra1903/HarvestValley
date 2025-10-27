@@ -120,4 +120,7 @@ public class GameSave
     public bool[] locationBarn = new bool[35];
     #endregion
 
+    #region ----- Merchant -----
+    public bool isMerchantSpawned;
+    #endregion
 }

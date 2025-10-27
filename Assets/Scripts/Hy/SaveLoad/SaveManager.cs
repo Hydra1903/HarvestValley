@@ -16,6 +16,11 @@ public static class SaveManager
         game.nameFarm = nameFarm;
         File.WriteAllText(PathFor(slot), JsonUtility.ToJson(game, true));
     }
+    public static void SaveIsMerchantSpawned(string slot)
+    {
+        game.isMerchantSpawned = MerchantRandom.Instance.isMerchantSpawned;
+        File.WriteAllText(PathFor(slot), JsonUtility.ToJson(game, true));
+    }
     public static void SaveCharacter(string slot)
     {
         game.currentCharacter = CharacterSelection.Instance.currentCharacter;
@@ -214,6 +219,10 @@ public static class SaveManager
 
         #region ----- Load NameFarm -----
         MainUIScreen.Instance.textNameFarm.text = game.nameFarm;
+        #endregion
+
+        #region ----- Load Merchant -----
+        MerchantRandom.Instance.isMerchantSpawned = game.isMerchantSpawned;
         #endregion
         return true;     
     }

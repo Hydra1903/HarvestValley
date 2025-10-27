@@ -76,6 +76,7 @@ public class GameTime : MonoBehaviour
         hour = 6; minute = 0; day++;
         currentTimeOfDay = TimeOfDay.Day;
         mainUIScreen.UpdateIconTimeOfDay();
+        MusicBackground.Instance.ChangeBackgroundMusic();
         if (day > 30)
         {
             day = 1; month++;
@@ -86,6 +87,7 @@ public class GameTime : MonoBehaviour
         mainUIScreen.UpdateWeatherTimeline();
         FarmStallUI.Instance.CanCollect();
         Builder.Instance.CheckCanBuild();
+        MerchantRandom.Instance.RandomSpawnInDay();
     }
     public void PauseGame()
     {
