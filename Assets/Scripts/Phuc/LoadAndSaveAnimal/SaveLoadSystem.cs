@@ -13,6 +13,7 @@ public class AnimalSaveData
     public bool canHarvest;
     public bool isActive;
     public int penId;
+    public bool hasEatenToday;
 }
 
 [Serializable]
