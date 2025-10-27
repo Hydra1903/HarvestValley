@@ -30,7 +30,10 @@ public class Weather : MonoBehaviour
         listWeather.Add(new WeatherSchedule(WeatherState.Rainy));
         listWeather.Add(new WeatherSchedule(WeatherState.Stormy));
         listWeather.Add(new WeatherSchedule(WeatherState.Snowy));
-        SetListWeatherOfMonth();
+        if (listWeatherOfMonth.Count == 0)
+        {
+            SetListWeatherOfMonth();
+        }
     }
     public void SetAppearanceRate(SeasonState season)
     {
@@ -71,6 +74,8 @@ public class Weather : MonoBehaviour
         {
             listWeatherOfMonth.Add(RamdomWeatherOfDay());
         }
+        mainUIScreen.UpdateCalendar();
+        SaveManager.SaveListWeather("Slot1");
     }
     public WeatherSchedule RamdomWeatherOfDay()
     {

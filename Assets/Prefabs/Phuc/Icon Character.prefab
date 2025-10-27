@@ -159,7 +159,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: cce7fe947f611aa448627a34fe4e5de5, type: 3}
+  m_Sprite: {fileID: 21300000, guid: b8871725cdc906d48890ae2dff8cb6a5, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -194,17 +194,17 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4946036743561536239}
-  m_LocalRotation: {x: -0, y: -0, z: 1, w: -0.000000044703484}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5717132895094627189}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 180}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.7327734, y: 19.47926}
-  m_SizeDelta: {x: 60.52762, y: 21.479622}
+  m_AnchoredPosition: {x: 0, y: -16.5}
+  m_SizeDelta: {x: 92.7, y: 66.35041}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!222 &6826310329479882929
 CanvasRenderer:
@@ -227,14 +227,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.50432783, g: 1, b: 0.4669811, a: 0.87058824}
+  m_Color: {r: 0, g: 0, b: 0, a: 0.5882353}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 0a15626bdef4a48439ade3e9c5bad421, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 87ee23e47f6e93843a2cef30e62de345, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1

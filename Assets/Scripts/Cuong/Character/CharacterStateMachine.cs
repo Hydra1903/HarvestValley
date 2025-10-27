@@ -8,6 +8,7 @@ public class CharacterStateMachine : MonoBehaviour
     {
         if (Instance == null) Instance = this;
     }
+    public ECharacter currentCharacter;
     [HideInInspector] public ICharacterState currentState;
     public Animator animator;
     public Transform transformCharacter;
@@ -33,7 +34,7 @@ public class CharacterStateMachine : MonoBehaviour
     public float mouseSensitivity;
     public Transform characterBody;
     public Transform cameraCharacter;
-    float xRotation = 0f;
+    public float xRotation = 0f;
 
     public MainUIScreen mainUIScreen;
 

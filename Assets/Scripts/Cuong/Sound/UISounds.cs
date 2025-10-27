@@ -13,6 +13,8 @@ public class UISounds : MonoBehaviour
     public AudioClip clickButton;
     public AudioClip collectItem;
     public AudioClip levelUp;
+    public AudioClip completeAchievement;
+    public AudioClip upgradeBuilding;
     void Start()
     {
         
@@ -44,6 +46,16 @@ public class UISounds : MonoBehaviour
     public void PlaySound_LevelUp()
     {
         audioSourceUI.clip = levelUp;
+        audioSourceUI.Play();
+    }
+    public void PlaySound_CompleteAchievement()
+    {
+        audioSourceUI.clip = completeAchievement;
+        audioSourceUI.Play();
+    }
+    public void PlaySound_UpgradeBuilding()
+    {
+        audioSourceUI.clip = upgradeBuilding;
         audioSourceUI.Play();
     }
 

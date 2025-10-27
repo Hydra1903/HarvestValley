@@ -14,7 +14,8 @@ public enum ETriggerCanvas
     HouseDoor,
     BarnDoor,
     GreenhouseDoor,
-    WaterWell
+    WaterWell,
+    Bed
 }
 public class TriggerCanvas : MonoBehaviour
 {

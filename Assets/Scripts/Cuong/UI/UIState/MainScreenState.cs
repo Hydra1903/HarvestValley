@@ -22,8 +22,9 @@ public class MainScreenState : IUIState
         hotBarUI.UpdateCurrentItem(hotBarUI.currentHighlightIndex);
         UIStateMachine.Instance.inputCooldown = 1f;
 
-        MusicBackground.Instance.audioSourceMusic.volume *= 2f;
-
+        MusicBackground.Instance.audioSourceMusicDay.volume *= 2f;
+        MusicBackground.Instance.audioSourceMusicNight.volume *= 2f;
+        MainUIScreen.Instance.UpdateGold();
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
@@ -71,18 +72,25 @@ public class MainScreenState : IUIState
             currentCalendarState = CalendarState.Off;
         }   
         UIManager.Instance.HideUI("MainScreen");
+
         if (WaterCan.Instance.currentState == EWaterCanState.On)
         {
             WaterCan.Instance.currentState = EWaterCanState.Off;
-            UIManager.Instance.HideUI("WaterCan");
+            WaterCan.Instance.CheckCurrentState();
         }
         if (ChangeMode.Instance.currentState == EChangeModeState.On)
         {
             ChangeMode.Instance.currentState = EChangeModeState.Off;
-            UIManager.Instance.HideUI("ChangeMode");
+            ChangeMode.Instance.CheckCurrentState();
+        }
+        if (ChangeInteract.Instance.currentState == EChangeInteractState.On)
+        {
+            ChangeInteract.Instance.currentState = EChangeInteractState.Off;
+            ChangeInteract.Instance.CheckCurrentState();
         }
 
-        MusicBackground.Instance.audioSourceMusic.volume /= 2f;
+        MusicBackground.Instance.audioSourceMusicDay.volume /= 2f;
+        MusicBackground.Instance.audioSourceMusicNight.volume /= 2f;
 
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
