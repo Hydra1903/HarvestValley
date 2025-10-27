@@ -30,6 +30,7 @@ public static class SaveLoadSystem
     public static void SaveFarm(List<AnimalPen> allPens)
     {
         FarmSaveData data = new FarmSaveData();
+        int today = DateTime.Now.Day; // dùng ngày hiện tại để check
 
         foreach (var pen in allPens)
         {
@@ -41,6 +42,10 @@ public static class SaveLoadSystem
                 var feed = objTuple.Item1.GetComponent<AnimalFedding>();
                 if (feed == null) continue;
 
+                // Chỉ save nếu đã ăn hôm nay và là ngày mới
+                if (!feed.HasEatenToday || feed.LastFedDay == today)
+                    continue;
+
                 var entry = new AnimalSaveData
                 {
                     animalID = info.animalID,
@@ -49,7 +54,8 @@ public static class SaveLoadSystem
                     daysFed = feed.GetDaysFed(),
                     canHarvest = feed.CanHarvest(),
                     isActive = objTuple.Item1.activeSelf,
-                    penId = pen.penId
+                    penId = pen.penId,
+                    hasEatenToday = feed.HasEatenToday
                 };
                 data.animals.Add(entry);
             }
@@ -59,6 +65,7 @@ public static class SaveLoadSystem
         File.WriteAllText(savePath, json);
         Debug.Log($"✅ Farm saved to: {savePath}");
     }
+
 
     public static void LoadFarm(List<AnimalPen> allPens)
     {

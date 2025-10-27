@@ -34,7 +34,10 @@ public class HayCell : MonoBehaviour, IDropHandler
     {
         UpdateUI();
     }
-
+    private void Update()
+    {
+        
+    }
     public void OnDrop(PointerEventData eventData)
     {
         if (manager == null || manager.dragItem == null || manager.dragItem.draggedItem == null)
@@ -56,7 +59,6 @@ public class HayCell : MonoBehaviour, IDropHandler
         SaveLoadSystem.haybaler.itemName = "Hay Bale";
 
         UpdateUI();
-        SaveHaybalePen();
     }
 
     public void UpdateUI()

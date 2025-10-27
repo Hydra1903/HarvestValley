@@ -164,7 +164,7 @@ public class AnimalPen : MonoBehaviour
             allowedTags.Clear();
     }
 
-    public bool AreAllAnimalsFed()
+    public bool IsAnyAnimalFed()
     {
         if (spawnedAnimals.Count == 0)
             return false;
@@ -175,10 +175,10 @@ public class AnimalPen : MonoBehaviour
             var feeding = animal.GetComponent<AnimalFedding>();
             if (feeding == null) continue;
 
-            if (feeding.GetMealsToday() < 1)
-                return false;
+            if (feeding.GetMealsToday() > 0)
+                return true;
         }
-        return true;
+        return false;
     }
 
     public void SellAnimal(int cellIndex)

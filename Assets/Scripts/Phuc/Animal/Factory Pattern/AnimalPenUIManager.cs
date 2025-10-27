@@ -75,7 +75,10 @@ public class AnimalPenUIManager : MonoBehaviour
         RefreshUI();
         UpdateUIPen();
     }
-
+    private void Update()
+    {
+        RefreshUI();
+    }
     public void RefreshUI()
     {
         UpdateAnimalCount();
@@ -123,7 +126,7 @@ public class AnimalPenUIManager : MonoBehaviour
 
     public void UpdateFeedStatus()
     {
-        bool allGood = pen.AreAllAnimalsFed();
+        bool allGood = pen.IsAnyAnimalFed();
         string text = allGood ? "Tốt" : "Xấu";
         Color color = allGood ? Color.green : Color.red;
 

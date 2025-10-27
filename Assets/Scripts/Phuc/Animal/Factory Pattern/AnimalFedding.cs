@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -15,14 +16,15 @@ public class AnimalFedding : MonoBehaviour
 
     private bool canHarvest = false;
     public int daysFed = 0;
-
+    public int LastFedDay;       // ngày cuối cùng ăn
+    public bool HasEatenToday;   // true nếu đã ăn hôm nay
     private bool hasEatenToday = false;
     private bool isWaitingToEat = false;
     private bool missedMealYesterday = false;
 
     private float elapsedGameHours = 0f;
     private float lastRecordedHour = 0f;
-
+    [HideInInspector] public int mealsToday = 0;
     private void Start()
     {
         ResetDailyEatFlags();
@@ -95,7 +97,16 @@ public class AnimalFedding : MonoBehaviour
         TryEat();
         isWaitingToEat = false;
     }
-
+    public void Feed()
+    {
+        int today = DateTime.Now.Day;
+        if (LastFedDay != today)
+        {
+            mealsToday++;
+            HasEatenToday = true;
+            LastFedDay = today;
+        }
+    }
     private void TryEat()
     {
         if (hasEatenToday) return;
