@@ -28,13 +28,11 @@ public class SoilOutline : MonoBehaviour
             outline.OutlineWidth = defaultWidth; 
         }
     }
-    /// Bật outline (gọi từ FarmInput)
     public void EnableOutline(float width)
     {
         if (outline)
             outline.OutlineWidth = width;
     }
-    /// Tắt outline
     public void DisableOutline()
     {
         if (outline)

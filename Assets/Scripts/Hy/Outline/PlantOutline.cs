@@ -3,11 +3,10 @@
 public class PlantOutline : MonoBehaviour
 {
     private Outline outline;
-    private static PlantOutline currentHover; // cây hiện tại đang được trỏ
+    private static PlantOutline currentHover; 
 
-    [SerializeField] private Color myOutlineColor = Color.white;  // <— bạn tự gán
-    [SerializeField, Range(0, 10)] private float defaultWidth = 0f; // nên để 0 để ẩn lúc spawn
-
+    [SerializeField] private Color myOutlineColor = Color.white;  
+    [SerializeField, Range(0, 10)] private float defaultWidth = 0f; 
 
     private void Awake()
     {
@@ -15,8 +14,8 @@ public class PlantOutline : MonoBehaviour
         if (!outline) return;
 
         outline.OutlineMode = Outline.Mode.OutlineVisible;
-        outline.OutlineColor = myOutlineColor;  // gán màu 1 lần lúc spawn
-        outline.OutlineWidth = defaultWidth;    // 0 = ẩn, FarmInput sẽ bật khi hover
+        outline.OutlineColor = myOutlineColor;  
+        outline.OutlineWidth = defaultWidth;    
     }
 
     private void OnMouseEnter()
@@ -36,7 +35,6 @@ public class PlantOutline : MonoBehaviour
             currentHover = null;
         }
     }
-
     private void EnableOutline()
     {
         if (outline)

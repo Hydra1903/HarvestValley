@@ -7,9 +7,8 @@ public class FarmInput : MonoBehaviour
     [SerializeField] private LayerMask soilMask;
 
     [SerializeField] private Transform player;              // Player để đo khoảng cách
-    [SerializeField, Min(0f)] private float interactDistance = 2.0f;
-    [SerializeField] private bool requireHarvestTool = false;  // true: phải cầm tool Harvest mới được click
-
+    [SerializeField, Min(0f)] private float interactDistance;
+    [SerializeField] private bool requireHarvestTool = false;  
     [Header("Hand Mode")]
     [SerializeField] private HandMode currentHandMode = HandMode.Harvest;
 
@@ -31,7 +30,6 @@ public class FarmInput : MonoBehaviour
     public Vector2Int gridPos;
     [HideInInspector]
     public InventoryItem tool;
-
 
     private void Awake()
     {
@@ -66,10 +64,12 @@ public class FarmInput : MonoBehaviour
             var clickable = hitPlant.collider.GetComponentInParent<PlantClickable>();
             var outline = hitPlant.collider.GetComponentInParent<Outline>();
 
-            if (!CheckDistance(hitPlant.point, interactDistance)) return;
-            
-            // Chỉ hiện outline khi có mode active (không phải None)
-            if (item == null && currentHandMode != HandMode.None)
+            if (!CheckDistance(hitPlant.point, interactDistance))
+            {
+                SetPlantOutline(null);
+            }
+
+            if (item == null && currentHandMode != HandMode.Harvest)
             {
                 SetPlantOutline(outline);
             }
@@ -77,7 +77,7 @@ public class FarmInput : MonoBehaviour
             {
                 SetPlantOutline(outline);
             }
-            else if (item == null && currentHandMode == HandMode.None)
+            else if (item == null && currentHandMode == HandMode.Harvest)
             {
                 SetPlantOutline(null);
             }
@@ -117,7 +117,10 @@ public class FarmInput : MonoBehaviour
             // Xử lý click vào cây khi không cầm tool
             if (clickable && Input.GetMouseButtonDown(0) && item == null)
             {
-                if (!CheckDistance(hitPlant.point, interactDistance)) return;
+                if (!CheckDistance(hitPlant.point, interactDistance))
+                {  
+                    SetPlantOutline(null);
+                }
 
                 if (plantManager.CanPlantRemove(gridPos) || plantManager.CanStartHarvest(gridPos))
                 {
@@ -127,7 +130,7 @@ public class FarmInput : MonoBehaviour
             }
         }
 
-        // === Ray chuột để trúng mặt đất (cho các tool khác) ===
+        // === Ray chuột để trúng mặt đất===
         Ray mouseRay = cam.ScreenPointToRay(Input.mousePosition);
         Debug.DrawRay(mouseRay.origin, mouseRay.direction * interactDistance, Color.green);
 
@@ -136,8 +139,7 @@ public class FarmInput : MonoBehaviour
             soilManager.HideGhosts();
             plantManager.HideGhost();
             soilGrid.SetActiveGrid(false);
-            if (!hitPlantForHarvest)
-                UIManager.Instance.HideUI("PlantInfo");
+            if (!hitPlantForHarvest) UIManager.Instance.HideUI("PlantInfo");
             return;
         }
 
@@ -209,7 +211,6 @@ public class FarmInput : MonoBehaviour
         }
         else
         {
-            // Không cầm seed → ẩn plant grid
             if (plantGrid != null)
             {
                 plantGrid.SetActiveGrid(false);
@@ -220,6 +221,14 @@ public class FarmInput : MonoBehaviour
         // Hoe/Shovel
         if (item != null && item.itemData != null && item.itemData.toolType == ToolType.Hoe)
         {
+            if (!farmManager.IsWorldPointInsideThisGrid(hit.point))
+            {
+                soilManager.HideGhosts();
+                plantManager.HideGhost();
+                soilGrid.SetActiveGrid(false);
+                return; 
+            }
+
             soilManager.HideGhosts();
             plantManager.HideGhost();
             soilManager.HandleToolHover(gridPos, item);
@@ -227,11 +236,17 @@ public class FarmInput : MonoBehaviour
 
             if (Input.GetMouseButtonDown(0))
             {
+                if (!farmManager.IsWorldPointInsideThisGrid(hit.point)) return;
+
                 if (!soilManager.CanStartHoeAt(gridPos, item))
                 {
                     Notification.Instance?.ShowNotification("Không thể dùng cuốc tại đây!");
                     return;
                 }
+
+                CharacterStateMachine.Instance.soilManager = this.soilManager;
+                CharacterStateMachine.Instance.plantManager = this.plantManager;
+                CharacterStateMachine.Instance.farmInput = this;
 
                 if (CharacterStateMachine.Instance.currentState != CharacterStateMachine.Instance.hoeState)
                     CharacterStateMachine.Instance.ChangeState(CharacterStateMachine.Instance.hoeState);
@@ -242,6 +257,14 @@ public class FarmInput : MonoBehaviour
         // Watering
         if (item != null && item.itemData != null && item.itemData.toolType == ToolType.Watering)
         {
+            if (!farmManager.IsWorldPointInsideThisGrid(hit.point))
+            {
+                soilManager.HideGhosts();
+                plantManager.HideGhost();
+                soilGrid.SetActiveGrid(false);
+                return;
+            }
+
             soilManager.HideGhosts();
             plantManager.HideGhost();
             soilGrid.SetActiveGrid(false);
@@ -257,11 +280,9 @@ public class FarmInput : MonoBehaviour
 
                     if (areaObj != null)
                     {
-                        // Lấy Outline component
                         var soilOutlineComponent = areaObj.GetComponent<SoilOutline>();
                         if (soilOutlineComponent == null)
                         {
-                            // Nếu chưa có, tự động thêm
                             soilOutlineComponent = areaObj.AddComponent<SoilOutline>();
                         }
 
@@ -271,7 +292,6 @@ public class FarmInput : MonoBehaviour
                 }
                 else
                 {
-                    // Không trúng vùng nào -> tắt outline
                     SetSoilOutline(null);
                 }
             }
@@ -283,32 +303,49 @@ public class FarmInput : MonoBehaviour
             // Click để tưới
             if (Input.GetMouseButtonDown(0))
             {
+                if (!farmManager.IsWorldPointInsideThisGrid(hit.point)) return;
+
                 if (!soilManager.CanStartWaterAt(gridPos))
                 {
-                    Notification.Instance?.ShowNotification("Không thể tưới nước tại đây!");
+                    Notification.Instance?.ShowNotification("Không thể tưới tại đây!");
                     return;
                 }
 
                 if (CharacterStateMachine.Instance.currentState != CharacterStateMachine.Instance.wateringState)
+                {
+                    CharacterStateMachine.Instance.soilManager = this.soilManager;
+                    CharacterStateMachine.Instance.farmInput = this;
                     CharacterStateMachine.Instance.ChangeState(CharacterStateMachine.Instance.wateringState);
+                }    
             }
             return;
         }
         else
         {
-            // Không cầm watering -> tắt soil outline
             SetSoilOutline(null);
         }
 
         // Sprinkler
-        if (item.itemData.toolType == ToolType.Sprinkler)
+        if (item != null && item.itemData != null && item.itemData.toolType == ToolType.Sprinkler)
         {
-            soilManager.HideGhosts();
+            soilManager.HideGhosts();          
             plantManager.HideGhost();
-            soilManager.ShowSprinklerGhost(gridPos);
+            soilGrid.SetActiveGrid(false);
+
+  
+            if (!farmManager.IsWorldPointInsideThisGrid(hit.point))
+            {
+                soilManager.HideSprinklerGhost(); 
+                return;
+            }
+
+            soilManager.ShowSprinklerGhost(gridPos); 
 
             if (Input.GetMouseButtonDown(0))
             {
+                if (!farmManager.IsWorldPointInsideThisGrid(hit.point))
+                    return;
+
                 if (soilManager.PlaceSprinkler(gridPos, item.itemData.placeablePrefab, 1))
                 {
                     farmManager.hotbarUI?.hotbar?.UseAndRemoveItem(farmManager.hotbarUI.valueScroll, 1);
@@ -320,6 +357,10 @@ public class FarmInput : MonoBehaviour
                 }
             }
             return;
+        }
+        else
+        {
+            soilManager.HideSprinklerGhost();
         }
 
         soilManager.HideGhosts();
@@ -355,20 +396,25 @@ public class FarmInput : MonoBehaviour
             case HandMode.Harvest:
                 if (!player || Vector3.Distance(player.position, hitPoint) <= interactDistance)
                 {
-                    if (!plantManager.CanStartHarvest(gridPos)) return;
+                    if (player && Vector3.Distance(player.position, hitPoint) > interactDistance)
+                    { Notification.Instance?.ShowNotification("Quá xa để thu hoạch!"); return; }
 
-                    if (CharacterStateMachine.Instance.currentState != CharacterStateMachine.Instance.harvestLowState && Mp.Instance.mp >= 10)
+                    if (!farmManager.IsWorldPointInsideThisGrid(hitPoint)) return;
+                    if (!plantManager.CanStartHarvest(gridPos)) return; 
+
+                    CharacterStateMachine.Instance.plantManager = this.plantManager;
+                    CharacterStateMachine.Instance.farmInput = this;
+                    if (CharacterStateMachine.Instance.currentState != CharacterStateMachine.Instance.harvestLowState
+                        && (Mp.Instance == null || Mp.Instance.mp >= 10))
                     {
                         CharacterStateMachine.Instance.ChangeState(CharacterStateMachine.Instance.harvestLowState);
                     }
-                }
-                else
-                {
-                    Notification.Instance?.ShowNotification("Quá xa để thu hoạch!");
+                    return;
                 }
                 break;
 
             case HandMode.Remove:
+                if (!plantManager.CanPlantRemove(gridPos)) return;
                 plantManager.TryRemovePlant(clickable.centerX, clickable.centerY);
                 break;
         }
@@ -385,7 +431,10 @@ public class FarmInput : MonoBehaviour
         if (next == currentHoverOutline) return;
 
         if (currentHoverOutline)
+        {
             currentHoverOutline.OutlineWidth = 0f;
+            currentHoverOutline.enabled = false;
+        }
 
         currentHoverOutline = next;
 
@@ -393,6 +442,7 @@ public class FarmInput : MonoBehaviour
         {
             currentHoverOutline.OutlineMode = Outline.Mode.OutlineVisible;
             currentHoverOutline.OutlineWidth = hoverOutlineWidth;
+            currentHoverOutline.enabled = true;
         }
     }
 
@@ -400,17 +450,19 @@ public class FarmInput : MonoBehaviour
     {
         if (next == currentSoilOutline) return;
 
-        // Tắt outline cũ
         if (currentSoilOutline)
+        {
             currentSoilOutline.OutlineWidth = 0f;
+            currentSoilOutline.enabled = false;
+        }
 
         currentSoilOutline = next;
 
-        // Bật outline mới
         if (currentSoilOutline)
         {
             currentSoilOutline.OutlineMode = Outline.Mode.OutlineVisible;
             currentSoilOutline.OutlineWidth = soilOutlineWidth;
+            currentSoilOutline.enabled = true;  
         }
     }
 
@@ -423,5 +475,4 @@ public class FarmInput : MonoBehaviour
         if (!player) return true; 
         return Vector3.Distance(player.position, worldPoint) <= dist;
     }
-
 }

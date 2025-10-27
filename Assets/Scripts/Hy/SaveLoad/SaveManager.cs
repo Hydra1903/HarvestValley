@@ -8,11 +8,11 @@ public static class SaveManager
 {
     static string PathFor(string slot) =>
         System.IO.Path.Combine(Application.persistentDataPath, $"farm_{slot}.json");
-    // SaveManager.cs
+
     public static void Save(string slot, IEnumerable<FarmManager> farms)
     {
         var game = new GameSave();
-        //foreach (var f in farms) game.grids.Add(f.BuildSave());
+        foreach (var f in farms) game.grids.Add(f.BuildSave());
 
         #region ----- Save Building -----
         game.isBuilding = Builder.Instance.isBuilding;

@@ -218,53 +218,44 @@ public class PlantGrid : MonoBehaviour
         if (cols == null || cols.Length != _mesh.vertexCount)
             cols = new Color[_mesh.vertexCount];
 
-        // Reset về màu trong suốt
+        // 0) Reset
         for (int i = 0; i < cols.Length; i++)
-            cols[i] = new Color(0, 0, 0, 0); // Hoàn toàn trong suốt
+            cols[i] = new Color(0, 0, 0, 0);
 
-        // Tô màu xanh nhạt cho các ô đã đào
+        // 1) Tô nền cho các ô đã đào
         for (int x = 0; x < _W; x++)
         {
             for (int y = 0; y < _H; y++)
             {
                 var tile = farm.Tiles[x, y];
                 bool dug = (tile.state == SoilState.Dug) || (tile.soilType != SoilType.None);
-                if (dug)
-                {
-                    PaintCellEdges(cols, x, y, normalDugColor);
-                }
+                if (dug) PaintCellEdges(cols, x, y, normalDugColor);
             }
         }
 
-        // Highlight vùng trồng (nếu có)
-        if (_highlightSize > 0 && _highlightStart.x >= 0)
-        {
-            Color highlightColor = _highlightValid ? validColor : invalidColor;
-
-            for (int dx = 0; dx < _highlightSize; dx++)
-            {
-                for (int dy = 0; dy < _highlightSize; dy++)
-                {
-                    int x = _highlightStart.x + dx;
-                    int y = _highlightStart.y + dy;
-
-                    if (x >= 0 && x < _W && y >= 0 && y < _H)
-                    {
-                        PaintCellEdges(cols, x, y, highlightColor);
-                    }
-                }
-            }
-        }
-
+        // 2) Tô viền đỏ cho các ô đã trồng (vẽ TRƯỚC highlight)
         for (int x = 0; x < _W; x++)
         {
             for (int y = 0; y < _H; y++)
             {
                 var tile = farm.Tiles[x, y];
                 if (tile.state == SoilState.Planted)
-                {
-                    // Tô viền đỏ cho ô đã trồng
                     PaintCellEdges(cols, x, y, plantedColor);
+            }
+        }
+
+        // 3) CUỐI CÙNG: highlight vùng aim (ưu tiên cao nhất)
+        if (_highlightSize > 0 && _highlightStart.x >= 0)
+        {
+            Color highlightColor = _highlightValid ? validColor : invalidColor;
+            for (int dx = 0; dx < _highlightSize; dx++)
+            {
+                for (int dy = 0; dy < _highlightSize; dy++)
+                {
+                    int x = _highlightStart.x + dx;
+                    int y = _highlightStart.y + dy;
+                    if (x >= 0 && x < _W && y >= 0 && y < _H)
+                        PaintCellEdges(cols, x, y, highlightColor);
                 }
             }
         }

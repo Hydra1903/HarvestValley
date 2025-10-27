@@ -20,6 +20,7 @@ public class SoilManager : MonoBehaviour
     private GameObject ghostFurrowInstance;
     private GameObject ghostHoleInstance;
     private GameObject ghostSprinklerInstance;
+    private Vector2Int _lastSprinklerGhostGridPos = new Vector2Int(-1, -1);
 
     [Header("Watering")]
     [SerializeField] private string waterChildName; // tên child trong prefab luống/hố bật
@@ -67,20 +68,15 @@ public class SoilManager : MonoBehaviour
     // ===== Hover / Ghost =====
     public void HandleToolHover(Vector2Int gridPos, InventoryItem currentItem)
     {
-        // Không phải Hoe → ẩn ghost
         if (currentItem?.itemData?.toolType != ToolType.Hoe)
         {
             HideGhosts();
             return;
         }
 
-        // === FLATTEN: chỉ hiện ghost đỏ khi trúng vùng đã đào ===
-        if (hoeMode == HoeMode.Flatten)
+        if (currentItem.itemData.toolType == ToolType.Hoe && hoeMode == HoeMode.Flatten)
         {
-            // mặc định ẩn
             HideGhosts();
-
-            // chỉ khi trúng luống/hố hiện có mới hiện ghost đỏ
             if (TryFindAreaContaining(gridPos.x, gridPos.y, out int idx))
             {
                 var a = _areaSaves[idx];
@@ -98,8 +94,6 @@ public class SoilManager : MonoBehaviour
         ShowGhostNormal(startDig, sizeDig, canPlace);
     }
 
-
-    // Ghost thường cho chế độ Đào: hợp lệ -> allowed, không hợp lệ -> đỏ
     private void ShowGhostNormal(Vector2Int startPos, int size, bool canPlace)
     {
         var info = new ToolInfo
@@ -149,14 +143,13 @@ public class SoilManager : MonoBehaviour
 
     private void ApplyGhostMaterial(GameObject go, bool valid, bool forceRed = false)
     {
-        // valid (đào hợp lệ) -> dùng ghostBlack (allowed)
-        // invalid hoặc forceRed (Flatten highlight) -> dùng ghostRed
-        var mat = (forceRed || !valid) ? ghostRed : ghostBlack;
-        if (!go || mat == null) return;
+        var chosen = (forceRed || !valid) ? ghostRed : ghostBlack;
+
+        if (chosen == null) return;
 
         var renderers = go.GetComponentsInChildren<Renderer>(true);
         for (int i = 0; i < renderers.Length; i++)
-            renderers[i].material = mat;
+            renderers[i].material = chosen;
     }
 
     // ===== Click: Đào hoặc Hủy =====
@@ -288,7 +281,7 @@ public class SoilManager : MonoBehaviour
         );
 
         var prefab = (size == 5) ? dugSoilPrefab : holePrefab;
-        var go = prefab ? Instantiate(prefab, pos,  Quaternion.identity) : null;
+        var go = prefab ? Instantiate(prefab, pos, Quaternion.identity) : null;
         _areaObjects.Add(go);
         FindAnyObjectByType<SoilGrid>()?.UpdateGridColors();
     }
@@ -355,7 +348,11 @@ public class SoilManager : MonoBehaviour
         }
         return false;
     }
-
+    private Quaternion RandomizeRotation()
+    {
+        float y = Random.Range(0f, 360f);
+        return Quaternion.Euler(0f, y, 0f);
+    }
     private struct ToolInfo
     {
         public int size;
@@ -504,6 +501,14 @@ public class SoilManager : MonoBehaviour
 
     public bool PlaceSprinkler(Vector2Int gridPos, GameObject prefabOverride, int size = 1)
     {
+        // NEW: fallback an toàn
+        if (ghostSprinklerInstance != null)
+        {
+            var worldPosFromGhost = ghostSprinklerInstance.transform.position;
+            gridPos = farm.WorldToGrid(worldPosFromGhost);
+        }
+        // else: giữ nguyên gridPos từ tham số
+
         int startX = gridPos.x;
         int startY = gridPos.y;
 
@@ -511,32 +516,27 @@ public class SoilManager : MonoBehaviour
         var usePrefab = prefabOverride != null ? prefabOverride : sprinklerPrefab;
         if (usePrefab == null) return false;
 
-        int gx = startX + size / 2;
-        int gy = startY + size / 2;
+        // Random xoay Y (bạn đã yêu cầu chỉ random xoay)
+        Quaternion rot = Quaternion.Euler(0f, Random.Range(0f, 360f), 0f);
 
         Vector3 pos = farm.origin + new Vector3(
-            (gx + 0.5f) * farm.cellSize,
+            (gridPos.x + 0.5f) * farm.cellSize,
             usePrefab.transform.position.y,
-            (gy + 0.5f) * farm.cellSize
+            (gridPos.y + 0.5f) * farm.cellSize
         );
 
-        var parent = transform; 
-        var go = Instantiate(usePrefab, pos, Quaternion.identity, parent);
+        var go = Instantiate(usePrefab, pos, rot, transform);
         var t = farm.Tiles[gridPos.x, gridPos.y];
-        if (t != null)
-        {
-            t.state = SoilState.Planted;   
-        }
+        if (t != null) t.state = SoilState.Planted;
 
-        var sp = go.GetComponent<Sprinkler>();
-        if (sp == null) sp = go.AddComponent<Sprinkler>();
-        sp.Init(gx, gy, sprinkerRange);
+        var sp = go.GetComponent<Sprinkler>() ?? go.AddComponent<Sprinkler>();
+        sp.Init(gridPos.x, gridPos.y, sprinkerRange);
 
         GetSprinklers(sp);
         HideSprinklerGhost();
-
         return true;
     }
+
 
     public void GetSprinklers(Sprinkler s)
     {
@@ -556,12 +556,14 @@ public class SoilManager : MonoBehaviour
 
         Vector3 pos = farm.origin + new Vector3(
             (gridPos.x + 0.5f) * farm.cellSize,
-            0.2f,
+            0.07f,
             (gridPos.y + 0.5f) * farm.cellSize
         );
 
         ghostSprinklerInstance.transform.position = pos;
         ghostSprinklerInstance.SetActive(true);
+
+        _lastSprinklerGhostGridPos = gridPos;
     }
 
     public void HideSprinklerGhost()
@@ -710,7 +712,7 @@ public class SoilManager : MonoBehaviour
                 0f,
                 (ss.gridY + 0.5f) * farm.cellSize
             );
-            go = Instantiate(sprinklerPrefab, pos, Quaternion.identity, transform);
+            go = Instantiate(sprinklerPrefab, pos, RandomizeRotation(), transform);
         }
         else
         {
@@ -782,8 +784,12 @@ public class SoilManager : MonoBehaviour
 
     public void SetHoeMode(HoeMode mode)
     {
+        if (hoeMode == mode) return;  
+
+        var prev = hoeMode;
         hoeMode = mode;
-        if (hoeMode == HoeMode.Flatten) HideGhosts();
+
+        HideGhosts();
     }
 
     //Có máy tưới tại vị trí hiện tại hay không

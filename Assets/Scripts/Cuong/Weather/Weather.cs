@@ -144,6 +144,7 @@ public class Weather : MonoBehaviour
             }
         }
 
+        FindAnyObjectByType<FXWeather>()?.ApplyFX(currentWeather);
         mainUIScreen.UpdateWeather();
     }
 

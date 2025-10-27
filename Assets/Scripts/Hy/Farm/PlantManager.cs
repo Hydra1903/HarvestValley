@@ -1,5 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using NUnit.Framework.Interfaces;
+using System.Collections.Generic;
+using System.Drawing;
+using Unity.Burst.Intrinsics;
 using Unity.VisualScripting;
+using Unity.VisualScripting.Antlr3.Runtime.Misc;
+using UnityEditor.Localization.Plugins.XLIFF.V12;
 using UnityEngine;
 
 public class PlantManager : MonoBehaviour
@@ -107,7 +112,8 @@ public class PlantManager : MonoBehaviour
         var t = farmManager.Tiles[x, y];
         var inst = t?.plantInstance;
         int cost = Mathf.Max(0, inst.plantData.energyHarvest);
-        int yield = Mathf.Max(0, inst.plantData.harvestValue);
+        var itemData = inst.plantData.harvestItem;
+        int amount = Mathf.Max(0, inst.plantData.harvestValue);
 
         if (!farmManager.IsInGrid(x, y)) return false;
 
@@ -125,15 +131,18 @@ public class PlantManager : MonoBehaviour
             return false; 
         }
 
-        if (yield <= 0 || inst.plantData.harvestItem == null)
-        { Debug.LogWarning("[Harvest] Dữ liệu harvest không hợp lệ."); return false; }
+        if (amount <= 0 || inst.plantData.harvestItem == null)
+        { 
+            Debug.LogWarning("[Harvest] Dữ liệu harvest không hợp lệ."); 
+            return false; 
+        }
 
         if (cost > 0) Mp.Instance?.UseMp(cost);
 
         // Cập nhật trạng thái + XP
         inst.harvestCount++;
         if (Xp.Instance != null) Xp.Instance.AddXp(Mathf.Max(0, inst.plantData.xpHarvest));
-        Debug.Log($"Thu hoạch {inst.plantData.plantName} (+{yield}) +{inst.plantData.xpHarvest} XP | Lần {inst.harvestCount}/{(inst.plantData.maxHarvest < 0 ? "∞" : inst.plantData.maxHarvest.ToString())}");
+        Debug.Log($"Thu hoạch {inst.plantData.plantName} (+{amount}) +{inst.plantData.xpHarvest} XP | Lần {inst.harvestCount}/{(inst.plantData.maxHarvest < 0 ? "∞" : inst.plantData.maxHarvest.ToString())}");
 
         // Regrow?
         if (HasMoreHarvests(inst))
@@ -150,58 +159,52 @@ public class PlantManager : MonoBehaviour
 
         // Hết lượt -> xóa cây + save
         RemovePlantAtCenter(cx, cy);
+        Inventory.Instance.AddItem(itemData, amount);
         int idx = _plantSaves.FindIndex(p => p.centerX == cx && p.centerY == cy);
         if (idx >= 0) _plantSaves.RemoveAt(idx);
         return true;
     }
 
     // ===== Qua ngày =====
-    public void AdvanceDay()
+    public void NextDay()
     {
         bool isRainy = Weather.Instance != null && Weather.Instance.currentWeather == WeatherState.Rainy;
         var season = Season.Instance ? Season.Instance.currentSeason : SeasonState.Spring;
 
-        // Danh sách cây cần xóa (không xóa ngay để tránh lỗi iterator)
         var plantsToRemove = new List<(int cx, int cy)>();
 
         for (int x = 0; x < farmManager.gridWidth; x++)
-        {
             for (int y = 0; y < farmManager.gridHeight; y++)
             {
                 var tile = farmManager.Tiles[x, y];
                 var inst = tile?.plantInstance;
                 var pd = inst?.plantData;
+
                 if (inst == null || pd == null) continue;
-
                 if (!TryGetPlantCenterFrom(x, y, out int cx, out int cy)) continue;
-                if (x != cx || y != cy) continue; // không phải tâm -> bỏ qua
+                if (x != cx || y != cy) continue;
 
-                int size = pd.GetSizeInt(); // Lấy kích thước cây
-                bool canGrow = pd.CanGrowInSeason(season);
-                bool canHarvest = pd.CanHarvestInSeason(season);
+                int size = pd.GetSizeInt();
+                bool greenhouseOverride = farmManager.isGreenhouse && (size == 1 || size == 2);
+                bool canGrow = greenhouseOverride ? true : pd.CanGrowInSeason(season);
+                bool canHarvest = greenhouseOverride ? true : pd.CanHarvestInSeason(season);
 
-                // === LOGIC MỚI: Cây 1x1 và 2x2 trái mùa → XÓA NGAY ===
-                if (size == 1 || size == 2)
+                if (!greenhouseOverride && (size == 1 || size == 2))
                 {
-                    // Kiểm tra có phải mùa hợp lệ không
                     bool isValidSeason = canGrow || canHarvest;
-
                     if (!isValidSeason)
                     {
-                        Debug.Log($"[AdvanceDay] {pd.plantName} (size {size}) trái mùa ở stage {inst.currentStage} → Xóa cây tại ({cx},{cy})");
                         plantsToRemove.Add((cx, cy));
-                        continue; 
+                        continue;
                     }
                 }
 
-                // Tính theo CHUỖI hiện hành (growth hay mature-regrow)
-                int lastIdx = GetLastStageIndexFor(inst);          // stage có quả
-                int preFruit = Mathf.Max(0, lastIdx - 1);          // ngay trước khi có quả
+                int lastIdx = GetLastStageIndexFor(inst);
+                int preFruit = Mathf.Max(0, lastIdx - 1);
 
-                // 1) Nếu đang ở stage có quả (last) mà KHÔNG phải mùa ra quả
-                if (inst.currentStage >= lastIdx && !canHarvest)
+                // Nếu đang ở stage có quả nhưng không phải mùa thu hoạch
+                if (inst.currentStage >= lastIdx && !canHarvest && !greenhouseOverride)
                 {
-                    // Cây 3x3 → Lùi về preFruit
                     if (size == 3)
                     {
                         if (lastIdx > 0)
@@ -209,24 +212,21 @@ public class PlantManager : MonoBehaviour
                             inst.currentStage = preFruit;
                             inst.daysInCurrentStage = 0;
                             ReplacePlantMeshAtCenter(cx, cy, inst);
-                            Debug.Log($"[AdvanceDay] {pd.plantName} (3x3) trái mùa → Lùi về stage {preFruit}");
                         }
-                        int rd = GetRemainingDaysConditioned(inst, cx, cy);
-                        inst.remainingDays = (rd >= 0) ? rd : GetRemainingDays(inst);
-                        continue;
                     }
+                    inst.remainingDays = GetRemainingDays(inst);
+                    continue;
                 }
 
-                // 2) Nếu chưa tới last → xét điều kiện tăng trưởng theo từng nhánh mùa
+                // Tăng trưởng các stage trước khi có quả
                 if (inst.currentStage < lastIdx)
                 {
                     bool watered = isRainy || soilManager.IsTileWatered(cx, cy);
 
-                    // a) Stage < preFruit: cần "mùa phát triển"
                     bool seasonOkForThisStage =
-                        (inst.currentStage < preFruit && canGrow)
-                        // b) Stage == preFruit: cần "mùa ra quả"
-                        || (inst.currentStage == preFruit && canHarvest);
+                        (inst.currentStage < preFruit && canGrow) ||
+                        (inst.currentStage == preFruit && canHarvest);
+                    if (greenhouseOverride) seasonOkForThisStage = true;
 
                     if (watered && seasonOkForThisStage)
                     {
@@ -244,9 +244,6 @@ public class PlantManager : MonoBehaviour
                     continue;
                 }
             }
-        }
-
-        // Xóa các cây đã đánh dấu
         foreach (var (cx, cy) in plantsToRemove)
         {
             RemovePlantAtCenter(cx, cy);
@@ -259,11 +256,28 @@ public class PlantManager : MonoBehaviour
         soilManager.WaterBySprinklers();
     }
 
+    public void CheckNextDay()
+    {
+        if (!isActiveAndEnabled) return;
+        if (!gameObject.activeInHierarchy) return;
+
+        if (farmManager == null || !farmManager.isActiveAndEnabled)
+        {
+            return;
+        }
+        NextDay(); 
+    }
     // ===== PLANTING =====
 
     //Có thể trồng không?
     public bool CanPlantAt(Vector2Int startPos, int size, PlantData plantData)
     {
+        if (farmManager.isGreenhouse && size == 3)
+        {
+            Notification.Instance?.ShowNotification("Nhà kính chỉ trồng cây ngắn ngày");
+            return false;
+        }
+
         for (int x = 0; x < size; x++)
             for (int y = 0; y < size; y++)
             {
@@ -370,8 +384,11 @@ public class PlantManager : MonoBehaviour
         var season = Season.Instance ? Season.Instance.currentSeason : SeasonState.Spring;
         int lastIdx = GetLastStageIndexFor(inst);
 
-        // Kiểm tra KHÔNG PHẢI mùa thu hoạch (phủ định)
-        if (!inst.plantData.CanHarvestInSeason(season))
+        int size = inst.plantData.GetSizeInt();
+        bool greenhouseOverride = farmManager.isGreenhouse && (size == 1 || size == 2);
+
+        // ✅ Bỏ mùa ở nhà kính
+        if (!greenhouseOverride && !inst.plantData.CanHarvestInSeason(season))
         {
             Notification.Instance?.ShowNotification("Không phải mùa thu hoạch");
             return false;
@@ -396,6 +413,14 @@ public class PlantManager : MonoBehaviour
         if (Mp.Instance != null && Mp.Instance.mp < cost)
         {
             Notification.Instance?.ShowNotification("Hết năng lượng!");
+            return false;
+        }
+
+        var itemData = inst.plantData.harvestItem;
+        int amount = Mathf.Max(0, inst.plantData.harvestValue);
+        if (Inventory.Instance == null)
+        {
+            Notification.Instance?.ShowNotification("Túi đầy");
             return false;
         }
 
@@ -631,23 +656,30 @@ public class PlantManager : MonoBehaviour
         int preFruit = Mathf.Max(0, lastStage - 1);
 
         var season = Season.Instance ? Season.Instance.currentSeason : SeasonState.Spring;
+
         bool canGrow = pd.CanGrowInSeason(season);
         bool canHarvest = pd.CanHarvestInSeason(season);
 
-        // Đang ở stage có quả nhưng sai mùa harvest -> AdvanceDay sẽ lùi; coi như sai mùa
-        if (inst.currentStage >= lastStage && !canHarvest) return -1;
+        // ✅ override nhà kính cho 1x1 & 2x2
+        int size = pd.GetSizeInt();
+        bool greenhouseOverride = farmManager.isGreenhouse && (size == 1 || size == 2);
+        if (greenhouseOverride) { canGrow = true; canHarvest = true; }
+
+        if (inst.currentStage >= lastStage && !canHarvest) return greenhouseOverride ? 0 : -1;
         if (inst.currentStage >= lastStage) return 0;
 
         bool seasonOkNow =
             (inst.currentStage < preFruit && canGrow) ||
             (inst.currentStage == preFruit && canHarvest);
-        if (!seasonOkNow) return -1;
+
+        if (!seasonOkNow) return greenhouseOverride ? 0 : -1;
 
         bool isRainy = Weather.Instance &&
                        (Weather.Instance.currentWeather == WeatherState.Rainy ||
                         Weather.Instance.currentWeather == WeatherState.Stormy);
         bool wateredToday = isRainy || (soilManager != null && soilManager.IsTileWatered(cx, cy));
-        if (pd.needsWater && !wateredToday) return -2;
+
+        if (pd.needsWater && !wateredToday) return -2; // vẫn tôn trọng nhu cầu nước
 
         int remaining = 0;
         int needNow = GetRequiredDaysForCurrentStage(inst);
@@ -658,11 +690,10 @@ public class PlantManager : MonoBehaviour
             bool seasonOkNext =
                 (s < preFruit && canGrow) ||
                 (s == preFruit && canHarvest);
-            if (!seasonOkNext) return -1;
+            if (!seasonOkNext) return greenhouseOverride ? 0 : -1;
 
             remaining += pd.GetRequiredDaysForStage(useMature, s);
         }
-
         return remaining;
     }
 
