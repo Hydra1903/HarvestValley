@@ -20,7 +20,6 @@ public class SoilManager : MonoBehaviour
     private GameObject ghostFurrowInstance;
     private GameObject ghostHoleInstance;
     private GameObject ghostSprinklerInstance;
-    private Vector2Int _lastSprinklerGhostGridPos = new Vector2Int(-1, -1);
 
     [Header("Watering")]
     [SerializeField] private string waterChildName; // tên child trong prefab luống/hố bật
@@ -562,8 +561,6 @@ public class SoilManager : MonoBehaviour
 
         ghostSprinklerInstance.transform.position = pos;
         ghostSprinklerInstance.SetActive(true);
-
-        _lastSprinklerGhostGridPos = gridPos;
     }
 
     public void HideSprinklerGhost()

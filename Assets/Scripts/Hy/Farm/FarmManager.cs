@@ -36,7 +36,7 @@ public class FarmManager : MonoBehaviour
 
     private void Start()
     {
-        AllocateTiles(gridWidth, gridHeight);
+        CreateTiles(gridWidth, gridHeight);
         soilManager.Initialize(this);
         plantManager.Initialize(this, soilManager);
 
@@ -64,7 +64,7 @@ public class FarmManager : MonoBehaviour
     // === Helpers chung ===
 
     //Tạo mảng Tile theo kích thước
-    public void AllocateTiles(int width, int height)
+    public void CreateTiles(int width, int height)
     {
         gridWidth = width;
         gridHeight = height;
@@ -83,7 +83,7 @@ public class FarmManager : MonoBehaviour
         return new Vector2Int(x, y);
     }
 
-    //Kiểm tra có nằm trong luoi
+    //Kiểm tra có nằm trong lưới
     public bool IsInGrid(int x, int y) => x >= 0 && x < gridWidth && y >= 0 && y < gridHeight;
 
     public bool IsWorldPointInsideThisGrid(Vector3 worldPos)
@@ -100,7 +100,6 @@ public class FarmManager : MonoBehaviour
         int startX = gridPos.x - (size / 2);
         int startY = gridPos.y - (size / 2);
 
-        // Đảm bảo vùng không vượt ra ngoài lưới
         if (startX < 0) startX = 0;
         if (startY < 0) startY = 0;
         if (startX + size > gridWidth) startX = gridWidth - size;
