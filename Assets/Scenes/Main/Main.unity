@@ -73455,10 +73455,6 @@ PrefabInstance:
       value: FX
       objectReference: {fileID: 0}
     - target: {fileID: 3476225332328969168, guid: b7f1bc00d047fc74bad8be9fdafaa13c, type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3476225332328969168, guid: b7f1bc00d047fc74bad8be9fdafaa13c, type: 3}
       propertyPath: mainLight
       value: 
       objectReference: {fileID: 686228528}
@@ -76124,7 +76120,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 772ab0fa64df431439196313b9244ba2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  farm: {fileID: 1564992398}
+  farmManager: {fileID: 0}
   soilManager: {fileID: 1564992396}
   normalDugColor: {r: 0, g: 0.65882355, b: 0, a: 0.1764706}
   validColor: {r: 0.010989189, g: 1, b: 0, a: 1}
@@ -100527,10 +100523,6 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 598111212493220916, guid: a5308cbe83fb9df4e8e6a1a4fd789c7e, type: 3}
-      propertyPath: soils.Array.size
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 598111212493220916, guid: a5308cbe83fb9df4e8e6a1a4fd789c7e, type: 3}
       propertyPath: 'soils.Array.data[0]'
       value: 
       objectReference: {fileID: 615630010}
@@ -100547,10 +100539,6 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1564992396}
     - target: {fileID: 598111212493220916, guid: a5308cbe83fb9df4e8e6a1a4fd789c7e, type: 3}
-      propertyPath: farmInputs.Array.size
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 598111212493220916, guid: a5308cbe83fb9df4e8e6a1a4fd789c7e, type: 3}
       propertyPath: 'farmInputs.Array.data[0]'
       value: 
       objectReference: {fileID: 615630012}
@@ -100566,10 +100554,6 @@ PrefabInstance:
       propertyPath: 'farmInputs.Array.data[3]'
       value: 
       objectReference: {fileID: 1564992399}
-    - target: {fileID: 2423543895135945425, guid: a5308cbe83fb9df4e8e6a1a4fd789c7e, type: 3}
-      propertyPath: farms.Array.size
-      value: 4
-      objectReference: {fileID: 0}
     - target: {fileID: 2423543895135945425, guid: a5308cbe83fb9df4e8e6a1a4fd789c7e, type: 3}
       propertyPath: 'farms.Array.data[0]'
       value: 

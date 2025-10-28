@@ -257,7 +257,7 @@ public class SoilManager : MonoBehaviour
             for (int dy = 0; dy < size; dy++)
             {
                 farm.Tiles[startX + dx, startY + dy].state = SoilState.Dug;
-                farm.Tiles[startX + dx, startY + dy].soilType = (size == 5) ? SoilType.Plot : SoilType.Hole;
+                farm.Tiles[startX + dx, startY + dy].soilType = (size == 5) ? SoilType.Furrow : SoilType.Hole;
             }
 
         var a = new AreaSave
@@ -265,7 +265,7 @@ public class SoilManager : MonoBehaviour
             startX = startX,
             startY = startY,
             size = size,
-            soilType = (size == 5) ? SoilType.Plot : SoilType.Hole
+            soilType = (size == 5) ? SoilType.Furrow : SoilType.Hole
         };
         _areaSaves.Add(a);
 

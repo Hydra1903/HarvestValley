@@ -6,7 +6,7 @@ using UnityEngine;
 public class PlantGrid : MonoBehaviour
 {
     [Header("References")]
-    public FarmManager farm;
+    public FarmManager farmManager;
     public SoilManager soilManager;
 
     [Header("Colors")]
@@ -50,7 +50,7 @@ public class PlantGrid : MonoBehaviour
 
     private void Awake()
     {
-        if (!farm) farm = GetComponentInParent<FarmManager>();
+        if (!farmManager) farmManager = GetComponentInParent<FarmManager>();
         if (!soilManager) soilManager = GetComponentInParent<SoilManager>();
         EnsureComponents();
         gameObject.SetActive(false);
@@ -103,10 +103,10 @@ public class PlantGrid : MonoBehaviour
     /// </summary>
     public void GenerateMesh()
     {
-        if (farm == null) return;
+        if (farmManager == null) return;
 
-        _W = farm.gridWidth;
-        _H = farm.gridHeight;
+        _W = farmManager.gridWidth;
+        _H = farmManager.gridHeight;
 
         if (_W <= 0 || _H <= 0) return;
 
@@ -131,7 +131,7 @@ public class PlantGrid : MonoBehaviour
         var colors = new List<Color>();
         _edgeToQuadIndex.Clear();
 
-        float c = farm.cellSize;
+        float c = farmManager.cellSize;
         float halfWidth = lineWidth * 0.5f;
 
         int quadIndex = 0;
@@ -177,7 +177,7 @@ public class PlantGrid : MonoBehaviour
         _mesh.RecalculateBounds();
 
         _mf.sharedMesh = _mesh;
-        transform.position = farm.origin + Vector3.up * yOffset;
+        transform.position = farmManager.origin + Vector3.up * yOffset;
     }
 
     private void CreateLineQuad(List<Vector3> verts, List<int> indices, List<Color> colors,
@@ -212,7 +212,7 @@ public class PlantGrid : MonoBehaviour
     /// </summary>
     public void UpdateGridColors()
     {
-        if (farm == null || farm.Tiles == null || _mesh == null) return;
+        if (farmManager == null || farmManager.Tiles == null || _mesh == null) return;
 
         var cols = _mesh.colors;
         if (cols == null || cols.Length != _mesh.vertexCount)
@@ -227,7 +227,7 @@ public class PlantGrid : MonoBehaviour
         {
             for (int y = 0; y < _H; y++)
             {
-                var tile = farm.Tiles[x, y];
+                var tile = farmManager.Tiles[x, y];
                 bool dug = (tile.state == SoilState.Dug) || (tile.soilType != SoilType.None);
                 if (dug) PaintCellEdges(cols, x, y, normalDugColor);
             }
@@ -238,7 +238,7 @@ public class PlantGrid : MonoBehaviour
         {
             for (int y = 0; y < _H; y++)
             {
-                var tile = farm.Tiles[x, y];
+                var tile = farmManager.Tiles[x, y];
                 if (tile.state == SoilState.Planted)
                     PaintCellEdges(cols, x, y, plantedColor);
             }
@@ -373,8 +373,8 @@ public class PlantGrid : MonoBehaviour
 
     public void SyncPosition()
     {
-        if (farm)
-            transform.position = farm.origin + Vector3.up * yOffset;
+        if (farmManager)
+            transform.position = farmManager.origin + Vector3.up * yOffset;
     }
 
     private void OnDestroy()
