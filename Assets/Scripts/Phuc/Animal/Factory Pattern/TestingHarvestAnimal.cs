@@ -41,7 +41,6 @@ public class TestingHarvestAnimal : MonoBehaviour
         {
             TryHarvest(player);
         }
-
         canHarvest = feeding != null && feeding.CanHarvest();
     }
 
@@ -64,7 +63,15 @@ public class TestingHarvestAnimal : MonoBehaviour
         }
         else
         {
-            Notification.Instance.ShowNotification($"Chưa đủ điều kiện để thu hoạch, đã ăn được {feeding.GetDaysFed()} ngày.");
+            if (animalType == AnimalType.Goat)
+            {
+                Notification.Instance.ShowNotification("Chưa đủ điều kiện để thu hoạch");
+            }
+            else
+            {
+                // 🐑 Cừu vẫn giữ thông báo cũ
+                Notification.Instance.ShowNotification("Chưa đủ điều kiện để thu hoạch");
+            }
         }
     }
 

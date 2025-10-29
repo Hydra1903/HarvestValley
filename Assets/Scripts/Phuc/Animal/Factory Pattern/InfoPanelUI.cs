@@ -34,26 +34,31 @@ public class InfoPanelUI : MonoBehaviour
         if (harvestComp != null && feeding != null)
         {
             if (feeding.CanHarvest())
-                harvestText.text = "Có thể thu hoạch: Được";
+                harvestText.text = "Có thể thu hoạch: ✅";
             else
-                harvestText.text = "Có thể thu hoạch: Không";
+                harvestText.text = "Có thể thu hoạch: ❌";
         }
-        // --- Tình trạng ăn và số ngày ăn ---
+
+        // --- Kiểm tra tình trạng ăn và số ngày ăn ---
         if (feeding != null)
         {
             switch (feeding.animalTypes)
             {
                 case AnimalFedding.FeedingAnimalType.Sheep:
                     feedText.text = feeding.GetMealsToday() >= 1
-                        ? "Tình trạng ăn: Đã được ăn hôm nay"
-                        : "Tình trạng ăn: Chưa được ăn hôm nay";
-                    feedDaysText.text = $"Số ngày đã ăn: {feeding.daysFed}/3"; 
+                        ? "Tình trạng ăn: Đã ăn hôm nay"
+                        : "Tình trạng ăn: Chưa ăn hôm nay";
+                    feedDaysText.text = $"Số ngày đã ăn: {feeding.daysFed}/3";
                     break;
 
                 case AnimalFedding.FeedingAnimalType.Goat:
                     int meals = feeding.GetMealsToday();
-                    feedText.text = $"Số lượng ăn: {meals}/2";
-                    feedDaysText.text = $"Số ngày đã ăn: {feeding.daysFed}/5"; 
+
+                    string morningStatus = feeding.HasEatenAt(7) ? "✅ 7h" : "❌ 7h";
+                    string eveningStatus = feeding.HasEatenAt(17) ? "✅ 17h" : "❌ 17h";
+
+                    feedText.text = $"Cữ ăn: {morningStatus} | {eveningStatus}";
+                    feedDaysText.text = $"Số ngày đã ăn đủ 2 bữa: {feeding.daysFed}/5";
                     break;
 
                 default:

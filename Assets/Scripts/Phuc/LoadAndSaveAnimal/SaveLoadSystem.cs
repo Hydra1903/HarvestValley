@@ -43,7 +43,7 @@ public static class SaveLoadSystem
                 if (feed == null) continue;
 
                 // Chỉ save nếu đã ăn hôm nay và là ngày mới
-                if (!feed.HasEatenToday || feed.LastFedDay == today)
+                if (!feed.hasEatenToday || feed.LastFedDay == today)
                     continue;
 
                 var entry = new AnimalSaveData
@@ -55,7 +55,7 @@ public static class SaveLoadSystem
                     canHarvest = feed.CanHarvest(),
                     isActive = objTuple.Item1.activeSelf,
                     penId = pen.penId,
-                    hasEatenToday = feed.HasEatenToday
+                    hasEatenToday = feed.hasEatenToday
                 };
                 data.animals.Add(entry);
             }
