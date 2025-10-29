@@ -22,14 +22,11 @@ public class GameController : MonoBehaviour
 
     [ContextMenu("Load Game")]
     public void LoadGame() => SaveManager.Load("slot1", farms);
-
-    private void Update()
+    public void NextDayAllFarm()
     {
-        if (Input.GetKeyDown(KeyCode.N))
+        foreach (var f in farms)
         {
-            foreach (var f in farms)
-                f.plantManager.CheckNextDay();
-            GameTime.Instance.NextDay();
+            f.plantManager.CheckNextDay();
         }
     }
 }

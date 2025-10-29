@@ -23,6 +23,7 @@ public class GameTime : MonoBehaviour
     //public bool canHarvestToday = false;
     public TimeOfDay currentTimeOfDay;
     public MainUIScreen mainUIScreen;
+    public GameController gameController;
     void Awake()
     {
         if (Instance == null)
@@ -88,6 +89,7 @@ public class GameTime : MonoBehaviour
         FarmStallUI.Instance.CanCollect();
         Builder.Instance.CheckCanBuild();
         MerchantRandom.Instance.RandomSpawnInDay();
+        gameController.NextDayAllFarm();
     }
     public void PauseGame()
     {

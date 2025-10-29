@@ -35481,6 +35481,10 @@ PrefabInstance:
       propertyPath: hour
       value: 6
       objectReference: {fileID: 0}
+    - target: {fileID: 1565700489360184600, guid: 435a41237fed0bd43b2e65541818b748, type: 3}
+      propertyPath: gameController
+      value: 
+      objectReference: {fileID: 720535733}
     - target: {fileID: 1745505187332167316, guid: 435a41237fed0bd43b2e65541818b748, type: 3}
       propertyPath: m_AnchorMax.y
       value: 1
@@ -39996,6 +40000,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4625911095851396, guid: 6a71738add6483c4e8a1479556240d54, type: 3}
   m_PrefabInstance: {fileID: 81390329}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &720535733 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2423543895135945425, guid: a5308cbe83fb9df4e8e6a1a4fd789c7e, type: 3}
+  m_PrefabInstance: {fileID: 1821548340}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e67b916a08487b4cb2105cf96202d29, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &722216802
 GameObject:
   m_ObjectHideFlags: 0
@@ -121694,6 +121709,10 @@ PrefabInstance:
       propertyPath: player
       value: 
       objectReference: {fileID: 1989291821}
+    - target: {fileID: 8402363989092370248, guid: 04ff1e5a8c0e93b4ea05031cac0e69bc, type: 3}
+      propertyPath: hoverOutlineWidth
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 8506017568660547577, guid: 04ff1e5a8c0e93b4ea05031cac0e69bc, type: 3}
       propertyPath: m_Mesh
       value: 

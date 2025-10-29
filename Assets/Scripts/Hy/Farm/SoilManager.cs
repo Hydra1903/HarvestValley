@@ -533,6 +533,7 @@ public class SoilManager : MonoBehaviour
 
         GetSprinklers(sp);
         HideSprinklerGhost();
+        WaterBySprinklers();
         return true;
     }
 
