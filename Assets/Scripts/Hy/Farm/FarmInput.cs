@@ -3,10 +3,10 @@ public class FarmInput : MonoBehaviour
 {
     [Header("Raycast")]
     [SerializeField] private LayerMask gridMask;
-    [SerializeField] private LayerMask plantMask;           // Layer của cây
+    [SerializeField] private LayerMask plantMask;          
     [SerializeField] private LayerMask soilMask;
 
-    [SerializeField] private Transform player;              // Player để đo khoảng cách
+    [SerializeField] private Transform player;             
     [SerializeField, Min(0f)] private float interactDistance;
     [SerializeField] private bool requireHarvestTool = false;  
     [Header("Hand Mode")]
@@ -14,7 +14,7 @@ public class FarmInput : MonoBehaviour
 
     [Header("Plant Outline")]
     [SerializeField, Range(0, 10)] private float hoverOutlineWidth;
-    private Outline currentHoverOutline;
+    private Outline currentPlantOutline;
     [Header("Soil Outline")]
     [SerializeField, Range(0, 10)] private float soilOutlineWidth;
     private Outline currentSoilOutline; 
@@ -273,7 +273,6 @@ public class FarmInput : MonoBehaviour
             {
                 Vector2Int hitPos = farmManager.WorldToGrid(soilHit.point);
 
-                // Kiểm tra xem có trúng vùng đã đào không
                 if (soilManager.TryFindAreaContaining(hitPos.x, hitPos.y, out int areaIdx))
                 {
                     GameObject areaObj = soilManager.GetAreaObjectByIndex(areaIdx);
@@ -428,21 +427,21 @@ public class FarmInput : MonoBehaviour
 
     private void SetPlantOutline(Outline next)
     {
-        if (next == currentHoverOutline) return;
+        if (next == currentPlantOutline) return;
 
-        if (currentHoverOutline)
+        if (currentPlantOutline)
         {
-            currentHoverOutline.OutlineWidth = 0f;
-            currentHoverOutline.enabled = false;
+            currentPlantOutline.OutlineWidth = 0f;
+            currentPlantOutline.enabled = false;
         }
 
-        currentHoverOutline = next;
+        currentPlantOutline = next;
 
-        if (currentHoverOutline)
+        if (currentPlantOutline)
         {
-            currentHoverOutline.OutlineMode = Outline.Mode.OutlineVisible;
-            currentHoverOutline.OutlineWidth = hoverOutlineWidth;
-            currentHoverOutline.enabled = true;
+            currentPlantOutline.OutlineMode = Outline.Mode.OutlineVisible;
+            currentPlantOutline.OutlineWidth = hoverOutlineWidth;
+            currentPlantOutline.enabled = true;
         }
     }
 

@@ -20,7 +20,6 @@ public class SoilManager : MonoBehaviour
     private GameObject ghostFurrowInstance;
     private GameObject ghostHoleInstance;
     private GameObject ghostSprinklerInstance;
-    private Vector2Int _lastSprinklerGhostGridPos = new Vector2Int(-1, -1);
 
     [Header("Watering")]
     [SerializeField] private string waterChildName; // tên child trong prefab luống/hố bật
@@ -257,6 +256,7 @@ public class SoilManager : MonoBehaviour
         for (int dx = 0; dx < size; dx++)
             for (int dy = 0; dy < size; dy++)
             {
+<<<<<<< HEAD
                 if(farm.Tiles[startX + dx, startY + dy].state == SoilState.Normal)
                 {
                     farm.Tiles[startX + dx, startY + dy].state = SoilState.Dug;
@@ -267,6 +267,10 @@ public class SoilManager : MonoBehaviour
                     WaterBySprinklers();
                 }    
                 farm.Tiles[startX + dx, startY + dy].soilType = (size == 5) ? SoilType.Plot : SoilType.Hole;
+=======
+                farm.Tiles[startX + dx, startY + dy].state = SoilState.Dug;
+                farm.Tiles[startX + dx, startY + dy].soilType = (size == 5) ? SoilType.Furrow : SoilType.Hole;
+>>>>>>> 37d5bc21a0da9d1193b3bd262be985e64a35aad4
             }
 
         var a = new AreaSave
@@ -274,7 +278,7 @@ public class SoilManager : MonoBehaviour
             startX = startX,
             startY = startY,
             size = size,
-            soilType = (size == 5) ? SoilType.Plot : SoilType.Hole
+            soilType = (size == 5) ? SoilType.Furrow : SoilType.Hole
         };
         _areaSaves.Add(a);
 
@@ -544,6 +548,7 @@ public class SoilManager : MonoBehaviour
         GetSprinklers(sp);
         WaterBySprinklers();
         HideSprinklerGhost();
+        WaterBySprinklers();
         return true;
     }
 
@@ -572,8 +577,6 @@ public class SoilManager : MonoBehaviour
 
         ghostSprinklerInstance.transform.position = pos;
         ghostSprinklerInstance.SetActive(true);
-
-        _lastSprinklerGhostGridPos = gridPos;
     }
 
     public void HideSprinklerGhost()
