@@ -190,7 +190,7 @@ public class AnimalFedding : MonoBehaviour
         }
     }
 
-    private void HandleNextDay(int currentDay)
+    public void HandleNextDay(int currentDay)
     {
         if (hasEatenToday)
         {
@@ -208,11 +208,16 @@ public class AnimalFedding : MonoBehaviour
         mealsToday = 0;
 
         GetComponentInParent<AnimalPen>()?.UpdateAnimalFeedStatusUI();
-        PensManager.Instance?.SaveFarm();
+        if (PensManager.Instance != null)
+        {
+            Debug.Log($"[AnimalFedding] Auto-save triggered for {animalTypes} on new day. Path: {SaveLoadSystem.savePath}");
+            PensManager.Instance.SaveFarm();
+        }
     }
 
 
-    private float GetAbsoluteGameHours()
+
+    public float GetAbsoluteGameHours()
     {
         var t = GameTime.Instance;
         return (t.day * 24f) + t.hour;

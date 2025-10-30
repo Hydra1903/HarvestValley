@@ -23,7 +23,7 @@ public class AnimalPen : MonoBehaviour
     public Transform spawnPointType2;
     public Transform[] wanderPoints;
 
-    [SerializeField] private int baseMaxAnimals = 4; // Cấp 1 mặc định = 4
+    [SerializeField] private int baseMaxAnimals = 4;
     private int maxAnimals; 
 
     private List<(GameObject animal, AnimalData data)> spawnedAnimals = new();
@@ -134,14 +134,12 @@ public class AnimalPen : MonoBehaviour
 
         spawnedAnimals.Add((animal, data));
 
-        // Lấy component Feeding và gán thông tin riêng
         var feeding = animal.GetComponent<AnimalFedding>();
         if (feeding != null)
         {
             feeding.barn = barnReference;
             feeding.hayCellManager = penHayCellManager;
 
-            // Lưu thông tin riêng cho con này
             var info = new AnimalPenSaveInfo
             {
                 animalID = uniqueID,
@@ -154,12 +152,11 @@ public class AnimalPen : MonoBehaviour
             savedAnimals.Add(info);
         }
 
-        // Gán panel UI riêng cho từng con
         var infoComp = animal.GetComponent<AnimalInfo>();
         if (infoComp != null)
         {
             infoComp.panelUI = penInfoPanel;
-            infoComp.data = data; // nếu bạn muốn ScriptableObject khác nhau theo variant
+            infoComp.data = data;
         }
 
         return true;
