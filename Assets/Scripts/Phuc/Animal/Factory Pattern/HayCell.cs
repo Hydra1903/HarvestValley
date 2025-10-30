@@ -1,17 +1,8 @@
 ﻿using System.IO;
-using TMPro;
-using UnityEditor.Overlays;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using TMPro;
 using UnityEngine.UI;
-
-[System.Serializable]
-public class HayCellSaveData
-{
-    public string itemName;
-    public int[] quantityPen1 = new int[2];
-    public int[] quantityPen2 = new int[2];
-}
 
 public class HayCell : MonoBehaviour, IDropHandler
 {
@@ -21,32 +12,27 @@ public class HayCell : MonoBehaviour, IDropHandler
 
     [Header("Cell Info")]
     public int maxCapacity = 20;
-    public bool isEmpty = true;
 
     [Header("References")]
     public HayCellManager manager;
     public int cellIndex; // 0 hoặc 1
-    public int quanlityCell1;
-    public int quanlityCell2;
     public int locationPen; // 1 hoặc 2
 
-    private void Start()
-    {
-        UpdateUI();
-    }
-    private void Update()
-    {
-        
-    }
+    public int quanlityCell1;
+    public int quanlityCell2;
+
+    public int CurrentQuantity => cellIndex == 0 ? quanlityCell1 : quanlityCell2;
+    public bool IsEmpty => CurrentQuantity <= 0;
+
+    private void Start() => UpdateUI();
+
     public void OnDrop(PointerEventData eventData)
     {
-        if (manager == null || manager.dragItem == null || manager.dragItem.draggedItem == null)
-            return;
-
+        if (manager?.dragItem?.draggedItem == null) return;
         var dragged = manager.dragItem.draggedItem;
         if (dragged.itemData.itemName != "Hay Bale") return;
 
-        int canAdd = maxCapacity - (cellIndex == 0 ? quanlityCell1 : quanlityCell2);
+        int canAdd = maxCapacity - CurrentQuantity;
         int addAmount = Mathf.Min(canAdd, dragged.quantity);
         if (addAmount <= 0) return;
 
@@ -55,58 +41,44 @@ public class HayCell : MonoBehaviour, IDropHandler
 
         dragged.quantity -= addAmount;
         if (dragged.quantity <= 0) manager.dragItem.draggedItem = null;
-        itemIcon.sprite = manager.hayBaleIcon;
-        SaveLoadSystem.haybaler.itemName = "Hay Bale";
 
+        if (manager != null) itemIcon.sprite = manager.hayBaleIcon;
         UpdateUI();
     }
 
     public void UpdateUI()
     {
-        itemIcon.gameObject.SetActive(true);
-        quantityText.gameObject.SetActive(true);
-
-        int qty = cellIndex == 0 ? quanlityCell1 : quanlityCell2;
-        quantityText.text = $"{qty}/{maxCapacity}";
+        if (itemIcon != null) itemIcon.gameObject.SetActive(!IsEmpty);
+        if (quantityText != null) quantityText.text = $"{CurrentQuantity}/{maxCapacity}";
     }
 
-    public void SaveHaybalePen()
+    public void SaveHayCell(FarmSaveData data)
     {
-        if (locationPen == 1)
-        {
-            SaveLoadSystem.haybaler.quantityPen1[0] = quanlityCell1;
-            SaveLoadSystem.haybaler.quantityPen1[1] = quanlityCell2;
-        }
-        else if (locationPen == 2)
-        {
-            SaveLoadSystem.haybaler.quantityPen2[0] = quanlityCell1;
-            SaveLoadSystem.haybaler.quantityPen2[1] = quanlityCell2;
-        }
+        if (data == null) return;
 
-        string json = JsonUtility.ToJson(SaveLoadSystem.haybaler, true);
-        File.WriteAllText(SaveLoadSystem.savePath, json);
-        Debug.Log($"✅ Farm saved to: {SaveLoadSystem.savePath}");
+        data.hayCells.RemoveAll(h => h.penId == locationPen);
+
+        data.hayCells.Add(new HayCellData
+        {
+            penId = locationPen,
+            quantities = new int[2] { quanlityCell1, quanlityCell2 }
+        });
     }
 
-    public void LoadHaybalePen()
+    public void LoadHayCell(FarmSaveData data)
     {
-        if (!File.Exists(SaveLoadSystem.savePath)) return;
+        if (data == null || data.hayCells == null) return;
 
-        string json = File.ReadAllText(SaveLoadSystem.savePath);
-        SaveLoadSystem.haybaler = JsonUtility.FromJson<HayCellSaveData>(json);
+        var saved = data.hayCells.Find(h => h.penId == locationPen);
+        if (saved != null)
+        {
+            quanlityCell1 = saved.quantities[0];
+            quanlityCell2 = saved.quantities[1];
+        }
 
-        if (locationPen == 1)
-        {
-            quanlityCell1 = SaveLoadSystem.haybaler.quantityPen1[0];
-            quanlityCell2 = SaveLoadSystem.haybaler.quantityPen1[1];
-        }
-        else if (locationPen == 2)
-        {
-            quanlityCell1 = SaveLoadSystem.haybaler.quantityPen2[0];
-            quanlityCell2 = SaveLoadSystem.haybaler.quantityPen2[1];
-        }
-        if (SaveLoadSystem.haybaler.itemName == "Hay Bale" && manager != null)
+        if (CurrentQuantity > 0 && manager != null)
             itemIcon.sprite = manager.hayBaleIcon;
+
         UpdateUI();
     }
 }

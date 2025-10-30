@@ -171,8 +171,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.3932317, y: 0.044822216, z: 1.4311409}
-  m_Center: {x: -0.006730497, y: 1.2792168, z: 0.21557045}
+  m_Size: {x: 0.3932317, y: 1.2863331, z: 1.4311409}
+  m_Center: {x: -0.006730497, y: 0.65846133, z: 0.21557045}
 --- !u!114 &1259334001554688151
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -209,7 +209,7 @@ MonoBehaviour:
   whiteWoolItem: {fileID: 11400000, guid: 3b4ad735a14805a4488ca02dce1d6455, type: 2}
   creamWoolItem: {fileID: 11400000, guid: 31ca392e1eb4358459d34718daefd804, type: 2}
   goatMilkItem: {fileID: 11400000, guid: daa27c99c0aed2242af1c6825203d38d, type: 2}
-  interactDistance: 5
+  interactDistance: 1
   animalType: 1
 --- !u!114 &-7439370241499361377
 MonoBehaviour:
@@ -228,7 +228,13 @@ MonoBehaviour:
   barn: {fileID: 0}
   requiredFeedDays: 3
   requiredGoatDays: 5
+  canHarvest: 0
   daysFed: 0
+  mealsToday: 0
+  LastFedDay: 0
+  ateMorningToday: 0
+  ateEveningToday: 0
+  hasEatenToday: 0
 --- !u!114 &6048373068123356673
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -241,7 +247,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fcba004f201d1074087e671a9bf5e733, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  infoPanel: {fileID: 0}
+  panelUI: {fileID: 0}
   data: {fileID: 11400000, guid: f84e99bd3a7aa9b4ab08ea218894a11f, type: 2}
 --- !u!1 &2929690399273492427 stripped
 GameObject:

@@ -6,13 +6,13 @@ public class HayCellManager : MonoBehaviour
     public Transform cellsParent;
     public DragItem dragItem;
     public Sprite hayBaleIcon;
+
     [HideInInspector] public List<HayCell> hayCells = new List<HayCell>();
 
     private void Start()
     {
         hayCells.Clear();
-        HayCell[] cells = cellsParent.GetComponentsInChildren<HayCell>(true);
-        foreach (var cell in cells)
+        foreach (var cell in cellsParent.GetComponentsInChildren<HayCell>(true))
         {
             cell.manager = this;
             hayCells.Add(cell);
@@ -20,27 +20,24 @@ public class HayCellManager : MonoBehaviour
         }
     }
 
-    public void LoadAllCells()
+    // Load tất cả cells từ FarmSaveData
+    public void LoadAllCells(FarmSaveData data)
     {
         foreach (var cell in hayCells)
-        {
-            cell.LoadHaybalePen();
-            cell.UpdateUI();
-        }
+            cell.LoadHayCell(data);
     }
 
-    public void UpdateAllCellsUI()
+    // Save tất cả cells vào FarmSaveData
+    public void SaveAllCells(FarmSaveData data)
     {
         foreach (var cell in hayCells)
-        {
-            cell.UpdateUI();
-        }
+            cell.SaveHayCell(data);
     }
 
     public bool HasHay()
     {
         foreach (var cell in hayCells)
-            if (!cell.isEmpty) return true;
+            if (!cell.IsEmpty) return true;
         return false;
     }
 

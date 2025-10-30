@@ -37,12 +37,26 @@ public class TestingHarvestAnimal : MonoBehaviour
         if (player == null) return;
 
         float distance = Vector3.Distance(player.transform.position, transform.position);
-        if (distance <= interactDistance && Input.GetKeyDown(KeyCode.E))
+
+        // Kiểm tra khoảng cách
+        if (distance <= interactDistance)
         {
-            TryHarvest(player);
+            Debug.Log($"{gameObject.name}: Đã đến khoảng cách thu hoạch ({distance:F2}m)");
+
+            // Kiểm tra xem player có đang nhìn con vật này không
+            PlayerLookAtAnimal lookScript = player.GetComponent<PlayerLookAtAnimal>();
+            bool isLooking = lookScript != null && lookScript.CurrentAnimal == this.GetComponent<AnimalInfo>();
+
+            canHarvest = feeding != null && feeding.CanHarvest();
+
+            if (isLooking && Input.GetKeyDown(KeyCode.E))
+            {
+                TryHarvest(player);
+            }
         }
-        canHarvest = feeding != null && feeding.CanHarvest();
     }
+
+
 
     private void TryHarvest(GameObject player)
     {
@@ -69,7 +83,6 @@ public class TestingHarvestAnimal : MonoBehaviour
             }
             else
             {
-                // 🐑 Cừu vẫn giữ thông báo cũ
                 Notification.Instance.ShowNotification("Chưa đủ điều kiện để thu hoạch");
             }
         }
@@ -86,7 +99,16 @@ public class TestingHarvestAnimal : MonoBehaviour
             _ => null
         };
     }
+    public int GetRemainingDaysToHarvest()
+    {
+        // Ví dụ: nếu cần ăn 3 ngày để thu hoạch
+        int requiredDays = 3;
+        var feed = GetComponent<AnimalFedding>();
+        if (feed == null) return -1;
 
+        int remaining = requiredDays - feed.daysFed;
+        return Mathf.Max(0, remaining);
+    }
     private int GetHarvestAmount()
     {
         return animalType == AnimalType.Goat ? 1 : 3;

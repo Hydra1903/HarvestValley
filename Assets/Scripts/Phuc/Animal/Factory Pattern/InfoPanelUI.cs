@@ -1,77 +1,57 @@
-﻿using TMPro;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
+using System.Collections.Generic;
 
 public class InfoPanelUI : MonoBehaviour
 {
-    [SerializeField] Text nameText;
-    [SerializeField] Text stateText;
-    [SerializeField] Text productText;
-    [SerializeField] Text harvestText;
-    [SerializeField] Image iconImage;
-    [SerializeField] Text feedText;
-    [SerializeField] Text feedDaysText;
+    [Header("UI References")]
+    public TextMeshProUGUI nameText;
+    public TextMeshProUGUI stateText;
+    public Image productImage;
+    public TextMeshProUGUI harvestText;
 
-    private AnimalInfo currentOwner;
+    [System.Serializable]
+    public class AnimalIcon
+    {
+        public AnimalTypeed type;   // Loại vật nuôi
+        public string variant;      // Màu hoặc biến thể
+        public GameObject icon;     // Icon tương ứng
+    }
+
+    public List<AnimalIcon> animalIcons = new List<AnimalIcon>();
+
+    public AnimalInfo CurrentOwner { get; private set; }
 
     public void Show(AnimalData data, AnimalInfo owner)
     {
-        currentOwner = owner;
+        CurrentOwner = owner;
 
         if (data != null)
         {
             nameText.text = data.animalName;
-            productText.text = data.item ? $"Sản Phẩm: {data.item.itemName}" : "Sản Phẩm: -";
-            iconImage.sprite = data.icon;
+            productImage.sprite = data.item?.icon ?? null;
+
+            // Bật icon dựa vào type + variant
+            SetActiveIcon(data.animalType, data.variant);
         }
 
-        stateText.text = "Trạng Thái: Bình Thường";
-
-        var harvestComp = owner.GetComponent<TestingHarvestAnimal>();
+        // Trạng thái ăn
         var feeding = owner.GetComponent<AnimalFedding>();
+        stateText.text = feeding != null
+            ? (feeding.GetMealsToday() > 0 ? "Đã được ăn" : "Chưa được ăn")
+            : "-";
 
-        // --- Kiểm tra thu hoạch ---
-        if (harvestComp != null && feeding != null)
+        // Trạng thái thu hoạch
+        var harvestComp = owner.GetComponent<TestingHarvestAnimal>();
+        if (harvestComp != null)
         {
-            if (feeding.CanHarvest())
-                harvestText.text = "Có thể thu hoạch: ✅";
-            else
-                harvestText.text = "Có thể thu hoạch: ❌";
-        }
-
-        // --- Kiểm tra tình trạng ăn và số ngày ăn ---
-        if (feeding != null)
-        {
-            switch (feeding.animalTypes)
-            {
-                case AnimalFedding.FeedingAnimalType.Sheep:
-                    feedText.text = feeding.GetMealsToday() >= 1
-                        ? "Tình trạng ăn: Đã ăn hôm nay"
-                        : "Tình trạng ăn: Chưa ăn hôm nay";
-                    feedDaysText.text = $"Số ngày đã ăn: {feeding.daysFed}/3";
-                    break;
-
-                case AnimalFedding.FeedingAnimalType.Goat:
-                    int meals = feeding.GetMealsToday();
-
-                    string morningStatus = feeding.HasEatenAt(7) ? "✅ 7h" : "❌ 7h";
-                    string eveningStatus = feeding.HasEatenAt(17) ? "✅ 17h" : "❌ 17h";
-
-                    feedText.text = $"Cữ ăn: {morningStatus} | {eveningStatus}";
-                    feedDaysText.text = $"Số ngày đã ăn đủ 2 bữa: {feeding.daysFed}/5";
-                    break;
-
-                default:
-                    feedText.text = "Tình trạng ăn: Không rõ";
-                    feedText.color = Color.gray;
-                    feedDaysText.text = "Số ngày đã ăn: -";
-                    break;
-            }
+            int remainingDays = harvestComp.GetRemainingDaysToHarvest();
+            harvestText.text = remainingDays <= 0 ? "Đã có thể thu hoạch " : $"Thời gian còn: {remainingDays} ngày";
         }
         else
         {
-            feedText.text = "Tình trạng ăn: -";
-            feedDaysText.text = "Số ngày đã ăn: -";
+            harvestText.text = "-";
         }
 
         gameObject.SetActive(true);
@@ -79,17 +59,33 @@ public class InfoPanelUI : MonoBehaviour
 
     public void Hide()
     {
-        currentOwner = null;
+        CurrentOwner = null;
+
+        // Tắt tất cả icon
+        foreach (var icon in animalIcons)
+        {
+            if (icon.icon != null)
+                icon.icon.SetActive(false);
+        }
+
         gameObject.SetActive(false);
     }
 
-    public bool IsShowingOwner(AnimalInfo owner) => currentOwner == owner;
-
-    public void RefreshUI(AnimalInfo owner)
+    private void SetActiveIcon(AnimalTypeed type, string variant)
     {
-        if (owner != null && owner.data != null)
+        // Tắt hết trước
+        foreach (var icon in animalIcons)
+            if (icon.icon != null)
+                icon.icon.SetActive(false);
+
+        // Bật icon đúng type + variant
+        foreach (var icon in animalIcons)
         {
-            Show(owner.data, owner);
+            if (icon.icon != null && icon.type == type && icon.variant == variant)
+            {
+                icon.icon.SetActive(true);
+                break; // chỉ bật 1 icon
+            }
         }
     }
 }

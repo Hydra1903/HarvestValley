@@ -14,23 +14,35 @@ public class AnimalSaveData
     public bool isActive;
     public int penId;
     public bool hasEatenToday;
+    public int lastFedDay;
+    public bool ateMorningToday;
+    public bool ateEveningToday;
 }
 
 [Serializable]
 public class FarmSaveData
 {
     public List<AnimalSaveData> animals = new List<AnimalSaveData>();
+    public List<HayCellData> hayCells = new List<HayCellData>(); // thêm vào đây
 }
 
 public static class SaveLoadSystem
 {
-    public static string savePath => Path.Combine(Application.persistentDataPath, "farmSave.json");
-    public static HayCellSaveData haybaler = new HayCellSaveData();
+
+    public static string savePath => Path.Combine(Application.persistentDataPath, "ChuongNuoi.json");
 
     public static void SaveFarm(List<AnimalPen> allPens)
     {
+        if (!File.Exists(savePath))
+        {
+            var emptyData = new FarmSaveData();
+            string emptyJson = JsonUtility.ToJson(emptyData, true);
+            File.WriteAllText(savePath, emptyJson);
+        }
+
+
         FarmSaveData data = new FarmSaveData();
-        int today = DateTime.Now.Day; // dùng ngày hiện tại để check
+        int today = DateTime.Now.Day;
 
         foreach (var pen in allPens)
         {
@@ -42,37 +54,30 @@ public static class SaveLoadSystem
                 var feed = objTuple.Item1.GetComponent<AnimalFedding>();
                 if (feed == null) continue;
 
-                // Chỉ save nếu đã ăn hôm nay và là ngày mới
-                if (!feed.hasEatenToday || feed.LastFedDay == today)
-                    continue;
-
                 var entry = new AnimalSaveData
                 {
                     animalID = info.animalID,
                     animalType = feed.animalTypes,
                     variant = info.variant,
-                    daysFed = feed.GetDaysFed(),
-                    canHarvest = feed.CanHarvest(),
+                    daysFed = feed.GetDaysFed(),        
+                    canHarvest = feed.CanHarvest(),    
                     isActive = objTuple.Item1.activeSelf,
                     penId = pen.penId,
-                    hasEatenToday = feed.hasEatenToday
                 };
+
                 data.animals.Add(entry);
             }
         }
-
         string json = JsonUtility.ToJson(data, true);
         File.WriteAllText(savePath, json);
-        Debug.Log($"✅ Farm saved to: {savePath}");
     }
-
-
     public static void LoadFarm(List<AnimalPen> allPens)
     {
         if (!File.Exists(savePath))
         {
-            Debug.Log("⚠ No save file found.");
-            return;
+            var emptyData = new FarmSaveData();
+            string emptyJson = JsonUtility.ToJson(emptyData, true);
+            File.WriteAllText(savePath, emptyJson);
         }
 
         string json = File.ReadAllText(savePath);
@@ -93,12 +98,7 @@ public static class SaveLoadSystem
             if (pen == null) continue;
 
             GameObject prefab = GetPrefabFromFeedingType(animal.animalType, animal.variant);
-            if (prefab == null)
-            {
-                Debug.LogWarning($"Missing prefab for {animal.animalType} variant {animal.variant}");
-                continue;
-            }
-
+ 
             GameObject obj = GameObject.Instantiate(prefab, pen.GetRandomSpawnPosition(), Quaternion.identity);
 
             var feed = obj.GetComponent<AnimalFedding>();
@@ -107,21 +107,27 @@ public static class SaveLoadSystem
                 feed.animalTypes = animal.animalType;
                 feed.hayCellManager = pen.penHayCellManager;
                 feed.barn = pen.barnReference;
-                feed.SetSavedState(animal.daysFed, animal.canHarvest, false);
+
+                feed.SetSavedState(
+                    animal.daysFed,
+                    animal.canHarvest,
+                    false,      
+                    0,         
+                    false,     
+                    false       
+                                  );
+                feed.HandleMissedMeals();
+
+                var infoComp = obj.GetComponent<AnimalInfo>();
+                obj.SetActive(animal.isActive);
+                var ai = obj.GetComponent<SimpleAI>();
+                if (ai != null) ai.wanderPoints = pen.wanderPoints;
+
+                pen.RegisterAnimal(obj, infoComp?.data);
+                pen.UpdateAnimalFeedStatusUI();
             }
-
-            var infoComp = obj.GetComponent<AnimalInfo>();
-            if (infoComp != null && pen.penInfoPanel != null)
-                infoComp.InjectPanel(pen.penInfoPanel);
-
-            var ai = obj.GetComponent<SimpleAI>();
-            if (ai != null) ai.wanderPoints = pen.wanderPoints;
-
-            pen.RegisterAnimal(obj, infoComp?.data);
-            pen.UpdateAnimalFeedStatusUI();
         }
     }
-
     private static GameObject GetPrefabFromFeedingType(AnimalFedding.FeedingAnimalType type, string variant)
     {
         if (type == AnimalFedding.FeedingAnimalType.Sheep)

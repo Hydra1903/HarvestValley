@@ -22,7 +22,7 @@ public class AnimalPen : MonoBehaviour
     public Transform[] wanderPoints;
 
     [SerializeField] private int baseMaxAnimals = 4; // Cấp 1 mặc định = 4
-    private int maxAnimals; // Giá trị thực tế, thay đổi theo cấp
+    private int maxAnimals; 
 
     private List<(GameObject animal, AnimalData data)> spawnedAnimals = new();
     private HashSet<string> allowedTags = new();
@@ -125,6 +125,7 @@ public class AnimalPen : MonoBehaviour
 
         spawnedAnimals.Add((animal, data));
 
+        // Gán thông tin Feeding
         var feeding = animal.GetComponent<AnimalFedding>();
         if (feeding != null)
         {
@@ -143,9 +144,13 @@ public class AnimalPen : MonoBehaviour
             savedAnimals.Add(info);
         }
 
-        var infos = animal.GetComponent<AnimalInfo>();
-        if (infos != null && penInfoPanel != null)
-            infos.InjectPanel(penInfoPanel);
+        // Gán panel chung cho AnimalInfo
+        var infoComp = animal.GetComponent<AnimalInfo>();
+        if (infoComp != null)
+        {
+            infoComp.panelUI = penInfoPanel; 
+            infoComp.data = data;            
+        }
 
         return true;
     }
