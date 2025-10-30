@@ -9,7 +9,6 @@ public static class SaveManager
     public static GameSave game = new GameSave();
     static string PathFor(string slot) =>
         System.IO.Path.Combine(Application.persistentDataPath, $"farm_{slot}.json");
-
     public static void CreateFarm(string slot, string nameFarm)
     {
         game = new GameSave();
@@ -66,7 +65,6 @@ public static class SaveManager
     {
         var game = new GameSave();
         foreach (var f in farms) game.grids.Add(f.BuildSave());
-        //foreach (var f in farms) game.grids.Add(f.BuildSave());
 
         #region ----- Save Building -----
         game.isBuilding = Builder.Instance.isBuilding;

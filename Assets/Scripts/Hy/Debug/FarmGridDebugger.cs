@@ -36,7 +36,7 @@ public class FarmGridDebugger : MonoBehaviour
                     if (t != null)
                     {
                         if (t.soilType == SoilType.Hole) Gizmos.color = holeColor;
-                        else if (t.soilType == SoilType.Plot) Gizmos.color = plotColor;
+                        else if (t.soilType == SoilType.Furrow) Gizmos.color = plotColor;
                         else continue;
 
                         Gizmos.DrawCube(pos, new Vector3(farm.cellSize * 0.9f, 0.05f, farm.cellSize * 0.9f));

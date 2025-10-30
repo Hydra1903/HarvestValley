@@ -3,6 +3,6 @@ using UnityEngine;
 public enum SoilType
 {
     None,
-    Plot,
+    Furrow,
     Hole
 }

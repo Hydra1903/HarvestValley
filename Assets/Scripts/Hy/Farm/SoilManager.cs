@@ -20,7 +20,6 @@ public class SoilManager : MonoBehaviour
     private GameObject ghostFurrowInstance;
     private GameObject ghostHoleInstance;
     private GameObject ghostSprinklerInstance;
-    private Vector2Int _lastSprinklerGhostGridPos = new Vector2Int(-1, -1);
 
     [Header("Watering")]
     [SerializeField] private string waterChildName; // tên child trong prefab luống/hố bật
@@ -258,7 +257,7 @@ public class SoilManager : MonoBehaviour
             for (int dy = 0; dy < size; dy++)
             {
                 farm.Tiles[startX + dx, startY + dy].state = SoilState.Dug;
-                farm.Tiles[startX + dx, startY + dy].soilType = (size == 5) ? SoilType.Plot : SoilType.Hole;
+                farm.Tiles[startX + dx, startY + dy].soilType = (size == 5) ? SoilType.Furrow : SoilType.Hole;
             }
 
         var a = new AreaSave
@@ -266,7 +265,7 @@ public class SoilManager : MonoBehaviour
             startX = startX,
             startY = startY,
             size = size,
-            soilType = (size == 5) ? SoilType.Plot : SoilType.Hole
+            soilType = (size == 5) ? SoilType.Furrow : SoilType.Hole
         };
         _areaSaves.Add(a);
 
@@ -534,6 +533,7 @@ public class SoilManager : MonoBehaviour
 
         GetSprinklers(sp);
         HideSprinklerGhost();
+        WaterBySprinklers();
         return true;
     }
 
@@ -562,8 +562,6 @@ public class SoilManager : MonoBehaviour
 
         ghostSprinklerInstance.transform.position = pos;
         ghostSprinklerInstance.SetActive(true);
-
-        _lastSprinklerGhostGridPos = gridPos;
     }
 
     public void HideSprinklerGhost()

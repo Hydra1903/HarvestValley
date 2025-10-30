@@ -31,7 +31,7 @@ public class FarmSaveSystem : MonoBehaviour
     public void LoadFromSave(FarmGridSave data)
     {
         // apply size + origin
-        farm.AllocateTiles(data.width, data.height);
+        farm.CreateTiles(data.width, data.height);
         farm.cellSize = data.cellSize;
         farm.origin = data.origin;
 
