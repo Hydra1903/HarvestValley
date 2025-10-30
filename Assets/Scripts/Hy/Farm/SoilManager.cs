@@ -250,14 +250,22 @@ public class SoilManager : MonoBehaviour
         return true;
     }
 
-  
+
     //Hàm đào đất
     public void PlaceArea(int startX, int startY, int size)
     {
         for (int dx = 0; dx < size; dx++)
             for (int dy = 0; dy < size; dy++)
             {
-                farm.Tiles[startX + dx, startY + dy].state = SoilState.Dug;
+                if(farm.Tiles[startX + dx, startY + dy].state == SoilState.Normal)
+                {
+                    farm.Tiles[startX + dx, startY + dy].state = SoilState.Dug;
+                }
+                
+                if(farm.Tiles[startX + dx, startY + dy].state == SoilState.Wet)
+                {
+                    WaterBySprinklers();
+                }    
                 farm.Tiles[startX + dx, startY + dy].soilType = (size == 5) ? SoilType.Plot : SoilType.Hole;
             }
 
@@ -282,6 +290,7 @@ public class SoilManager : MonoBehaviour
 
         var prefab = (size == 5) ? dugSoilPrefab : holePrefab;
         var go = prefab ? Instantiate(prefab, pos, Quaternion.identity) : null;
+
         _areaObjects.Add(go);
         FindAnyObjectByType<SoilGrid>()?.UpdateGridColors();
     }
@@ -533,6 +542,7 @@ public class SoilManager : MonoBehaviour
         sp.Init(gridPos.x, gridPos.y, sprinkerRange);
 
         GetSprinklers(sp);
+        WaterBySprinklers();
         HideSprinklerGhost();
         return true;
     }
