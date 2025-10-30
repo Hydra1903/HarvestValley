@@ -71,5 +71,4 @@ public class PlayerLookAtAnimal : MonoBehaviour
             }
         }
     }
-    public AnimalInfo CurrentAnimal => currentAnimal;
 }

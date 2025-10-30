@@ -128,6 +128,11 @@ public class AnimalFedding : MonoBehaviour
             mealsToday++;
             LastFedDay = currentDay;
             hasEatenToday = true;
+            var pen = GetComponentInParent<AnimalPen>();
+            if (pen != null)
+            {
+                pen.UpdateSavedAnimalData(this.gameObject);
+            }
         }
         // --- Goat ---
         else if (animalTypes == FeedingAnimalType.Goat)
@@ -152,6 +157,11 @@ public class AnimalFedding : MonoBehaviour
 
             if (ateMorningToday && ateEveningToday)
                 hasEatenToday = true;
+            var pen = GetComponentInParent<AnimalPen>();
+            if (pen != null)
+            {
+                pen.UpdateSavedAnimalData(this.gameObject);
+            }
         }
 
         GetComponentInParent<AnimalPen>()?.UpdateAnimalFeedStatusUI();

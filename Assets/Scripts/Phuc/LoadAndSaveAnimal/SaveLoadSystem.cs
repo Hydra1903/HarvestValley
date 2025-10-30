@@ -46,28 +46,32 @@ public static class SaveLoadSystem
 
         foreach (var pen in allPens)
         {
-            foreach (var info in pen.savedAnimals)
+            foreach (var (obj, info) in pen.GetSpawnedAnimals())
             {
-                var objTuple = pen.GetSpawnedAnimals().Find(t => t.Item1.name == info.animalID);
-                if (objTuple.Item1 == null) continue;
+                if (obj == null || info == null) continue;
 
-                var feed = objTuple.Item1.GetComponent<AnimalFedding>();
+                var feed = obj.GetComponent<AnimalFedding>();
                 if (feed == null) continue;
 
                 var entry = new AnimalSaveData
                 {
-                    animalID = info.animalID,
+                    animalID = obj.name,
                     animalType = feed.animalTypes,
                     variant = info.variant,
-                    daysFed = feed.GetDaysFed(),        
-                    canHarvest = feed.CanHarvest(),    
-                    isActive = objTuple.Item1.activeSelf,
+                    daysFed = feed.GetDaysFed(),
+                    canHarvest = feed.CanHarvest(),
+                    isActive = obj.activeSelf,
                     penId = pen.penId,
+                    hasEatenToday = feed.HasEatenToday(),
+                    lastFedDay = feed.GetLastFedDay(),
+                    ateMorningToday = feed.ateMorningToday,
+                    ateEveningToday = feed.ateEveningToday
                 };
 
                 data.animals.Add(entry);
             }
         }
+
         string json = JsonUtility.ToJson(data, true);
         File.WriteAllText(savePath, json);
     }
@@ -97,8 +101,8 @@ public static class SaveLoadSystem
             AnimalPen pen = allPens.Find(p => p.penId == animal.penId);
             if (pen == null) continue;
 
+            // Spawn prefab dựa trên type + variant
             GameObject prefab = GetPrefabFromFeedingType(animal.animalType, animal.variant);
- 
             GameObject obj = GameObject.Instantiate(prefab, pen.GetRandomSpawnPosition(), Quaternion.identity);
 
             var feed = obj.GetComponent<AnimalFedding>();
@@ -108,18 +112,21 @@ public static class SaveLoadSystem
                 feed.hayCellManager = pen.penHayCellManager;
                 feed.barn = pen.barnReference;
 
+                // set trạng thái riêng của từng con
                 feed.SetSavedState(
                     animal.daysFed,
                     animal.canHarvest,
-                    false,      
-                    0,         
-                    false,     
-                    false       
-                                  );
+                    animal.hasEatenToday,
+                    animal.lastFedDay,
+                    animal.ateMorningToday,
+                    animal.ateEveningToday
+                );
+
                 feed.HandleMissedMeals();
 
                 var infoComp = obj.GetComponent<AnimalInfo>();
                 obj.SetActive(animal.isActive);
+
                 var ai = obj.GetComponent<SimpleAI>();
                 if (ai != null) ai.wanderPoints = pen.wanderPoints;
 
@@ -128,7 +135,7 @@ public static class SaveLoadSystem
             }
         }
     }
-    private static GameObject GetPrefabFromFeedingType(AnimalFedding.FeedingAnimalType type, string variant)
+    public static GameObject GetPrefabFromFeedingType(AnimalFedding.FeedingAnimalType type, string variant)
     {
         if (type == AnimalFedding.FeedingAnimalType.Sheep)
         {

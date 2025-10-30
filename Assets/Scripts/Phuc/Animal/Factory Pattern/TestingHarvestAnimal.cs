@@ -37,26 +37,12 @@ public class TestingHarvestAnimal : MonoBehaviour
         if (player == null) return;
 
         float distance = Vector3.Distance(player.transform.position, transform.position);
-
-        // Kiểm tra khoảng cách
-        if (distance <= interactDistance)
+        if (distance <= interactDistance && Input.GetKeyDown(KeyCode.E))
         {
-            Debug.Log($"{gameObject.name}: Đã đến khoảng cách thu hoạch ({distance:F2}m)");
-
-            // Kiểm tra xem player có đang nhìn con vật này không
-            PlayerLookAtAnimal lookScript = player.GetComponent<PlayerLookAtAnimal>();
-            bool isLooking = lookScript != null && lookScript.CurrentAnimal == this.GetComponent<AnimalInfo>();
-
-            canHarvest = feeding != null && feeding.CanHarvest();
-
-            if (isLooking && Input.GetKeyDown(KeyCode.E))
-            {
-                TryHarvest(player);
-            }
+            TryHarvest(player);
         }
+        canHarvest = feeding != null && feeding.CanHarvest();
     }
-
-
 
     private void TryHarvest(GameObject player)
     {
