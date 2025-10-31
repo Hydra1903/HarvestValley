@@ -48,6 +48,11 @@ public class LiveStockSeller : MonoBehaviour
     [Header("Animal Level Requirements")]
     public List<AnimalLevelRequirement> animalLevelRequirements = new List<AnimalLevelRequirement>();
 
+    private int previousLevel = -1;
+    private float levelCheckTimer = 0f;
+    private const float LEVEL_CHECK_INTERVAL = 1f;
+
+
     private void Start()
     {
         buyCanvas.SetActive(false);
@@ -67,6 +72,9 @@ public class LiveStockSeller : MonoBehaviour
         BlackSheepButton.onClick.AddListener(() => ShowSelectPen(AnimalType.BlackSheep));
 
         UpdateAnimalButtons();
+
+        // Lưu lại level hiện tại ngay khi start
+        previousLevel = LevelManager.Instance.currentLevel;
     }
 
     void ShowSelectPen(AnimalType type)
@@ -246,22 +254,17 @@ public class LiveStockSeller : MonoBehaviour
             else
                 CloseAllUI();
         }
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("Player"))
-            playerInRange = true;
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.CompareTag("Player"))
+        levelCheckTimer += Time.deltaTime;
+        if (levelCheckTimer >= LEVEL_CHECK_INTERVAL)
         {
-            playerInRange = false;
-            CloseAllUI();
-            selectedType = AnimalType.None;
-            selectedPen = null;
+            levelCheckTimer = 0f; 
+
+            int currentLevel = LevelManager.Instance.currentLevel;
+            if (currentLevel != previousLevel)
+            {
+                previousLevel = currentLevel;
+                UpdateAnimalButtons();
+            }
         }
     }
 }
