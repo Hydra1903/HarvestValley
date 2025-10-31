@@ -33,7 +33,6 @@ public class AnimalFedding : MonoBehaviour
 
     private void Awake()
     {
-        // Cache GameTime để giảm truy cập singleton
         gameTimeCache = GameTime.Instance;
     }
 
@@ -56,14 +55,17 @@ public class AnimalFedding : MonoBehaviour
         float hourInDay = GetAbsoluteGameHours() % 24f;
 
         // Ăn khởi tạo khi load
-        if (animalTypes == FeedingAnimalType.Sheep && hourInDay >= 7f)
-            StartCoroutine(SafeStartCoroutine(DelayedEat()));
-        else if (animalTypes == FeedingAnimalType.Goat)
+        if (!canHarvest)
         {
-            if (hourInDay >= 7f && hourInDay < 12f)
-                StartCoroutine(SafeStartCoroutine(DelayedEat(true)));
-            else if (hourInDay >= 17f)
-                StartCoroutine(SafeStartCoroutine(DelayedEat(false)));
+            if (animalTypes == FeedingAnimalType.Sheep && hourInDay >= 7f)
+                StartCoroutine(SafeStartCoroutine(DelayedEatSheep()));
+            else if (animalTypes == FeedingAnimalType.Goat)
+            {
+                if (hourInDay >= 7f && hourInDay < 12f)
+                    StartCoroutine(SafeStartCoroutine(DelayedEat(true)));
+                else if (hourInDay >= 17f)
+                    StartCoroutine(SafeStartCoroutine(DelayedEat(false)));
+            }
         }
     }
 
@@ -77,7 +79,6 @@ public class AnimalFedding : MonoBehaviour
         int currentDay = Mathf.FloorToInt(currentHour / 24f);
         float hourInDay = currentHour % 24f;
 
-        // Qua ngày mới
         if (currentDay != lastHandledDay)
         {
             HandleNextDay(currentDay);
@@ -85,30 +86,22 @@ public class AnimalFedding : MonoBehaviour
             HandleMissedMeals();
         }
 
-        if (isWaitingToEat) return;
+        if (isWaitingToEat || canHarvest) return;
 
-        // Sheep ăn buổi sáng
         if (animalTypes == FeedingAnimalType.Sheep && !hasEatenToday && hourInDay >= 7f)
-        {
             StartCoroutine(SafeStartCoroutine(DelayedEatSheep()));
-        }
-        // Goat ăn sáng / chiều
         else if (animalTypes == FeedingAnimalType.Goat)
         {
             if (!ateMorningToday && hourInDay >= 7f && hourInDay < 12f)
-            {
                 StartCoroutine(SafeStartCoroutine(DelayedEat(true)));
-            }
             else if (!ateEveningToday && hourInDay >= 17f)
-            {
                 StartCoroutine(SafeStartCoroutine(DelayedEat(false)));
-            }
         }
     }
 
     private IEnumerator SafeStartCoroutine(IEnumerator routine)
     {
-        if (isWaitingToEat) yield break;
+        if (isWaitingToEat || canHarvest) yield break;
         isWaitingToEat = true;
         yield return routine;
         isWaitingToEat = false;
@@ -133,7 +126,9 @@ public class AnimalFedding : MonoBehaviour
 
     private void TryEat(bool isMorning)
     {
+        if (canHarvest) return; // Không ăn nếu đã đạt harvest
         if (!HasHay()) return;
+
         float currentAbsoluteHour = GetAbsoluteGameHours();
         int currentDay = Mathf.FloorToInt(currentAbsoluteHour / 24f);
 
@@ -142,6 +137,7 @@ public class AnimalFedding : MonoBehaviour
         if (animalTypes == FeedingAnimalType.Sheep)
         {
             if (hasEatenToday) return;
+
             ConsumeHay();
             mealsToday++;
             LastFedDay = currentDay;
@@ -177,8 +173,29 @@ public class AnimalFedding : MonoBehaviour
         pen?.UpdateAnimalFeedStatusUI();
     }
 
+    public void HandleNextDay(int currentDay)
+    {
+        if (!canHarvest && hasEatenToday)
+        {
+            daysFed++;
+            int requiredDays = animalTypes == FeedingAnimalType.Sheep ? requiredFeedDays : requiredGoatDays;
+            if (daysFed >= requiredDays)
+                canHarvest = true;
+        }
+
+        // Reset flags hàng ngày
+        hasEatenToday = false;
+        ateMorningToday = false;
+        ateEveningToday = false;
+        mealsToday = 0;
+
+        GetComponentInParent<AnimalPen>()?.UpdateAnimalFeedStatusUI();
+    }
+
     public void HandleMissedMeals()
     {
+        if (canHarvest) return; // Không ăn nếu đã harvest
+
         float hourInDay = GetAbsoluteGameHours() % 24f;
 
         if (animalTypes == FeedingAnimalType.Goat)
@@ -194,24 +211,6 @@ public class AnimalFedding : MonoBehaviour
             if (!hasEatenToday && hourInDay >= 7f)
                 TryEat();
         }
-    }
-
-    public void HandleNextDay(int currentDay)
-    {
-        if (hasEatenToday)
-        {
-            daysFed++;
-            int requiredDays = animalTypes == FeedingAnimalType.Sheep ? requiredFeedDays : requiredGoatDays;
-            if (daysFed >= requiredDays)
-                canHarvest = true;
-        }
-
-        hasEatenToday = false;
-        ateMorningToday = false;
-        ateEveningToday = false;
-        mealsToday = 0;
-
-        GetComponentInParent<AnimalPen>()?.UpdateAnimalFeedStatusUI();
     }
 
     public float GetAbsoluteGameHours()
@@ -254,8 +253,8 @@ public class AnimalFedding : MonoBehaviour
                 else cell.quanlityCell2--;
 
                 if (cell.itemIcon != null)
-                    cell.itemIcon.gameObject.SetActive(
-                        (cell.cellIndex == 0 ? cell.quanlityCell1 : cell.quanlityCell2) > 0);
+                    cell.itemIcon.gameObject.SetActive((cell.cellIndex == 0 ? cell.quanlityCell1 : cell.quanlityCell2) > 0);
+
                 cell.UpdateUI();
                 return;
             }
@@ -279,8 +278,8 @@ public class AnimalFedding : MonoBehaviour
                 else cell.quanlityCell2--;
 
                 if (cell.itemIcon != null)
-                    cell.itemIcon.gameObject.SetActive(
-                        (cell.cellIndex == 0 ? cell.quanlityCell1 : cell.quanlityCell2) > 0);
+                    cell.itemIcon.gameObject.SetActive((cell.cellIndex == 0 ? cell.quanlityCell1 : cell.quanlityCell2) > 0);
+
                 cell.UpdateUI();
                 return;
             }
@@ -320,11 +319,10 @@ public class AnimalFedding : MonoBehaviour
     public bool HasEatenAtHour(int hour)
     {
         if (animalTypes == FeedingAnimalType.Goat)
-        {
             return hour < 12 ? ateMorningToday : ateEveningToday;
-        }
         return hasEatenToday;
     }
+
     public bool CanHarvest() => canHarvest;
     public int GetDaysFed() => daysFed;
     public int GetMealsToday() => mealsToday;

@@ -73,23 +73,29 @@ public class AnimalPen : MonoBehaviour
         return penId == 1 ? Builder.Instance.currentlevelPen1 : Builder.Instance.currentlevelPen2;
     }
 
-    private void UpdateMaxAnimals()
+    public void UpdateMaxAnimals()
     {
         int level = GetCurrentPenLevel();
 
-        if (penId == 1)
+        if (penId == 1 || penId == 2)
         {
-            maxAnimals = (level == 1) ? 4 : 7;
-        }
-        else if (penId == 2)
-        {
-            maxAnimals = (level == 1) ? 4 : 7;
+            if (level == 1)
+            {
+                maxAnimals = 4;
+                baseMaxAnimals = 4;
+            }
+            else if (level == 2)
+            {
+                maxAnimals = 7;
+                baseMaxAnimals = 7;
+            }
         }
         else
         {
             maxAnimals = baseMaxAnimals;
         }
     }
+
 
     public void UpdateActiveHayManager()
     {

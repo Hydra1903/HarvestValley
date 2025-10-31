@@ -63,17 +63,6 @@ public class TestingHarvestAnimal : MonoBehaviour
                 canHarvest = false;
             }
         }
-        else
-        {
-            if (animalType == AnimalType.Goat)
-            {
-                Notification.Instance.ShowNotification("Chưa đủ điều kiện để thu hoạch");
-            }
-            else
-            {
-                Notification.Instance.ShowNotification("Chưa đủ điều kiện để thu hoạch");
-            }
-        }
     }
 
     private ItemData GetItemDataByType()

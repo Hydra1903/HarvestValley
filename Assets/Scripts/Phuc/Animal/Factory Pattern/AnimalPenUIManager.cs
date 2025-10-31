@@ -228,6 +228,8 @@ public class AnimalPenUIManager : MonoBehaviour
 
         if (changed)
         {
+            pen.UpdateMaxAnimals();
+            pen.UpdateActiveHayManager();
             UpdateUIPen();
         }
     }
