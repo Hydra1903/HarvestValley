@@ -58,7 +58,7 @@ public class GameTime : MonoBehaviour
             {
                 currentTimeOfDay = TimeOfDay.Night;
                 mainUIScreen.UpdateIconTimeOfDay();
-                MusicBackground.Instance.ChangeBackgroundMusic();
+                //MusicBackground.Instance.ChangeBackgroundMusic();
             }
             if (hour >= 24)
             {
@@ -77,7 +77,7 @@ public class GameTime : MonoBehaviour
         hour = 6; minute = 0; day++;
         currentTimeOfDay = TimeOfDay.Day;
         mainUIScreen.UpdateIconTimeOfDay();
-        MusicBackground.Instance.ChangeBackgroundMusic();
+        //MusicBackground.Instance.ChangeBackgroundMusic();
         if (day > 30)
         {
             day = 1; month++;

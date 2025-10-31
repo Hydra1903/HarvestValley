@@ -262,6 +262,7 @@ public class FarmInput : MonoBehaviour
                 soilManager.HideGhosts();
                 plantManager.HideGhost();
                 soilGrid.SetActiveGrid(false);
+                SetSoilOutline(null);
                 return;
             }
 

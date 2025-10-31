@@ -136,18 +136,14 @@ public static class SaveManager
     public static bool Load(string slot, IEnumerable<FarmManager> farms)
     {
         var path = PathFor(slot);
-        if (!File.Exists(path))
-        {
-            var defaultPath = Application.streamingAssetsPath + "farm_slot1.json";
-            File.Copy(defaultPath, path);
-        }
+        if (!File.Exists(path)) return false;
 
         game = JsonUtility.FromJson<GameSave>(File.ReadAllText(path));
         var dict = new Dictionary<string, FarmGridSave>();
         foreach (var s in game.grids) dict[s.gridId] = s;
 
-        foreach (var f in farms)
-            if (dict.TryGetValue(f.gridId, out var s)) f.LoadFromSave(s);
+        //foreach (var f in farms)
+            //if (dict.TryGetValue(f.gridId, out var s)) f.LoadFromSave(s);
 
         #region ----- Load Building -----
         Builder.Instance.isBuilding = game.isBuilding;

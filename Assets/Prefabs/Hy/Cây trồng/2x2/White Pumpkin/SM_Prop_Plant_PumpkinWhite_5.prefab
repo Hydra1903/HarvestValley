@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 6181023937883661668}
   - component: {fileID: -3777382540626835850}
   - component: {fileID: -7567020332025694302}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: SM_Prop_Plant_PumpkinWhite_5
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -168,10 +168,6 @@ PrefabInstance:
     - target: {fileID: 1131303896514838, guid: 6288c3f0a9cae8340a16747f8e6d4873, type: 3}
       propertyPath: m_Name
       value: SM_Prop_Pumpkin_White_01_S
-      objectReference: {fileID: 0}
-    - target: {fileID: 1131303896514838, guid: 6288c3f0a9cae8340a16747f8e6d4873, type: 3}
-      propertyPath: m_Layer
-      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 4938972770788462, guid: 6288c3f0a9cae8340a16747f8e6d4873, type: 3}
       propertyPath: m_LocalScale.x

@@ -6,10 +6,12 @@ public class Testing : MonoBehaviour
     public Barn barn;
     public InventoryUI inventoryUI1;
     public BarnUI barnUI;
-
-    // Use an array to manage all items in one place
     public ItemData[] itemsToSpawn;
 
+    // Use an array to manage all items in one place
+    public ItemData Hoe;
+    public ItemData Water;
+    public ItemData liem;
     public void OnClickSpawnItem()
     {
         bool allItemsAdded = true;
@@ -36,5 +38,12 @@ public class Testing : MonoBehaviour
         {
             Notification.Instance.ShowNotification("Túi đồ của bạn đã đầy!");
         }
+        Tool();
+    }
+    public void Tool()
+    {
+        inventory.AddItem(Hoe, 0);
+        inventory.AddItem(Water, 0);
+        inventory.AddItem(liem, 0);
     }
 }

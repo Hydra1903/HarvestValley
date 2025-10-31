@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 8624109602924715140}
   - component: {fileID: -1739976406542120352}
   - component: {fileID: -5596986981721824719}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: SM_Prop_Plant_WaterMelon_7
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -168,10 +168,6 @@ PrefabInstance:
     - target: {fileID: 1166100101253624, guid: 55be16ddb50ca1648b69e9d8fffad63a, type: 3}
       propertyPath: m_Name
       value: SM_Prop_Watermelon_01_L
-      objectReference: {fileID: 0}
-    - target: {fileID: 1166100101253624, guid: 55be16ddb50ca1648b69e9d8fffad63a, type: 3}
-      propertyPath: m_Layer
-      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 4968469374721736, guid: 55be16ddb50ca1648b69e9d8fffad63a, type: 3}
       propertyPath: m_LocalPosition.x

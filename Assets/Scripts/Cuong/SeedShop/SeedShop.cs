@@ -15,6 +15,7 @@ public class SeedShop : MonoBehaviour
         {
             inventoryUI.UpdateAllSlots();
             inventoryUI.UpdateGoldUI();
+            UISounds.Instance.PlaySound_CollectGold();
         }
         else
         {
