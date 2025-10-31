@@ -8,6 +8,7 @@ public class Barn : MonoBehaviour
     public int columns = 7;
     public InventorySlot[,] slots;
     public int limitCapacity;
+    public TextMeshProUGUI textlevelBarn;
 
     public ItemData[] saveItemData = new ItemData[35];
     public int[] saveQuantity = new int[35];
@@ -18,12 +19,15 @@ public class Barn : MonoBehaviour
         {
             case 1:
                 limitCapacity = 500;
+                textlevelBarn.text = "Cấp 1";
                 break;
             case 2:
                 limitCapacity = 1000;
+                textlevelBarn.text = "Cấp 2";
                 break;
             case 3:
                 limitCapacity = 2500;
+                textlevelBarn.text = "Cấp 3";
                 break;
         }
     }

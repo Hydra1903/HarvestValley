@@ -142,8 +142,8 @@ public static class SaveManager
         var dict = new Dictionary<string, FarmGridSave>();
         foreach (var s in game.grids) dict[s.gridId] = s;
 
-        foreach (var f in farms)
-            if (dict.TryGetValue(f.gridId, out var s)) f.LoadFromSave(s);
+        //foreach (var f in farms)
+            //if (dict.TryGetValue(f.gridId, out var s)) f.LoadFromSave(s);
 
         #region ----- Load Building -----
         Builder.Instance.isBuilding = game.isBuilding;

@@ -13,6 +13,7 @@ public enum EFarmStallState
 public class FarmStallUI : MonoBehaviour
 {
     public static FarmStallUI Instance;
+    public InventoryUI inventoryUI;
     public FarmStall farmStall;
     public TextMeshProUGUI totalAmountText;
     public TextMeshProUGUI statusText;
@@ -52,6 +53,8 @@ public class FarmStallUI : MonoBehaviour
         farmStall.totalAmount = 0;
         UpdateReceiveDataItem();
         UpdateUI();
+        UISounds.Instance.PlaySound_CollectGold();
+        inventoryUI.UpdateGoldUI();
     }
     public async void UpdateUI()
     {

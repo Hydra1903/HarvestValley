@@ -138,6 +138,7 @@ public class Builder : MonoBehaviour
             {
                 SetIsBuilding(0);
                 builderUI.UpdateButton_UpdateBarnLv2();
+                Gold.Instance.gold -= priceBuildingBarn[0];
             });
         }
         else if (Gold.Instance.gold < priceBuildingBarn[0])
@@ -157,6 +158,7 @@ public class Builder : MonoBehaviour
             {
                 SetIsBuilding(1);
                 builderUI.UpdateButton_UpdateBarnLv3();
+                Gold.Instance.gold -= priceBuildingBarn[1];
             });
         }
         else if (currentlevelBarn == 1)
@@ -194,14 +196,12 @@ public class Builder : MonoBehaviour
     }
     public void UpgradeBuildingBarn_1to2()
     {
-        currentlevelBarn = 2;
-        Gold.Instance.gold -= priceBuildingBarn[0];
+        currentlevelBarn = 2;        
         LoadBuildingBarn();
     }
     public void UpgradeBuildingBarn_2to3()
     {
         currentlevelBarn = 3;
-        Gold.Instance.gold -= priceBuildingBarn[1];
         LoadBuildingBarn();
     }
     public void HideAllBarn()
@@ -222,6 +222,7 @@ public class Builder : MonoBehaviour
             {
                 SetIsBuilding(2);
                 builderUI.UpdateButton_UpdateHomeLv2();
+                Gold.Instance.gold -= priceBuildingHome[0];
             });
         }
         else if (Gold.Instance.gold < priceBuildingHome[0])
@@ -251,7 +252,6 @@ public class Builder : MonoBehaviour
     public void UpdateBuildingHome_1to2()
     {
         currentlevelHome = 2;
-        Gold.Instance.gold -= priceBuildingHome[0];
         LoadBuildingHome();
     }
     public void HideAllHome()
@@ -273,6 +273,7 @@ public class Builder : MonoBehaviour
             {
                 SetIsBuilding(3);
                 builderUI.UpdateButton_UnlockFarmland2();
+                Gold.Instance.gold -= priceFarmland[0];
             });
         }
         else if (Gold.Instance.gold < priceFarmland[0])
@@ -292,6 +293,7 @@ public class Builder : MonoBehaviour
             {
                 SetIsBuilding(4);
                 builderUI.UpdateButton_UnlockFarmland3();
+                Gold.Instance.gold -= priceFarmland[1];
             });
         }
         else if (!isUnlockFarmland2)
@@ -315,6 +317,7 @@ public class Builder : MonoBehaviour
             {
                 SetIsBuilding(5);
                 builderUI.UpdateButton_UnlockGrassland();
+                Gold.Instance.gold -= priceGrassland;
             });
         }
         else if (Gold.Instance.gold < priceGrassland)
@@ -343,13 +346,11 @@ public class Builder : MonoBehaviour
     }
     public void UnlockFarmland2()
     {
-        Gold.Instance.gold -= priceFarmland[0];
         isUnlockFarmland2 = true;
         LoadFarmland();
     }
     public void UnlockFarmland3()
     {
-        Gold.Instance.gold -= priceFarmland[1];
         isUnlockFarmland3 = true;
         LoadFarmland();
     }
@@ -364,7 +365,6 @@ public class Builder : MonoBehaviour
     }
     public void UnlockGrassland()
     {
-        Gold.Instance.gold -= priceGrassland;
         isUnlockGrassland = true;
         LoadGrassland();
     }
@@ -379,6 +379,7 @@ public class Builder : MonoBehaviour
             {
                 SetIsBuilding(6);
                 builderUI.UpdateButton_UnlockPen1();
+                Gold.Instance.gold -= priceBuildingPen1[0];
             });
         }
         else if (Gold.Instance.gold < priceBuildingPen1[0])
@@ -398,6 +399,7 @@ public class Builder : MonoBehaviour
             {
                 SetIsBuilding(7);
                 builderUI.UpdateButton_UpdatePen1Lv2();
+                Gold.Instance.gold -= priceBuildingPen1[1];
             });
         }
         else if (!isUnlockPen1)
@@ -421,6 +423,7 @@ public class Builder : MonoBehaviour
             {
                 SetIsBuilding(8);
                 builderUI.UpdateButton_UnlockPen2();
+                Gold.Instance.gold -= priceBuildingPen2[0];
             });
         }
         else if (Gold.Instance.gold < priceBuildingPen2[0])
@@ -440,6 +443,7 @@ public class Builder : MonoBehaviour
             {
                 SetIsBuilding(9);
                 builderUI.UpdateButton_UpdatePen2Lv2();
+                Gold.Instance.gold -= priceBuildingPen2[1];
             });
         }
         else if (!isUnlockPen2)
@@ -492,14 +496,12 @@ public class Builder : MonoBehaviour
     }
     public void UnlockBuildingPen1()
     {
-        Gold.Instance.gold -= priceBuildingPen1[0];
         currentlevelPen1 = 1;
         isUnlockPen1 = true;
         LoadBuildingPen();
     }
     public void UnlockBuildingPen2()
     {
-        Gold.Instance.gold -= priceBuildingPen2[0];
         currentlevelPen2 = 1;
         isUnlockPen2 = true;
         LoadBuildingPen();
@@ -507,13 +509,11 @@ public class Builder : MonoBehaviour
     public void UpdateBuildingPen1_1to2()
     {
         currentlevelPen1 = 2;
-        Gold.Instance.gold -= priceBuildingPen1[1];
         LoadBuildingPen();
     }
     public void UpdateBuildingPen2_1to2()
     {
         currentlevelPen2 = 2;
-        Gold.Instance.gold -= priceBuildingPen2[1];
         LoadBuildingPen();
     }
     public void HidePen()
@@ -535,6 +535,7 @@ public class Builder : MonoBehaviour
             {
                 SetIsBuilding(10);
                 builderUI.UpdateButton_UnlockGreenhouse1();
+                Gold.Instance.gold -= priceBuildingGreenhouse[0];
             });
         }
         else if (Gold.Instance.gold < priceBuildingGreenhouse[0])
@@ -555,6 +556,7 @@ public class Builder : MonoBehaviour
             {
                 SetIsBuilding(11);
                 builderUI.UpdateButton_UnlockGreenhouse2();
+                Gold.Instance.gold -= priceBuildingGreenhouse[1];
             });
         }
         else if (Gold.Instance.gold < priceBuildingGreenhouse[0])
@@ -583,13 +585,11 @@ public class Builder : MonoBehaviour
     }
     public void UnlockBuildingGreenhouse1()
     {
-        Gold.Instance.gold -= priceBuildingGreenhouse[0];
         isUnlockGreenhouse1 = true;
         LoadBuildingGreenhouse();
     }
     public void UnlockBuildingGreenhouse2()
     {
-        Gold.Instance.gold -= priceBuildingGreenhouse[1];
         isUnlockGreenhouse2 = true;
         LoadBuildingGreenhouse();
     }

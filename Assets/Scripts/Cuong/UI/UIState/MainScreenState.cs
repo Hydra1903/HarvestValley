@@ -23,7 +23,6 @@ public class MainScreenState : IUIState
         UIStateMachine.Instance.inputCooldown = 1f;
 
         MusicBackground.Instance.audioSourceMusicDay.volume *= 2f;
-        MusicBackground.Instance.audioSourceMusicNight.volume *= 2f;
         MainUIScreen.Instance.UpdateGold();
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
@@ -90,7 +89,6 @@ public class MainScreenState : IUIState
         }
 
         MusicBackground.Instance.audioSourceMusicDay.volume /= 2f;
-        MusicBackground.Instance.audioSourceMusicNight.volume /= 2f;
 
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
