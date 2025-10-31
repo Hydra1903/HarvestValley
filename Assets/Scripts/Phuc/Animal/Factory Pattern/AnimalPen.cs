@@ -17,6 +17,8 @@ public class AnimalPen : MonoBehaviour
     public AnimalPenUIManager uiManager;
     public InfoPanelUI penInfoPanel;
     public ItemData hayItemData;
+    public GameObject penVisual_Level1;
+    public GameObject penVisual_Level2;
 
     [Header("Spawn Settings")]
     public Transform spawnPointType1;
@@ -100,15 +102,20 @@ public class AnimalPen : MonoBehaviour
     public void UpdateActiveHayManager()
     {
         int level = GetCurrentPenLevel();
-        UpdateMaxAnimals(); // cập nhật lại số lượng vật nuôi tối đa mỗi khi đổi cấp
+        UpdateMaxAnimals();
 
         if (penHayCellManager_Level1 != null)
             penHayCellManager_Level1.gameObject.SetActive(level == 1);
         if (penHayCellManager_Level2 != null)
             penHayCellManager_Level2.gameObject.SetActive(level == 2);
+        if (penVisual_Level1 != null)
+            penVisual_Level1.SetActive(level == 1);
+        if (penVisual_Level2 != null)
+            penVisual_Level2.SetActive(level == 2);
 
         uiManager?.UpdateUIPen();
     }
+
 
     public Vector3 GetRandomSpawnPosition()
     {

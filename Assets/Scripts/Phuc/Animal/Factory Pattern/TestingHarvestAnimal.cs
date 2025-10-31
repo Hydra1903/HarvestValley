@@ -65,7 +65,7 @@ public class TestingHarvestAnimal : MonoBehaviour
         }
     }
 
-    private ItemData GetItemDataByType()
+    public ItemData GetItemDataByType()
     {
         return animalType switch
         {

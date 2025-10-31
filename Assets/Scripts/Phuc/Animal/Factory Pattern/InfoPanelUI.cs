@@ -76,7 +76,22 @@ public class InfoPanelUI : MonoBehaviour
         {
             harvestText.text = "-";
         }
+        if (productImage != null)
+        {
+            Sprite prodSprite = null;
 
+            var harvestAnimal = owner.GetComponent<TestingHarvestAnimal>();
+            if (harvestAnimal != null)
+            {
+                // Lấy ItemData theo loại động vật
+                ItemData item = harvestAnimal.GetItemDataByType();
+                if (item != null)
+                    prodSprite = item.icon; // icon của sản phẩm
+            }
+
+            productImage.sprite = prodSprite;
+            productImage.enabled = prodSprite != null;
+        }
         gameObject.SetActive(true);
     }
 
@@ -97,13 +112,11 @@ public class InfoPanelUI : MonoBehaviour
 
     private void SetActiveIcon(AnimalTypeed type, string variant)
     {
-        foreach (var icon in animalIcons)
-            if (icon.icon != null)
-                icon.icon.SetActive(false);
+        string normalizedVariant = variant.ToLower();
 
         foreach (var icon in animalIcons)
         {
-            if (icon.icon != null && icon.type == type && icon.variant == variant)
+            if (icon.icon != null && icon.type == type && icon.variant.ToLower() == normalizedVariant)
             {
                 icon.icon.SetActive(true);
                 break;

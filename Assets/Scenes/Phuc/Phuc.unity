@@ -1024,6 +1024,11 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 953901605131356224, guid: f7179dadaea7f2546a2da2829f681961, type: 3}
   m_PrefabInstance: {fileID: 589245216}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &87227186 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6425719607193611707, guid: c2400844989821744ab76f158fdb19e8, type: 3}
+  m_PrefabInstance: {fileID: 1974035738}
+  m_PrefabAsset: {fileID: 0}
 --- !u!224 &87635641 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 6731672723907562828, guid: b5439ae79806b5f4686c94acbb3499d5, type: 3}
@@ -1360,6 +1365,11 @@ MonoBehaviour:
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4579318858445037587, guid: 435a41237fed0bd43b2e65541818b748, type: 3}
   m_PrefabInstance: {fileID: 1230543344}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &172023789 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2356388546761123220, guid: c2400844989821744ab76f158fdb19e8, type: 3}
+  m_PrefabInstance: {fileID: 1974035738}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &186084092 stripped
 GameObject:
@@ -12331,6 +12341,11 @@ Transform:
   - {fileID: 498687986}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: -7.02, z: 0}
+--- !u!1 &1496522397 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5608725668250640487, guid: c2400844989821744ab76f158fdb19e8, type: 3}
+  m_PrefabInstance: {fileID: 1974035738}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1501555126
 GameObject:
   m_ObjectHideFlags: 0
@@ -16896,6 +16911,11 @@ Transform:
   - {fileID: 84063000}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1909308752 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1084139098176873090, guid: c2400844989821744ab76f158fdb19e8, type: 3}
+  m_PrefabInstance: {fileID: 1974035738}
+  m_PrefabAsset: {fileID: 0}
 --- !u!224 &1928651194 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 35182077645068265, guid: 2255da025cff4a34c9689a8ba47ce036, type: 3}
@@ -17805,6 +17825,14 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2085853662}
     - target: {fileID: 4548241620176688258, guid: c2400844989821744ab76f158fdb19e8, type: 3}
+      propertyPath: penVisual_Level1
+      value: 
+      objectReference: {fileID: 1909308752}
+    - target: {fileID: 4548241620176688258, guid: c2400844989821744ab76f158fdb19e8, type: 3}
+      propertyPath: penVisual_Level2
+      value: 
+      objectReference: {fileID: 1496522397}
+    - target: {fileID: 4548241620176688258, guid: c2400844989821744ab76f158fdb19e8, type: 3}
       propertyPath: penHayCellManager
       value: 
       objectReference: {fileID: 1230543346}
@@ -18100,6 +18128,14 @@ PrefabInstance:
       propertyPath: penInfoPanel
       value: 
       objectReference: {fileID: 156038482}
+    - target: {fileID: 7901052510370397904, guid: c2400844989821744ab76f158fdb19e8, type: 3}
+      propertyPath: penVisual_Level1
+      value: 
+      objectReference: {fileID: 87227186}
+    - target: {fileID: 7901052510370397904, guid: c2400844989821744ab76f158fdb19e8, type: 3}
+      propertyPath: penVisual_Level2
+      value: 
+      objectReference: {fileID: 172023789}
     - target: {fileID: 7901052510370397904, guid: c2400844989821744ab76f158fdb19e8, type: 3}
       propertyPath: penHayCellManager_Level1
       value: 
