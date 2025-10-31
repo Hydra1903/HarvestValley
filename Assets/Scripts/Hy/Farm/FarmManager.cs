@@ -113,6 +113,26 @@ public class FarmManager : MonoBehaviour
         gridPos = WorldToGrid(worldPos); 
         return IsInGrid(gridPos.x, gridPos.y); 
     }
+
+    public bool IsInside(Vector2Int p) => p.x >= 0 && p.x < gridWidth && p.y >= 0 && p.y < gridHeight;
+
+    public bool HasSoilAt(Vector2Int p)
+    {
+        if (!IsInside(p)) return false;
+        var t = Tiles[p.x, p.y];
+        return t.soilType != SoilType.None || t.state == SoilState.Dug;
+    }
+
+    public bool HasPlantAt(Vector2Int p)
+    {
+        if (!IsInside(p)) return false;
+        var t = Tiles[p.x, p.y];
+        return t.state == SoilState.Planted;
+    }
+
+    public bool CanDigAt(Vector2Int p) => IsInside(p) && !HasSoilAt(p) && !HasPlantAt(p);
+
+    public bool CanPlantAt(Vector2Int p) => IsInside(p) && HasSoilAt(p) && !HasPlantAt(p);
 }
 
 

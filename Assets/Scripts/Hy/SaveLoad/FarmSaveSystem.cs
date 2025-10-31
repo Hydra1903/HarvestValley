@@ -5,7 +5,7 @@ using UnityEngine;
 public class FarmSaveSystem : MonoBehaviour
 {
     private FarmManager farm;
-
+    public FarmInput farmInput;
     public void Initialize(FarmManager f) => farm = f;
     public PlantManager plantManager;
     public SoilManager soilManager;
@@ -30,31 +30,35 @@ public class FarmSaveSystem : MonoBehaviour
     //Hàm Load khởi tạo dựng lại từ dữ liệu
     public void LoadFromSave(FarmGridSave data)
     {
-        // apply size + origin
-        farm.CreateTiles(data.width, data.height);
+        // ✅ Set thông số trước
         farm.cellSize = data.cellSize;
         farm.origin = data.origin;
+        farm.CreateTiles(data.width, data.height);
 
-        // soil
+        // ✅ Soil
         soilManager.ClearAreas();
         foreach (var a in data.areas)
             soilManager.AddAreaFromSave(a);
 
-        // plants
+        // ✅ Plants
         plantManager.ClearPlants();
         foreach (var p in data.plants)
-        plantManager.AddPlantFromSave(p);
+            plantManager.AddPlantFromSave(p);
 
-        //sprinkler
+        // ✅ Sprinklers
         soilManager.ClearSprinklers();
         foreach (var sp in data.sprinklers)
             soilManager.AddSprinklerFromSave(sp);
 
-        //watered
+        // ✅ Watered
         soilManager.ClearWatered();
         soilManager.ApplyWateredCenters(data.wateredCenters);
 
+        if (farmInput.soilGrid) farmInput.soilGrid.UpdateGridColors();   
+        if (farmInput.plantGrid) farmInput.plantGrid.UpdateGridColors();
+
     }
+
 
     // ===== Helpers =====
     private List<PlantSave> GetPlants() => plantManager.GetPlants();

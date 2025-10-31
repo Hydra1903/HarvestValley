@@ -107,4 +107,8 @@ public class GameTime : MonoBehaviour
         CharacterStateMachine.Instance.transform.eulerAngles = new Vector3(0f, 37.222f, 0f);
         controller.enabled = true; 
     }
+    public void PlusTime()
+    {
+        hour++;
+    }    
 }

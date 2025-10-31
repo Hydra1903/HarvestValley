@@ -3,6 +3,8 @@ using UnityEngine;
 public class GameController : MonoBehaviour
 {
     public static GameController Instance;
+    public GameObject PanelCheat;
+    public bool isBat;
     void Awake()
     {
         if (Instance == null) Instance = this;
@@ -28,5 +30,22 @@ public class GameController : MonoBehaviour
         {
             f.plantManager.CheckNextDay();
         }
+    }
+    public void Update()
+    {
+        if(Input.GetKeyDown(KeyCode.Z))
+        {
+            if (isBat)
+            {
+                PanelCheat.SetActive(true);
+                isBat = false;
+            }
+            else
+            {
+                PanelCheat.SetActive(false);
+                isBat = true;
+            }
+            
+        }    
     }
 }

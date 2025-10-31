@@ -63,75 +63,84 @@ public static class SaveManager
     //SaveManager.cs
     public static void Save(string slot, IEnumerable<FarmManager> farms)
     {
-        var game = new GameSave();
-        foreach (var f in farms) game.grids.Add(f.BuildSave());
+        var gs = game ?? new GameSave();
+
+
+        gs.hasFarm = gs.hasFarm || true;
+
+        gs.grids = new List<FarmGridSave>();
+        foreach (var f in farms)
+            gs.grids.Add(f.BuildSave());
 
         #region ----- Save Building -----
-        game.isBuilding = Builder.Instance.isBuilding;
-        game.dayCounter = Builder.Instance.dayCounter;
-        game.currentlevelBarn = Builder.Instance.currentlevelBarn;
-        game.currentlevelHome = Builder.Instance.currentlevelHome;
-        game.isUnlockFarmland2 = Builder.Instance.isUnlockFarmland2;
-        game.isUnlockFarmland3 = Builder.Instance.isUnlockFarmland3;
-        game.isUnlockGrassland = Builder.Instance.isUnlockGrassland;
-        game.currentlevelPen1 = Builder.Instance.currentlevelPen1;
-        game.currentlevelPen2 = Builder.Instance.currentlevelPen2;
-        game.isUnlockPen1 = Builder.Instance.isUnlockPen1;
-        game.isUnlockPen2 = Builder.Instance.isUnlockPen2;
-        game.isUnlockGreenhouse1 = Builder.Instance.isUnlockGreenhouse1;
-        game.isUnlockGreenhouse2 = Builder.Instance.isUnlockGreenhouse2;
+        gs.isBuilding = Builder.Instance.isBuilding;
+        gs.dayCounter = Builder.Instance.dayCounter;
+        gs.currentlevelBarn = Builder.Instance.currentlevelBarn;
+        gs.currentlevelHome = Builder.Instance.currentlevelHome;
+        gs.isUnlockFarmland2 = Builder.Instance.isUnlockFarmland2;
+        gs.isUnlockFarmland3 = Builder.Instance.isUnlockFarmland3;
+        gs.isUnlockGrassland = Builder.Instance.isUnlockGrassland;
+        gs.currentlevelPen1 = Builder.Instance.currentlevelPen1;
+        gs.currentlevelPen2 = Builder.Instance.currentlevelPen2;
+        gs.isUnlockPen1 = Builder.Instance.isUnlockPen1;
+        gs.isUnlockPen2 = Builder.Instance.isUnlockPen2;
+        gs.isUnlockGreenhouse1 = Builder.Instance.isUnlockGreenhouse1;
+        gs.isUnlockGreenhouse2 = Builder.Instance.isUnlockGreenhouse2;
         #endregion
 
         #region ----- Save Achivements -----
-        game.isAchivementComplete = Achivements.Instance.isAchivementComplete;
-        game.isReward = AchivementsUI.Instance.isReward;
-        game.plantedSeedsCount = Achivements.Instance.plantedSeedsCount;
-        game.harvestedCropsCount = Achivements.Instance.harvestedCropsCount;
-        game.typesOfCropsPlantedCount = Achivements.Instance.typesOfCropsPlantedCount;
-        game.timesWateredCount = Achivements.Instance.timesWateredCount;
-        game.greenhouseCropsHarvestedCount = Achivements.Instance.greenhouseCropsHarvestedCount;
-        game.animalProductsCollectedCount = Achivements.Instance.animalProductsCollectedCount;
-        game.farmProductsSoldCount = Achivements.Instance.farmProductsSoldCount;
-        game.perennialHarvestsCount = Achivements.Instance.perennialHarvestsCount;
-        game.buildingsUpgradedOrUnlockedCount = Achivements.Instance.buildingsUpgradedOrUnlockedCount;
-        game.staminaUsedCount = Achivements.Instance.staminaUsedCount;
-        game.totalMoneyEarnedCount = Achivements.Instance.totalMoneyEarnedCount;
+        gs.isAchivementComplete = Achivements.Instance.isAchivementComplete;
+        gs.isReward = AchivementsUI.Instance.isReward;
+        gs.plantedSeedsCount = Achivements.Instance.plantedSeedsCount;
+        gs.harvestedCropsCount = Achivements.Instance.harvestedCropsCount;
+        gs.typesOfCropsPlantedCount = Achivements.Instance.typesOfCropsPlantedCount;
+        gs.timesWateredCount = Achivements.Instance.timesWateredCount;
+        gs.greenhouseCropsHarvestedCount = Achivements.Instance.greenhouseCropsHarvestedCount;
+        gs.animalProductsCollectedCount = Achivements.Instance.animalProductsCollectedCount;
+        gs.farmProductsSoldCount = Achivements.Instance.farmProductsSoldCount;
+        gs.perennialHarvestsCount = Achivements.Instance.perennialHarvestsCount;
+        gs.buildingsUpgradedOrUnlockedCount = Achivements.Instance.buildingsUpgradedOrUnlockedCount;
+        gs.staminaUsedCount = Achivements.Instance.staminaUsedCount;
+        gs.totalMoneyEarnedCount = Achivements.Instance.totalMoneyEarnedCount;
         #endregion
 
         #region ----- Save Stats -----
-        game.currentLevel = LevelManager.Instance.currentLevel;
-        game.xp = Xp.Instance.xp;   
-        game.gold = Gold.Instance.gold;
-        game.mp = Mp.Instance.mp;
+        gs.currentLevel = LevelManager.Instance.currentLevel;
+        gs.xp = Xp.Instance.xp;
+        gs.gold = Gold.Instance.gold;
+        gs.mp = Mp.Instance.mp;
         #endregion
 
         #region ----- Save Time -----
-        game.day = GameTime.Instance.day;
-        game.month = GameTime.Instance.month;
-        game.year = GameTime.Instance.year;
+        gs.day = GameTime.Instance.day;
+        gs.month = GameTime.Instance.month;
+        gs.year = GameTime.Instance.year;
         #endregion
 
         #region ----- Save Season -----
-        game.currentSeason = Season.Instance.currentSeason;
+        gs.currentSeason = Season.Instance.currentSeason;
         #endregion
 
         #region ----- Save Inventory -----
         Inventory.Instance.SaveItem();
-        game.itemDataInventory = Inventory.Instance.saveItemData;
-        game.quantityInventory = Inventory.Instance.saveQuantity;
-        game.locationInventory = Inventory.Instance.saveLocation;
+        gs.itemDataInventory = Inventory.Instance.saveItemData;
+        gs.quantityInventory = Inventory.Instance.saveQuantity;
+        gs.locationInventory = Inventory.Instance.saveLocation;
         #endregion
 
         #region ----- Save Barn -----
         Barn.Instance.SaveItem();
-        game.itemDataBarn = Barn.Instance.saveItemData;
-        game.quantityBarn = Barn.Instance.saveQuantity;
-        game.locationBarn = Barn.Instance.saveLocation;
+        gs.itemDataBarn = Barn.Instance.saveItemData;
+        gs.quantityBarn = Barn.Instance.saveQuantity;
+        gs.locationBarn = Barn.Instance.saveLocation;
         #endregion
+
+        // Gán lại vào SaveManager.game rồi ghi file
+        game = gs;
         File.WriteAllText(PathFor(slot), JsonUtility.ToJson(game, true));
-        Debug.Log(" Đường dẫn file JSON: " + game);
-        Debug.Log(" Đường dẫn file JSON: " + PathFor(slot));
+        Debug.Log("Saved to: " + PathFor(slot));
     }
+
 
     public static bool Load(string slot, IEnumerable<FarmManager> farms)
     {
@@ -142,8 +151,25 @@ public static class SaveManager
         var dict = new Dictionary<string, FarmGridSave>();
         foreach (var s in game.grids) dict[s.gridId] = s;
 
-        //foreach (var f in farms)
-            //if (dict.TryGetValue(f.gridId, out var s)) f.LoadFromSave(s);
+        // 🔧 Dựng lại từng farm:
+        foreach (var f in farms)
+        {
+            if (f == null || !f.isActiveAndEnabled) continue;
+            if (!dict.TryGetValue(f.gridId, out var s)) continue;
+
+            var sys = f.GetComponent<FarmSaveSystem>();
+            if (sys == null) sys = f.gameObject.AddComponent<FarmSaveSystem>();
+
+            // đảm bảo các manager đã có & đã Initialize
+            if (f.soilManager != null) f.soilManager.Initialize(f);
+            if (f.plantManager != null) f.plantManager.Initialize(f, f.soilManager);
+
+            sys.Initialize(f);
+            sys.soilManager = f.soilManager;
+            sys.plantManager = f.plantManager;
+
+            sys.LoadFromSave(s);
+        }
 
         #region ----- Load Building -----
         Builder.Instance.isBuilding = game.isBuilding;
@@ -225,6 +251,7 @@ public static class SaveManager
         #region ----- Load Merchant -----
         MerchantRandom.Instance.isMerchantSpawned = game.isMerchantSpawned;
         #endregion
+
         return true;     
     }
     public static bool IsHasFarm()

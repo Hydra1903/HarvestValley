@@ -226,6 +226,7 @@ public class FarmInput : MonoBehaviour
                 soilManager.HideGhosts();
                 plantManager.HideGhost();
                 soilGrid.SetActiveGrid(false);
+                SetSoilOutline(null);
                 return; 
             }
 
@@ -331,8 +332,8 @@ public class FarmInput : MonoBehaviour
             soilManager.HideGhosts();          
             plantManager.HideGhost();
             soilGrid.SetActiveGrid(false);
+            SetSoilOutline(null);
 
-  
             if (!farmManager.IsWorldPointInsideThisGrid(hit.point))
             {
                 soilManager.HideSprinklerGhost(); 
@@ -365,6 +366,7 @@ public class FarmInput : MonoBehaviour
 
         soilManager.HideGhosts();
         plantManager.HideGhost();
+        SetSoilOutline(null);
 
         if (item == null || item.itemData == null || item.itemData.itemType != ItemType.Seed)
         {
@@ -372,6 +374,7 @@ public class FarmInput : MonoBehaviour
             {
                 plantGrid.SetActiveGrid(false);
                 plantGrid.Hide();
+                SetSoilOutline(null);
             }
         }
 
@@ -385,6 +388,7 @@ public class FarmInput : MonoBehaviour
             if (soilGrid != null)
             {
                 soilGrid.SetActiveGrid(false);
+                SetSoilOutline(null);
             }
         }
     }
