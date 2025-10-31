@@ -24,9 +24,19 @@ public class GameController : MonoBehaviour
     public void LoadGame() => SaveManager.Load("slot1", farms);
     public void NextDayAllFarm()
     {
+        if (farms == null) return;
+
         foreach (var f in farms)
         {
+            if (f == null) continue;                     
+            if (!f.isActiveAndEnabled || !f.gameObject.activeInHierarchy) continue; 
+            if (f.plantManager == null)
+            {
+                Debug.LogWarning($"[NextDay] {f.name} missing PlantManager");
+                continue;
+            }
             f.plantManager.CheckNextDay();
         }
     }
+
 }

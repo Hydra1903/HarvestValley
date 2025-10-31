@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: -3454140543835475757}
   - component: {fileID: -2877489233112673077}
   - component: {fileID: 7701571024295748539}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: SM_Prop_Plant_Delicata_05
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -168,6 +168,10 @@ PrefabInstance:
     - target: {fileID: 1882728544498976, guid: e73a6667ccb411c49a69a20fe2875a74, type: 3}
       propertyPath: m_Name
       value: SM_Prop_Squash_Delicata_01_M
+      objectReference: {fileID: 0}
+    - target: {fileID: 1882728544498976, guid: e73a6667ccb411c49a69a20fe2875a74, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 4529693057084224, guid: e73a6667ccb411c49a69a20fe2875a74, type: 3}
       propertyPath: m_LocalPosition.x
