@@ -7,7 +7,7 @@ public class AIIdile : AnimalMoveBaseState
 
     public override void EnterState(SimpleAI manager)
     {
-        manager.animator.Play("idle");
+        manager.animator.Play("Idle");
         manager.StartCoroutine(WaitAndDecide(manager));
         hasDecided = false;
     }

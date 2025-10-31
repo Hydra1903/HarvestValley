@@ -259,8 +259,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.2817309, y: 0, z: 1.46626}
-  m_Center: {x: 0.0036052465, y: 1.2423239, z: 0.23312998}
+  m_Size: {x: 0.3932317, y: 0.9561026, z: 1.1664906}
+  m_Center: {x: -0.006730497, y: 0.5550705, z: 0.08324528}
 --- !u!114 &-3477391089157585976
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -291,10 +291,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87b258c48a3433e449b4716054f22f43, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animalType: 1
+  animalTypes: 0
+  hayCellManager: {fileID: 0}
   barn: {fileID: 0}
-  eatDelaySeconds: 30
+  requiredFeedDays: 3
+  requiredGoatDays: 5
+  canHarvest: 0
   daysFed: 0
+  mealsToday: 0
+  LastFedDay: 0
+  ateMorningToday: 0
+  ateEveningToday: 0
+  hasEatenToday: 0
 --- !u!114 &-5152426023920445945
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -307,7 +315,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fcba004f201d1074087e671a9bf5e733, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  infoPanel: {fileID: 0}
+  panelUI: {fileID: 0}
   data: {fileID: 11400000, guid: 920787adfe900c344b58fa7654e8af7e, type: 2}
 --- !u!95 &1377019949085143405 stripped
 Animator:
