@@ -104,6 +104,12 @@ public class AnimalPen : MonoBehaviour
         int level = GetCurrentPenLevel();
         UpdateMaxAnimals();
 
+        // Nếu đang nâng cấp từ level 1 → level 2, trả hay còn lại trong pen level 1 về Inventory
+        if (level == 2 && penHayCellManager_Level1 != null && penHayCellManager_Level1.gameObject.activeSelf)
+        {
+            ReturnHayFromOldLevel(penHayCellManager_Level1);
+        }
+        // Kích hoạt HayCellManager tương ứng với level
         if (penHayCellManager_Level1 != null)
             penHayCellManager_Level1.gameObject.SetActive(level == 1);
         if (penHayCellManager_Level2 != null)
@@ -115,8 +121,31 @@ public class AnimalPen : MonoBehaviour
 
         uiManager?.UpdateUIPen();
     }
+    public void ReturnHayFromOldLevel(HayCellManager oldManager)
+    {
+        if (oldManager == null || oldManager.hayCells == null) return;
 
+        Inventory playerInventory = Inventory.Instance;
+        if (playerInventory == null) return;
 
+        foreach (var cell in oldManager.hayCells)
+        {
+            int amount = cell.CurrentQuantity;
+            if (amount <= 0) continue;
+
+            //trả vào Inventory
+            bool added = playerInventory.AddItem(hayItemData, amount);
+            if (added)
+            {
+                // Xóa hết haybale trong cell nếu thêm được
+                if (cell.cellIndex == 0) cell.quanlityCell1 = 0;
+                else cell.quanlityCell2 = 0;
+
+                Notification.Instance.ShowNotification($"+{amount} trả về kho đồ");
+            }
+            cell.UpdateUI();
+        }
+    }
     public Vector3 GetRandomSpawnPosition()
     {
         Transform basePoint = UnityEngine.Random.value < 0.5f ? spawnPointType1 : spawnPointType2;
@@ -211,9 +240,20 @@ public class AnimalPen : MonoBehaviour
         if (cellIndex < 0 || cellIndex >= spawnedAnimals.Count)
             return;
 
-        var (animal, _) = spawnedAnimals[cellIndex];
+        var (animal, data) = spawnedAnimals[cellIndex];
         if (animal != null)
         {
+            // Tính tiền dựa trên loại động vật
+            int sellPrice = 0;
+            var feed = animal.GetComponent<AnimalFedding>();
+            if (feed != null)
+            {
+                sellPrice = feed.animalTypes == AnimalFedding.FeedingAnimalType.Goat ? 900 : 750;
+            }
+
+            // Cộng tiền vào Gold
+            Gold.Instance.AddGold(sellPrice);
+
             Destroy(animal);
         }
 
@@ -221,12 +261,11 @@ public class AnimalPen : MonoBehaviour
         spawnedAnimals.RemoveAt(cellIndex);
 
         if (spawnedAnimals.Count == 0)
-        {
             allowedTags.Clear();
-        }
 
         uiManager?.RefreshUI();
     }
+
 
     public void UpdateSavedAnimalData(GameObject animal)
     {

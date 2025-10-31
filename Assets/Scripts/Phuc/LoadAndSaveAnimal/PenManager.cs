@@ -8,7 +8,7 @@ public class PensManager : MonoBehaviour
 
     [Header("References")]
     public List<AnimalPen> allPens = new List<AnimalPen>();
-    public List<HayCellManager> allHayManagers = new List<HayCellManager>();
+    public List<HayCellManager> allHayManagers = new List<HayCellManager>(); 
     public ItemData hayBaleData;
 
     private bool isHandlingDay = false;
@@ -23,8 +23,13 @@ public class PensManager : MonoBehaviour
 
     private void Start()
     {
-        //Debug.Log($"[PensManager] Loading farm data from path:\n{SaveLoadSystem.savePath}");
         SaveLoadSystem.LoadFarm(allPens);
+
+        foreach (var hayManager in allHayManagers)
+        {
+            if (hayManager != null)
+                hayManager.hayCells.ForEach(cell => cell?.UpdateUI());
+        }
 
         foreach (var pen in allPens)
             pen.uiManager?.RefreshUI();
@@ -32,7 +37,6 @@ public class PensManager : MonoBehaviour
         StartCoroutine(CheckDayChangeRoutine());
     }
 
-    //Check day change
     private IEnumerator CheckDayChangeRoutine()
     {
         yield return new WaitForSeconds(1f);
@@ -46,9 +50,6 @@ public class PensManager : MonoBehaviour
             float absoluteHour = GetAbsoluteGameHours();
             int currentDay = GameTime.Instance.day;
 
-            //Debug.Log($"[PensManager] Time check → AbsoluteHour: {absoluteHour:F2}, CurrentDay: {currentDay}");
-
-            // Nếu là lần đầu khởi tạo thì gán lại
             if (lastAbsoluteHour < 0f)
             {
                 lastAbsoluteHour = absoluteHour;
@@ -56,17 +57,13 @@ public class PensManager : MonoBehaviour
                 continue;
             }
 
-            // Nếu ngày thay đổi (qua ngày mới)
             if (currentDay != lastDay)
             {
-                //Debug.Log($"[PensManager] Detected new day → {lastDay} → {currentDay} (AbsoluteHour: {absoluteHour:F2})");
                 SaveFarm();
                 lastDay = currentDay;
             }
             else if (absoluteHour - lastAbsoluteHour >= 24f)
             {
-                // Trường hợp fallback nếu hệ thống chưa tăng day nhưng giờ > 24
-                //Debug.Log($"[PensManager] Detected 24 hours passed → triggering SaveFarm()");
                 SaveFarm();
                 lastAbsoluteHour = absoluteHour;
                 lastDay = currentDay + 1;
@@ -77,11 +74,7 @@ public class PensManager : MonoBehaviour
     public float GetAbsoluteGameHours()
     {
         var t = GameTime.Instance;
-        if (t == null)
-        {
-            //Debug.LogWarning("[PensManager] GameTime.Instance is null, returning 0.");
-            return 0;
-        }
+        if (t == null) return 0;
         return (t.day * 24f) + t.hour;
     }
 
@@ -89,8 +82,6 @@ public class PensManager : MonoBehaviour
     {
         if (isHandlingDay) return;
         isHandlingDay = true;
-
-        //Debug.Log("[PensManager] SaveFarm() called → preparing to update animals...");
 
         foreach (var pen in allPens)
         {
@@ -106,8 +97,15 @@ public class PensManager : MonoBehaviour
                 }
             }
         }
-        //Debug.Log("[PensManager] All pens updated, now saving farm...");
+
         SaveLoadSystem.SaveFarm(allPens);
+
+        foreach (var hayManager in allHayManagers)
+        {
+            if (hayManager != null)
+                hayManager.hayCells.ForEach(cell => cell?.UpdateUI());
+        }
+
         isHandlingDay = false;
     }
 }

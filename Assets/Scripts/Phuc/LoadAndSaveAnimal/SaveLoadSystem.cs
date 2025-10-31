@@ -46,6 +46,14 @@ public static class SaveLoadSystem
 
         foreach (var pen in allPens)
         {
+            if (pen.penHayCellManager != null)
+            {
+                pen.penHayCellManager.SaveAllCells(data);
+            }
+        }
+
+        foreach (var pen in allPens)
+        {
             foreach (var (obj, info) in pen.GetSpawnedAnimals())
             {
                 if (obj == null || info == null) continue;
@@ -86,20 +94,32 @@ public static class SaveLoadSystem
 
         string json = File.ReadAllText(savePath);
         FarmSaveData data = JsonUtility.FromJson<FarmSaveData>(json);
-        //Debug.Log("[SaveFarm] Saved to: " + savePath);
+
+        bool pen1Unlocked = Builder.Instance != null && Builder.Instance.isUnlockPen1;
+        bool pen2Unlocked = Builder.Instance != null && Builder.Instance.isUnlockPen2;
+
         foreach (var pen in allPens)
         {
             foreach (var (obj, _) in pen.GetSpawnedAnimals())
                 if (obj != null) GameObject.Destroy(obj);
 
+                if ((pen.penId == 1 && !pen1Unlocked) || (pen.penId == 2 && !pen2Unlocked))
+                     continue;
+
             pen.GetSpawnedAnimals().Clear();
             pen.savedAnimals.Clear();
+
+            if (pen.penHayCellManager != null)
+                pen.penHayCellManager.LoadAllCells(data);
         }
 
         foreach (var animal in data.animals)
         {
             AnimalPen pen = allPens.Find(p => p.penId == animal.penId);
             if (pen == null) continue;
+
+            if ((pen.penId == 1 && !pen1Unlocked) || (pen.penId == 2 && !pen2Unlocked))
+                continue;
 
             // Spawn prefab dựa trên type + variant
             GameObject prefab = GetPrefabFromFeedingType(animal.animalType, animal.variant);
@@ -133,6 +153,10 @@ public static class SaveLoadSystem
                 pen.RegisterAnimal(obj, infoComp?.data);
                 pen.UpdateAnimalFeedStatusUI();
             }
+        }
+        if (pen1Unlocked || pen2Unlocked)
+        {
+            File.WriteAllText(savePath, JsonUtility.ToJson(new FarmSaveData(), true));
         }
     }
     public static GameObject GetPrefabFromFeedingType(AnimalFedding.FeedingAnimalType type, string variant)

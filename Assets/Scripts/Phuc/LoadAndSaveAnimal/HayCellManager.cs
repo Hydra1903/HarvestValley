@@ -3,20 +3,33 @@ using UnityEngine;
 
 public class HayCellManager : MonoBehaviour
 {
-    public Transform cellsParent;
+    [Header("Optional: Use parent to auto-find cells")]
+    public Transform cellsParent; // Nếu bạn muốn tự động tìm các cell con
     public DragItem dragItem;
     public Sprite hayBaleIcon;
 
-    [HideInInspector] public List<HayCell> hayCells = new List<HayCell>();
+    [Header("Cells List (can drag manually)")]
+    public List<HayCell> hayCells = new List<HayCell>(); // Kéo trực tiếp cell vào đây
 
     private void Start()
     {
-        hayCells.Clear();
-        foreach (var cell in cellsParent.GetComponentsInChildren<HayCell>(true))
+        if ((hayCells == null || hayCells.Count == 0) && cellsParent != null)
         {
-            cell.manager = this;
-            hayCells.Add(cell);
-            cell.UpdateUI();
+            hayCells = new List<HayCell>();
+            foreach (var cell in cellsParent.GetComponentsInChildren<HayCell>(true))
+            {
+                if (cell != null)
+                    hayCells.Add(cell);
+            }
+        }
+
+        foreach (var cell in hayCells)
+        {
+            if (cell != null)
+            {
+                cell.manager = this;
+                cell.UpdateUI();
+            }
         }
     }
 
@@ -24,20 +37,26 @@ public class HayCellManager : MonoBehaviour
     public void LoadAllCells(FarmSaveData data)
     {
         foreach (var cell in hayCells)
-            cell.LoadHayCell(data);
+        {
+            if (cell != null)
+                cell.LoadHayCell(data);
+        }
     }
 
     // Save tất cả cells vào FarmSaveData
     public void SaveAllCells(FarmSaveData data)
     {
         foreach (var cell in hayCells)
-            cell.SaveHayCell(data);
+        {
+            if (cell != null)
+                cell.SaveHayCell(data);
+        }
     }
 
     public bool HasHay()
     {
         foreach (var cell in hayCells)
-            if (!cell.IsEmpty) return true;
+            if (cell != null && !cell.IsEmpty) return true;
         return false;
     }
 
@@ -45,7 +64,10 @@ public class HayCellManager : MonoBehaviour
     {
         int total = 0;
         foreach (var cell in hayCells)
-            total += cell.cellIndex == 0 ? cell.quanlityCell1 : cell.quanlityCell2;
+        {
+            if (cell != null)
+                total += cell.cellIndex == 0 ? cell.quanlityCell1 : cell.quanlityCell2;
+        }
         return total;
     }
 }
