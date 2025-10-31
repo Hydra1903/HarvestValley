@@ -54,7 +54,7 @@ public class InfoPanelUI : MonoBehaviour
 
         if (productLabelText != null)
         {
-            productLabelText.text = isEnglish ? "Product" : "Sản phẩm";
+            productLabelText.text = isEnglish ? "Product:" : "Sản phẩm:";
         }
 
         var harvestComp = owner.GetComponent<TestingHarvestAnimal>();
