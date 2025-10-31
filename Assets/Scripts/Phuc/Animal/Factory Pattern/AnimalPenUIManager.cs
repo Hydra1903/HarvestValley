@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public class AnimalPenUIManager : MonoBehaviour
 {
+    private BarnUI barnUI;
+
     [Header("References")]
     public AnimalPen pen;
     public TMP_Text animalCountText;
@@ -12,7 +14,13 @@ public class AnimalPenUIManager : MonoBehaviour
     public TMP_Text penQualityText;
 
     [Header("Panels")]
+    public GameObject penInfoPanel;  
+    public InfoPanelUI penInfoPanel2;   // <-- đã đổi từ GameObject sang InfoPanelUI
+    public GameObject inventoryPanel;
+    public GameObject penInfoAnimal;
     public GameObject confirmSellPanel;
+    public GameObject panelLevel1;
+    public GameObject panelLevel2;
 
     [Header("Confirm Buttons")]
     public Button yesButton;
@@ -27,69 +35,42 @@ public class AnimalPenUIManager : MonoBehaviour
     public GameObject[] receiveHayBalePen2;
     public TextMeshProUGUI textLevelPen1;
     public TextMeshProUGUI textLevelPen2;
+    private int lastLevelPen1 = -1;
+    private int lastLevelPen2 = -1;
     private int pendingSellIndex = -1;
 
-    public void UpdateUIPen() 
-    {
-        if(Builder.Instance.currentlevelPen1 == 1) 
-        {
-            SpritePen1[0].SetActive(true);
-            receiveHayBalePen1[0].SetActive(true);
-            textLevelPen1.text ="Cấp 1";
-        }
-        else if (Builder.Instance.currentlevelPen1 == 2)
-        {
-            SpritePen1[0].SetActive(false);
-            receiveHayBalePen1[0].SetActive(false);
-            SpritePen1[1].SetActive(true);
-            receiveHayBalePen1[1].SetActive(true);
-            textLevelPen1.text = "Cấp 2";
-        }
-        if (Builder.Instance.currentlevelPen2 == 1)
-        {
-            SpritePen2[0].SetActive(true);
-            receiveHayBalePen2[0].SetActive(true);
-            textLevelPen2.text = "Cấp 1";
-        }
-        else if (Builder.Instance.currentlevelPen2 == 2)
-        {
-            SpritePen2[0].SetActive(false);
-            receiveHayBalePen2[0].SetActive(false);
-            SpritePen2[1].SetActive(true);
-            receiveHayBalePen2[1].SetActive(true);
-            textLevelPen2.text = "Cấp 2";
-        }
-    }
     private void Start()
     {
         if (pen == null)
             pen = GetComponent<AnimalPen>();
 
+        HideAllPanels();
         RefreshUI();
         UpdateUIPen();
+        lastLevelPen1 = Builder.Instance.currentlevelPen1;
+        lastLevelPen2 = Builder.Instance.currentlevelPen2;
     }
+
     private void Update()
     {
         RefreshUI();
+        CheckPenLevelChange();
     }
+
     public void RefreshUI()
     {
         UpdateAnimalCount();
         UpdateAnimalCells();
         UpdateFeedStatus();
 
-        var animals = pen.GetSpawnedAnimals();
-        foreach (var (animal, data) in animals)
+        // --- cập nhật panel nếu đang hiển thị con vật ---
+        if (penInfoPanel2 != null && penInfoPanel2.CurrentOwner != null)
         {
-            var info = animal.GetComponent<AnimalInfo>();
-            if (info != null && pen.penInfoPanel != null &&
-                pen.penInfoPanel.IsShowingOwner(info))
-            {
-                pen.penInfoPanel.RefreshUI(info);
-                break;
-            }
+            penInfoPanel2.gameObject.SetActive(true);
+            penInfoPanel2.Show(penInfoPanel2.CurrentOwner.data, penInfoPanel2.CurrentOwner);
         }
     }
+
     public void UpdateAnimalCount()
     {
         string count = $"{pen.SpawnedAnimalCount} / {pen.MaxAnimals}";
@@ -120,13 +101,46 @@ public class AnimalPenUIManager : MonoBehaviour
     public void UpdateFeedStatus()
     {
         bool allGood = pen.IsAnyAnimalFed();
+
         string text = allGood ? "Tốt" : "Xấu";
         Color color = allGood ? Color.green : Color.red;
+
+        var currentLocale = UnityEngine.Localization.Settings.LocalizationSettings.SelectedLocale;
+        if (currentLocale != null && currentLocale.Identifier.Code.StartsWith("en"))
+        {
+            text = allGood ? "Good" : "Bad";
+        }
 
         if (penQualityText != null)
         {
             penQualityText.text = text;
             penQualityText.color = color;
+        }
+    }
+
+
+    public void ShowPenInfo(bool show)
+    {
+        penInfoPanel?.gameObject.SetActive(show);
+        inventoryPanel?.SetActive(show);
+        penInfoAnimal?.SetActive(show);
+
+        if (show)
+        {
+            RefreshUI();
+        }
+    }
+
+    public void ShowInventory(bool show)
+    {
+        if (inventoryPanel == null) return;
+
+        inventoryPanel.SetActive(show);
+        penInfoAnimal.SetActive(show);
+
+        if (show)
+        {
+            UpdateAnimalCells();
         }
     }
 
@@ -154,4 +168,69 @@ public class AnimalPenUIManager : MonoBehaviour
         });
     }
 
+    private void HideAllPanels()
+    {
+        penInfoPanel?.gameObject.SetActive(false);
+        inventoryPanel?.SetActive(false);
+        confirmSellPanel?.SetActive(false);
+        penInfoAnimal?.SetActive(false);
+    }
+
+    public void UpdateUIPen()
+    {
+        if (Builder.Instance.currentlevelPen1 == 1)
+        {
+            SpritePen1[0].SetActive(true);
+            receiveHayBalePen1[0].SetActive(true);
+            textLevelPen1.text = "Cấp 1";
+        }
+        else if (Builder.Instance.currentlevelPen1 == 2)
+        {
+            SpritePen1[0].SetActive(false);
+            receiveHayBalePen1[0].SetActive(false);
+            SpritePen1[1].SetActive(true);
+            receiveHayBalePen1[1].SetActive(true);
+            textLevelPen1.text = "Cấp 2";
+        }
+
+        if (Builder.Instance.currentlevelPen2 == 1)
+        {
+            SpritePen2[0].SetActive(true);
+            receiveHayBalePen2[0].SetActive(true);
+            textLevelPen2.text = "Cấp 1";
+        }
+        else if (Builder.Instance.currentlevelPen2 == 2)
+        {
+            SpritePen2[0].SetActive(false);
+            receiveHayBalePen2[0].SetActive(false);
+            SpritePen2[1].SetActive(true);
+            receiveHayBalePen2[1].SetActive(true);
+            textLevelPen2.text = "Cấp 2";
+        }
+    }
+    private void CheckPenLevelChange()
+    {
+        if (Builder.Instance == null) return;
+
+        bool changed = false;
+
+        if (Builder.Instance.currentlevelPen1 != lastLevelPen1)
+        {
+            lastLevelPen1 = Builder.Instance.currentlevelPen1;
+            changed = true;
+        }
+
+        if (Builder.Instance.currentlevelPen2 != lastLevelPen2)
+        {
+            lastLevelPen2 = Builder.Instance.currentlevelPen2;
+            changed = true;
+        }
+
+        if (changed)
+        {
+            pen.UpdateMaxAnimals();
+            pen.UpdateActiveHayManager();
+            UpdateUIPen();
+        }
+    }
 }

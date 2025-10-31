@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
 using TMPro;
-using Unity.Cinemachine;
 using UnityEngine;
-using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 public class LiveStockSeller : MonoBehaviour
@@ -27,6 +25,8 @@ public class LiveStockSeller : MonoBehaviour
     public Button noButton;
     public Button pen2Button;
     public Button pen1Button;
+    public GameObject pen1LockPanel;
+    public GameObject pen2LockPanel;
 
     [Header("Spawn Point And Moving Random Point")]
     public AnimalPen pen1;
@@ -37,9 +37,11 @@ public class LiveStockSeller : MonoBehaviour
     {
         public AnimalType animalType;
         public int requiredLevel;
+        [Header("Giá mua bằng vàng")]
+        public int price;
 
         [Header("UI Overlay (Optional)")]
-        public GameObject lockOverlay; 
+        public GameObject lockOverlay;
         public Button buyButton;
     }
 
@@ -48,12 +50,12 @@ public class LiveStockSeller : MonoBehaviour
 
     private void Start()
     {
-        buyCanvas.gameObject.SetActive(false);
+        buyCanvas.SetActive(false);
         confirmPanel.SetActive(false);
         selectPenPanel.SetActive(false);
 
-        yesButton.onClick.AddListener(() => ConfirmPurchase());
-        noButton.onClick.AddListener(() => BackToBuyMenu());
+        yesButton.onClick.AddListener(ConfirmPurchase);
+        noButton.onClick.AddListener(BackToBuyMenu);
 
         pen1Button.onClick.AddListener(() => SelectPen(pen1));
         pen2Button.onClick.AddListener(() => SelectPen(pen2));
@@ -64,7 +66,7 @@ public class LiveStockSeller : MonoBehaviour
         CreamSheepButton.onClick.AddListener(() => ShowSelectPen(AnimalType.CreamSheep));
         BlackSheepButton.onClick.AddListener(() => ShowSelectPen(AnimalType.BlackSheep));
 
-        UpdateAnimalButtons(); 
+        UpdateAnimalButtons();
     }
 
     void ShowSelectPen(AnimalType type)
@@ -84,72 +86,98 @@ public class LiveStockSeller : MonoBehaviour
     void ConfirmPurchase()
     {
         if (selectedPen == null || selectedType == AnimalType.None)
-        {
             return;
-        }
 
         int requiredLevel = GetRequiredLevel(selectedType);
+        int price = GetAnimalPrice(selectedType);
         int currentLevel = LevelManager.Instance.currentLevel;
 
         if (currentLevel < requiredLevel)
         {
+            Notification.Instance.ShowNotification("Cấp độ chưa đủ để mua!");
+            confirmPanel.SetActive(false);
+            return;
+        }
+
+        if (Gold.Instance.gold < price)
+        {
+            Notification.Instance.ShowNotification($"Không đủ vàng! Cần vàng để mua");
             confirmPanel.SetActive(false);
             return;
         }
 
         if (!selectedPen.CanSpawnMore())
         {
-            Notification.Instance.ShowNotification("Chuồng Nuôi Đã Đầy!");
+            Notification.Instance.ShowNotification("Chuồng nuôi đã đầy!");
             confirmPanel.SetActive(false);
             return;
         }
 
         GameObject prefab = AnimalFactory.GetPrefab(selectedType);
         if (prefab == null)
+            return;
+
+        bool spent = Gold.Instance.SpendGold(price);
+        if (!spent)
         {
+            Notification.Instance.ShowNotification("Không đủ vàng để mua!");
             return;
         }
 
         GameObject obj = Instantiate(prefab, selectedPen.GetRandomSpawnPosition(), Quaternion.identity);
 
+        // Gán wander points cho AI
         SimpleAI ai = obj.GetComponent<SimpleAI>();
         if (ai != null)
             ai.wanderPoints = selectedPen.wanderPoints;
 
+        // Gán barn reference cho AnimalFedding
         AnimalFedding feeding = obj.GetComponent<AnimalFedding>();
         if (feeding != null)
             feeding.barn = selectedPen.barnReference;
 
-        var info = obj.GetComponent<AnimalInfo>();
-        var panel = InfoPanelManager.instance.GetPanel(selectedPen.penId);
-        if (panel != null)
-            info.InjectPanel(panel);
+        // Gán panel UI cho AnimalInfo
+        AnimalInfo info = obj.GetComponent<AnimalInfo>();
+        if (info != null)
+        {
+            var panel = InfoPanelManager.instance.GetPanel(selectedPen.penId);
+            if (panel != null)
+                info.panelUI = panel;
+        }
 
-        AnimalData data = obj.GetComponent<AnimalInfo>()?.data;
+        AnimalData data = info?.data;
         bool success = selectedPen.RegisterAnimal(obj, data);
+
+        string displayName = data != null
+            ? AnimalHelpers.GetDisplayNameFromData(data.animalType, data.variant)
+            : AnimalLocalization.GetLocalizedName(selectedType);
+
         if (success)
-        {
-            Notification.Instance.ShowNotification($"Đã mua động vật");
-        }
+            Notification.Instance.ShowNotification($"Đã mua {displayName} với giá {price} vàng!");
         else
-        {
-            Notification.Instance.ShowNotification($"Động vật đã chọn không được phép thêm vào");
-        }
+            Notification.Instance.ShowNotification($"Không thể thêm {displayName} vào chuồng!");
 
         confirmPanel.SetActive(false);
         selectedType = AnimalType.None;
         selectedPen = null;
-        //CloseAllUI();
+        CloseAllUI();
+        UpdatePenCountsUI();
     }
 
     int GetRequiredLevel(AnimalType type)
     {
         foreach (var req in animalLevelRequirements)
-        {
             if (req.animalType == type)
                 return req.requiredLevel;
-        }
         return 1;
+    }
+
+    int GetAnimalPrice(AnimalType type)
+    {
+        foreach (var req in animalLevelRequirements)
+            if (req.animalType == type)
+                return req.price;
+        return 0;
     }
 
     void UpdateAnimalButtons()
@@ -166,19 +194,30 @@ public class LiveStockSeller : MonoBehaviour
             if (req.lockOverlay != null)
                 req.lockOverlay.SetActive(!unlocked);
         }
+        UpdatePenUnlockOverlays();
     }
+
+    void UpdatePenUnlockOverlays()
+    {
+        bool pen1Unlocked = Builder.Instance != null && Builder.Instance.isUnlockPen1;
+        bool pen2Unlocked = Builder.Instance != null && Builder.Instance.isUnlockPen2;
+
+        if (pen1LockPanel != null)
+            pen1LockPanel.SetActive(!pen1Unlocked);
+
+        if (pen2LockPanel != null)
+            pen2LockPanel.SetActive(!pen2Unlocked);
+    }
+
     void UpdatePenCountsUI()
     {
         if (pen1 != null && pen1CountText != null)
-        {
             pen1CountText.text = $"{pen1.SpawnedAnimalCount} / {pen1.MaxAnimals}";
-        }
 
         if (pen2 != null && pen2CountText != null)
-        {
             pen2CountText.text = $"{pen2.SpawnedAnimalCount} / {pen2.MaxAnimals}";
-        }
     }
+
     void BackToBuyMenu()
     {
         confirmPanel.SetActive(false);
@@ -195,7 +234,7 @@ public class LiveStockSeller : MonoBehaviour
         confirmPanel.SetActive(false);
     }
 
-    void Update()
+    private void Update()
     {
         if (playerInRange && Input.GetKeyDown(KeyCode.E))
         {
@@ -203,13 +242,9 @@ public class LiveStockSeller : MonoBehaviour
             buyCanvas.SetActive(!isActive);
 
             if (!isActive)
-            {
-                UpdateAnimalButtons(); 
-            }
+                UpdateAnimalButtons();
             else
-            {
                 CloseAllUI();
-            }
         }
     }
 

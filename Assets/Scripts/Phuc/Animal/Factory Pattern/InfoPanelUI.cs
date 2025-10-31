@@ -1,90 +1,126 @@
-﻿using TMPro;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
+using System.Collections.Generic;
+using UnityEngine.Localization.Settings;
 
 public class InfoPanelUI : MonoBehaviour
 {
-    [SerializeField] Text nameText;
-    [SerializeField] Text stateText;
-    [SerializeField] Text productText;
-    [SerializeField] Text harvestText;
-    [SerializeField] Image iconImage;
-    [SerializeField] Text feedText;
-    [SerializeField] Text feedDaysText;
+    [Header("UI References")]
+    public TextMeshProUGUI nameText;
+    public TextMeshProUGUI stateText;
+    public Image productImage;
+    public TextMeshProUGUI harvestText;
+    public TextMeshProUGUI productLabelText;
+    [System.Serializable]
+    public class AnimalIcon
+    {
+        public AnimalTypeed type;   // Loại vật nuôi (giữ nguyên)
+        public string variant;      // Màu hoặc biến thể
+        public GameObject icon;     // Icon tương ứng
+    }
 
-    private AnimalInfo currentOwner;
+    public List<AnimalIcon> animalIcons = new List<AnimalIcon>();
+
+    public AnimalInfo CurrentOwner { get; private set; }
 
     public void Show(AnimalData data, AnimalInfo owner)
     {
-        currentOwner = owner;
+        CurrentOwner = owner;
+
+        string currentLang = LocalizationSettings.SelectedLocale != null
+            ? LocalizationSettings.SelectedLocale.Identifier.Code
+            : "vi";
+        bool isEnglish = currentLang.StartsWith("en");
 
         if (data != null)
         {
-            nameText.text = data.animalName;
-            productText.text = data.item ? $"Sản Phẩm: {data.item.itemName}" : "Sản Phẩm: -";
-            iconImage.sprite = data.icon;
+            // Map sang AnimalType chính xác dựa trên variant rồi lấy tên hiển thị
+            AnimalType mapped = AnimalHelpers.MapToAnimalType(data.animalType, data.variant);
+            nameText.text = AnimalLocalization.GetLocalizedName(mapped);
+            SetActiveIcon(data.animalType, data.variant);
+
         }
 
-        stateText.text = "Trạng Thái: Bình Thường";
-
-        var harvestComp = owner.GetComponent<TestingHarvestAnimal>();
         var feeding = owner.GetComponent<AnimalFedding>();
-
-        // --- Kiểm tra thu hoạch ---
-        if (harvestComp != null && feeding != null)
-        {
-            if (feeding.CanHarvest())
-                harvestText.text = "Có thể thu hoạch: Được";
-            else
-                harvestText.text = "Có thể thu hoạch: Không";
-        }
-        // --- Tình trạng ăn và số ngày ăn ---
         if (feeding != null)
         {
-            switch (feeding.animalTypes)
+            bool eaten = feeding.GetMealsToday() > 0;
+            stateText.text = isEnglish
+                ? (eaten ? "Eaten" : "Not eaten")
+                : (eaten ? "Đã được ăn" : "Chưa được ăn");
+        }
+        else stateText.text = "-";
+
+        if (productLabelText != null)
+        {
+            productLabelText.text = isEnglish ? "Product:" : "Sản phẩm:";
+        }
+
+        var harvestComp = owner.GetComponent<TestingHarvestAnimal>();
+        if (harvestComp != null)
+        {
+            int remainingDays = harvestComp.GetRemainingDaysToHarvest();
+            if (remainingDays <= 0)
             {
-                case AnimalFedding.FeedingAnimalType.Sheep:
-                    feedText.text = feeding.GetMealsToday() >= 1
-                        ? "Tình trạng ăn: Đã được ăn hôm nay"
-                        : "Tình trạng ăn: Chưa được ăn hôm nay";
-                    feedDaysText.text = $"Số ngày đã ăn: {feeding.daysFed}/3"; 
-                    break;
-
-                case AnimalFedding.FeedingAnimalType.Goat:
-                    int meals = feeding.GetMealsToday();
-                    feedText.text = $"Số lượng ăn: {meals}/2";
-                    feedDaysText.text = $"Số ngày đã ăn: {feeding.daysFed}/5"; 
-                    break;
-
-                default:
-                    feedText.text = "Tình trạng ăn: Không rõ";
-                    feedText.color = Color.gray;
-                    feedDaysText.text = "Số ngày đã ăn: -";
-                    break;
+                harvestText.text = isEnglish ? "Harvestable" : "Đã có thể thu hoạch";
+            }
+            else
+            {
+                harvestText.text = isEnglish
+                    ? $"Time remaining: {remainingDays} days"
+                    : $"Thời gian còn: {remainingDays} ngày";
             }
         }
         else
         {
-            feedText.text = "Tình trạng ăn: -";
-            feedDaysText.text = "Số ngày đã ăn: -";
+            harvestText.text = "-";
         }
+        if (productImage != null)
+        {
+            Sprite prodSprite = null;
 
+            var harvestAnimal = owner.GetComponent<TestingHarvestAnimal>();
+            if (harvestAnimal != null)
+            {
+                // Lấy ItemData theo loại động vật
+                ItemData item = harvestAnimal.GetItemDataByType();
+                if (item != null)
+                    prodSprite = item.icon; // icon của sản phẩm
+            }
+
+            productImage.sprite = prodSprite;
+            productImage.enabled = prodSprite != null;
+        }
         gameObject.SetActive(true);
     }
 
     public void Hide()
     {
-        currentOwner = null;
+        CurrentOwner = null;
+
+        foreach (var icon in animalIcons)
+        {
+            if (icon.icon != null)
+                icon.icon.SetActive(false);
+
+        }
+        if (productLabelText != null)
+            productLabelText.text = "";
         gameObject.SetActive(false);
     }
 
-    public bool IsShowingOwner(AnimalInfo owner) => currentOwner == owner;
-
-    public void RefreshUI(AnimalInfo owner)
+    private void SetActiveIcon(AnimalTypeed type, string variant)
     {
-        if (owner != null && owner.data != null)
+        string normalizedVariant = variant.ToLower();
+
+        foreach (var icon in animalIcons)
         {
-            Show(owner.data, owner);
+            if (icon.icon != null && icon.type == type && icon.variant.ToLower() == normalizedVariant)
+            {
+                icon.icon.SetActive(true);
+                break;
+            }
         }
     }
 }

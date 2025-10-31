@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
+
 
 public class AnimalPen : MonoBehaviour
 {
@@ -15,14 +17,16 @@ public class AnimalPen : MonoBehaviour
     public AnimalPenUIManager uiManager;
     public InfoPanelUI penInfoPanel;
     public ItemData hayItemData;
+    public GameObject penVisual_Level1;
+    public GameObject penVisual_Level2;
 
     [Header("Spawn Settings")]
     public Transform spawnPointType1;
     public Transform spawnPointType2;
     public Transform[] wanderPoints;
 
-    [SerializeField] private int baseMaxAnimals = 4; // Cấp 1 mặc định = 4
-    private int maxAnimals; // Giá trị thực tế, thay đổi theo cấp
+    [SerializeField] private int baseMaxAnimals = 4;
+    private int maxAnimals; 
 
     private List<(GameObject animal, AnimalData data)> spawnedAnimals = new();
     private HashSet<string> allowedTags = new();
@@ -36,7 +40,9 @@ public class AnimalPen : MonoBehaviour
         public AnimalFedding.FeedingAnimalType animalType;
         public string variant;
         public int daysFed;
+        public GameObject prefab;
         public bool canHarvest;
+        public AnimalData data;
     }
 
     public HayCellManager penHayCellManager
@@ -69,17 +75,22 @@ public class AnimalPen : MonoBehaviour
         return penId == 1 ? Builder.Instance.currentlevelPen1 : Builder.Instance.currentlevelPen2;
     }
 
-    private void UpdateMaxAnimals()
+    public void UpdateMaxAnimals()
     {
         int level = GetCurrentPenLevel();
 
-        if (penId == 1)
+        if (penId == 1 || penId == 2)
         {
-            maxAnimals = (level == 1) ? 4 : 7;
-        }
-        else if (penId == 2)
-        {
-            maxAnimals = (level == 1) ? 4 : 7;
+            if (level == 1)
+            {
+                maxAnimals = 4;
+                baseMaxAnimals = 4;
+            }
+            else if (level == 2)
+            {
+                maxAnimals = 7;
+                baseMaxAnimals = 7;
+            }
         }
         else
         {
@@ -87,32 +98,72 @@ public class AnimalPen : MonoBehaviour
         }
     }
 
+
     public void UpdateActiveHayManager()
     {
         int level = GetCurrentPenLevel();
-        UpdateMaxAnimals(); // cập nhật lại số lượng vật nuôi tối đa mỗi khi đổi cấp
+        UpdateMaxAnimals();
 
+        // Nếu đang nâng cấp từ level 1 → level 2, trả hay còn lại trong pen level 1 về Inventory
+        if (level == 2 && penHayCellManager_Level1 != null && penHayCellManager_Level1.gameObject.activeSelf)
+        {
+            ReturnHayFromOldLevel(penHayCellManager_Level1);
+        }
+        // Kích hoạt HayCellManager tương ứng với level
         if (penHayCellManager_Level1 != null)
             penHayCellManager_Level1.gameObject.SetActive(level == 1);
         if (penHayCellManager_Level2 != null)
             penHayCellManager_Level2.gameObject.SetActive(level == 2);
+        if (penVisual_Level1 != null)
+            penVisual_Level1.SetActive(level == 1);
+        if (penVisual_Level2 != null)
+            penVisual_Level2.SetActive(level == 2);
 
         uiManager?.UpdateUIPen();
     }
+    public void ReturnHayFromOldLevel(HayCellManager oldManager)
+    {
+        if (oldManager == null || oldManager.hayCells == null) return;
 
+        Inventory playerInventory = Inventory.Instance;
+        if (playerInventory == null) return;
+
+        foreach (var cell in oldManager.hayCells)
+        {
+            int amount = cell.CurrentQuantity;
+            if (amount <= 0) continue;
+
+            //trả vào Inventory
+            bool added = playerInventory.AddItem(hayItemData, amount);
+            if (added)
+            {
+                // Xóa hết haybale trong cell nếu thêm được
+                if (cell.cellIndex == 0) cell.quanlityCell1 = 0;
+                else cell.quanlityCell2 = 0;
+
+                Notification.Instance.ShowNotification($"+{amount} trả về kho đồ");
+            }
+            cell.UpdateUI();
+        }
+    }
     public Vector3 GetRandomSpawnPosition()
     {
-        Transform basePoint = Random.value < 0.5f ? spawnPointType1 : spawnPointType2;
-        Vector2 offset = Random.insideUnitCircle * 1.5f;
+        Transform basePoint = UnityEngine.Random.value < 0.5f ? spawnPointType1 : spawnPointType2;
+        Vector2 offset = UnityEngine.Random.insideUnitCircle * 1.5f;
         return basePoint.position + new Vector3(offset.x, 0f, offset.y);
     }
 
-    public bool CanSpawnMore() => spawnedAnimals.Count < maxAnimals;
-
     public bool RegisterAnimal(GameObject animal, AnimalData data)
     {
+        if (animal == null) return false;
+
+        // Tạo ID duy nhất dựa trên tên prefab + thời gian hiện tại
+        string uniqueID = animal.name + "_" + DateTime.Now.Ticks;
+        animal.name = uniqueID;
+
         string tag = animal.tag;
 
+        // Kiểm tra tag cho phép
         if (allowedTags.Count == 0)
         {
             allowedTags.Add(tag);
@@ -133,7 +184,7 @@ public class AnimalPen : MonoBehaviour
 
             var info = new AnimalPenSaveInfo
             {
-                animalID = animal.name,
+                animalID = uniqueID,
                 animalType = feeding.animalTypes,
                 daysFed = feeding.daysFed,
                 canHarvest = feeding.CanHarvest(),
@@ -143,20 +194,23 @@ public class AnimalPen : MonoBehaviour
             savedAnimals.Add(info);
         }
 
-        var infos = animal.GetComponent<AnimalInfo>();
-        if (infos != null && penInfoPanel != null)
-            infos.InjectPanel(penInfoPanel);
+        var infoComp = animal.GetComponent<AnimalInfo>();
+        if (infoComp != null)
+        {
+            infoComp.panelUI = penInfoPanel;
+            infoComp.data = data;
+        }
 
         return true;
     }
+
 
     public void RemoveAnimal(GameObject animal)
     {
         int index = spawnedAnimals.FindIndex(a => a.animal == animal);
         if (index >= 0)
         {
-            if (index < savedAnimals.Count)
-                savedAnimals.RemoveAt(index);
+            savedAnimals.RemoveAll(a => a.animalID == animal.name);
             spawnedAnimals.RemoveAt(index);
         }
 
@@ -186,13 +240,24 @@ public class AnimalPen : MonoBehaviour
         if (cellIndex < 0 || cellIndex >= spawnedAnimals.Count)
             return;
 
-        var (animal, _) = spawnedAnimals[cellIndex];
+        var (animal, data) = spawnedAnimals[cellIndex];
         if (animal != null)
+        {
+            // Tính tiền dựa trên loại động vật
+            int sellPrice = 0;
+            var feed = animal.GetComponent<AnimalFedding>();
+            if (feed != null)
+            {
+                sellPrice = feed.animalTypes == AnimalFedding.FeedingAnimalType.Goat ? 900 : 750;
+            }
+
+            // Cộng tiền vào Gold
+            Gold.Instance.AddGold(sellPrice);
+
             Destroy(animal);
+        }
 
-        if (cellIndex < savedAnimals.Count)
-            savedAnimals.RemoveAt(cellIndex);
-
+        savedAnimals.RemoveAll(a => a.animalID == animal.name);
         spawnedAnimals.RemoveAt(cellIndex);
 
         if (spawnedAnimals.Count == 0)
@@ -200,6 +265,7 @@ public class AnimalPen : MonoBehaviour
 
         uiManager?.RefreshUI();
     }
+
 
     public void UpdateSavedAnimalData(GameObject animal)
     {
@@ -221,9 +287,76 @@ public class AnimalPen : MonoBehaviour
 
     public bool HasAssignedType() => allowedTags.Count > 0;
     public bool IsAllowedTag(string tag) => allowedTags.Contains(tag);
-
+    public bool CanSpawnMore() => spawnedAnimals.Count < maxAnimals;
     public int SpawnedAnimalCount => spawnedAnimals.Count;
     public int MaxAnimals => maxAnimals;
     public List<(GameObject, AnimalData)> GetSpawnedAnimals() => spawnedAnimals;
+   public void LoadAnimals(List<AnimalPenSaveInfo> savedList)
+{
+    foreach (var info in savedList)
+    {
+        // Lấy prefab dựa trên animalType và variant, không dùng info.data.prefab
+        GameObject prefab = SaveLoadSystem.GetPrefabFromFeedingType(info.animalType, info.variant);
+        if (prefab == null) continue;
 
+        GameObject obj = Instantiate(prefab, GetRandomSpawnPosition(), Quaternion.identity);
+
+        var feed = obj.GetComponent<AnimalFedding>();
+        if (feed != null)
+        {
+            feed.SetSavedState(info.daysFed, info.canHarvest, false, 0, false, false);
+        }
+
+        var infoComp = obj.GetComponent<AnimalInfo>();
+        if (infoComp != null)
+        {
+            infoComp.panelUI = penInfoPanel;
+            infoComp.data = info.data; // vẫn giữ nếu bạn muốn tham chiếu AnimalData
+        }
+
+        // Thêm vào list và tag
+        spawnedAnimals.Add((obj, info.data));
+        allowedTags.Add(obj.tag);
+    }
+
+    uiManager?.RefreshUI();
+}
+
+
+    public List<AnimalPenSaveInfo> GetCurrentSavedAnimals()
+    {
+        List<AnimalPenSaveInfo> list = new List<AnimalPenSaveInfo>();
+        foreach (var (animal, data) in spawnedAnimals)
+        {
+            var feed = animal.GetComponent<AnimalFedding>();
+            if (feed == null) continue;
+
+            list.Add(new AnimalPenSaveInfo
+            {
+                animalID = animal.name,
+                animalType = feed.animalTypes,
+                variant = data.variant,
+                daysFed = feed.GetDaysFed(),
+                canHarvest = feed.CanHarvest()
+            });
+        }
+        return list;
+    }
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            uiManager?.ShowPenInfo(true);
+            uiManager?.ShowInventory(true);
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            uiManager?.ShowPenInfo(false);
+            uiManager?.ShowInventory(false);
+        }
+    }
 }

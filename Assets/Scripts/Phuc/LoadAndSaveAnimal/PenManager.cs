@@ -1,41 +1,111 @@
-﻿using UnityEngine;
+﻿using System.Collections;
 using System.Collections.Generic;
-using UnityEngine.UI;
+using UnityEngine;
 
 public class PensManager : MonoBehaviour
 {
+    public static PensManager Instance;
+
     [Header("References")]
     public List<AnimalPen> allPens = new List<AnimalPen>();
-    public List<HayCellManager> allHayManagers= new List<HayCellManager>();
+    public List<HayCellManager> allHayManagers = new List<HayCellManager>(); 
     public ItemData hayBaleData;
-    public Button saveButton;
-    public Button loadButton;
+
+    private bool isHandlingDay = false;
+    private float lastAbsoluteHour = -1f;
+    private int lastDay = -1;
+
+    private void Awake()
+    {
+        if (Instance == null) Instance = this;
+        else Destroy(gameObject);
+    }
 
     private void Start()
     {
-        if (saveButton != null)
-            saveButton.onClick.AddListener(SaveFarm);
+        SaveLoadSystem.LoadFarm(allPens);
 
-        if (loadButton != null)
-            loadButton.onClick.AddListener(LoadFarm);
-        LoadFarm();
+        foreach (var hayManager in allHayManagers)
+        {
+            if (hayManager != null)
+                hayManager.hayCells.ForEach(cell => cell?.UpdateUI());
+        }
+
+        foreach (var pen in allPens)
+            pen.uiManager?.RefreshUI();
+
+        StartCoroutine(CheckDayChangeRoutine());
+    }
+
+    private IEnumerator CheckDayChangeRoutine()
+    {
+        yield return new WaitForSeconds(1f);
+
+        while (true)
+        {
+            yield return new WaitForSeconds(1f);
+
+            if (GameTime.Instance == null) continue;
+
+            float absoluteHour = GetAbsoluteGameHours();
+            int currentDay = GameTime.Instance.day;
+
+            if (lastAbsoluteHour < 0f)
+            {
+                lastAbsoluteHour = absoluteHour;
+                lastDay = currentDay;
+                continue;
+            }
+
+            if (currentDay != lastDay)
+            {
+                SaveFarm();
+                lastDay = currentDay;
+            }
+            else if (absoluteHour - lastAbsoluteHour >= 24f)
+            {
+                SaveFarm();
+                lastAbsoluteHour = absoluteHour;
+                lastDay = currentDay + 1;
+            }
+        }
+    }
+
+    public float GetAbsoluteGameHours()
+    {
+        var t = GameTime.Instance;
+        if (t == null) return 0;
+        return (t.day * 24f) + t.hour;
     }
 
     public void SaveFarm()
     {
-        SaveLoadSystem.SaveFarm(allPens/*, allHayManagers*/);
-    }
-
-    public void LoadFarm()
-    {
-        SaveLoadSystem.LoadFarm(allPens/*, allHayManagers, hayBaleData*/);
+        if (isHandlingDay) return;
+        isHandlingDay = true;
 
         foreach (var pen in allPens)
-            pen.uiManager?.RefreshUI();
-    }
+        {
+            foreach (var (animalObj, _) in pen.GetSpawnedAnimals())
+            {
+                var feeding = animalObj.GetComponent<AnimalFedding>();
+                if (feeding != null)
+                {
+                    float currentHour = feeding.GetAbsoluteGameHours();
+                    int currentDay = Mathf.FloorToInt(currentHour / 24f);
+                    if (currentDay != feeding.LastFedDay)
+                        feeding.HandleNextDay(currentDay);
+                }
+            }
+        }
 
-    //private void OnApplicationQuit()
-    //{
-    //    SaveLoadSystem.SaveFarm(allPens, allHayManagers);
-    //}
+        SaveLoadSystem.SaveFarm(allPens);
+
+        foreach (var hayManager in allHayManagers)
+        {
+            if (hayManager != null)
+                hayManager.hayCells.ForEach(cell => cell?.UpdateUI());
+        }
+
+        isHandlingDay = false;
+    }
 }

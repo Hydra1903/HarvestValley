@@ -10,16 +10,17 @@ public class TestingHarvestAnimal : MonoBehaviour
 
     [Header("Setting")]
     public float interactDistance = 3f;
+    private GameObject player;
 
     public enum AnimalType { Sheep_Black, Sheep_White, Sheep_Cream, Goat }
     public AnimalType animalType;
 
     private AnimalFedding feeding;
     private bool canHarvest = false;
-
     private void Start()
     {
         feeding = GetComponent<AnimalFedding>();
+        player = GameObject.FindGameObjectWithTag("Player"); // chỉ gọi 1 lần
 
         if (feeding != null && feeding.barn == null)
         {
@@ -30,21 +31,21 @@ public class TestingHarvestAnimal : MonoBehaviour
             }
         }
     }
-
     private void Update()
     {
-        GameObject player = GameObject.FindGameObjectWithTag("Player");
         if (player == null) return;
 
-        float distance = Vector3.Distance(player.transform.position, transform.position);
-        if (distance <= interactDistance && Input.GetKeyDown(KeyCode.E))
+        // chỉ check input nếu player ở gần
+        if (Vector3.SqrMagnitude(player.transform.position - transform.position) <= interactDistance * interactDistance)
         {
-            TryHarvest(player);
+            if (Input.GetKeyDown(KeyCode.E))
+            {
+                TryHarvest(player);
+            }
         }
 
         canHarvest = feeding != null && feeding.CanHarvest();
     }
-
     private void TryHarvest(GameObject player)
     {
         if (feeding == null) return;
@@ -62,13 +63,9 @@ public class TestingHarvestAnimal : MonoBehaviour
                 canHarvest = false;
             }
         }
-        else
-        {
-            Notification.Instance.ShowNotification($"Chưa đủ điều kiện để thu hoạch, đã ăn được {feeding.GetDaysFed()} ngày.");
-        }
     }
 
-    private ItemData GetItemDataByType()
+    public ItemData GetItemDataByType()
     {
         return animalType switch
         {
@@ -79,7 +76,16 @@ public class TestingHarvestAnimal : MonoBehaviour
             _ => null
         };
     }
+    public int GetRemainingDaysToHarvest()
+    {
+        // Ví dụ: nếu cần ăn 3 ngày để thu hoạch
+        int requiredDays = 3;
+        var feed = GetComponent<AnimalFedding>();
+        if (feed == null) return -1;
 
+        int remaining = requiredDays - feed.daysFed;
+        return Mathf.Max(0, remaining);
+    }
     private int GetHarvestAmount()
     {
         return animalType == AnimalType.Goat ? 1 : 3;
