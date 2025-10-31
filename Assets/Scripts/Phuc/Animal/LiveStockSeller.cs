@@ -25,6 +25,8 @@ public class LiveStockSeller : MonoBehaviour
     public Button noButton;
     public Button pen2Button;
     public Button pen1Button;
+    public GameObject pen1LockPanel;
+    public GameObject pen2LockPanel;
 
     [Header("Spawn Point And Moving Random Point")]
     public AnimalPen pen1;
@@ -35,6 +37,8 @@ public class LiveStockSeller : MonoBehaviour
     {
         public AnimalType animalType;
         public int requiredLevel;
+        [Header("Giá mua bằng vàng")]
+        public int price;
 
         [Header("UI Overlay (Optional)")]
         public GameObject lockOverlay;
@@ -85,6 +89,7 @@ public class LiveStockSeller : MonoBehaviour
             return;
 
         int requiredLevel = GetRequiredLevel(selectedType);
+        int price = GetAnimalPrice(selectedType);
         int currentLevel = LevelManager.Instance.currentLevel;
 
         if (currentLevel < requiredLevel)
@@ -94,9 +99,16 @@ public class LiveStockSeller : MonoBehaviour
             return;
         }
 
+        if (Gold.Instance.gold < price)
+        {
+            Notification.Instance.ShowNotification($"Không đủ vàng! Cần vàng để mua");
+            confirmPanel.SetActive(false);
+            return;
+        }
+
         if (!selectedPen.CanSpawnMore())
         {
-            Notification.Instance.ShowNotification("Chuồng Nuôi Đã Đầy!");
+            Notification.Instance.ShowNotification("Chuồng nuôi đã đầy!");
             confirmPanel.SetActive(false);
             return;
         }
@@ -104,6 +116,13 @@ public class LiveStockSeller : MonoBehaviour
         GameObject prefab = AnimalFactory.GetPrefab(selectedType);
         if (prefab == null)
             return;
+
+        bool spent = Gold.Instance.SpendGold(price);
+        if (!spent)
+        {
+            Notification.Instance.ShowNotification("Không đủ vàng để mua!");
+            return;
+        }
 
         GameObject obj = Instantiate(prefab, selectedPen.GetRandomSpawnPosition(), Quaternion.identity);
 
@@ -128,10 +147,15 @@ public class LiveStockSeller : MonoBehaviour
 
         AnimalData data = info?.data;
         bool success = selectedPen.RegisterAnimal(obj, data);
+
+        string displayName = data != null
+            ? AnimalHelpers.GetDisplayNameFromData(data.animalType, data.variant)
+            : AnimalLocalization.GetLocalizedName(selectedType);
+
         if (success)
-            Notification.Instance.ShowNotification($"Đã mua {selectedType}");
+            Notification.Instance.ShowNotification($"Đã mua {displayName} với giá {price} vàng!");
         else
-            Notification.Instance.ShowNotification($"Không thể thêm động vật này");
+            Notification.Instance.ShowNotification($"Không thể thêm {displayName} vào chuồng!");
 
         confirmPanel.SetActive(false);
         selectedType = AnimalType.None;
@@ -148,6 +172,14 @@ public class LiveStockSeller : MonoBehaviour
         return 1;
     }
 
+    int GetAnimalPrice(AnimalType type)
+    {
+        foreach (var req in animalLevelRequirements)
+            if (req.animalType == type)
+                return req.price;
+        return 0;
+    }
+
     void UpdateAnimalButtons()
     {
         int currentLevel = LevelManager.Instance.currentLevel;
@@ -162,6 +194,19 @@ public class LiveStockSeller : MonoBehaviour
             if (req.lockOverlay != null)
                 req.lockOverlay.SetActive(!unlocked);
         }
+        UpdatePenUnlockOverlays();
+    }
+
+    void UpdatePenUnlockOverlays()
+    {
+        bool pen1Unlocked = Builder.Instance != null && Builder.Instance.isUnlockPen1;
+        bool pen2Unlocked = Builder.Instance != null && Builder.Instance.isUnlockPen2;
+
+        if (pen1LockPanel != null)
+            pen1LockPanel.SetActive(!pen1Unlocked);
+
+        if (pen2LockPanel != null)
+            pen2LockPanel.SetActive(!pen2Unlocked);
     }
 
     void UpdatePenCountsUI()

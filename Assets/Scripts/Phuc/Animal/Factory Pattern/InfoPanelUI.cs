@@ -2,6 +2,7 @@
 using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
+using UnityEngine.Localization.Settings;
 
 public class InfoPanelUI : MonoBehaviour
 {
@@ -10,11 +11,11 @@ public class InfoPanelUI : MonoBehaviour
     public TextMeshProUGUI stateText;
     public Image productImage;
     public TextMeshProUGUI harvestText;
-
+    public TextMeshProUGUI productLabelText;
     [System.Serializable]
     public class AnimalIcon
     {
-        public AnimalTypeed type;   // Loại vật nuôi
+        public AnimalTypeed type;   // Loại vật nuôi (giữ nguyên)
         public string variant;      // Màu hoặc biến thể
         public GameObject icon;     // Icon tương ứng
     }
@@ -27,27 +28,49 @@ public class InfoPanelUI : MonoBehaviour
     {
         CurrentOwner = owner;
 
+        string currentLang = LocalizationSettings.SelectedLocale != null
+            ? LocalizationSettings.SelectedLocale.Identifier.Code
+            : "vi";
+        bool isEnglish = currentLang.StartsWith("en");
+
         if (data != null)
         {
-            nameText.text = data.animalName;
-            productImage.sprite = data.item?.icon ?? null;
-
-            // Bật icon dựa vào type + variant
+            // Map sang AnimalType chính xác dựa trên variant rồi lấy tên hiển thị
+            AnimalType mapped = AnimalHelpers.MapToAnimalType(data.animalType, data.variant);
+            nameText.text = AnimalLocalization.GetLocalizedName(mapped);
             SetActiveIcon(data.animalType, data.variant);
+
         }
 
-        // Trạng thái ăn
         var feeding = owner.GetComponent<AnimalFedding>();
-        stateText.text = feeding != null
-            ? (feeding.GetMealsToday() > 0 ? "Đã được ăn" : "Chưa được ăn")
-            : "-";
+        if (feeding != null)
+        {
+            bool eaten = feeding.GetMealsToday() > 0;
+            stateText.text = isEnglish
+                ? (eaten ? "Eaten" : "Not eaten")
+                : (eaten ? "Đã được ăn" : "Chưa được ăn");
+        }
+        else stateText.text = "-";
 
-        // Trạng thái thu hoạch
+        if (productLabelText != null)
+        {
+            productLabelText.text = isEnglish ? "Product" : "Sản phẩm";
+        }
+
         var harvestComp = owner.GetComponent<TestingHarvestAnimal>();
         if (harvestComp != null)
         {
             int remainingDays = harvestComp.GetRemainingDaysToHarvest();
-            harvestText.text = remainingDays <= 0 ? "Đã có thể thu hoạch " : $"Thời gian còn: {remainingDays} ngày";
+            if (remainingDays <= 0)
+            {
+                harvestText.text = isEnglish ? "Harvestable" : "Đã có thể thu hoạch";
+            }
+            else
+            {
+                harvestText.text = isEnglish
+                    ? $"Time remaining: {remainingDays} days"
+                    : $"Thời gian còn: {remainingDays} ngày";
+            }
         }
         else
         {
@@ -61,30 +84,29 @@ public class InfoPanelUI : MonoBehaviour
     {
         CurrentOwner = null;
 
-        // Tắt tất cả icon
         foreach (var icon in animalIcons)
         {
             if (icon.icon != null)
                 icon.icon.SetActive(false);
-        }
 
+        }
+        if (productLabelText != null)
+            productLabelText.text = "";
         gameObject.SetActive(false);
     }
 
     private void SetActiveIcon(AnimalTypeed type, string variant)
     {
-        // Tắt hết trước
         foreach (var icon in animalIcons)
             if (icon.icon != null)
                 icon.icon.SetActive(false);
 
-        // Bật icon đúng type + variant
         foreach (var icon in animalIcons)
         {
             if (icon.icon != null && icon.type == type && icon.variant == variant)
             {
                 icon.icon.SetActive(true);
-                break; // chỉ bật 1 icon
+                break;
             }
         }
     }

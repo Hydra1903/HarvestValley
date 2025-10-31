@@ -23,7 +23,7 @@ public class PensManager : MonoBehaviour
 
     private void Start()
     {
-        Debug.Log($"[PensManager] Loading farm data from path:\n{SaveLoadSystem.savePath}");
+        //Debug.Log($"[PensManager] Loading farm data from path:\n{SaveLoadSystem.savePath}");
         SaveLoadSystem.LoadFarm(allPens);
 
         foreach (var pen in allPens)
@@ -35,11 +35,11 @@ public class PensManager : MonoBehaviour
     //Check day change
     private IEnumerator CheckDayChangeRoutine()
     {
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(1f);
 
         while (true)
         {
-            yield return new WaitForSeconds(5f);
+            yield return new WaitForSeconds(1f);
 
             if (GameTime.Instance == null) continue;
 

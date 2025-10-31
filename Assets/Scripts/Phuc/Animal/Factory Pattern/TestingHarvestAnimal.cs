@@ -10,16 +10,17 @@ public class TestingHarvestAnimal : MonoBehaviour
 
     [Header("Setting")]
     public float interactDistance = 3f;
+    private GameObject player;
 
     public enum AnimalType { Sheep_Black, Sheep_White, Sheep_Cream, Goat }
     public AnimalType animalType;
 
     private AnimalFedding feeding;
     private bool canHarvest = false;
-
     private void Start()
     {
         feeding = GetComponent<AnimalFedding>();
+        player = GameObject.FindGameObjectWithTag("Player"); // chỉ gọi 1 lần
 
         if (feeding != null && feeding.barn == null)
         {
@@ -30,20 +31,21 @@ public class TestingHarvestAnimal : MonoBehaviour
             }
         }
     }
-
     private void Update()
     {
-        GameObject player = GameObject.FindGameObjectWithTag("Player");
         if (player == null) return;
 
-        float distance = Vector3.Distance(player.transform.position, transform.position);
-        if (distance <= interactDistance && Input.GetKeyDown(KeyCode.E))
+        // chỉ check input nếu player ở gần
+        if (Vector3.SqrMagnitude(player.transform.position - transform.position) <= interactDistance * interactDistance)
         {
-            TryHarvest(player);
+            if (Input.GetKeyDown(KeyCode.E))
+            {
+                TryHarvest(player);
+            }
         }
+
         canHarvest = feeding != null && feeding.CanHarvest();
     }
-
     private void TryHarvest(GameObject player)
     {
         if (feeding == null) return;

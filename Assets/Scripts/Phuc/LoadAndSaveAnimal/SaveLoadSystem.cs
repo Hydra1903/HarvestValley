@@ -71,7 +71,7 @@ public static class SaveLoadSystem
                 data.animals.Add(entry);
             }
         }
-        Debug.Log("[SaveFarm] Saved to: " + savePath);
+        //Debug.Log("[SaveFarm] Saved to: " + savePath);
         string json = JsonUtility.ToJson(data, true);
         File.WriteAllText(savePath, json);
     }
@@ -86,7 +86,7 @@ public static class SaveLoadSystem
 
         string json = File.ReadAllText(savePath);
         FarmSaveData data = JsonUtility.FromJson<FarmSaveData>(json);
-        Debug.Log("[SaveFarm] Saved to: " + savePath);
+        //Debug.Log("[SaveFarm] Saved to: " + savePath);
         foreach (var pen in allPens)
         {
             foreach (var (obj, _) in pen.GetSpawnedAnimals())

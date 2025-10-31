@@ -35,7 +35,8 @@ public class AnimalPenUIManager : MonoBehaviour
     public GameObject[] receiveHayBalePen2;
     public TextMeshProUGUI textLevelPen1;
     public TextMeshProUGUI textLevelPen2;
-
+    private int lastLevelPen1 = -1;
+    private int lastLevelPen2 = -1;
     private int pendingSellIndex = -1;
 
     private void Start()
@@ -46,11 +47,14 @@ public class AnimalPenUIManager : MonoBehaviour
         HideAllPanels();
         RefreshUI();
         UpdateUIPen();
+        lastLevelPen1 = Builder.Instance.currentlevelPen1;
+        lastLevelPen2 = Builder.Instance.currentlevelPen2;
     }
 
     private void Update()
     {
         RefreshUI();
+        CheckPenLevelChange();
     }
 
     public void RefreshUI()
@@ -97,8 +101,15 @@ public class AnimalPenUIManager : MonoBehaviour
     public void UpdateFeedStatus()
     {
         bool allGood = pen.IsAnyAnimalFed();
+
         string text = allGood ? "Tốt" : "Xấu";
         Color color = allGood ? Color.green : Color.red;
+
+        var currentLocale = UnityEngine.Localization.Settings.LocalizationSettings.SelectedLocale;
+        if (currentLocale != null && currentLocale.Identifier.Code.StartsWith("en"))
+        {
+            text = allGood ? "Good" : "Bad";
+        }
 
         if (penQualityText != null)
         {
@@ -106,6 +117,7 @@ public class AnimalPenUIManager : MonoBehaviour
             penQualityText.color = color;
         }
     }
+
 
     public void ShowPenInfo(bool show)
     {
@@ -194,6 +206,29 @@ public class AnimalPenUIManager : MonoBehaviour
             SpritePen2[1].SetActive(true);
             receiveHayBalePen2[1].SetActive(true);
             textLevelPen2.text = "Cấp 2";
+        }
+    }
+    private void CheckPenLevelChange()
+    {
+        if (Builder.Instance == null) return;
+
+        bool changed = false;
+
+        if (Builder.Instance.currentlevelPen1 != lastLevelPen1)
+        {
+            lastLevelPen1 = Builder.Instance.currentlevelPen1;
+            changed = true;
+        }
+
+        if (Builder.Instance.currentlevelPen2 != lastLevelPen2)
+        {
+            lastLevelPen2 = Builder.Instance.currentlevelPen2;
+            changed = true;
+        }
+
+        if (changed)
+        {
+            UpdateUIPen();
         }
     }
 }
