@@ -36,7 +36,6 @@ public class FarmSaveSystem : MonoBehaviour
         farm.origin = data.origin;
 
         // soil
-        soilManager.ClearAreas();
         foreach (var a in data.areas)
             soilManager.AddAreaFromSave(a);
 
@@ -46,7 +45,6 @@ public class FarmSaveSystem : MonoBehaviour
         plantManager.AddPlantFromSave(p);
 
         //sprinkler
-        soilManager.ClearSprinklers();
         foreach (var sp in data.sprinklers)
             soilManager.AddSprinklerFromSave(sp);
 

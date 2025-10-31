@@ -253,26 +253,6 @@ public class SoilManager : MonoBehaviour
     //Hàm đào đất
     public void PlaceArea(int startX, int startY, int size)
     {
-        for (int dx = 0; dx < size; dx++)
-            for (int dy = 0; dy < size; dy++)
-            {
-<<<<<<< HEAD
-                if(farm.Tiles[startX + dx, startY + dy].state == SoilState.Normal)
-                {
-                    farm.Tiles[startX + dx, startY + dy].state = SoilState.Dug;
-                }
-                
-                if(farm.Tiles[startX + dx, startY + dy].state == SoilState.Wet)
-                {
-                    WaterBySprinklers();
-                }    
-                farm.Tiles[startX + dx, startY + dy].soilType = (size == 5) ? SoilType.Plot : SoilType.Hole;
-=======
-                farm.Tiles[startX + dx, startY + dy].state = SoilState.Dug;
-                farm.Tiles[startX + dx, startY + dy].soilType = (size == 5) ? SoilType.Furrow : SoilType.Hole;
->>>>>>> 37d5bc21a0da9d1193b3bd262be985e64a35aad4
-            }
-
         var a = new AreaSave
         {
             startX = startX,
@@ -295,7 +275,24 @@ public class SoilManager : MonoBehaviour
         var prefab = (size == 5) ? dugSoilPrefab : holePrefab;
         var go = prefab ? Instantiate(prefab, pos, Quaternion.identity) : null;
 
+        for (int dx = 0; dx < size; dx++)
+            for (int dy = 0; dy < size; dy++)
+            {
+                farm.Tiles[startX + dx, startY + dy].soilType = (size == 5) ? SoilType.Furrow : SoilType.Hole;
+                if (farm.Tiles[startX + dx, startY + dy].state == SoilState.Wet)
+                {
+                    //
+                }
+
+                if (farm.Tiles[startX + dx, startY + dy].state == SoilState.Normal)
+                {
+                    farm.Tiles[startX + dx, startY + dy].state = SoilState.Dug;
+                }
+
+            }
+
         _areaObjects.Add(go);
+        WaterBySprinklers();
         FindAnyObjectByType<SoilGrid>()?.UpdateGridColors();
     }
     //Xóa đất
@@ -507,7 +504,7 @@ public class SoilManager : MonoBehaviour
             {
                 SetAreaWaterOverlay(i, true);
                 _wateredAreaIdx.Add(i);
-                SetAreaHole(i, false); // nếu là hố thì bật layer nước
+                SetAreaHole(i, false); 
             }
         }
     }
