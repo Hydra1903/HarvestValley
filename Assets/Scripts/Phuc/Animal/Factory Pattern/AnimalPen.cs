@@ -24,7 +24,8 @@ public class AnimalPen : MonoBehaviour
     public Transform spawnPointType1;
     public Transform spawnPointType2;
     public Transform[] wanderPoints;
-
+    [Header("Info Manager")]
+    public InfoPanelManager penInfoManager;
     [SerializeField] private int baseMaxAnimals = 4;
     private int maxAnimals; 
 
@@ -56,8 +57,8 @@ public class AnimalPen : MonoBehaviour
 
     private void Start()
     {
-        if (InfoPanelManager.instance != null)
-            InfoPanelManager.instance.RegisterPanel(penId, null);
+        if (penInfoManager != null)
+            penInfoManager.RegisterPanel(penId, penInfoPanel);
 
         UpdateMaxAnimals();
         UpdateActiveHayManager();
@@ -65,9 +66,10 @@ public class AnimalPen : MonoBehaviour
 
     private void OnDestroy()
     {
-        if (InfoPanelManager.instance != null)
-            InfoPanelManager.instance.UnregisterPanel(penId);
+        if (penInfoManager != null)
+            penInfoManager.UnregisterPanel(penId);
     }
+
 
     private int GetCurrentPenLevel()
     {

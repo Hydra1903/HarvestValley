@@ -25,8 +25,6 @@ public class LiveStockSeller : MonoBehaviour
     public Button noButton;
     public Button pen2Button;
     public Button pen1Button;
-    public GameObject pen1LockPanel;
-    public GameObject pen2LockPanel;
 
     [Header("Spawn Point And Moving Random Point")]
     public AnimalPen pen1;
@@ -44,6 +42,8 @@ public class LiveStockSeller : MonoBehaviour
         public GameObject lockOverlay;
         public Button buyButton;
     }
+ 
+
 
     [Header("Animal Level Requirements")]
     public List<AnimalLevelRequirement> animalLevelRequirements = new List<AnimalLevelRequirement>();
@@ -146,12 +146,13 @@ public class LiveStockSeller : MonoBehaviour
 
         // Gán panel UI cho AnimalInfo
         AnimalInfo info = obj.GetComponent<AnimalInfo>();
-        if (info != null)
+        if (info != null && selectedPen.penInfoManager != null)
         {
-            var panel = InfoPanelManager.instance.GetPanel(selectedPen.penId);
+            InfoPanelUI panel = selectedPen.penInfoManager.GetPanel(selectedPen.penId);
             if (panel != null)
                 info.panelUI = panel;
         }
+
 
         AnimalData data = info?.data;
         bool success = selectedPen.RegisterAnimal(obj, data);
@@ -168,7 +169,7 @@ public class LiveStockSeller : MonoBehaviour
         confirmPanel.SetActive(false);
         selectedType = AnimalType.None;
         selectedPen = null;
-        CloseAllUI();
+        //CloseAllUI();
         UpdatePenCountsUI();
     }
 
@@ -209,12 +210,6 @@ public class LiveStockSeller : MonoBehaviour
     {
         bool pen1Unlocked = Builder.Instance != null && Builder.Instance.isUnlockPen1;
         bool pen2Unlocked = Builder.Instance != null && Builder.Instance.isUnlockPen2;
-
-        if (pen1LockPanel != null)
-            pen1LockPanel.SetActive(!pen1Unlocked);
-
-        if (pen2LockPanel != null)
-            pen2LockPanel.SetActive(!pen2Unlocked);
     }
 
     void UpdatePenCountsUI()

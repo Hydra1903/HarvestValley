@@ -3,44 +3,26 @@ using UnityEngine;
 
 public class InfoPanelManager : MonoBehaviour
 {
-    public static InfoPanelManager instance { get; private set; }
-
-    public Dictionary<int, InfoPanelUI> panels = new Dictionary<int, InfoPanelUI>();
-
-    void Awake()
-    {
-        if (instance == null)
-        {
-            instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
-    }
-
+    private Dictionary<int, InfoPanelUI> panels = new Dictionary<int, InfoPanelUI>();
 
     public void RegisterPanel(int penId, InfoPanelUI panel)
     {
+        if (panel == null) return;
         if (!panels.ContainsKey(penId))
-        {
             panels.Add(penId, panel);
-        }
+        else
+            panels[penId] = panel;
     }
-
     public void UnregisterPanel(int penId)
     {
         if (panels.ContainsKey(penId))
-        {
             panels.Remove(penId);
-        }
     }
 
     public InfoPanelUI GetPanel(int penId)
     {
-        if (panels.ContainsKey(penId))
-            return panels[penId];
+        if (panels.TryGetValue(penId, out var panel))
+            return panel;
         return null;
     }
 }
